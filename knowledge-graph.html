@@ -735,7 +735,7 @@ const nodeRadius = n => {
 
 const CLUSTER_R = 700;
 const TOPIC_R = 130;
-const SUB_R = 22;
+const SUB_R = 38;
 
 function fibSphere(i, n, radius) {
   if (n <= 1) return { x: 0, y: 0, z: 0 };
@@ -771,9 +771,14 @@ chapters.forEach((ch, ci) => {
     nodes[tIdx].y = tCenter.y;
     nodes[tIdx].z = tCenter.z;
 
+    /* sub 数量越多，半径越大：
+       base 38 保证 topic 半径(~15) + sub 半径(~7) + 视觉间距(~16) ≈ 38 永远够；
+       25 个 sub 时撑开到 ~63，避免相互重叠 */
+    const subR = SUB_R + Math.sqrt(Math.max(1, topic.subs.length)) * 5;
+
     topic.subs.forEach((sub, si) => {
       const sid = `s_${ci}_${ti}_${si}`;
-      const sc = fibSphere(si, topic.subs.length, SUB_R);
+      const sc = fibSphere(si, topic.subs.length, subR);
       const sIdx = idToIndex.get(sid);
       nodes[sIdx].x = tCenter.x + sc.x + (Math.random() - 0.5) * 4;
       nodes[sIdx].y = tCenter.y + sc.y + (Math.random() - 0.5) * 4;
@@ -786,11 +791,11 @@ chapters.forEach((ch, ci) => {
    3D 力导向（仅烘焙 + 拖拽时使用）
    ══════════════════════════════════════════════ */
 
-const REP          = 2200;
+const REP          = 3800;
 const SPRING_LEN   = 30;
 const SPRING_K     = 0.045;
-const CLUSTER_PULL = 0.006;
-const CENTER_PULL  = 0.0008;
+const CLUSTER_PULL = 0;
+const CENTER_PULL  = 0;
 const DAMP         = 0.86;
 const MAX_SPEED    = 14;
 
@@ -867,12 +872,15 @@ function simulate(alpha, applyAll) {
   }
 
   // 聚类引力 + 向心
+  /* CLUSTER_PULL 只在烘焙/spread（applyAll=true）阶段生效。
+     拖拽时若继续拉，被钉住的章节中心会把同章节其它节点吸过来 → 节点之间距离"收缩" */
   for (let i = 0; i < n; i++) {
     const nd = nodes[i];
+    const cp = applyAll ? CLUSTER_PULL : 0;
     const c = clusterCenters[nd.cluster];
-    fx[i] += (c.x - nd.x) * CLUSTER_PULL - nd.x * CENTER_PULL;
-    fy[i] += (c.y - nd.y) * CLUSTER_PULL - nd.y * CENTER_PULL;
-    fz[i] += (c.z - nd.z) * CLUSTER_PULL - nd.z * CENTER_PULL;
+    fx[i] += (c.x - nd.x) * cp - nd.x * CENTER_PULL;
+    fy[i] += (c.y - nd.y) * cp - nd.y * CENTER_PULL;
+    fz[i] += (c.z - nd.z) * cp - nd.z * CENTER_PULL;
   }
 
   // 积分
@@ -1004,6 +1012,8 @@ const state = {
   ancAll: new Set(),
   descAll: new Set(),
   focusCluster: null,
+  focusChapter: null,   // 锁定的章节 cluster id（如 'ch_0'）；用于章节聚焦渲染
+  relatedSet: new Set(),// 通过跨章边连接到 focusChapter 章节的外部节点
 };
 
 let viewIsRotating = false;
@@ -1024,16 +1034,94 @@ function collect(start, adj, forward) {
   return seen;
 }
 
+/* 更新 focusChapter + relatedSet：relatedSet 收集跨章边的另一端节点 */
+function updateFocusChapter(cid) {
+  state.focusChapter = cid;
+  state.relatedSet.clear();
+  if (cid == null) return;
+  for (let k = 0; k < edges.length; k++) {
+    const e = edges[k];
+    if (e.kind !== 'cross') continue;
+    const A = nodes[e.a], B = nodes[e.b];
+    if (A.cluster === cid && B.cluster !== cid) state.relatedSet.add(e.b);
+    else if (B.cluster === cid && A.cluster !== cid) state.relatedSet.add(e.a);
+  }
+}
+
+/* 检测章节内 topic 是否过密（最小间距 < 50 视为过密） */
+function chapterIsDense(cid) {
+  const topics = [];
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].cluster === cid && nodes[i].kind === 'topic') topics.push(nodes[i]);
+  }
+  if (topics.length < 3) return false;
+  let minD = Infinity;
+  for (let i = 0; i < topics.length; i++) {
+    for (let j = i + 1; j < topics.length; j++) {
+      const dx = topics[i].x - topics[j].x;
+      const dy = topics[i].y - topics[j].y;
+      const dz = topics[i].z - topics[j].z;
+      const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (d < minD) minD = d;
+    }
+  }
+  return minD < 50;
+}
+
+/* 推开章节内节点：过密则多跑几轮模拟，结束后再做一次最小间距强制拉开 */
+function spreadChapter(cid) {
+  const steps = chapterIsDense(cid) ? 150 : 40;
+  for (let i = 0; i < steps; i++) simulate(0.45, true);
+  enforceMinDistance(cid);
+}
+
+/* 在指定章节内做一次后处理：把仍重叠的节点对按"半径之和 * 1.4"的最小间距沿连线推开 */
+function enforceMinDistance(cid) {
+  const indices = [];
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].cluster === cid && !nodes[i].fixed) indices.push(i);
+  }
+  if (indices.length < 2) return;
+  for (let pass = 0; pass < 4; pass++) {
+    let moved = false;
+    for (let a = 0; a < indices.length; a++) {
+      const i = indices[a];
+      const A = nodes[i];
+      const ra = nodeRadius(A);
+      for (let b = a + 1; b < indices.length; b++) {
+        const j = indices[b];
+        const B = nodes[j];
+        const minD = (ra + nodeRadius(B)) * 1.4;
+        const dx = B.x - A.x, dy = B.y - A.y, dz = B.z - A.z;
+        const d2 = dx * dx + dy * dy + dz * dz;
+        const minD2 = minD * minD;
+        if (d2 >= minD2 || d2 < 0.0001) continue;
+        const d = Math.sqrt(d2);
+        const push = (minD - d) * 0.5;
+        const nx = dx / d, ny = dy / d, nz = dz / d;
+        if (!A.fixed) { A.x -= nx * push; A.y -= ny * push; A.z -= nz * push; }
+        if (!B.fixed) { B.x += nx * push; B.y += ny * push; B.z += nz * push; }
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+}
+
 function selectNode(idx) {
   if (state.selected === idx) return;
   state.selected = idx;
   if (idx == null) {
     state.ancSet = new Set(); state.descSet = new Set();
     state.ancAll = new Set(); state.descAll = new Set();
+    state.focusCluster = null;
+    updateFocusChapter(null);
   } else {
     /* 进入节点级选中 → 清掉章节级粗筛 */
     state.focusCluster = null;
     legendItemsEl && legendItemsEl.querySelectorAll('.lg-row').forEach(r => r.classList.remove('active'));
+    const selNode = nodes[idx];
+    updateFocusChapter(selNode.kind === 'chapter' ? selNode.cluster : null);
     state.ancSet  = collect(idx, inAdj, false);
     state.descSet = collect(idx, outAdj, true);
     state.ancAll  = new Set(state.ancSet);  state.ancAll.add(idx);
@@ -1100,13 +1188,12 @@ function tint(hex, deltaL, deltaS) {
 }
 
 function focusColors() {
-  /* 优先取悬停节点的 cluster color，其次章节筛选的 cluster color，最后取锁定选中节点 */
-  let focusIdx = hovered >= 0 ? hovered : null;
+  /* 优先取章节聚焦颜色（focusChapter），其次悬停节点的 cluster color，最后取锁定选中节点 */
   let base;
-  if (focusIdx != null) {
-    base = CLUSTERS[nodes[focusIdx].cluster].color;
-  } else if (state.focusCluster != null) {
-    base = CLUSTERS[state.focusCluster].color;
+  if (state.focusChapter != null) {
+    base = CLUSTERS[state.focusChapter].color;
+  } else if (hovered >= 0) {
+    base = CLUSTERS[nodes[hovered].cluster].color;
   } else if (state.selected != null) {
     base = CLUSTERS[nodes[state.selected].cluster].color;
   } else {
@@ -1140,12 +1227,12 @@ function drawEdge(k) {
     let color = fc ? fc.cross : (currentTheme === 'light' ? '#a83d27' : '#b8673f');
     let w = 1.4;
     const sel = state.selected;
-    const focusCluster = state.focusCluster;
-    if (focusCluster != null) {
-      /* 章节过滤：跨章边至少一端在该章节才显示 */
-      const hit = A.cluster === focusCluster || B.cluster === focusCluster;
-      if (!hit) { alpha = 0.02; }
-      else { alpha = 0.7 * f; w = 1.8; }
+    const focusChapter = state.focusChapter;
+    if (focusChapter != null) {
+      /* 章节聚焦：跨章边至少一端在该章节才显示 */
+      const hit = A.cluster === focusChapter || B.cluster === focusChapter;
+      if (!hit) { alpha = 0.01; }
+      else { alpha = 0.85 * f; w = 2.0; }
     } else if (sel != null) {
       const hit = state.ancAll.has(e.a) || state.descAll.has(e.a) ||
                   state.ancAll.has(e.b) || state.descAll.has(e.b);
@@ -1179,18 +1266,18 @@ function drawEdge(k) {
   let glowAlpha = 0;
 
   const sel = state.selected;
-  const focusCluster = state.focusCluster;
-  if (sel != null && fc) {
+  const focusChapter = state.focusChapter;
+  if (focusChapter != null) {
+    /* 章节聚焦：仅本章节内的树边显示，其他章节内的树边大幅暗淡 */
+    const inCluster = A.cluster === focusChapter && B.cluster === focusChapter;
+    if (inCluster) { alpha = 0.7 * f; colorA = colorB = fc ? fc.sel : colorA; w = 1.4; glowAlpha = 0.18 * f; }
+    else           { alpha = 0.02 * f; }
+  } else if (sel != null && fc) {
     const aAnc  = state.ancAll.has(e.a)  && state.ancAll.has(e.b);
     const aDesc = state.descAll.has(e.a) && state.descAll.has(e.b);
     if (aAnc)       { alpha = 0.85 * f; colorA = colorB = fc.anc; w = 2.0; glowAlpha = 0.25 * f; }
     else if (aDesc) { alpha = 0.85 * f; colorA = colorB = fc.desc; w = 2.0; glowAlpha = 0.25 * f; }
     else            { alpha = 0.025 * f; }
-  } else if (focusCluster != null && fc) {
-    /* 章节过滤：两端都在该章节才高亮，否则暗淡 */
-    const inCluster = A.cluster === focusCluster && B.cluster === focusCluster;
-    if (inCluster) { alpha = 0.7 * f; colorA = colorB = fc.sel; w = 1.4; glowAlpha = 0.18 * f; }
-    else           { alpha = 0.03 * f; }
   }
 
   if (alpha < 0.006) return;
@@ -1240,8 +1327,9 @@ function drawNode(i) {
   const isAnc  = state.ancSet.has(i);
   const isDesc = state.descSet.has(i);
   const fc = focusColors();
-  const focusCluster = state.focusCluster;
-  const inFocusCluster = focusCluster == null || n.cluster === focusCluster;
+  const focusChapter = state.focusChapter;
+  const inFocusChapter = focusChapter == null || n.cluster === focusChapter;
+  const isRelated = state.relatedSet.has(i);
 
   let color = base;
   let glowA = 0.75 * f;
@@ -1258,15 +1346,25 @@ function drawNode(i) {
     bodyA = Math.max(bodyA, 0.85);
   }
 
-  if (sel != null && fc) {
+  if (focusChapter != null) {
+    /* 章节聚焦：本章节全亮 + 相关跨章节点中亮 + 其他大幅暗淡 */
+    if (isSel || inFocusChapter) {
+      color = fc ? fc.sel : base;
+      glowA = isSel ? 1.55 : (1.0 * f);
+      bodyA = isSel ? 1 : (0.55 + 0.45 * f);
+    } else if (isRelated) {
+      color = fc ? fc.cross : base;
+      glowA = 0.45 * f;
+      bodyA = 0.22 + 0.20 * f;
+    } else {
+      glowA = 0.005 * f;
+      bodyA = 0.04;
+    }
+  } else if (sel != null && fc) {
     if (isSel)        { color = fc.sel; glowA = 1.55; bodyA = 1; }
     else if (isAnc)   { color = fc.anc; glowA = 1.05 * f; bodyA = 0.42 + 0.58 * f; }
     else if (isDesc)  { color = fc.desc; glowA = 1.05 * f; bodyA = 0.42 + 0.58 * f; }
     else              { glowA = 0.04 * f;  bodyA = 0.14; }
-  } else if (focusCluster != null && fc) {
-    /* 章节过滤模式：仅高亮该章节节点 */
-    if (inFocusCluster) { color = fc.sel; glowA = 1.0 * f; bodyA = 0.55 + 0.45 * f; }
-    else                { glowA = 0.03 * f; bodyA = 0.10; }
   }
 
   // 光晕（仅当屏幕半径够大时绘制）
@@ -1331,20 +1429,21 @@ function drawNode(i) {
 
   // 标签
   const isHovered = hovered === i;
-  /* "有效章节" = click 锁定的 focusCluster，或当前悬停的章节节点；让 hover 和 click 标签行为一致 */
+  /* "有效章节" = click 锁定的 focusChapter，或当前悬停的章节节点；让 hover 和 click 标签行为一致 */
   const hoveredNode = hovered >= 0 ? nodes[hovered] : null;
   const hoverFocus = hoveredNode && hoveredNode.kind === 'chapter' ? hoveredNode.cluster : null;
-  const effectiveFocus = state.focusCluster != null ? state.focusCluster : hoverFocus;
-  const labelInFocusCluster = effectiveFocus == null || n.cluster === effectiveFocus;
+  const effectiveFocus = state.focusChapter != null ? state.focusChapter : hoverFocus;
+  const labelInFocusChapter = effectiveFocus == null || n.cluster === effectiveFocus;
   let allowLabel = true;
   if (viewIsRotating) {
-    allowLabel = (isHovered || isSel) && labelInFocusCluster;
+    allowLabel = (isHovered || isSel) && labelInFocusChapter;
   } else {
-    /* 默认：所有 topic + 当前 chapter + 选中/悬停/前置/后继 */
+    /* 默认：所有 topic + 当前 chapter + 选中/悬停/前置/后继 + 章节聚焦下的相关跨章节点 */
     const isOwnChapter = effectiveFocus == null
       ? n.kind === 'chapter'  /* 无筛选时所有章节都显示 */
       : n.kind === 'chapter' && n.cluster === effectiveFocus;  /* 有筛选时只显示选中的章节 */
-    allowLabel = (n.kind === 'topic' || isOwnChapter) || isHovered || isSel || isAnc || isDesc;
+    allowLabel = (n.kind === 'topic' || isOwnChapter) || isHovered || isSel || isAnc || isDesc
+                 || (state.focusChapter != null && isRelated);
   }
 
   if (allowLabel && R > 3.2 && f > 0.15) {
@@ -1522,13 +1621,17 @@ canvas.addEventListener('pointerdown', e => {
 
   if (hit >= 0 && !e.shiftKey) {
     /* 章节节点与主题/子点行为一致：锁选中 + 可拖拽 + 显示节点详情
-       （章节的"后继"即其下属主题）；章节筛选模式仅通过左侧图例切换 */
+       （章节的"后继"即其下属主题）。点击章节时额外跑一轮模拟：
+       若该章节内 topic 过密则多跑几轮推开，避免重叠 */
     dragging = hit;
     nodes[hit].fixed = true;
     liveAlpha = 0.5;
     lockedSelected = hit;
     hovered = hit;
     refreshActive();
+    if (nodes[hit].kind === 'chapter') {
+      spreadChapter(nodes[hit].cluster);
+    }
     canvas.classList.add('grabbing');
   } else if (e.shiftKey || e.button === 2) {
     panning = true;
@@ -1703,6 +1806,7 @@ panelBody.addEventListener('click', e => {
     hovered = -1;
     refreshActive();
     focusNode(i);
+    if (nodes[i].kind === 'chapter') spreadChapter(nodes[i].cluster);
   }
 });
 
@@ -1714,14 +1818,16 @@ document.getElementById('btn-fit').addEventListener('click', () => {
 const btnSpin = document.getElementById('btn-spin');
 let autoRotate = true;
 /* 释放 hover 锁：清掉 lockedSelected 并将面板节点详情也一并清空，
-   使 hover 立即对所有节点生效 */
+   使 hover 立即对所有节点生效；同时清掉章节聚焦（focusChapter / relatedSet） */
 function releaseHoverLock() {
   if (lockedSelected == null && state.selected == null) return;
   lockedSelected = null;
   hovered = -1;
   tooltip.style.display = 'none';
   canvas.classList.remove('hot');
+  legendItemsEl && legendItemsEl.querySelectorAll('.lg-row').forEach(r => r.classList.remove('active'));
   if (state.selected != null) {
+    updateFocusChapter(null);
     state.selected = null;
     state.ancSet = new Set();
     state.descSet = new Set();
@@ -1750,17 +1856,19 @@ legendItemsEl.addEventListener('click', e => {
   const cid = row.dataset.cluster;
   if (!cid) return;
   /* 与点击图谱中对应章节节点的行为一致：锁中该章节节点 → 节点详情面板
-     + 自动 disable 其他节点的 hover（由 lockedSelected 机制保证） */
+     + 自动 disable 其他节点的 hover（由 lockedSelected 机制保证）。
+     点击章节时再跑一轮推开模拟，避免该章节内 topic 过密重叠 */
   const chapterIdx = nodes.findIndex(n => n.kind === 'chapter' && n.cluster === cid);
   if (chapterIdx < 0) return;
   if (lockedSelected === chapterIdx) {
-    /* 再点同一章节 → 取消锁定 */
+    /* 再点同一章节 → 取消锁定（releaseHoverLock 已清掉 active 类） */
     releaseHoverLock();
-  } else {
-    lockedSelected = chapterIdx;
-    hovered = chapterIdx;
-    refreshActive();
+    return;
   }
+  lockedSelected = chapterIdx;
+  hovered = chapterIdx;
+  refreshActive();
+  spreadChapter(cid);
   legendItemsEl.querySelectorAll('.lg-row').forEach(r => {
     r.classList.toggle('active', r.dataset.cluster === cid);
   });
@@ -1820,8 +1928,9 @@ document.addEventListener('keydown', function(e) {
 resize();
 selectNode(null);
 
-// 构建期烘焙：只跑 25 步
-for (let i = 0; i < 25; i++) simulate(0.6 - (i / 25) * 0.55, true);
+// 构建期烘焙：60 步收敛 + 逐章最小间距强制
+for (let i = 0; i < 60; i++) simulate(0.6 - (i / 60) * 0.55, true);
+chapters.forEach((_, ci) => enforceMinDistance(`ch_${ci}`));
 
 computeFit();
 
