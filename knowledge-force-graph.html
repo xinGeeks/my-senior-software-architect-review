@@ -372,12 +372,12 @@
     <header class="masthead">
       <div class="eyebrow">System Architect · 2026</div>
       <h1>知识点图谱</h1>
-      <div class="lede">十九章 · 七十六点 · 七十四分</div>
+      <div class="lede" id="s-lede">十九章 · 七十六点 · 七十四分</div>
     </header>
 
     <div class="summary">
       <div class="num"><span class="v" id="s-chapters">19</span><span class="k">章节</span></div>
-      <div class="num"><span class="v" id="s-topics">76</span><span class="k">知识点</span></div>
+      <div class="num"><span class="v" id="s-topics">76</span><span class="k">主题/叶子</span></div>
       <div class="num"><span class="v" id="s-score">74</span><span class="k">总分</span></div>
     </div>
 
@@ -420,27 +420,148 @@
 <button class="theme-toggle" id="theme-toggle" title="切换深/浅主题 (T)" onclick="toggleTheme()" aria-label="切换主题">☾</button>
 
 <script>
-// ---------- Data ----------
+// ---------- Data (enriched from docs/) ----------
+// 章节 → 二级主题（保留原 76 个二级节点）→ 三级叶子（来自 docs/knowledge-index, docs/cheatsheets, docs/notes）
+// 跨章节叶子通过 crossLinks 单独连虚线
 const chapters = [
-  { name: "计算机系统基础知识",     score: 1,  topics: ["概述", "计算机硬件", "计算机软件"] },
-  { name: "操作系统",               score: 3,  topics: ["进程管理", "存储管理", "文件管理", "设备管理"] },
-  { name: "数据库技术",             score: 3,  topics: ["数据库设计", "关系代数", "范式", "事务并发", "数据库安全", "新技术"] },
-  { name: "嵌入式技术",             score: 3,  topics: ["嵌入式硬件", "嵌入式操作系统", "嵌入式软件开发"] },
-  { name: "计算机网络",             score: 3,  topics: ["OSI 七层模型", "TCP/IP 协议族", "网络生命周期", "IP 地址"] },
-  { name: "其他计算机系统基础知识", score: 1,  topics: ["计算机语言", "多媒体", "系统工程"] },
-  { name: "系统性能",               score: 1,  topics: ["性能指标", "性能设计"] },
-  { name: "信息系统基础知识",       score: 3,  topics: ["信息系统生命周期", "开发方法", "五大典型系统"] },
-  { name: "信息安全技术基础",       score: 5,  topics: ["安全属性", "信息安全技术", "网络安全技术", "安全协议"] },
-  { name: "软件工程",               score: 12, topics: ["软件工程定义概述", "需求工程", "系统设计", "运维", "测试", "净室软件工程", "基于构件"] },
-  { name: "面向对象技术",           score: 3,  topics: ["面向对象基础", "分析设计", "UML 关系", "图"] },
-  { name: "项目管理",               score: 1,  topics: ["进度管理", "配置管理", "质量管理", "风险管理"] },
-  { name: "系统架构设计",           score: 20, topics: ["架构概念", "生命周期", "ABSD", "DSSA", "架构风格", "架构复用", "质量属性", "架构评估"] },
-  { name: "软件可靠性",             score: 2,  topics: ["可靠性建模", "软件可靠性设计"] },
-  { name: "软件架构的演化和维护",   score: 1,  topics: ["架构演化分类", "评估", "面向对象架构演化"] },
-  { name: "未来信息综合技术",       score: 3,  topics: ["信息物理系统", "人工智能", "边缘计算", "机器人", "数字孪生", "云计算"] },
-  { name: "数学与经济管理",         score: 2,  topics: ["最小生成树", "最短路径", "网络与最大流量", "线性规划", "决策论"] },
-  { name: "知识产权和标准化",       score: 2,  topics: ["知识产权属性", "保护期限", "产权人确定", "侵权判定"] },
-  { name: "专业英语",               score: 5,  topics: ["完形填空"] }
+  { name: "计算机系统基础知识",     score: 1,  topics: [
+    { name: "概述",                  subs: ["计算机发展史", "分类(超级/大型/小型/微型)", "冯·诺依曼结构 5 大部件", "Flynn 分类(SISD/MIMD)"] },
+    { name: "计算机硬件",            subs: ["CPU/GPU/DSP/FPGA/ASIC", "冯·诺依曼 vs 哈佛", "CISC vs RISC", "存储器层次(Cache/主存/辅存)", "Cache 三大映射", "平均访问时间", "流水线与加速比", "CRC/海明/奇偶校验", "DMA 与中断", "总线(内部/系统/外部)", "大小端/IEEE 754", "国产 CPU(鲲鹏/麒麟/飞腾)"] },
+    { name: "计算机软件",            subs: ["系统软件", "应用软件", "中间件 4 类(MQ/事务/对象/Web)", "构件模型(CORBA/EJB/COM)", "软件复用与产品线"] }
+  ]},
+  { name: "操作系统",               score: 3,  topics: [
+    { name: "进程管理",              subs: ["进程三态/五态", "线程 vs 进程", "IPC 通信", "FCFS/SJF/RR/优先级", "多级反馈队列 MLFQ", "PV 操作同步互斥", "生产者-消费者", "读者-写者问题", "死锁 4 必要条件", "死锁处理 4 法", "银行家算法"] },
+    { name: "存储管理",              subs: ["分页/分段/段页式", "页面置换 FIFO/LRU/Clock/OPT", "虚拟存储", "快表 TLB", "内存分配策略"] },
+    { name: "文件管理",              subs: ["文件逻辑/物理结构", "FAT/inode/ext4", "空闲块管理(位图/链式)", "文件操作接口"] },
+    { name: "设备管理",              subs: ["I/O 控制 4 种(程序/中断/DMA/通道)", "磁盘调度 FCFS/SSTF/SCAN", "SPOOLing", "缓冲技术"] }
+  ]},
+  { name: "数据库技术",             score: 3,  topics: [
+    { name: "数据库设计",            subs: ["E-R 建模", "1:1/1:N/M:N 联系", "E-R 转关系模式", "B+ 树索引", "Hash 索引", "聚簇 vs 非聚簇", "维度建模(星型/雪花)"] },
+    { name: "关系代数",              subs: ["并/差/交/笛卡尔积", "选择/投影/连接", "自然连接 vs 外连接", "元组/域关系演算"] },
+    { name: "范式",                  subs: ["函数依赖与闭包", "1NF 原子性", "2NF 消除部分依赖", "3NF 消除传递依赖", "BCNF", "Armstrong 公理", "候选码求解"] },
+    { name: "事务并发",              subs: ["ACID 四特性", "脏读/不可重复读/幻读", "4 大隔离级别", "2PC/3PC", "TCC 补偿", "Saga 长事务", "本地消息表", "CAP 定理", "BASE 理论", "Paxos/Raft/ZAB"] },
+    { name: "数据库安全",            subs: ["自主/强制访问控制", "视图与审计", "加密与备份", "SQL 注入防护"] },
+    { name: "新技术",                subs: ["NoSQL 四类(KV/Doc/Col/Graph)", "NewSQL/TiDB", "分库分表 ShardingSphere", "数据湖/数仓/Lakehouse", "缓存三大问题", "Cache-Aside 模式", "读写穿透", "延迟双删/Canal"] }
+  ]},
+  { name: "嵌入式技术",             score: 3,  topics: [
+    { name: "嵌入式硬件",            subs: ["嵌入式 5 大特点", "MPU/MCU/DSP/SOC", "传感器与执行器", "嵌入式总线(I2C/SPI/UART)"] },
+    { name: "嵌入式操作系统",        subs: ["硬实时/软实时/弱实时", "FreeRTOS/VxWorks/QNX", "RTOS 任务调度", "中断处理", "存储保护 MMU"] },
+    { name: "嵌入式软件开发",        subs: ["RMS 静态调度", "EDF 动态调度", "可调度性 U=Σ(Ci/Ti)", "优先级反转", "优先级继承/天花板", "CBSD 三盒五步", "AADL/UML-MARTE/SysML", "ISO 26262/IEC 61508"] }
+  ]},
+  { name: "计算机网络",             score: 3,  topics: [
+    { name: "OSI 七层模型",          subs: ["物理层", "数据链路层(MAC/VLAN)", "网络层(IP/ICMP)", "传输层(TCP/UDP)", "会话层", "表示层", "应用层", "SDN/NFV", "DAS/NAS/SAN"] },
+    { name: "TCP/IP 协议族",         subs: ["TCP 三次握手/四次挥手", "TCP 滑动窗口/拥塞控制", "HTTP/HTTPS/TLS 1.3", "DNS/DHCP", "端口 80/443/22", "WebSocket/SSE/MQTT", "QUIC/HTTP-3"] },
+    { name: "网络生命周期",          subs: ["规划/设计/实施/运维 4 阶段", "5G/SDH", "网络拓扑(星/环/网)"] },
+    { name: "IP 地址",               subs: ["IPv4/IPv6", "子网划分", "CIDR 无类编址", "NAT/VPN", "路由 RIP/OSPF/BGP"] }
+  ]},
+  { name: "其他计算机系统基础知识", score: 1,  topics: [
+    { name: "计算机语言",            subs: ["4 代语言谱系", "编译 vs 解释", "形式化方法 Z/VDM", "脚本语言 Python/Lua"] },
+    { name: "多媒体",                subs: ["音频 PCM/MP3/AAC", "视频 H.264/H.265", "无损 vs 有损压缩", "VR/AR/MR"] },
+    { name: "系统工程",              subs: ["霍尔三维结构", "切克兰德方法论", "WSR 物理-事理-人理", "MBSE 基于模型的系统工程"] }
+  ]},
+  { name: "系统性能",               score: 1,  topics: [
+    { name: "性能指标",              subs: ["响应时间 RT", "吞吐量/QPS/TPS", "并发用户数", "MIPS/CPI", "性能基准 SPEC/TPC/LINPACK", "监视工具 perfmon/top"] },
+    { name: "性能设计",              subs: ["Amdahl 加速比定律", "性能战术(缓存/并发/并行)", "性能计算 4 法", "Profile 与计数器"] }
+  ]},
+  { name: "信息系统基础知识",       score: 3,  topics: [
+    { name: "信息系统生命周期",      subs: ["立项/开发/运维/消亡 4 阶段", "诺兰模型 6 阶段", "建设 5 原则"] },
+    { name: "开发方法",              subs: ["结构化 SASD", "原型法", "面向对象 OO", "面向服务 SO", "敏捷/瀑布/迭代", "ITIL 服务管理"] },
+    { name: "五大典型系统",          subs: ["TPS 事务处理", "MIS 管理信息", "DSS 决策支持 4 部件", "ES 专家系统 5 部件", "OAS 办公自动化", "ERP 企业资源", "BPR/CRM/SCM/PDM/BI", "TOGAF ADM 8 阶段", "Zachman/FEA/DoDAF", "EAI 集成 4 方式", "业务/数据/技术 三中台", "电子政务 G2G/G2B/G2C/G2E", "电子商务 B2B/B2C/C2C/O2O"] }
+  ]},
+  { name: "信息安全技术基础",       score: 5,  topics: [
+    { name: "安全属性",              subs: ["机密性 C", "完整性 I", "可用性 A", "5 大范围(设备/数据/内容/行为/边界)"] },
+    { name: "信息安全技术",          subs: ["对称 DES/3DES/AES/SM4", "非对称 RSA/ECC/DSA/SM2", "Hash MD5/SHA-256/SM3", "国密 SM1/SM9/ZUC", "数字签名流程", "PKI/CA/X.509/CRL/OCSP", "访问控制 DAC/MAC/RBAC/ABAC", "Bcrypt/Argon2", "4A/IAM/SSO/OAuth2/OIDC", "数据脱敏/分级"] },
+    { name: "网络安全技术",          subs: ["防火墙/WAF/IDS/IPS", "SIEM/SOC/SOAR/DLP", "纵深防御 5 层", "零信任 SDP/BeyondCorp", "DDoS/SYN Flood/ARP/DNS 欺骗", "XSS/CSRF/SQL 注入", "TCP/IP 堆栈加固"] },
+    { name: "安全协议",              subs: ["SSL/TLS 1.3", "PGP/S-MIME", "IPSec", "SET 支付协议", "Kerberos", "SSH"] }
+  ]},
+  { name: "软件工程",               score: 12, topics: [
+    { name: "软件工程定义概述",      subs: ["12 大生命周期模型", "瀑布/原型/增量/螺旋/喷泉", "敏捷/Scrum/XP/Kanban", "CMMI 5 级", "ISO/IEC 25010 8 特性", "McCabe 圈复杂度 V(G)", "功能点 FP/UFP/AFP", "COCOMO II", "CK 度量套件"] },
+    { name: "需求工程",              subs: ["需求获取(访谈/问卷/原型)", "需求分析(SA/OOA)", "需求规格说明 SRS", "需求验证", "需求管理"] },
+    { name: "系统设计",              subs: ["概要设计 HLD", "详细设计 LLD", "结构化设计 SD", "GoF 23 模式(5/7/11)", "SOLID 5 原则", "DDD 限界上下文/聚合根", "耦合 7 级/内聚 7 级", "UML 4+1 视图"] },
+    { name: "运维",                  subs: ["改正/适应/完善/预防 4 维护", "DevOps 4 维", "CI/CD 流水线", "DORA 4 指标", "IaC Terraform/Ansible", "蓝绿/金丝雀/滚动/A-B/影子", "熔断三态 Closed/Open/Half-Open", "链路追踪 SkyWalking/Jaeger/OTel"] },
+    { name: "测试",                  subs: ["测试 V 模型", "单元/集成/系统/验收", "黑盒/白盒测试", "MC/DC 覆盖", "自动化测试"] },
+    { name: "净室软件工程",          subs: ["盒结构规约", "正确性验证", "统计质量控制", "增量开发"] },
+    { name: "基于构件",              subs: ["CBSE 构件获取/管理/组装", "构件描述接口", "CORBA/EJB/COM", "软件产品线 SPL"] }
+  ]},
+  { name: "面向对象技术",           score: 3,  topics: [
+    { name: "面向对象基础",          subs: ["封装/继承/多态/抽象", "类与对象", "接口与实现"] },
+    { name: "分析设计",              subs: ["OOA 5 步骤", "OOD 4 部件", "设计模式应用", "面向对象测试"] },
+    { name: "UML 关系",              subs: ["类间 6 关系(泛化/实现/关联/聚合/组合/依赖)", "用例 include/extend/泛化"] },
+    { name: "图",                    subs: ["UML 14 图(7 结构+7 行为)", "用例图/类图/对象图", "时序图/协作图", "状态图/活动图", "构件图/部署图", "包图"] }
+  ]},
+  { name: "项目管理",               score: 1,  topics: [
+    { name: "进度管理",              subs: ["WBS 工作分解", "CPM 关键路径", "PERT 三点估算", "甘特图/网络图", "EVM 挣值 PV/EV/AC", "CV/SV/CPI/SPI", "EAC 完工估算", "成本估算 4 法"] },
+    { name: "配置管理",              subs: ["基线/变更/版本", "CCB 配置控制委员会", "配置审计 SCI/ FCA", "配置库(开发/受控/产品)"] },
+    { name: "质量管理",              subs: ["SQA 软件质量保证", "评审/走查/审查", "质量度量", "缺陷管理"] },
+    { name: "风险管理",              subs: ["风险识别/分析/应对/监控", "应对策略: 规避/转移/减轻/接受", "机会应对: 开拓/分享/提高"] }
+  ]},
+  { name: "系统架构设计",           score: 20, topics: [
+    { name: "架构概念",              subs: ["构件/连接件/约束", "IEEE 1471 / ISO/IEC 42010", "涉众-关注-视角-视图", "ADL 三要素", "典型 ADL(UniCon/Wright/Rapide/Acme/C2/Darwin)"] },
+    { name: "生命周期",              subs: ["需求/设计/实现/部署/运维/演化 6 阶段", "架构师角色"] },
+    { name: "ABSD",                  subs: ["ABSD 6 步法(需求/设计/文档化/复审/实现/演化)", "架构风格选择", "设计模式应用", "文档化(视图+文档)"] },
+    { name: "DSSA",                  subs: ["DSSA 三活动", "四角色(领域专家/分析师/设计师/实现者)", "五阶段", "三层次(领域/参考/应用)"] },
+    { name: "架构风格",              subs: ["数据流(管道-过滤器/批处理)", "调用-返回(主程序/OO/层次)", "独立构件(事件/进程通信)", "虚拟机(解释器/规则)", "数据中心(仓库/黑板)", "C/S/B/S 两层/三层", "MVC/MVP/MVVM", "微服务/SOA/REST/CQRS", "RPC/REST/GraphQL", "服务网格/边车/Istio", "ESB 6 能力", "SOA 三角 + 7 特性 + 5 层"] },
+    { name: "架构复用",              subs: ["复用分类(机会/系统)", "复用三阶段", "构件库与匹配", "软件产品线(领域工程/应用工程)"] },
+    { name: "质量属性",              subs: ["6 大质量属性(可用/性能/可修改/安全/可靠/易用)", "场景 6 元组(源/刺激/制品/响应/响应度量)", "可用性战术(检测/恢复/预防)", "性能战术(资源/需求/仲裁)", "可修改性战术(局部化/防止/准备)", "安全性战术", "易用性战术"] },
+    { name: "架构评估",              subs: ["ATAM 9 步", "SAAM/CBAM", "效用树 H/M/L", "敏感点/权衡点/风险点/非风险点"] }
+  ]},
+  { name: "软件可靠性",             score: 2,  topics: [
+    { name: "可靠性建模",            subs: ["MTBF/MTTR/MTTF", "可用性 A=MTTF/(MTTF+MTTR)", "5 个 9(99.999%)", "串联衰减/并联提升", "浴缸曲线", "可靠性增长/验证模型"] },
+    { name: "软件可靠性设计",        subs: ["N 版本程序设计", "恢复块策略", "防卫式程序设计", "冗余 3 类(结构/信息/时间)", "可用性战术", "FTA 故障树/FMEA/故障注入", "混沌工程"] }
+  ]},
+  { name: "软件架构的演化和维护",   score: 1,  topics: [
+    { name: "架构演化分类",          subs: ["设计时/运行前/运行时", "静态演化 vs 动态演化", "正交演化", "安全点/状态迁移"] },
+    { name: "评估",                  subs: ["架构漂移 Drift", "架构侵蚀 Erosion", "ADR 架构决策记录", "架构适应度函数"] },
+    { name: "面向对象架构演化",      subs: ["绞杀者 Strangler 模式", "抽象分支 Branch by Abstraction", "防腐层 ACL", "数据库演化 扩-迁-收", "维护 4 类(改/适/完/预)", "4 类软件维护"] }
+  ]},
+  { name: "未来信息综合技术",       score: 3,  topics: [
+    { name: "信息物理系统",          subs: ["CPS 3C(计算/通信/控制)", "CPS 4 层(感知/网络/认知/控制)", "工业 4.0"] },
+    { name: "人工智能",              subs: ["ML 监督/无监督/强化", "DL(CNN/RNN/LSTM/Transformer/GAN/GNN)", "LLM 大语言模型", "RAG/向量库/Prompt/LoRA/Agent", "MLOps"] },
+    { name: "边缘计算",              subs: ["边缘 vs 云计算 5 维", "云边协同", "边云协议", "边缘智能"] },
+    { name: "机器人",                subs: ["机器人 3 代", "3 层(感知/决策/执行)", "RPA 流程自动化", "SLAM"] },
+    { name: "数字孪生",              subs: ["DT 5 能力(描述/诊断/预测/决策/优化)", "建模/仿真/可视化", "虚实闭环"] },
+    { name: "云计算",                subs: ["IaaS/PaaS/SaaS/FaaS", "公有/私有/混合/社区云", "容器 vs VM", "K8s 对象(Pod/Deployment/Service/Ingress)", "探针(liveness/readiness/startup)", "PDB/HPA/VPA/NetworkPolicy", "Serverless 多租户", "云原生 4 要素 + 12-Factor", "GitOps ArgoCD/Flux", "可观测性 3 支柱(Metrics/Logs/Traces)", "不可变基础设施/声明式 API"] }
+  ]},
+  { name: "数学与经济管理",         score: 2,  topics: [
+    { name: "最小生成树",            subs: ["Prim 算法", "Kruskal 算法", "适用场景对比"] },
+    { name: "最短路径",              subs: ["Dijkstra(非负权)", "Floyd 多源", "Bellman-Ford(负权)", "A* 启发式"] },
+    { name: "网络与最大流量",        subs: ["Ford-Fulkerson", "EK 算法", "最大流最小割定理", "网络规划应用"] },
+    { name: "线性规划",              subs: ["标准形/单纯形法", "对偶问题", "影子价格", "整数规划"] },
+    { name: "决策论",                subs: ["决策树 EMV 期望值", "决策表", "贝叶斯决策", "灵敏度分析"] },
+    { name: "动态规划",              subs: ["0-1 背包", "LCS 最长公共子序列", "编辑距离", "最优子结构 + 重叠子问题"] },
+    { name: "排队论",                subs: ["M/M/1 模型", "利用率 ρ=λ/μ", "平均队长 L=ρ/(1-ρ)", "平均等待时间 W=ρ/(μ-λ)"] }
+  ]},
+  { name: "知识产权和标准化",       score: 2,  topics: [
+    { name: "知识产权属性",          subs: ["著作权/专利权/商标权", "软件著作权登记", "知识产权 4 特征(独占/时效/地域/无形)"] },
+    { name: "保护期限",              subs: ["发明专利 20 年", "实用新型 10 年", "外观设计 15 年", "商标 10 年可续展", "著作权 50 年"] },
+    { name: "产权人确定",            subs: ["职务作品归属", "委托开发归属", "合作开发共有", "申请在先原则"] },
+    { name: "侵权判定",              subs: ["思想 vs 表达二分法", "实质性相似", "接触+相似", "合理使用"] },
+    { name: "标准化",                subs: ["GB 强制/GB/T 推荐", "ISO/IEC 国际标准", "申请在先原则", "国际/国家/行业/企业 4 级"] }
+  ]},
+  { name: "专业英语",               score: 5,  topics: [
+    { name: "完形填空",              subs: ["IT 主题词汇(架构/云/微服务/数据/安全)", "词性优先答题法", "高频因果/转折/条件连词", "被动语态句型", "完形解题套路(单句/上下文)"] }
+  ]}
+];
+
+// 跨章节共享叶子：第三个参数是章节名 + 二级主题名数组
+// 这些节点会出现在所有指定位置，并互相通过虚线连接
+const crossTopics = [
+  { name: "MVC/MVP/MVVM", parents: ["系统架构设计::架构风格", "面向对象技术::图"], reason: "UI 架构风格" },
+  { name: "4+1 视图", parents: ["系统架构设计::架构评估", "面向对象技术::图", "软件工程::系统设计"], reason: "UML 与架构共用" },
+  { name: "UML 14 种图", parents: ["面向对象技术::图", "软件工程::系统设计"], reason: "UML 体系" },
+  { name: "MTBF/MTTR/可用性", parents: ["软件可靠性::可靠性建模", "计算机系统基础知识::计算机硬件"], reason: "可靠性公式" },
+  { name: "串并联可靠度公式", parents: ["软件可靠性::可靠性建模", "计算机系统基础知识::计算机硬件"], reason: "可靠性公式" },
+  { name: "WBS 工作分解", parents: ["项目管理::进度管理", "软件工程::系统设计"], reason: "工程实践共用" },
+  { name: "STRIDE 威胁建模", parents: ["信息安全技术基础::网络安全技术", "系统架构设计::架构评估"], reason: "架构级安全评估" },
+  { name: "云原生 4 要素", parents: ["系统架构设计::架构风格", "未来信息综合技术::云计算"], reason: "云原生范式" },
+  { name: "微服务架构", parents: ["系统架构设计::架构风格", "未来信息综合技术::云计算"], reason: "微服务范式" },
+  { name: "TLS/SSL 协议", parents: ["信息安全技术基础::安全协议", "计算机网络::TCP/IP 协议族"], reason: "传输层安全" },
+  { name: "防火墙 / IDS / IPS", parents: ["信息安全技术基础::网络安全技术", "计算机网络::OSI 七层模型"], reason: "网络安全设备" },
+  { name: "蓝绿 / 金丝雀发布", parents: ["软件工程::运维", "软件架构的演化和维护::架构演化分类"], reason: "部署与演化" },
+  { name: "REST 风格", parents: ["系统架构设计::架构风格", "计算机网络::TCP/IP 协议族"], reason: "Web 架构风格" },
+  { name: "CMMI 5 级", parents: ["软件工程::软件工程定义概述", "项目管理::质量管理"], reason: "过程改进共用" },
+  { name: "UML 关系 6 类", parents: ["面向对象技术::UML 关系", "软件工程::系统设计"], reason: "OOAD 共用" },
+  { name: "CK 度量套件", parents: ["软件工程::软件工程定义概述", "面向对象技术::分析设计"], reason: "OO 度量" }
 ];
 
 // ---------- Theme-aware palette ----------
@@ -461,13 +582,15 @@ function tierById(id) {
 }
 
 // ---------- Stats ----------
-const totalTopics = chapters.reduce((s,c) => s+c.topics.length, 0);
+const total2nd = chapters.reduce((s,c) => s+c.topics.length, 0);
+const total3rd = chapters.reduce((s,c) => s + c.topics.reduce((ss,t)=> ss+(t.subs?t.subs.length:0), 0), 0);
 const totalScore  = chapters.reduce((s,c) => s+c.score, 0);
 const maxCh       = chapters.reduce((a,b) => a.score >= b.score ? a : b);
 
-document.getElementById('s-topics').textContent = totalTopics;
+document.getElementById('s-topics').textContent = total2nd + '·' + total3rd;
 document.getElementById('s-score').textContent  = totalScore;
 document.querySelector('.pull em').textContent  = maxCh.score + ' 分';
+document.getElementById('s-lede').textContent   = `十九章 · ${total2nd} 主题 / ${total3rd} 叶子 · 七十四分`;
 
 // ---------- Sidebar chapter list ----------
 const listEl = document.getElementById('chapter-list');
@@ -486,7 +609,10 @@ sorted.forEach(ch => {
 });
 
 // ---------- Build graph data ----------
+// 三级结构：章节(chapter) → 二级主题(topic) → 三级叶子(sub) + 跨章节共享叶子
 const chapterIds = new Set();
+const topicIds = new Set();        // 所有二级主题 id
+const subIds = new Set();          // 所有三级叶子 id
 const baseNodes = [];
 const baseLinks = [];
 chapters.forEach((ch, ci) => {
@@ -501,19 +627,94 @@ chapters.forEach((ch, ci) => {
     raw: ch
   });
   ch.topics.forEach(topic => {
-    const tid = ch.name + "::" + topic;
-    const w = 7 + (ch.score / ch.topics.length) * 2;
+    const topicName = topic.name;
+    const tid = ch.name + "::" + topicName;
+    topicIds.add(tid);
+    const w = 9 + (ch.score / ch.topics.length) * 2;
     baseNodes.push({
       isChapter: false,
+      isTopic: true,
       id: tid,
-      name: topic,
+      name: topicName,
       value: 1,
       size: w,
       tier: t.id,
-      parent: ch.name
+      parent: ch.name,
+      subCount: (topic.subs || []).length
     });
     baseLinks.push({ source: ch.name, target: tid, tier: t.id });
+    // 三级叶子
+    (topic.subs || []).forEach(sub => {
+      const sid = tid + "||" + sub;
+      subIds.add(sid);
+      baseNodes.push({
+        isChapter: false,
+        isTopic: false,
+        isSub: true,
+        id: sid,
+        name: sub,
+        value: 1,
+        size: 4.2,
+        tier: t.id,
+        parent: ch.name,
+        parentTopic: topicName
+      });
+      baseLinks.push({ source: tid, target: sid, tier: t.id });
+    });
   });
+});
+
+// 跨章节共享叶子 + 虚线连接
+// 先建立索引：baseNodes by id + 章节分值 by chName
+const chScoreByName = Object.fromEntries(chapters.map(c => [c.name, c.score]));
+crossTopics.forEach(ct => {
+  // 每个 parent 生成一个共享叶子 id
+  const leafIds = ct.parents.map(p => {
+    const [chName, topicName] = p.split("::");
+    return { chName, topicName, leafId: chName + "::" + topicName + "||" + ct.name };
+  });
+  // 检查每个 leafId 是否已经作为三级叶子存在
+  leafIds.forEach(({ chName, topicName, leafId }) => {
+    const t = tierOf(chScoreByName[chName] || 3);
+    if (subIds.has(leafId)) {
+      const node = baseNodes.find(n => n.id === leafId);
+      if (node) {
+        node.isCross = true;
+        node.crossReason = ct.reason;
+      }
+    } else {
+      // 新建一个跨章节共享叶子
+      baseNodes.push({
+        isChapter: false,
+        isTopic: false,
+        isSub: true,
+        isCross: true,
+        id: leafId,
+        name: ct.name,
+        value: 1,
+        size: 5.5,
+        tier: t.id,
+        parent: chName,
+        parentTopic: topicName,
+        crossReason: ct.reason
+      });
+      subIds.add(leafId);
+    }
+    // 确保二级主题→叶子的边存在（标记为虚线）
+    const topicNodeId = chName + "::" + topicName;
+    if (topicIds.has(topicNodeId)) {
+      const exists = baseLinks.some(l => l.source === topicNodeId && l.target === leafId);
+      if (!exists) baseLinks.push({ source: topicNodeId, target: leafId, tier: t.id, dashed: true });
+    }
+  });
+  // 跨叶子之间互连（虚线），形成可识别的"跨章节桥梁"
+  for (let i = 0; i < leafIds.length; i++) {
+    for (let j = i + 1; j < leafIds.length; j++) {
+      const a = leafIds[i].leafId, b = leafIds[j].leafId;
+      const exists = baseLinks.some(l => (l.source === a && l.target === b) || (l.source === b && l.target === a));
+      if (!exists) baseLinks.push({ source: a, target: b, tier: 5, dashed: true, cross: true });
+    }
+  }
 });
 
 let nodes = [], links = [];
@@ -543,7 +744,8 @@ function buildGraph() {
         },
         raw: n.raw
       };
-    } else {
+    } else if (n.isTopic) {
+      // 二级主题节点（中等圆 + 标签）
       return {
         id: n.id,
         name: n.name,
@@ -553,30 +755,61 @@ function buildGraph() {
         parent: n.parent,
         itemStyle: {
           color: t.light(),
-          opacity: 0.55,
-          borderColor: getCss('--label-border'),
-          borderWidth: 1
+          opacity: 0.85,
+          borderColor: getCss('--accent'),
+          borderWidth: 1.2
         },
         label: {
           show: true,
           fontSize: 9.5,
-          color: getCss('--label-secondary'),
+          fontWeight: 500,
+          color: getCss('--label-primary'),
           textBorderColor: getCss('--label-border'),
-          textBorderWidth: 2
+          textBorderWidth: 2.5
+        },
+        subCount: n.subCount
+      };
+    } else {
+      // 三级叶子节点（小圆点）
+      return {
+        id: n.id,
+        name: n.name,
+        symbolSize: n.size,
+        value: 1,
+        category: 2,
+        parent: n.parent,
+        parentTopic: n.parentTopic,
+        isCross: !!n.isCross,
+        crossReason: n.crossReason,
+        itemStyle: {
+          color: n.isCross ? getCss('--accent') : t.light(),
+          opacity: n.isCross ? 0.85 : 0.5,
+          borderColor: n.isCross ? getCss('--accent') : getCss('--label-border'),
+          borderWidth: n.isCross ? 1 : 0.5
+        },
+        label: {
+          show: true,
+          fontSize: n.isCross ? 8.5 : 7.5,
+          fontWeight: n.isCross ? 500 : 400,
+          color: n.isCross ? getCss('--label-primary') : getCss('--label-secondary'),
+          textBorderColor: getCss('--label-border'),
+          textBorderWidth: n.isCross ? 2 : 1.5
         }
       };
     }
   });
   links = baseLinks.map(l => {
     const t = tierById(l.tier);
+    const dashed = l.dashed || l.cross;
     return {
       source: l.source,
       target: l.target,
       lineStyle: {
-        color: t.color(),
-        opacity: 0.22,
-        width: 0.6,
-        curveness: 0.02
+        color: dashed ? getCss('--accent') : t.color(),
+        opacity: dashed ? 0.45 : 0.18,
+        width: dashed ? 0.8 : 0.5,
+        curveness: dashed ? 0.08 : 0.02,
+        type: dashed ? 'dashed' : 'solid'
       }
     };
   });
@@ -602,9 +835,14 @@ function renderChart() {
         if (chapterIds.has(n.id)) {
           return `<div style="font-weight:600;font-size:13px;margin-bottom:4px;font-family:'Source Han Serif SC',serif">${n.name}</div>
                   <div style="color:${getCss('--tooltip-text-2')};font-size:11px;font-family:'Inter',sans-serif">分值 · <span style="color:${getCss('--accent')};font-weight:600">${n.value}</span>　知识点 · ${n.raw.topics.length}</div>`;
+        } else if (topicIds.has(n.id)) {
+          return `<div style="font-weight:600;font-size:12px;margin-bottom:3px;font-family:'Source Han Serif SC',serif">${n.name}</div>
+                  <div style="color:${getCss('--tooltip-text-2')};font-size:11px;font-family:'Inter',sans-serif">${n.parent} · <span style="color:${getCss('--accent')};font-weight:500">${n.subCount} 叶子</span></div>`;
         } else {
+          const crossBadge = n.isCross ? `<span style="color:${getCss('--accent')};font-weight:600">跨章节</span>　${n.crossReason || ''}` : '';
           return `<div style="font-weight:500;font-size:12px;margin-bottom:3px;font-family:'Source Han Serif SC',serif">${n.name}</div>
-                  <div style="color:${getCss('--tooltip-text-2')};font-size:11px;font-family:'Inter',sans-serif">${n.parent}</div>`;
+                  <div style="color:${getCss('--tooltip-text-2')};font-size:11px;font-family:'Inter',sans-serif">${n.parent} → ${n.parentTopic}</div>
+                  ${crossBadge ? `<div style="color:${getCss('--tooltip-text-2')};font-size:10px;font-family:'Inter',sans-serif;margin-top:2px">${crossBadge}</div>` : ''}`;
         }
       }
     },
@@ -621,10 +859,10 @@ function renderChart() {
       links: links,
       categories: [{ name: "章节" }, { name: "知识点" }],
       force: {
-        edgeLength: 60,
-        repulsion: 220,
-        gravity: 0.05,
-        friction: 0.18,
+        edgeLength: 30,
+        repulsion: 90,
+        gravity: 0.08,
+        friction: 0.2,
         layoutAnimation: true
       },
       emphasis: {
@@ -659,6 +897,37 @@ renderChart();
 // ---------- Interactions ----------
 let currentFocus = null;
 
+// 给定节点 id，收集它本身 + 向下所有子节点 + 向上所有祖先节点
+function relatedSubtree(rootId) {
+  const result = new Set([rootId]);
+  // 向下 BFS（沿 source → target 方向）：子节点
+  let frontier = [rootId];
+  while (frontier.length) {
+    const next = [];
+    links.forEach(l => {
+      if (frontier.includes(l.source) && !result.has(l.target)) {
+        result.add(l.target);
+        next.push(l.target);
+      }
+    });
+    frontier = next;
+  }
+  // 向上 BFS（沿 target → source 方向）：祖先节点
+  frontier = [rootId];
+  while (frontier.length) {
+    const next = [];
+    links.forEach(l => {
+      if (frontier.includes(l.target) && !result.has(l.source)) {
+        result.add(l.source);
+        next.push(l.source);
+      }
+    });
+    frontier = next;
+  }
+  return result;
+}
+
+// 保留旧的章节聚焦接口（侧栏按钮仍调用）
 function focusOnChapter(name) {
   currentFocus = name;
   const connected = new Set([name]);
@@ -666,28 +935,43 @@ function focusOnChapter(name) {
     if (l.source === name) connected.add(l.target);
     if (l.target === name) connected.add(l.source);
   });
+  applyHighlight(connected);
+  highlightSidebar(name);
+}
+
+// 任意节点聚焦：仅高亮该节点所在子树（向上父链 + 向下所有子节点）
+function focusOnNode(nodeId) {
+  currentFocus = nodeId;
+  const related = relatedSubtree(nodeId);
+  applyHighlight(related);
+  // 侧栏高亮：找到该节点所属的章节
+  const n = nodes.find(x => x.id === nodeId);
+  const chName = n ? (chapterIds.has(nodeId) ? nodeId : n.parent) : null;
+  highlightSidebar(chName);
+}
+
+function applyHighlight(highlightSet) {
   chart.setOption({
     series: [{
       data: nodes.map(n => ({
         ...n,
         itemStyle: {
           ...n.itemStyle,
-          opacity: connected.has(n.id) ? (n.category === 0 ? 1 : 0.7) : 0.12
+          opacity: highlightSet.has(n.id) ? (n.category === 0 ? 1 : (n.isCross ? 1 : 0.85)) : 0.12
         },
         label: {
           ...n.label,
-          color: connected.has(n.id)
-            ? (n.category === 0 ? getCss('--label-primary') : getCss('--label-secondary'))
+          color: highlightSet.has(n.id)
+            ? (n.category === 0 ? getCss('--label-primary') : (n.isCross ? getCss('--accent') : getCss('--label-secondary')))
             : getCss('--label-dim')
         }
       })),
       links: links.map(l => {
-        const isHit = (l.source === name || l.target === name);
+        const isHit = highlightSet.has(l.source) && highlightSet.has(l.target);
         return { ...l, lineStyle: { ...l.lineStyle, opacity: isHit ? 0.6 : 0.04 } };
       })
     }]
   });
-  highlightSidebar(name);
 }
 
 function resetFocus() {
@@ -703,10 +987,24 @@ function highlightSidebar(name) {
 }
 
 chart.on('click', { dataType: 'node' }, (params) => {
-  const isChapter = chapterIds.has(params.data.id);
-  focusOnChapter(isChapter ? params.data.id : params.data.parent);
+  // 直接聚焦到该节点本身，沿父子链高亮
+  focusOnNode(params.data.id);
 });
 chart.on('dblclick', () => resetFocus());
+
+// hover：临时高亮相关子树；mouseout：恢复（保留点击聚焦状态）
+let hoverActive = false;
+chart.on('mouseover', { dataType: 'node' }, (params) => {
+  if (currentFocus === params.data.id) return;
+  const related = relatedSubtree(params.data.id);
+  applyHighlight(related);
+  hoverActive = true;
+});
+chart.on('mouseout', { dataType: 'node' }, () => {
+  hoverActive = false;
+  if (currentFocus) focusOnNode(currentFocus);
+  else resetFocus();
+});
 
 document.querySelectorAll('.chapter').forEach(el => {
   el.addEventListener('click', () => focusOnChapter(el.dataset.name));
@@ -733,7 +1031,7 @@ document.getElementById('btn-clear').addEventListener('click', () => resetFocus(
     apply(next);
     // Rebuild chart so node colors reflect current theme
     renderChart();
-    if (currentFocus) focusOnChapter(currentFocus);
+    if (currentFocus) focusOnNode(currentFocus);
   };
   try {
     const saved = localStorage.getItem(KEY);
