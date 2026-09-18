@@ -1547,54 +1547,63 @@ chapters.forEach((ch, ci) => {
 // 跨章节共享叶子 + 虚线连接
 // 先建立索引：baseNodes by id + 章节分值 by chName
 const chScoreByName = Object.fromEntries(chapters.map(c => [c.name, c.score]));
+
+// 已拆分的跨主题：原名不再作为叶子存在，不应再建 cross-node（避免与拆分后的子节点重复）
+const splitCrossNames = new Set();
+{
+  const allLeafNames = new Set();
+  chapters.forEach(c => c.topics.forEach(t => (t.subs || []).forEach(s => allLeafNames.add(s))));
+  crossTopics.forEach(c => { if (!allLeafNames.has(c.name)) splitCrossNames.add(c.name); });
+}
 crossTopics.forEach(ct => {
-  // 每个 parent 生成一个共享叶子 id
-  const leafIds = ct.parents.map(p => {
+  // 拆分后的跨章节主题：其各部分已是独立叶子，不需要再建跨节点
+  if (splitCrossNames.has(ct.name)) return;
+
+  // 为每个跨主题找 1 个 canonical 节点：优先复用同名叶子，没有就以第一个 parent 的位置新建
+  const parentPairs = ct.parents.map(p => {
     const [chName, topicName] = p.split("::");
-    return { chName, topicName, leafId: chName + "::" + topicName + "||" + ct.name };
+    return { chName, topicName, topicNodeId: chName + "::" + topicName };
   });
-  // 检查每个 leafId 是否已经作为三级叶子存在
-  leafIds.forEach(({ chName, topicName, leafId }) => {
-    const t = tierOf(chScoreByName[chName] || 3);
-    if (subIds.has(leafId)) {
-      const node = baseNodes.find(n => n.id === leafId);
-      if (node) {
-        node.isCross = true;
-        node.crossReason = ct.reason;
-      }
-    } else {
-      // 新建一个跨章节共享叶子
-      baseNodes.push({
-        isChapter: false,
-        isTopic: false,
-        isSub: true,
-        isCross: true,
-        id: leafId,
-        name: ct.name,
-        value: 1,
-        size: 5.5,
-        tier: t.id,
-        parent: chName,
-        parentTopic: topicName,
-        crossReason: ct.reason
-      });
-      subIds.add(leafId);
-    }
-    // 确保二级主题→叶子的边存在（标记为虚线）
-    const topicNodeId = chName + "::" + topicName;
-    if (topicIds.has(topicNodeId)) {
-      const exists = baseLinks.some(l => l.source === topicNodeId && l.target === leafId);
-      if (!exists) baseLinks.push({ source: topicNodeId, target: leafId, tier: t.id, dashed: true });
-    }
-  });
-  // 跨叶子之间互连（虚线），形成可识别的"跨章节桥梁"
-  for (let i = 0; i < leafIds.length; i++) {
-    for (let j = i + 1; j < leafIds.length; j++) {
-      const a = leafIds[i].leafId, b = leafIds[j].leafId;
-      const exists = baseLinks.some(l => (l.source === a && l.target === b) || (l.source === b && l.target === a));
-      if (!exists) baseLinks.push({ source: a, target: b, tier: 5, dashed: true, cross: true });
-    }
+
+  let canonical = null;
+  for (const { chName, topicName } of parentPairs) {
+    const existingId = chName + "::" + topicName + "||" + ct.name;
+    if (subIds.has(existingId)) { canonical = { chName, topicName, leafId: existingId }; break; }
   }
+  if (!canonical) {
+    const { chName, topicName } = parentPairs[0];
+    canonical = { chName, topicName, leafId: chName + "::" + topicName + "||" + ct.name };
+  }
+
+  // 标记/创建 canonical 节点
+  const t = tierOf(chScoreByName[canonical.chName] || 3);
+  if (subIds.has(canonical.leafId)) {
+    const node = baseNodes.find(n => n.id === canonical.leafId);
+    if (node) {
+      node.isCross = true;
+      node.crossReason = ct.reason;
+    }
+  } else {
+    baseNodes.push({
+      isChapter: false, isTopic: false, isSub: true, isCross: true,
+      id: canonical.leafId,
+      name: ct.name,
+      value: 1,
+      size: 5.5,
+      tier: t.id,
+      parent: canonical.chName,
+      parentTopic: canonical.topicName,
+      crossReason: ct.reason
+    });
+    subIds.add(canonical.leafId);
+  }
+
+  // 所有 parent 主题 → canonical 叶子（虚线）
+  parentPairs.forEach(({ topicNodeId }) => {
+    if (!topicIds.has(topicNodeId)) return;
+    const exists = baseLinks.some(l => l.source === topicNodeId && l.target === canonical.leafId);
+    if (!exists) baseLinks.push({ source: topicNodeId, target: canonical.leafId, tier: t.id, dashed: true });
+  });
 });
 
 let nodes = [], links = [];
