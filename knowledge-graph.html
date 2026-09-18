@@ -1640,7 +1640,7 @@ function renderPanel() {
         '<span class="badge" style="color:' + c.color + '">' + topicCount + ' 主题 · ' + subCount + ' 子点</span>' +
         '<div class="section"><h3>主题</h3><div class="chips">' + topicChips + '</div></div>' +
         '<div class="hint" style="font-family:var(--font-mono);font-size:11px;margin-top:14px;color:var(--ivory-3);line-height:1.8">' +
-          '再次点击章节图例可取消筛选<br>点击任意节点切换到节点详情' +
+          '再次点击章节图例可取消锁定<br>点击任意节点切换到节点详情' +
         '</div>';
       return;
     }
@@ -1650,7 +1650,7 @@ function renderPanel() {
       '悬停或点击任意节点<br>查看它的知识依赖链' +
       '<div class="hint">' +
       '<span class="kbd" style="display:inline-block;padding:1px 6px;border:1px solid var(--ink-4);border-radius:3px;background:var(--ink-2);color:var(--gold-2);font-family:var(--font-mono);font-size:10px">T</span> 切换主题<br>' +
-      '点击章节图例 → 章节筛选' +
+      '点击章节节点/章节图例 → 锁定章节详情' +
       '</div>' +
       '</div>';
     return;
@@ -1749,28 +1749,21 @@ legendItemsEl.addEventListener('click', e => {
   if (!row) return;
   const cid = row.dataset.cluster;
   if (!cid) return;
-  /* 切换：再点同一章节 → 取消 */
-  if (state.focusCluster === cid) {
-    state.focusCluster = null;
-    state.selected = null;
-    state.ancSet = new Set();
-    state.descSet = new Set();
-    state.ancAll = new Set();
-    state.descAll = new Set();
-    lockedSelected = null;
+  /* 与点击图谱中对应章节节点的行为一致：锁中该章节节点 → 节点详情面板
+     + 自动 disable 其他节点的 hover（由 lockedSelected 机制保证） */
+  const chapterIdx = nodes.findIndex(n => n.kind === 'chapter' && n.cluster === cid);
+  if (chapterIdx < 0) return;
+  if (lockedSelected === chapterIdx) {
+    /* 再点同一章节 → 取消锁定 */
+    releaseHoverLock();
   } else {
-    state.focusCluster = cid;
-    state.selected = null;
-    state.ancSet = new Set();
-    state.descSet = new Set();
-    state.ancAll = new Set();
-    state.descAll = new Set();
-    lockedSelected = null;
+    lockedSelected = chapterIdx;
+    hovered = chapterIdx;
+    refreshActive();
   }
   legendItemsEl.querySelectorAll('.lg-row').forEach(r => {
-    r.classList.toggle('active', r.dataset.cluster === state.focusCluster);
+    r.classList.toggle('active', r.dataset.cluster === cid);
   });
-  renderPanel();
 });
 
 /* 顶部统计 */
