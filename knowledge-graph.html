@@ -1255,11 +1255,12 @@ function drawEdge(k) {
   // 树边（主题→子主题 或 章节→主题）
   let alpha, w;
   if (e.kind === 'chapter-link') {
-    alpha = 0.16 * (0.35 + 0.65 * f);
-    w = 0.9;
+    alpha = 0.14 * (0.35 + 0.65 * f);
+    w = 0.85;
   } else {
-    alpha = 0.22 * (0.35 + 0.65 * f);
-    w = 1.0;
+    /* topic→sub：默认更暗，避免 25 条同色边从 topic 圆心射出盖住父节点圆圈 */
+    alpha = 0.11 * (0.35 + 0.65 * f);
+    w = 0.7;
   }
   let colorA = CLUSTERS[A.cluster].color;
   let colorB = CLUSTERS[B.cluster].color;
@@ -1282,6 +1283,19 @@ function drawEdge(k) {
 
   if (alpha < 0.006) return;
 
+  /* 端点裁剪到节点边缘：避免线从圆心穿过、覆盖父/子节点的圆圈
+     多条 sub→topic 汇聚在 topic 圆心时尤其明显 */
+  let sx = A._sx, sy = A._sy, ex = B._sx, ey = B._sy;
+  const eDx = ex - sx, eDy = ey - sy;
+  const eLen = Math.sqrt(eDx * eDx + eDy * eDy) || 0.0001;
+  const ux = eDx / eLen, uy = eDy / eLen;
+  const rA = nodeRadius(A) * A._s;
+  const rB = nodeRadius(B) * B._s;
+  if (eLen > rA + rB + 1) {
+    sx += ux * rA; sy += uy * rA;
+    ex -= ux * rB; ey -= uy * rB;
+  }
+
   const lineW = Math.max(0.4, w * avgS);
 
   if (glowAlpha > 0.015) {
@@ -1291,8 +1305,8 @@ function drawEdge(k) {
     ctx.lineWidth = lineW * 3.0;
     ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(A._sx, A._sy);
-    ctx.lineTo(B._sx, B._sy);
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(ex, ey);
     ctx.stroke();
     ctx.globalCompositeOperation = 'source-over';
   }
@@ -1301,15 +1315,15 @@ function drawEdge(k) {
   if (colorA === colorB) {
     ctx.strokeStyle = colorA;
   } else {
-    const grad = ctx.createLinearGradient(A._sx, A._sy, B._sx, B._sy);
+    const grad = ctx.createLinearGradient(sx, sy, ex, ey);
     grad.addColorStop(0, colorA);
     grad.addColorStop(1, colorB);
     ctx.strokeStyle = grad;
   }
   ctx.lineWidth = lineW;
   ctx.beginPath();
-  ctx.moveTo(A._sx, A._sy);
-  ctx.lineTo(B._sx, B._sy);
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(ex, ey);
   ctx.stroke();
 }
 
@@ -1444,6 +1458,14 @@ function drawNode(i) {
       : n.kind === 'chapter' && n.cluster === effectiveFocus;  /* 有筛选时只显示选中的章节 */
     allowLabel = (n.kind === 'topic' || isOwnChapter) || isHovered || isSel || isAnc || isDesc
                  || (state.focusChapter != null && isRelated);
+    /* sub 标签按需显示：
+       - hover/sel 始终可见；
+       - 选中父 topic 时仅当 sub 数 ≤ 6 才一并显示，避免"计算机硬件"这类 25 个 sub
+         同心排布时标签互相叠成一片；密集场景下用户 hover 单个 sub 即可看名字 */
+    if (allowLabel && n.kind === 'sub' && !isHovered && !isSel) {
+      const parentMeta = nodeMeta.get(n.parentTopicId);
+      if (!parentMeta || parentMeta.subs > 6) allowLabel = false;
+    }
   }
 
   if (allowLabel && R > 3.2 && f > 0.15) {
@@ -1589,16 +1611,44 @@ function getPos(e) {
   return { x: e.clientX - r.left, y: e.clientY - r.top };
 }
 
-function pick(sx, sy) {
-  let best = -1, bestScore = Infinity;
+/* pick() 用的 screen-space 网格：每帧 project 后 rebuild，O(N) 建桶，
+   pick 时只查 3×3 邻域，把原本的 O(N) 降到 O(1) 平均 */
+const PICK_CELL = 64;
+const PICK_KEY = 100003;
+const pickGrid = new Map();
+
+function rebuildPickGrid() {
+  pickGrid.clear();
   for (let i = 0; i < nodes.length; i++) {
     const n = nodes[i];
-    const dx = n._sx - sx, dy = n._sy - sy;
-    const d2 = dx * dx + dy * dy;
-    // 章节 > 主题 > 子：点击时优先选层级更高的节点
-    const priority = n.kind === 'chapter' ? 0.35 : n.kind === 'topic' ? 0.6 : 1.0;
-    const score = d2 * priority * (0.7 + 0.3 * (n._d / cam.dist));
-    if (score < bestScore) { bestScore = score; best = i; }
+    const cx = (n._sx / PICK_CELL) | 0;
+    const cy = (n._sy / PICK_CELL) | 0;
+    const key = cx * PICK_KEY + cy;
+    let bucket = pickGrid.get(key);
+    if (!bucket) { bucket = []; pickGrid.set(key, bucket); }
+    bucket.push(i);
+  }
+}
+
+function pick(sx, sy) {
+  /* 用 screen-space 网格索引筛出光标附近的节点，再在 ~3×3 邻域内计算精确分数 */
+  const cx = (sx / PICK_CELL) | 0;
+  const cy = (sy / PICK_CELL) | 0;
+  let best = -1, bestScore = Infinity;
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      const bucket = pickGrid.get((cx + dx) * PICK_KEY + (cy + dy));
+      if (!bucket) continue;
+      for (let b = 0; b < bucket.length; b++) {
+        const i = bucket[b];
+        const n = nodes[i];
+        const ddx = n._sx - sx, ddy = n._sy - sy;
+        const d2 = ddx * ddx + ddy * ddy;
+        const priority = n.kind === 'chapter' ? 0.35 : n.kind === 'topic' ? 0.6 : 1.0;
+        const score = d2 * priority * (0.7 + 0.3 * (n._d / cam.dist));
+        if (score < bestScore) { bestScore = score; best = i; }
+      }
+    }
   }
   if (best < 0) return -1;
   const n = nodes[best];
@@ -1956,6 +2006,7 @@ function frame() {
 
   updateCamTrig();
   for (let i = 0; i < nodes.length; i++) project(nodes[i]);
+  rebuildPickGrid();
 
   draw();
   requestAnimationFrame(frame);
