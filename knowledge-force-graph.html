@@ -1825,14 +1825,8 @@ function relatedSubtree(rootId) {
 
 // 保留旧的章节聚焦接口（侧栏按钮仍调用）
 function focusOnChapter(name) {
-  currentFocus = name;
-  const connected = new Set([name]);
-  links.forEach(l => {
-    if (l.source === name) connected.add(l.target);
-    if (l.target === name) connected.add(l.source);
-  });
-  applyHighlight(connected);
-  highlightSidebar(name);
+  // 章节 → 与 graph 章节节点点击行为对齐：整个子树高亮 + 居中
+  focusOnNode(name, { center: true });
 }
 
 // 任意节点聚焦：仅高亮该节点所在子树（向上父链 + 向下所有子节点）
