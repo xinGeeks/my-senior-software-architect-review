@@ -1331,12 +1331,20 @@ function drawNode(i) {
 
   // 标签
   const isHovered = hovered === i;
+  /* "有效章节" = click 锁定的 focusCluster，或当前悬停的章节节点；让 hover 和 click 标签行为一致 */
+  const hoveredNode = hovered >= 0 ? nodes[hovered] : null;
+  const hoverFocus = hoveredNode && hoveredNode.kind === 'chapter' ? hoveredNode.cluster : null;
+  const effectiveFocus = state.focusCluster != null ? state.focusCluster : hoverFocus;
+  const labelInFocusCluster = effectiveFocus == null || n.cluster === effectiveFocus;
   let allowLabel = true;
   if (viewIsRotating) {
-    allowLabel = isHovered || isSel || n.kind === 'chapter';
+    allowLabel = (isHovered || isSel) && labelInFocusCluster;
   } else {
-    // 章节节点标签始终显示；主题节点 + 选中/悬停
-    allowLabel = (n.kind === 'topic' || n.kind === 'chapter') || isHovered || isSel || isAnc || isDesc;
+    /* 默认：所有 topic + 当前 chapter + 选中/悬停/前置/后继 */
+    const isOwnChapter = effectiveFocus == null
+      ? n.kind === 'chapter'  /* 无筛选时所有章节都显示 */
+      : n.kind === 'chapter' && n.cluster === effectiveFocus;  /* 有筛选时只显示选中的章节 */
+    allowLabel = (n.kind === 'topic' || isOwnChapter) || isHovered || isSel || isAnc || isDesc;
   }
 
   if (allowLabel && R > 3.2 && f > 0.15) {
@@ -1513,25 +1521,8 @@ canvas.addEventListener('pointerdown', e => {
   lastP = p;
 
   if (hit >= 0 && !e.shiftKey) {
-    const hitNode = nodes[hit];
-    /* 章节节点：单击切换该章节筛选（再次点击同一章节 → 取消） */
-    if (hitNode.kind === 'chapter') {
-      const cid = hitNode.cluster;
-      const wasFocus = state.focusCluster === cid;
-      state.focusCluster = wasFocus ? null : cid;
-      state.selected = null;
-      state.ancSet = new Set();
-      state.descSet = new Set();
-      state.ancAll = new Set();
-      state.descAll = new Set();
-      lockedSelected = null;
-      legendItemsEl && legendItemsEl.querySelectorAll('.lg-row').forEach(r => {
-        r.classList.toggle('active', r.dataset.cluster === state.focusCluster);
-      });
-      renderPanel();
-      /* 不进入拖拽，只切换 focus */
-      return;
-    }
+    /* 章节节点与主题/子点行为一致：锁选中 + 可拖拽 + 显示节点详情
+       （章节的"后继"即其下属主题）；章节筛选模式仅通过左侧图例切换 */
     dragging = hit;
     nodes[hit].fixed = true;
     liveAlpha = 0.5;
@@ -1570,7 +1561,9 @@ canvas.addEventListener('pointermove', e => {
     cam.tx += dx; cam.ty += dy;
     cam.txT = cam.tx; cam.tyT = cam.ty;
   } else {
-    const hit = pick(p.x, p.y);
+    const pickHit = pick(p.x, p.y);
+    /* 锁选中节点时：仅锁中节点响应 hover，其他节点的 hover 效果（tooltip / 面板 / 光标）均不生效 */
+    const hit = lockedSelected != null && pickHit !== lockedSelected ? -1 : pickHit;
     if (hit !== hovered) {
       hovered = hit;
       canvas.classList.toggle('hot', hit >= 0);
@@ -1647,7 +1640,7 @@ function renderPanel() {
         '<span class="badge" style="color:' + c.color + '">' + topicCount + ' 主题 · ' + subCount + ' 子点</span>' +
         '<div class="section"><h3>主题</h3><div class="chips">' + topicChips + '</div></div>' +
         '<div class="hint" style="font-family:var(--font-mono);font-size:11px;margin-top:14px;color:var(--ivory-3);line-height:1.8">' +
-          '再次点击该章节节点/章节图例可取消筛选<br>点击任意节点切换到节点详情' +
+          '再次点击章节图例可取消筛选<br>点击任意节点切换到节点详情' +
         '</div>';
       return;
     }
@@ -1657,7 +1650,7 @@ function renderPanel() {
       '悬停或点击任意节点<br>查看它的知识依赖链' +
       '<div class="hint">' +
       '<span class="kbd" style="display:inline-block;padding:1px 6px;border:1px solid var(--ink-4);border-radius:3px;background:var(--ink-2);color:var(--gold-2);font-family:var(--font-mono);font-size:10px">T</span> 切换主题<br>' +
-      '点击章节节点/章节图例 → 章节筛选' +
+      '点击章节图例 → 章节筛选' +
       '</div>' +
       '</div>';
     return;
@@ -1713,11 +1706,32 @@ panelBody.addEventListener('click', e => {
   }
 });
 
-document.getElementById('btn-fit').addEventListener('click', computeFit);
+document.getElementById('btn-fit').addEventListener('click', () => {
+  releaseHoverLock();
+  computeFit();
+});
 
 const btnSpin = document.getElementById('btn-spin');
 let autoRotate = true;
+/* 释放 hover 锁：清掉 lockedSelected 并将面板节点详情也一并清空，
+   使 hover 立即对所有节点生效 */
+function releaseHoverLock() {
+  if (lockedSelected == null && state.selected == null) return;
+  lockedSelected = null;
+  hovered = -1;
+  tooltip.style.display = 'none';
+  canvas.classList.remove('hot');
+  if (state.selected != null) {
+    state.selected = null;
+    state.ancSet = new Set();
+    state.descSet = new Set();
+    state.ancAll = new Set();
+    state.descAll = new Set();
+    renderPanel();
+  }
+}
 btnSpin.addEventListener('click', () => {
+  releaseHoverLock();
   autoRotate = !autoRotate;
   btnSpin.classList.toggle('on', autoRotate);
 });
