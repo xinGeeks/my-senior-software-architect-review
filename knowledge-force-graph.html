@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统架构师 · 知识点图谱</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  /* ===== Theme tokens ===== */
+  :root,
+  [data-theme="light"] {
+    --bg: #f6f4ee;
+    --paper: #ffffff;
+    --ink: #14110f;
+    --ink-2: #4a4641;
+    --ink-3: #8b847a;
+    --rule: #e6e1d6;
+    --rule-2: #efeae0;
+    --accent: #c2410c;
+    --accent-soft: rgba(194, 65, 12, 0.08);
+
+    --node-5: #14110f; --node-5-light: #3a342d;
+    --node-4: #14110f; --node-4-light: #3a342d;
+    --node-3: #4a4641; --node-3-light: #6b645b;
+    --node-2: #7a746a; --node-2-light: #8b847a;
+    --node-1: #a8a298; --node-1-light: #b8b3a8;
+
+    --label-primary: #14110f;
+    --label-secondary: #6b645b;
+    --label-dim: #c8c2b4;
+    --label-border: #f6f4ee;
+
+    --tooltip-bg: #ffffff;
+    --tooltip-border: #e6e1d6;
+    --tooltip-text: #14110f;
+    --tooltip-text-2: #8b847a;
+    --tooltip-shadow: 0 8px 24px rgba(20,17,15,0.08);
+
+    --toggle-bg: #ffffff;
+    --toggle-border: #e6e1d6;
+    --toggle-icon: #4a4641;
+    --toggle-shadow: 0 2px 6px rgba(60,40,10,0.10);
+  }
+
+  [data-theme="dark"] {
+    --bg: #0a0e1a;
+    --paper: #131a2e;
+    --ink: #f5efde;
+    --ink-2: #c4bda7;
+    --ink-3: #8e8a7a;
+    --rule: #1c2440;
+    --rule-2: #1a1f3a;
+    --accent: #d4a574;
+    --accent-soft: rgba(212, 165, 116, 0.10);
+
+    --node-5: #f5efde; --node-5-light: #c4bda7;
+    --node-4: #f5efde; --node-4-light: #c4bda7;
+    --node-3: #c4bda7; --node-3-light: #8e8a7a;
+    --node-2: #8e8a7a; --node-2-light: #6b645b;
+    --node-1: #6b645b; --node-1-light: #4a4641;
+
+    --label-primary: #f5efde;
+    --label-secondary: #c4bda7;
+    --label-dim: #4a4641;
+    --label-border: #0a0e1a;
+
+    --tooltip-bg: #131a2e;
+    --tooltip-border: #2a3056;
+    --tooltip-text: #f5efde;
+    --tooltip-text-2: #8e8a7a;
+    --tooltip-shadow: 0 8px 24px rgba(0,0,0,0.5);
+
+    --toggle-bg: #131a2e;
+    --toggle-border: #2a3056;
+    --toggle-icon: #d4a574;
+    --toggle-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong", "Times New Roman", Georgia, serif;
+    font-feature-settings: "tnum" 1;
+    overflow: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .ui-font {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    height: 100vh;
+  }
+  /* Sidebar */
+  aside {
+    background: var(--paper);
+    border-right: 1px solid var(--rule);
+    padding: 36px 28px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .masthead {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .masthead .eyebrow {
+    font-family: "Inter", -apple-system, sans-serif;
+    font-size: 10px;
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  .masthead h1 {
+    font-family: "Source Han Serif SC", "Noto Serif SC", "Songti SC", serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 8px;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .masthead .lede {
+    font-family: "Source Han Serif SC", "Noto Serif SC", serif;
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-top: 10px;
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  .summary {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .summary .num {
+    display: flex;
+    flex-direction: column;
+  }
+  .summary .num .v {
+    font-family: "Source Han Serif SC", serif;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .summary .num .k {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: 6px;
+  }
+
+  .section { margin-bottom: 28px; }
+  .section-label {
+    font-family: "Inter", -apple-system, sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .section-label .hint {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--ink-3);
+    text-transform: none;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .chapters {
+    display: flex;
+    flex-direction: column;
+  }
+  .chapter {
+    display: grid;
+    grid-template-columns: 8px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 8px;
+    margin: 0 -8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .chapter:hover { background: var(--rule-2); }
+  .chapter.active { background: var(--accent-soft); }
+  .chapter .marker {
+    width: 8px;
+    background: var(--ink-3);
+  }
+  .chapter.tier-5 .marker { background: var(--node-5); height: 3px; }
+  .chapter.tier-4 .marker { background: var(--node-4); height: 2px; }
+  .chapter.tier-3 .marker { background: var(--node-3); height: 1px; }
+  .chapter.tier-2 .marker { background: var(--node-2); height: 1px; opacity: 0.7; }
+  .chapter.tier-1 .marker { background: var(--node-1); height: 1px; opacity: 0.5; }
+  .chapter .name {
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: "Source Han Serif SC", "Noto Serif SC", serif;
+  }
+  .chapter .pts {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  .chapter.tier-5 .pts, .chapter.tier-4 .pts { color: var(--accent); }
+
+  .footer-actions {
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 16px;
+  }
+  .action {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+    transition: all 0.15s ease;
+  }
+  .action:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Main */
+  main {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    transition: background 0.3s ease;
+  }
+  #chart {
+    width: 100%;
+    height: 100%;
+  }
+  .colophon {
+    position: absolute;
+    top: 28px;
+    left: 32px;
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .colophon .dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin: 0 8px 1px;
+    vertical-align: middle;
+  }
+  .hint {
+    position: absolute;
+    bottom: 24px;
+    left: 32px;
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.3px;
+  }
+  .hint .sep { margin: 0 12px; color: var(--rule); }
+  .hint em {
+    font-style: normal;
+    color: var(--ink-2);
+    border-bottom: 1px dotted var(--ink-3);
+    padding-bottom: 1px;
+  }
+  .pull {
+    position: absolute;
+    top: 24px;
+    right: 70px;
+    text-align: right;
+    font-family: "Source Han Serif SC", "Noto Serif SC", serif;
+  }
+  .pull .quote {
+    font-size: 13px;
+    color: var(--ink-2);
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 240px;
+  }
+  .pull .quote em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .pull .src {
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-top: 6px;
+  }
+
+  /* Scrollbar */
+  aside::-webkit-scrollbar { width: 4px; }
+  aside::-webkit-scrollbar-track { background: transparent; }
+  aside::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
+
+  /* Theme toggle button (matches abbreviations-sunburst.html) */
+  .theme-toggle {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 9999;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--toggle-border);
+    background: var(--toggle-bg);
+    color: var(--toggle-icon);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Inter", sans-serif;
+    transition: all 0.2s ease;
+    box-shadow: var(--toggle-shadow);
+    padding: 0;
+  }
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    transform: rotate(15deg);
+  }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    aside { display: none; }
+    .pull { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <header class="masthead">
+      <div class="eyebrow">System Architect · 2026</div>
+      <h1>知识点图谱</h1>
+      <div class="lede">十九章 · 七十六点 · 七十四分</div>
+    </header>
+
+    <div class="summary">
+      <div class="num"><span class="v" id="s-chapters">19</span><span class="k">章节</span></div>
+      <div class="num"><span class="v" id="s-topics">76</span><span class="k">知识点</span></div>
+      <div class="num"><span class="v" id="s-score">74</span><span class="k">总分</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">
+        <span>章节索引</span>
+        <span class="hint">按分值排序</span>
+      </div>
+      <div class="chapters" id="chapter-list"></div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="action" id="btn-replay">重置布局</button>
+      <button class="action" id="btn-clear">清除聚焦</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="colophon" id="colophon">力导向图<span class="dot"></span>按分值编码节点大小<span class="dot"></span>按所属章节连线</div>
+
+    <div class="pull">
+      <div class="quote">系统架构设计占 <em>20 分</em>，是整本考试的核心重量</div>
+      <div class="src">— by inspection</div>
+    </div>
+
+    <div id="chart"></div>
+
+    <div class="hint">
+      <em>拖动</em> 节点
+      <span class="sep">·</span>
+      <em>滚轮</em> 缩放
+      <span class="sep">·</span>
+      <em>点击</em> 聚焦章节
+      <span class="sep">·</span>
+      <em>双击</em> 恢复
+    </div>
+  </main>
+</div>
+
+<button class="theme-toggle" id="theme-toggle" title="切换深/浅主题 (T)" onclick="toggleTheme()" aria-label="切换主题">☾</button>
+
+<script>
+// ---------- Data ----------
+const chapters = [
+  { name: "计算机系统基础知识",     score: 1,  topics: ["概述", "计算机硬件", "计算机软件"] },
+  { name: "操作系统",               score: 3,  topics: ["进程管理", "存储管理", "文件管理", "设备管理"] },
+  { name: "数据库技术",             score: 3,  topics: ["数据库设计", "关系代数", "范式", "事务并发", "数据库安全", "新技术"] },
+  { name: "嵌入式技术",             score: 3,  topics: ["嵌入式硬件", "嵌入式操作系统", "嵌入式软件开发"] },
+  { name: "计算机网络",             score: 3,  topics: ["OSI 七层模型", "TCP/IP 协议族", "网络生命周期", "IP 地址"] },
+  { name: "其他计算机系统基础知识", score: 1,  topics: ["计算机语言", "多媒体", "系统工程"] },
+  { name: "系统性能",               score: 1,  topics: ["性能指标", "性能设计"] },
+  { name: "信息系统基础知识",       score: 3,  topics: ["信息系统生命周期", "开发方法", "五大典型系统"] },
+  { name: "信息安全技术基础",       score: 5,  topics: ["安全属性", "信息安全技术", "网络安全技术", "安全协议"] },
+  { name: "软件工程",               score: 12, topics: ["软件工程定义概述", "需求工程", "系统设计", "运维", "测试", "净室软件工程", "基于构件"] },
+  { name: "面向对象技术",           score: 3,  topics: ["面向对象基础", "分析设计", "UML 关系", "图"] },
+  { name: "项目管理",               score: 1,  topics: ["进度管理", "配置管理", "质量管理", "风险管理"] },
+  { name: "系统架构设计",           score: 20, topics: ["架构概念", "生命周期", "ABSD", "DSSA", "架构风格", "架构复用", "质量属性", "架构评估"] },
+  { name: "软件可靠性",             score: 2,  topics: ["可靠性建模", "软件可靠性设计"] },
+  { name: "软件架构的演化和维护",   score: 1,  topics: ["架构演化分类", "评估", "面向对象架构演化"] },
+  { name: "未来信息综合技术",       score: 3,  topics: ["信息物理系统", "人工智能", "边缘计算", "机器人", "数字孪生", "云计算"] },
+  { name: "数学与经济管理",         score: 2,  topics: ["最小生成树", "最短路径", "网络与最大流量", "线性规划", "决策论"] },
+  { name: "知识产权和标准化",       score: 2,  topics: ["知识产权属性", "保护期限", "产权人确定", "侵权判定"] },
+  { name: "专业英语",               score: 5,  topics: ["完形填空"] }
+];
+
+// ---------- Theme-aware palette ----------
+function getCss(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function tierOf(s) {
+  if (s >= 10) return { id: 5, color: () => getCss('--node-5'),    light: () => getCss('--node-5-light') };
+  if (s >= 5)  return { id: 4, color: () => getCss('--node-4'),    light: () => getCss('--node-4-light') };
+  if (s >= 3)  return { id: 3, color: () => getCss('--node-3'),    light: () => getCss('--node-3-light') };
+  if (s >= 2)  return { id: 2, color: () => getCss('--node-2'),    light: () => getCss('--node-2-light') };
+              return { id: 1, color: () => getCss('--node-1'),    light: () => getCss('--node-1-light') };
+}
+
+function tierById(id) {
+  return { color: () => getCss('--node-' + id), light: () => getCss('--node-' + id + '-light') };
+}
+
+// ---------- Stats ----------
+const totalTopics = chapters.reduce((s,c) => s+c.topics.length, 0);
+const totalScore  = chapters.reduce((s,c) => s+c.score, 0);
+const maxCh       = chapters.reduce((a,b) => a.score >= b.score ? a : b);
+
+document.getElementById('s-topics').textContent = totalTopics;
+document.getElementById('s-score').textContent  = totalScore;
+document.querySelector('.pull em').textContent  = maxCh.score + ' 分';
+
+// ---------- Sidebar chapter list ----------
+const listEl = document.getElementById('chapter-list');
+const sorted = [...chapters].sort((a,b) => b.score - a.score);
+sorted.forEach(ch => {
+  const t = tierOf(ch.score);
+  const item = document.createElement('div');
+  item.className = `chapter tier-${t.id}`;
+  item.dataset.name = ch.name;
+  item.innerHTML = `
+    <span class="marker"></span>
+    <span class="name">${ch.name}</span>
+    <span class="pts">${ch.score}</span>
+  `;
+  listEl.appendChild(item);
+});
+
+// ---------- Build graph data ----------
+const chapterIds = new Set();
+const baseNodes = [];
+const baseLinks = [];
+chapters.forEach((ch, ci) => {
+  chapterIds.add(ch.name);
+  const t = tierOf(ch.score);
+  baseNodes.push({
+    isChapter: true,
+    name: ch.name,
+    value: ch.score,
+    size: 22 + Math.pow(ch.score, 0.82) * 5.5,
+    tier: t.id,
+    raw: ch
+  });
+  ch.topics.forEach(topic => {
+    const tid = ch.name + "::" + topic;
+    const w = 7 + (ch.score / ch.topics.length) * 2;
+    baseNodes.push({
+      isChapter: false,
+      id: tid,
+      name: topic,
+      value: 1,
+      size: w,
+      tier: t.id,
+      parent: ch.name
+    });
+    baseLinks.push({ source: ch.name, target: tid, tier: t.id });
+  });
+});
+
+let nodes = [], links = [];
+
+function buildGraph() {
+  nodes = baseNodes.map(n => {
+    const t = tierById(n.tier);
+    if (n.isChapter) {
+      return {
+        id: n.name,
+        name: n.name,
+        symbolSize: n.size,
+        value: n.value,
+        category: 0,
+        itemStyle: {
+          color: t.color(),
+          borderColor: getCss('--label-border'),
+          borderWidth: 2
+        },
+        label: {
+          show: true,
+          fontSize: 12,
+          fontWeight: 500,
+          color: getCss('--label-primary'),
+          textBorderColor: getCss('--label-border'),
+          textBorderWidth: 3
+        },
+        raw: n.raw
+      };
+    } else {
+      return {
+        id: n.id,
+        name: n.name,
+        symbolSize: n.size,
+        value: 1,
+        category: 1,
+        parent: n.parent,
+        itemStyle: {
+          color: t.light(),
+          opacity: 0.55,
+          borderColor: getCss('--label-border'),
+          borderWidth: 1
+        },
+        label: {
+          show: true,
+          fontSize: 9.5,
+          color: getCss('--label-secondary'),
+          textBorderColor: getCss('--label-border'),
+          textBorderWidth: 2
+        }
+      };
+    }
+  });
+  links = baseLinks.map(l => {
+    const t = tierById(l.tier);
+    return {
+      source: l.source,
+      target: l.target,
+      lineStyle: {
+        color: t.color(),
+        opacity: 0.22,
+        width: 0.6,
+        curveness: 0.02
+      }
+    };
+  });
+}
+
+// ---------- Chart ----------
+const chart = echarts.init(document.getElementById('chart'), null, { renderer: 'canvas' });
+
+function renderChart() {
+  buildGraph();
+  chart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: {
+      backgroundColor: getCss('--tooltip-bg'),
+      borderColor: getCss('--tooltip-border'),
+      borderWidth: 1,
+      padding: [10, 14],
+      textStyle: { color: getCss('--tooltip-text'), fontSize: 12 },
+      extraCssText: `border-radius: 4px; box-shadow: ${getCss('--tooltip-shadow')};`,
+      formatter: (p) => {
+        if (p.dataType === 'edge') return '';
+        const n = p.data;
+        if (chapterIds.has(n.id)) {
+          return `<div style="font-weight:600;font-size:13px;margin-bottom:4px;font-family:'Source Han Serif SC',serif">${n.name}</div>
+                  <div style="color:${getCss('--tooltip-text-2')};font-size:11px;font-family:'Inter',sans-serif">分值 · <span style="color:${getCss('--accent')};font-weight:600">${n.value}</span>　知识点 · ${n.raw.topics.length}</div>`;
+        } else {
+          return `<div style="font-weight:500;font-size:12px;margin-bottom:3px;font-family:'Source Han Serif SC',serif">${n.name}</div>
+                  <div style="color:${getCss('--tooltip-text-2')};font-size:11px;font-family:'Inter',sans-serif">${n.parent}</div>`;
+        }
+      }
+    },
+    series: [{
+      type: 'graph',
+      layout: 'force',
+      animation: true,
+      animationDuration: 1200,
+      animationEasingUpdate: 'cubicOut',
+      roam: true,
+      draggable: true,
+      cursor: 'pointer',
+      data: nodes,
+      links: links,
+      categories: [{ name: "章节" }, { name: "知识点" }],
+      force: {
+        edgeLength: 60,
+        repulsion: 220,
+        gravity: 0.05,
+        friction: 0.18,
+        layoutAnimation: true
+      },
+      emphasis: {
+        focus: 'adjacency',
+        label: { fontSize: 13, fontWeight: 600 },
+        itemStyle: { borderColor: getCss('--accent'), borderWidth: 2.5 }
+      },
+      label: {
+        show: true,
+        position: 'inside',
+        formatter: '{b}',
+        overflow: 'truncate',
+        width: 110,
+        ellipsis: '…'
+      },
+      labelLayout: {
+        hideOverlap: true,
+        moveOverlap: 'shiftY'
+      },
+      lineStyle: {
+        color: 'source',
+        opacity: 0.22,
+        curveness: 0.02
+      },
+      edgeSymbol: ['none', 'none']
+    }]
+  });
+}
+
+renderChart();
+
+// ---------- Interactions ----------
+let currentFocus = null;
+
+function focusOnChapter(name) {
+  currentFocus = name;
+  const connected = new Set([name]);
+  links.forEach(l => {
+    if (l.source === name) connected.add(l.target);
+    if (l.target === name) connected.add(l.source);
+  });
+  chart.setOption({
+    series: [{
+      data: nodes.map(n => ({
+        ...n,
+        itemStyle: {
+          ...n.itemStyle,
+          opacity: connected.has(n.id) ? (n.category === 0 ? 1 : 0.7) : 0.12
+        },
+        label: {
+          ...n.label,
+          color: connected.has(n.id)
+            ? (n.category === 0 ? getCss('--label-primary') : getCss('--label-secondary'))
+            : getCss('--label-dim')
+        }
+      })),
+      links: links.map(l => {
+        const isHit = (l.source === name || l.target === name);
+        return { ...l, lineStyle: { ...l.lineStyle, opacity: isHit ? 0.6 : 0.04 } };
+      })
+    }]
+  });
+  highlightSidebar(name);
+}
+
+function resetFocus() {
+  currentFocus = null;
+  chart.setOption({ series: [{ data: nodes, links: links }] });
+  highlightSidebar(null);
+}
+
+function highlightSidebar(name) {
+  document.querySelectorAll('.chapter').forEach(el => {
+    el.classList.toggle('active', el.dataset.name === name);
+  });
+}
+
+chart.on('click', { dataType: 'node' }, (params) => {
+  const isChapter = chapterIds.has(params.data.id);
+  focusOnChapter(isChapter ? params.data.id : params.data.parent);
+});
+chart.on('dblclick', () => resetFocus());
+
+document.querySelectorAll('.chapter').forEach(el => {
+  el.addEventListener('click', () => focusOnChapter(el.dataset.name));
+});
+
+document.getElementById('btn-replay').addEventListener('click', () => {
+  resetFocus();
+  chart.setOption({ series: [{ force: { layoutAnimation: true } }] });
+});
+document.getElementById('btn-clear').addEventListener('click', () => resetFocus());
+
+// ---------- Theme toggle (matches abbreviations-sunburst.html) ----------
+(function() {
+  const KEY = 'forcegraph-theme';
+  function apply(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = theme === 'light' ? '☾' : '☀';
+  }
+  window.toggleTheme = function() {
+    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = cur === 'light' ? 'dark' : 'light';
+    try { localStorage.setItem(KEY, next); } catch(e) {}
+    apply(next);
+    // Rebuild chart so node colors reflect current theme
+    renderChart();
+    if (currentFocus) focusOnChapter(currentFocus);
+  };
+  try {
+    const saved = localStorage.getItem(KEY);
+    if (saved) apply(saved);
+  } catch(e) {}
+  document.addEventListener('keydown', function(e) {
+    if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey
+        && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ''))) {
+      toggleTheme();
+    }
+  });
+})();
+
+window.addEventListener('resize', () => chart.resize());
+</script>
+</body>
+</html>
