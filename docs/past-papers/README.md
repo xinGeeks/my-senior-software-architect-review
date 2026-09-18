@@ -1,0 +1,88 @@
+# Past Papers · 历年真题
+
+## ⚠️ 原则声明
+
+本目录以自有真题整理、错题本和解析为主。
+
+- 不存储商业教材或未经说明的官方扫描卷
+- 经贡献者明确要求提交的**非官方回忆版来源文件**统一放在 [`source-pdfs/`](./source-pdfs/)，必须同时记录来源类型、完整性和校验值
+- 原题请从权威开源库获取：
+  - [xxlllq/system_architect](https://github.com/xxlllq/system_architect) — 2009–2025 全套
+  - [xiaomabenten/system_architect](https://github.com/xiaomabenten/system_architect)
+- 商业教辅（《32 小时通关》等）自行购买
+
+## 目录结构
+
+```
+past-papers/
+├── README.md                 # 本文件
+├── analysis-template.md      # 真题解析模板
+├── SOURCE_COVERAGE.md        # 真题来源类型与结构化覆盖状态
+├── source-pdfs/              # 明确标记的非官方回忆版来源文件
+├── paper-topics/             # ⭐ 论文 13 大主题（按题型分类）
+│   ├── README.md             #   索引 + 选题策略 + 评分权重
+│   ├── 01-architecture-design.md
+│   ├── 02-architecture-evaluation.md
+│   └── ... (13 个主题)
+├── case-types/               # ⭐ 案例 9 大题型（按题型分类）
+│   ├── README.md             #   索引 + 答题铁律 + 时间分配
+│   ├── 01-architecture-evaluation.md
+│   ├── 02-database-design.md
+│   └── ... (9 个题型)
+├── 2024-05/                  # 按年份组织（原题解析）
+│   ├── comprehensive.md      # 综合知识解析
+│   ├── case-analysis.md      # 案例分析解析
+│   └── paper.md              # 论文复盘
+├── 2024-11/
+├── 2025-05/
+└── wrong-questions.md        # 错题本（跨年份汇总）
+```
+
+## 覆盖状态
+
+- [真题来源与结构化覆盖](./SOURCE_COVERAGE.md) — 区分正式真题、回忆版、模拟题和待结构化资料。
+- [2026 上半年回忆版考情信号](./2026上-recall-signals.md) — 只保留原创归类、完整性边界和教学修正。
+- [回忆版 PDF 来源文件](./source-pdfs/README.md) — 原始来源、完整性、校验值与移除说明。
+
+## ⭐ 按题型复习（推荐）
+
+- **论文提纲** → [paper-topics/README.md](./paper-topics/README.md)（13 大主题 + 万能提纲）
+- **论文范文** → [paper-samples/README.md](./paper-samples/README.md)（**真实案例改编 · 2800 字完整范文**）
+- **案例题型** → [case-types/README.md](./case-types/README.md)（9 大题型 + 答题模板）
+
+## 近年考试节奏（核对用）
+
+| 年份 | 上半年 | 下半年 |
+|---|---|---|
+| 2023 | 5 月 | 11 月（首次机考） |
+| 2024 | 5 月 | 11 月 |
+| 2025 | 5 月 | 11 月 |
+
+## 真题使用建议
+
+### 阶段 1：按章节刷
+
+- 利用 xxlllq 仓库的**章节分类真题**功能
+- 学完每章立即刷对应题目
+
+### 阶段 2：按年份全真模考
+
+- 近 3 年（2023 / 2024 / 2025）6 套
+- **严格计时**：综合 150min + 案例 90min + 论文 120min
+
+### 阶段 3：错题本
+
+- 每套题后录入 `wrong-questions.md`
+- 重点：错因分析（知识盲区 / 审题错误 / 计算失误）
+
+## 常考主题频次（经验估计，需对照真题核准）
+
+| 主题 | 综合知识 | 案例 | 论文 |
+|---|---|---|---|
+| 架构风格 | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ |
+| 质量属性 ATAM | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| 数据库范式 | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ |
+| 云原生 / 微服务 | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| UML | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ |
+| 安全 / 等保 | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| 可靠性 | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |

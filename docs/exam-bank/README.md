@@ -1,0 +1,102 @@
+# 综合知识 选择题题库
+
+> **自主命题版** · 覆盖**综合知识 75 题**高频考点 · 每题配**答案 + 详细解析**
+>
+> ⚠️ 本题库为**基于公开考点自编**，避免版权风险；原题建议到以下开源库：
+> - [xxlllq/system_architect](https://github.com/xxlllq/system_architect) — 2009-2025 真题全套 + 章节分类
+> - [xiaomabenten/system_architect](https://github.com/xiaomabenten/system_architect) — 2026 备考资源库 + 免费刷题软件
+> - [ruankaodaren.com](https://ruankaodaren.com/) — 在线刷题（免费）
+> - [51CTO 题库](https://t.51cto.com/list/years/sub-240) — 回忆版真题
+
+## 综合知识 75 题的**章节分布**（经验估计）
+
+| 章节范围 | 题数 | 占比 | 重点 |
+|---|---|---|---|
+| 计算机系统基础 | 4-5 | 5% | Cache / 流水线 / 编码 |
+| 操作系统 | 3-4 | 5% | 进程 / 调度 / 分页 |
+| **数据库** | **6-8** | **10%** | 范式 / 函数依赖 / 事务 |
+| 网络 | 2-3 | 3% | OSI / TCP-IP |
+| UML | 3-4 | 5% | 14 图 / 类关系 |
+| 知识产权 + 标准化 | 2-3 | 4% | 保护期 / GB 分类 |
+| 软件工程 | 3-4 | 5% | CMMI / 生命周期 |
+| 项目管理 | 3-4 | 5% | CPM / PERT / EVM |
+| 软件度量 | 2-3 | 3% | FP / McCabe / 耦合内聚 |
+| **架构风格 + 评估** | **6-8** | **10%** | 风格分类 / ATAM |
+| 质量属性 | 4-5 | 6% | 6 元组 / 战术 |
+| **设计模式** | **4-6** | **7%** | GoF 23 |
+| ABSD + 视图 | 2-3 | 3% | 4+1 / ADL |
+| 微服务 + 云原生 | 3-4 | 5% | DDD / K8s / 12-Factor |
+| 中间件 + 分布式事务 | 3-4 | 5% | MQ / TCC / CAP |
+| 大数据 | 2-3 | 3% | Lambda / NoSQL |
+| 可靠性 | 2-3 | 4% | MTBF / SLA |
+| **安全** | **4-5** | **7%** | STRIDE / 等保 / 国密 |
+| 嵌入式 | 2-3 | 3% | RMS / EDF |
+| **英语阅读** | **5** | **7%** | 固定最后 5 题 |
+
+## 题库入口（按考频排序）
+
+### 🔥 必刷高频（合计 110+ 题）
+
+| # | 知识点 | 题数 | 文件 |
+|---|---|---|---|
+| 03 | 数据库（函数依赖 / 范式 / 事务） | 25 | [03-database.md](./03-database.md) |
+| 13 | 设计模式 GoF 23 | 25 | [13-design-patterns.md](./13-design-patterns.md) |
+| 10 | 架构风格 5 大类 | 20 | [10-architecture-styles.md](./10-architecture-styles.md) |
+| 21 | 安全（STRIDE / CIA / 国密） | 20 | [21-security.md](./21-security.md) |
+| 12 | ATAM 四类点 | 15 | [12-atam-evaluation.md](./12-atam-evaluation.md) |
+
+### ⭐ 必刷重点（合计 219+ 题）
+
+| # | 知识点 | 题数 | 文件 |
+|---|---|---|---|
+| 01 | 计算机系统基础 | 15 | [01-computer-systems.md](./01-computer-systems.md) |
+| 02 | 操作系统 | 15 | [02-os-concepts.md](./02-os-concepts.md) |
+| 04 | 计算机网络（OSI / 协议 / 端口） | 15 | [04-networking.md](./04-networking.md) |
+| 05 | UML 建模 | 15 | [05-uml.md](./05-uml.md) |
+| 06 | 知识产权 + 标准化 | 25 | [06-ip-and-standards.md](./06-ip-and-standards.md) |
+| 07 | 软件工程（生命周期 / CMMI / 需求 / 测试 / 维护） | 18 | [07-software-engineering.md](./07-software-engineering.md) |
+| 08 | 项目管理（CPM / PERT / EVM / 风险） | 18 | [08-project-management.md](./08-project-management.md) |
+| 09 | **软件度量（FP / McCabe / Halstead / 耦合内聚）** | **12** | **[09-software-metrics.md](./09-software-metrics.md)** |
+| 11 | 质量属性 + 战术 | 15 | [11-quality-attributes.md](./11-quality-attributes.md) |
+| 14 | **ABSD + 4+1 视图 + ADL** | **12** | **[14-absd-views.md](./14-absd-views.md)** |
+| 15 | 微服务 + 云原生 | 15 | [15-microservice-cloud-native.md](./15-microservice-cloud-native.md) |
+| 16 | **中间件（MQ / RPC / ESB / JMS / AMQP）** | **12** | **[16-middleware.md](./16-middleware.md)** |
+| 17 | **分布式事务（2PC / TCC / Saga / CAP / BASE）** | **15** | **[17-distributed-transactions.md](./17-distributed-transactions.md)** |
+| 18 | **缓存（穿透 / 击穿 / 雪崩 / Redis）** | **12** | **[18-cache.md](./18-cache.md)** |
+| 23 | 英语阅读（固定 5 题、占 7%） | 25（5 套） | [23-english-reading.md](./23-english-reading.md) |
+
+### 🌟 已扩展专题
+
+| # | 知识点 | 题数 | 文件 |
+|---|---|---|---|
+| 19 | 大数据架构（Hadoop / Lambda·Kappa / 数仓·数据湖 / NoSQL） | 20 | [19-big-data.md](./19-big-data.md) |
+| 20 | 软件可靠性与容灾（MTBF / 串并联可靠性计算 / 限流·熔断·降级 / RTO·RPO） | 22 | [20-reliability.md](./20-reliability.md) |
+| 22 | 嵌入式系统架构（实时调度 RMS/EDF / 优先级反转 / CBSD 构件组装） | 18 | [22-embedded.md](./22-embedded.md) |
+| 24 | DevOps 与 Serverless（CI/CD / 蓝绿·金丝雀 / IaC·GitOps / FaaS / DORA） | 19 | [24-devops-serverless.md](./24-devops-serverless.md) |
+| 25 | 企业应用集成（EAI 四层次 / ESB / 中间件分类 / 集成模式 EIP / 遗留系统演化） | 18 | [25-enterprise-integration.md](./25-enterprise-integration.md) |
+| 26 | SOA 与架构演化（SOA 八原则 / 编排·编制 / SOA·微服务·单体对比 / 绞杀者·上云 6R） | 20 | [26-soa-evolution.md](./26-soa-evolution.md) |
+| 27 | 信息系统（TPS / MIS / DSS / ES / ERP / 电子政务） | 12 | [27-information-systems.md](./27-information-systems.md) |
+| 28 | 未来信息综合技术（CPS / AI / 边缘计算 / 数字孪生） | 12 | [28-emerging-tech.md](./28-emerging-tech.md) |
+| 29 | 应用数学与运筹学（图论 / 关键路径 / 线性规划 / 决策） | 12 | [29-applied-math.md](./29-applied-math.md) |
+
+### ✅ 题库覆盖完成度
+
+官方 13 大综合知识域均有自编题或专项题库；信息系统、未来信息综合技术、应用数学已补为独立入口。后续扩展应优先补真实薄弱证据，而不是继续平均增加题量。
+
+## 答题套路（每题用 3 秒判断）
+
+```
+1. 读题干，圈出关键词
+2. 看 4 个选项，排除明显错误 2 个
+3. 剩 2 个选项 → 回到题干找最贴合定义的关键词
+4. 拿不准：选"最全面"的那个，或"教材原话"那个
+```
+
+## 刷题计划（60 天倒计时）
+
+| 阶段 | 周期 | 目标 |
+|---|---|---|
+| 1. 按知识点刷 | Day 1-20 | 每天 1 个知识点，吃透所有例题 |
+| 2. 按年份刷真题 | Day 21-40 | 近 5 年真题，**严格计时**每套 150min |
+| 3. 错题重刷 | Day 41-55 | 只刷错题本 + 模糊题 |
+| 4. 考前冲刺 | Day 56-60 | 每天 1 套真题 + 默写高频考点 |

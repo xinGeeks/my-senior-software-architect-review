@@ -1,0 +1,2031 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>知识宫殿 · 系统架构设计师考试复习</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   Design Tokens
+   ============================================================ */
+:root {
+  /* Ink - midnight base */
+  --ink-0: #06091a;
+  --ink-1: #0a0f1f;
+  --ink-2: #131a2e;
+  --ink-3: #1c2440;
+  --ink-4: #2a3056;
+  --ink-6: #1a2547;
+  /* Accent - candlelit amber */
+  --gold-1: #e8c384;
+  --gold-2: #d4a574;
+  --gold-3: #b88a52;
+  --gold-4: #8b6f3e;
+  --gold-5: #5c4a2a;
+  /* Parchment */
+  --ivory-0: #faf6e8;
+  --ivory-1: #f5f0e1;
+  --ivory-2: #c4bda7;
+  --ivory-3: #8e8a7a;
+  /* Frequency heat */
+  --crimson: #c8553d;
+  --amber-deep: #b8673f;
+  --emerald: #5d8a6f;
+  --azure: #4a6fa5;
+  --violet: #6f5d8a;
+  /* Glows */
+  --glow-gold: rgba(212, 165, 116, 0.35);
+  --glow-crimson: rgba(200, 85, 61, 0.4);
+  --glow-emerald: rgba(93, 138, 111, 0.35);
+
+  --font-display: 'Cinzel', 'Noto Serif SC', serif;
+  --font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --font-cn: 'Noto Serif SC', 'Songti SC', serif;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+
+  --shadow-1: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-3: 0 16px 48px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 32px var(--glow-gold);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--ink-0);
+  color: var(--ivory-1);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-feature-settings: 'cv11', 'ss01';
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(212, 165, 116, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(74, 111, 165, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, var(--ink-0) 0%, var(--ink-1) 50%, var(--ink-0) 100%);
+  background-attachment: fixed;
+}
+
+/* blueprint grid pattern */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212, 165, 116, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 165, 116, 0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--ivory-0);
+}
+h1 { font-size: clamp(2.4rem, 5vw, 4rem); }
+h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
+h3 { font-size: 1.25rem; font-family: var(--font-cn); }
+h4 { font-size: 1rem; font-family: var(--font-cn); font-weight: 500; color: var(--gold-2); }
+p { margin: 0 0 0.6em; }
+small, .small { font-size: 0.875rem; color: var(--ivory-2); }
+.mono { font-family: var(--font-mono); }
+.cn { font-family: var(--font-cn); }
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero {
+  padding: 96px 0 64px;
+  position: relative;
+}
+.hero-mark {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  margin-bottom: 28px;
+}
+.hero-mark::before, .hero-mark::after {
+  content: '';
+  flex: 0 0 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-4), transparent);
+}
+.hero-mark::after { display: none; }
+.hero h1 {
+  font-family: var(--font-cn);
+  font-weight: 900;
+  background: linear-gradient(180deg, var(--ivory-0) 0%, var(--gold-2) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 14px;
+  letter-spacing: 0.04em;
+}
+.hero-sub {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--gold-2);
+  margin-bottom: 36px;
+  letter-spacing: 0.06em;
+}
+.hero-desc {
+  max-width: 720px;
+  font-size: 1.05rem;
+  color: var(--ivory-2);
+  margin-bottom: 36px;
+  line-height: 1.8;
+}
+.hero-desc strong { color: var(--gold-1); font-weight: 500; }
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 48px;
+  border-top: 1px solid var(--ink-4);
+  border-bottom: 1px solid var(--ink-4);
+}
+.stat {
+  padding: 24px 28px;
+  border-right: 1px solid var(--ink-4);
+  position: relative;
+}
+.stat:last-child { border-right: 0; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--gold-1);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ivory-3);
+}
+
+/* ============================================================
+   Filters bar
+   ============================================================ */
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(6, 9, 26, 0.85);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid var(--ink-4);
+  padding: 18px 0;
+  margin-bottom: 32px;
+}
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.controls-label {
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  flex: 0 0 auto;
+}
+.filter-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  padding: 7px 16px;
+  background: transparent;
+  color: var(--ivory-2);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  letter-spacing: 0.02em;
+}
+.chip:hover {
+  color: var(--ivory-0);
+  border-color: var(--gold-4);
+  background: rgba(212, 165, 116, 0.06);
+}
+.chip.active {
+  color: var(--ink-0);
+  background: var(--gold-2);
+  border-color: var(--gold-2);
+}
+.chip.active:hover {
+  background: var(--gold-1);
+  border-color: var(--gold-1);
+}
+
+.search {
+  margin-left: auto;
+  position: relative;
+  flex: 0 1 280px;
+}
+.search input {
+  width: 100%;
+  padding: 9px 14px 9px 38px;
+  background: var(--ink-2);
+  color: var(--ivory-1);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.search input::placeholder { color: var(--ivory-3); }
+.search input:focus {
+  outline: none;
+  border-color: var(--gold-3);
+  background: var(--ink-1);
+}
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-3);
+  pointer-events: none;
+}
+
+/* ============================================================
+   Floor / Level sections
+   ============================================================ */
+.level {
+  padding: 56px 0 24px;
+  position: relative;
+}
+.level-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ink-4);
+}
+.level-num {
+  font-family: var(--font-display);
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 0.85;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--gold-3);
+  text-stroke: 1.5px var(--gold-3);
+  letter-spacing: -0.02em;
+  flex: 0 0 auto;
+}
+.level-title {
+  flex: 1;
+}
+.level-title h2 {
+  font-family: var(--font-cn);
+  font-size: clamp(1.6rem, 2.6vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.level-title h2 small {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  margin-bottom: 6px;
+}
+.level-title p {
+  font-size: 0.94rem;
+  color: var(--ivory-2);
+  margin: 0;
+}
+.level-meta {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory-3);
+  text-align: right;
+  flex: 0 0 auto;
+}
+.level-meta strong {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold-1);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 2px;
+}
+
+/* ============================================================
+   Rooms grid
+   ============================================================ */
+.rooms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.room {
+  position: relative;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-md);
+  padding: 22px 22px 20px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out);
+  overflow: hidden;
+  isolation: isolate;
+}
+.room::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(212, 165, 116, 0.04) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+.room::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--gold-3);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s var(--ease-out);
+}
+.room:hover {
+  border-color: var(--gold-4);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2), 0 0 0 1px rgba(212, 165, 116, 0.15);
+}
+.room:hover::before { opacity: 1; }
+.room:hover::after { transform: scaleY(1); }
+
+.room.hidden { display: none; }
+
+.room-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.room-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: var(--radius-md);
+  background: var(--ink-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-2);
+  border: 1px solid var(--ink-4);
+}
+.room-icon svg { width: 18px; height: 18px; stroke-width: 1.6; }
+
+.room-freq {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  color: var(--ivory-3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.room-freq .stars { color: var(--gold-2); letter-spacing: 0; }
+
+.room-name {
+  font-family: var(--font-cn);
+  font-weight: 700;
+  font-size: 1.18rem;
+  color: var(--ivory-0);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.room-en {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.78rem;
+  color: var(--ivory-3);
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+}
+
+.room-summary {
+  font-size: 0.88rem;
+  color: var(--ivory-2);
+  margin-bottom: 16px;
+  line-height: 1.55;
+  min-height: 40px;
+}
+
+.room-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--ink-3);
+  color: var(--ivory-2);
+  border: 1px solid var(--ink-4);
+}
+.tag.comp { color: var(--azure); border-color: rgba(74, 111, 165, 0.4); background: rgba(74, 111, 165, 0.08); }
+.tag.case { color: var(--gold-2); border-color: rgba(212, 165, 116, 0.4); background: rgba(212, 165, 116, 0.08); }
+.tag.paper { color: var(--violet); border-color: rgba(111, 93, 138, 0.4); background: rgba(111, 93, 138, 0.08); }
+
+.room-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  padding-top: 12px;
+  border-top: 1px dashed var(--ink-4);
+}
+.room-cta::after {
+  content: '→';
+  font-family: var(--font-body);
+  letter-spacing: 0;
+  transition: transform 0.3s var(--ease-out);
+}
+.room:hover .room-cta::after { transform: translateX(4px); color: var(--gold-1); }
+
+/* heat indicator */
+.room[data-freq="5"] { box-shadow: inset 3px 0 0 var(--crimson); }
+.room[data-freq="4"] { box-shadow: inset 3px 0 0 var(--gold-2); }
+.room[data-freq="3"] { box-shadow: inset 3px 0 0 var(--gold-4); }
+.room[data-freq="2"] { box-shadow: inset 3px 0 0 var(--ink-4); }
+
+/* ============================================================
+   Modal — Room detail
+   ============================================================ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(6, 9, 26, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+}
+.modal.open { display: flex; opacity: 1; }
+
+.modal-panel {
+  width: 100%;
+  max-width: 920px;
+  max-height: 90vh;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3), 0 0 64px var(--glow-gold);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px);
+  transition: transform 0.4s var(--ease-out);
+}
+.modal.open .modal-panel { transform: translateY(0); }
+
+.modal-head {
+  padding: 28px 36px 24px;
+  border-bottom: 1px solid var(--ink-4);
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(212, 165, 116, 0.06) 0%, transparent 100%);
+}
+.modal-head .room-icon { width: 52px; height: 52px; flex: 0 0 52px; }
+.modal-head .room-icon svg { width: 24px; height: 24px; }
+.modal-head h3 {
+  font-family: var(--font-cn);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ivory-0);
+  margin-bottom: 4px;
+}
+.modal-head .room-en {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--gold-2);
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+.modal-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  border: 1px solid var(--ink-4);
+  color: var(--ivory-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+.modal-close:hover {
+  background: var(--crimson);
+  color: var(--ivory-0);
+  border-color: var(--crimson);
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  padding: 28px 36px 36px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-section {
+  margin-bottom: 32px;
+}
+.modal-section:last-child { margin-bottom: 0; }
+
+.modal-section h4 {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.modal-section h4::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--gold-3);
+}
+
+.points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.points li {
+  position: relative;
+  padding: 12px 0 12px 24px;
+  border-bottom: 1px dashed var(--ink-4);
+  font-size: 0.96rem;
+  color: var(--ivory-1);
+  line-height: 1.7;
+}
+.points li:last-child { border-bottom: 0; }
+.points li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 22px;
+  width: 6px; height: 6px;
+  background: var(--gold-2);
+  transform: rotate(45deg);
+}
+.points li strong {
+  color: var(--gold-1);
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 6px;
+}
+.points li code {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  padding: 1px 6px;
+  background: var(--ink-3);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-sm);
+  color: var(--gold-1);
+}
+
+.formula {
+  padding: 16px 20px;
+  background: var(--ink-2);
+  border-left: 3px solid var(--gold-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  color: var(--ivory-0);
+  margin: 12px 0;
+  line-height: 1.7;
+}
+.formula-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  margin-bottom: 6px;
+}
+
+.terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.term {
+  padding: 6px 12px;
+  background: var(--ink-3);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--gold-1);
+}
+
+.mnemonic {
+  padding: 18px 22px;
+  background: linear-gradient(135deg, rgba(212, 165, 116, 0.08) 0%, rgba(212, 165, 116, 0.02) 100%);
+  border: 1px solid var(--gold-5);
+  border-radius: var(--radius-md);
+  position: relative;
+  margin-top: 12px;
+}
+.mnemonic::before {
+  content: '记忆口诀';
+  position: absolute;
+  top: -10px; left: 18px;
+  padding: 2px 10px;
+  background: var(--ink-1);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+}
+.mnemonic-text {
+  font-family: var(--font-cn);
+  font-size: 1.05rem;
+  color: var(--ivory-0);
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+}
+
+.source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.source {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 4px 10px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-sm);
+  color: var(--ivory-2);
+}
+.source::before { content: '→ '; color: var(--gold-3); }
+
+/* ============================================================
+   Footer / Index
+   ============================================================ */
+footer {
+  padding: 64px 0 48px;
+  margin-top: 48px;
+  border-top: 1px solid var(--ink-4);
+}
+.foot-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 32px;
+}
+.foot-col h4 {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  margin-bottom: 14px;
+}
+.foot-col p { font-size: 0.88rem; color: var(--ivory-2); }
+.foot-list {
+  list-style: none;
+  padding: 0; margin: 0;
+}
+.foot-list li {
+  padding: 4px 0;
+  font-size: 0.86rem;
+  color: var(--ivory-2);
+}
+.foot-list li::before {
+  content: '·';
+  color: var(--gold-3);
+  margin-right: 8px;
+}
+.foot-bottom {
+  padding-top: 24px;
+  border-top: 1px solid var(--ink-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--ivory-3);
+  font-family: var(--font-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 24px var(--glow-gold); }
+  50% { box-shadow: 0 0 48px var(--glow-gold); }
+}
+
+.room { animation: fadeUp 0.5s var(--ease-out) backwards; }
+.room:nth-child(1) { animation-delay: 0.04s; }
+.room:nth-child(2) { animation-delay: 0.08s; }
+.room:nth-child(3) { animation-delay: 0.12s; }
+.room:nth-child(4) { animation-delay: 0.16s; }
+.room:nth-child(5) { animation-delay: 0.20s; }
+.room:nth-child(6) { animation-delay: 0.24s; }
+
+.hero { animation: fadeIn 0.8s var(--ease-out); }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .wrap { padding: 0 20px; }
+  .hero { padding: 64px 0 40px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .stat { border-right: 1px solid var(--ink-4); border-bottom: 1px solid var(--ink-4); }
+  .stat:nth-child(2n) { border-right: 0; }
+  .level-head { flex-wrap: wrap; }
+  .level-num { font-size: 3rem; }
+  .foot-grid { grid-template-columns: 1fr; gap: 32px; }
+  .modal { padding: 0; }
+  .modal-panel { max-height: 100vh; height: 100vh; border-radius: 0; }
+  .modal-head, .modal-body { padding-left: 20px; padding-right: 20px; }
+  .controls-row { gap: 14px; }
+  .search { flex: 1 1 100%; margin-left: 0; }
+}
+
+/* ============================================================
+   Scrollbar
+   ============================================================ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--ink-1); }
+::-webkit-scrollbar-thumb {
+  background: var(--ink-4);
+  border-radius: 5px;
+  border: 2px solid var(--ink-1);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold-4); }
+
+::selection {
+  background: var(--gold-2);
+  color: var(--ink-0);
+}
+
+/* ===== Light Theme (ink ↔ ivory flip) ===== */
+[data-theme="light"] {
+  --ink-0: #f5efde;
+  --ink-1: #ebe4cf;
+  --ink-2: #ddd2b3;
+  --ink-3: #c9bd9a;
+  --ink-4: #a89a72;
+  --gold-1: #8a6a2c;
+  --gold-2: #a07a32;
+  --gold-3: #6f5421;
+  --gold-4: #4a3814;
+  --gold-5: #2e2208;
+  --ivory-0: #1a1a1a;
+  --ivory-1: #2a2a2a;
+  --ivory-2: #4d4a40;
+  --ivory-3: #6f6b5d;
+  --crimson: #a83d27;
+  --emerald: #3f6b53;
+  --azure: #355080;
+  --violet: #564268;
+  --amber-deep: #8a4a2a;
+  --copper: #9c6f3e;
+  --steel: #3a5862;
+  --deep-emerald: #2a6b50;
+  --mauve: #7a4a6b;
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(140, 100, 40, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(53, 80, 128, 0.08) 0%, transparent 55%);
+}
+
+[data-theme="light"] header,
+[data-theme="light"] .panel,
+[data-theme="light"] .modal,
+[data-theme="light"] .room,
+[data-theme="light"] .detail-card,
+[data-theme="light"] .search-input,
+[data-theme="light"] .filter-pill {
+  border-color: var(--ink-3);
+}
+
+[data-theme="light"] .panel,
+[data-theme="light"] .modal,
+[data-theme="light"] .detail-card,
+[data-theme="light"] .room {
+  background: rgba(245, 239, 222, 0.85);
+}
+
+[data-theme="light"] .search-input {
+  background: var(--ink-1);
+  color: var(--ivory-1);
+}
+
+/* ===== Theme toggle button ===== */
+.theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 9999;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-4);
+  background: var(--ink-2);
+  color: var(--gold-1);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.theme-toggle:hover {
+  border-color: var(--gold-1);
+  background: var(--ink-3);
+  transform: rotate(15deg);
+}
+[data-theme="light"] .theme-toggle {
+  box-shadow: 0 2px 6px rgba(60,40,10,0.18);
+}
+
+@media print {
+  body, html { background: white !important; color: #1a1a1a !important; }
+  .theme-toggle, header, .modal { display: none !important; }
+  [data-theme="light"] { --ink-0:#fff; --ink-1:#fff; --ink-2:#f7f3e8; --ink-3:#d4c9a5; --ink-4:#a89a72; --ivory-0:#1a1a1a; --ivory-1:#1a1a1a; }
+}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+<!-- ============================================================
+     Hero
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-mark">Palace of Architecture · 系统架构设计师</div>
+  <h1>知识宫殿</h1>
+  <p class="hero-sub">— Method of Loci · 让每一间房,存放一段知识 —</p>
+  <p class="hero-desc">
+    以 <strong>记忆宫殿法</strong> 为骨架,把 <strong>22 个核心知识领域</strong> 编排成可走、可触、可回忆的实体空间。
+    点击任意房间进入 — 浏览关键概念、必记术语、考频标签,直至所有知识点都像回到自家书桌一样熟悉。
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num" data-count="30">0</div>
+      <div class="stat-label">知识房间</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="3">0</div>
+      <div class="stat-label">考试科目</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="75">0</div>
+      <div class="stat-label">综合知识题</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="8">0</div>
+      <div class="stat-label">案例题型</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Controls
+     ============================================================ -->
+<nav class="controls">
+  <div class="wrap controls-row">
+    <div class="controls-label">Filter</div>
+    <div class="filter-group" data-filter="exam">
+      <button class="chip active" data-value="all">全部</button>
+      <button class="chip" data-value="comp">综合知识</button>
+      <button class="chip" data-value="case">案例分析</button>
+      <button class="chip" data-value="paper">论文</button>
+    </div>
+    <div class="filter-group" data-filter="freq">
+      <button class="chip active" data-value="all">所有考频</button>
+      <button class="chip" data-value="5">⭐⭐⭐⭐⭐</button>
+      <button class="chip" data-value="4">⭐⭐⭐⭐+</button>
+      <button class="chip" data-value="3">⭐⭐⭐</button>
+    </div>
+    <div class="search">
+      <span class="search-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <input type="text" id="search" placeholder="搜索房间或知识点…" />
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     Floor 1 — Foundations Hall
+     ============================================================ -->
+<section class="level" data-level="1">
+  <div class="level-head">
+    <div class="level-num">I</div>
+    <div class="level-title">
+      <h2><small>The Foundations Hall</small>地基之厅</h2>
+      <p>九块基石 — 计算机/操作系统/数据库/网络/工程基础。九门基本功不过关,上层建筑摇摇欲坠。</p>
+    </div>
+    <div class="level-meta">
+      <strong>9</strong>
+      <div>rooms</div>
+    </div>
+  </div>
+  <div class="rooms" id="rooms-1"></div>
+</section>
+
+<!-- ============================================================
+     Floor 2 — Architecture Sanctum
+     ============================================================ -->
+<section class="level" data-level="2">
+  <div class="level-head">
+    <div class="level-num">II</div>
+    <div class="level-title">
+      <h2><small>The Architecture Sanctum</small>架构圣殿</h2>
+      <p>五根柱石 — 架构风格、质量属性、ATAM、设计模式、4+1 视图。三科通用,必考高频。</p>
+    </div>
+    <div class="level-meta">
+      <strong>5</strong>
+      <div>rooms</div>
+    </div>
+  </div>
+  <div class="rooms" id="rooms-2"></div>
+</section>
+
+<!-- ============================================================
+     Floor 3 — Tech Wing
+     ============================================================ -->
+<section class="level" data-level="3">
+  <div class="level-head">
+    <div class="level-num">III</div>
+    <div class="level-title">
+      <h2><small>The Tech Wing</small>专题之翼</h2>
+      <p>八间密室 — 云原生、中间件、分布式事务、缓存、大数据、可靠性、安全、嵌入式。案例与论文的主要弹药库。</p>
+    </div>
+    <div class="level-meta">
+      <strong>8</strong>
+      <div>rooms</div>
+    </div>
+  </div>
+  <div class="rooms" id="rooms-3"></div>
+</section>
+
+<!-- ============================================================
+     Floor 4 — Case Pavilion
+     ============================================================ -->
+<section class="level" data-level="4">
+  <div class="level-head">
+    <div class="level-num">IV</div>
+    <div class="level-title">
+      <h2><small>The Case Pavilion</small>案例之园</h2>
+      <p>八种题材 — 信息系统、层次式、云原生、SOA、嵌入式、通信、安全、大数据。每一座对应一种典型案例分析场景。</p>
+    </div>
+    <div class="level-meta">
+      <strong>8</strong>
+      <div>rooms · 案例分析专项</div>
+    </div>
+  </div>
+  <div class="rooms" id="rooms-4"></div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     Modal
+     ============================================================ -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-panel" id="modal-panel"></div>
+</div>
+
+<!-- ============================================================
+     Footer
+     ============================================================ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <h4>About the Palace</h4>
+        <p>
+          本宫殿由 <code style="color:var(--gold-1)">docs/</code> 仓库提炼而成,所有房间对应 <strong style="color:var(--gold-1)">exam-bank</strong> 与 <strong style="color:var(--gold-1)">knowledge-index</strong> 中的具体主题文件。
+          考频标签综合自 <strong style="color:var(--gold-1)">cheatsheets</strong> 与 <strong style="color:var(--gold-1)">past-papers</strong> 的归类估计,使用时请核对最新真题。
+        </p>
+      </div>
+      <div class="foot-col">
+        <h4>Source Directories</h4>
+        <ul class="foot-list">
+          <li>cheatsheets · 速查卡</li>
+          <li>exam-bank · 题库</li>
+          <li>knowledge-index · 索引</li>
+          <li>mind-maps · 思维导图</li>
+          <li>notes · 详细笔记</li>
+          <li>past-papers · 真题资料</li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Method</h4>
+        <ul class="foot-list">
+          <li>走位(Loci)</li>
+          <li>意象(Image)</li>
+          <li>关联(Link)</li>
+          <li>回溯(Recall)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>System Architect · 高级软件架构师考试</span>
+      <span>Knowledge Palace v1</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     Data + Behavior
+     ============================================================ -->
+<script>
+/* ============================================================
+   Palace Data — 22 knowledge rooms
+   ============================================================ */
+const PALACE = {
+  1: {
+    title: '地基之厅',
+    rooms: [
+      {
+        id: 'computer-systems',
+        name: '计算机系统',
+        en: 'Computer Systems',
+        icon: 'cpu',
+        freq: 4,
+        types: ['comp'],
+        summary: 'CPU 与存储层次、可靠性编码、Flynn 分类。综合 4-5 题,核心是 Cache 与编码。',
+        points: [
+          { k: 'Cache', v: '三要素 — 容量 / 命中率 / 访问时间。<code>平均访问时间 = 命中率 × Cache 访问 + (1-命中率) × 主存访问</code>' },
+          { k: '流水线', v: '理论加速比 = 流水段数;实际受限于数据相关、结构相关、控制相关' },
+          { k: 'Flynn 分类', v: '<code>SISD / SIMD / MISD / MIMD</code> — 现代多核 CPU 多属 MIMD' },
+          { k: '可靠性编码', v: 'CRC 检错、海明码纠错(信息位 k、校验位 r 满足 <code>2^r ≥ k + r + 1</code>)' },
+          { k: 'CISC vs RISC', v: 'CISC 指令多复杂、RISC 指令少规整 — 现代 CPU 趋向 RISC' },
+          { k: '存储层次', v: '寄存器 > Cache(L1/L2/L3) > 主存 > 磁盘 > 磁带,速度与容量反向' }
+        ],
+        terms: ['Cache', 'TLB', '流水线', 'CPI', 'CPI', 'Flynn', 'CRC', '海明码', '存储层次'],
+        mnemonic: '「主Cache、海明校、CISC杂RISC简」',
+        sources: ['cheatsheets/computer-systems-formulas.md', 'exam-bank/01-computer-systems.md']
+      },
+      {
+        id: 'os-concepts',
+        name: '操作系统',
+        en: 'Operating Systems',
+        icon: 'layers',
+        freq: 4,
+        types: ['comp'],
+        summary: '进程管理、调度算法、死锁、虚拟存储、文件索引。综合 3-4 题,重在 PV 与死锁。',
+        points: [
+          { k: '进程三态', v: '就绪 → 运行 → 阻塞;转换关键 — 调度 / 时间片耗尽 / I/O 请求' },
+          { k: 'PV 操作', v: '信号量机制,<code>P(S)</code> 申请资源(减 1)、<code>V(S)</code> 释放资源(加 1)' },
+          { k: '死锁四要素', v: '<code>互斥 / 持有并等待 / 不可剥夺 / 循环等待</code> — 破坏任一即可避免' },
+          { k: '银行家算法', v: '动态避免死锁,核心是判断 <code>Request ≤ Need && Request ≤ Available</code>' },
+          { k: '页面置换', v: 'OPT / FIFO / LRU / LFU / Clock — LRU 最常用,Clock 是近似' },
+          { k: '文件索引', v: '一级 / 二级 / 多级 — 磁盘块大小 × 块数决定寻址范围' }
+        ],
+        terms: ['PV', '死锁', '银行家', 'LRU', 'FIFO', '页表', 'TLB', '抖动', '工作集'],
+        mnemonic: '「死锁四要 — 互持不循」',
+        sources: ['cheatsheets/os-concepts.md', 'exam-bank/02-os-concepts.md']
+      },
+      {
+        id: 'database',
+        name: '数据库',
+        en: 'Database Systems',
+        icon: 'database',
+        freq: 5,
+        types: ['comp', 'case'],
+        summary: '关系范式、函数依赖、事务 ACID、并发控制。综合 6-8 题、案例高频,头号考点。',
+        points: [
+          { k: '范式阶梯', v: '<code>1NF(原子)→ 2NF(消除部分依赖)→ 3NF(消除传递依赖)→ BCNF(每个决定因素都是候选键)</code>' },
+          { k: '函数依赖', v: 'Armstrong 公理 — 自反律 / 增广律 / 传递律;推导闭包 F+' },
+          { k: '事务 ACID', v: '<code>原子性 / 一致性 / 隔离性 / 持久性</code>' },
+          { k: '并发控制', v: '两段锁协议(2PL)、时间戳、乐观锁 — 解决丢失更新 / 脏读 / 不可重复读 / 幻读' },
+          { k: '隔离级别', v: '读未提交 → 读已提交 → 可重复读 → 串行化(从弱到强)' },
+          { k: 'NoSQL 四类', v: '键值(Redis) / 文档(MongoDB) / 列族(HBase) / 图(Neo4j)' },
+          { k: '分布式数据库', v: 'CAP — <code>一致性 / 可用性 / 分区容错</code> 三选二;BASE 容忍最终一致' }
+        ],
+        terms: ['范式', 'BCNF', 'ACID', '2PL', '活锁', '死锁', 'CAP', 'BASE', 'NoSQL'],
+        mnemonic: '「ACID — 原一隔持;CAP — 一可分」',
+        sources: ['cheatsheets/database-normalization.md', 'exam-bank/03-database.md']
+      },
+      {
+        id: 'networking',
+        name: '计算机网络',
+        en: 'Computer Networks',
+        icon: 'network',
+        freq: 3,
+        types: ['comp'],
+        summary: 'OSI/TCP-IP、子网划分、TCP 三次握手、HTTP/DNS。综合 2-3 题,常在最后一题附近。',
+        points: [
+          { k: 'OSI 7 层', v: '<code>物理 → 数据链路 → 网络 → 传输 → 会话 → 表示 → 应用</code>' },
+          { k: 'TCP/IP 4 层', v: '网络接口 / 网际(IP) / 传输(TCP/UDP) / 应用(HTTP/DNS/FTP)' },
+          { k: 'TCP 三次握手', v: '<code>SYN → SYN+ACK → ACK</code>;四次挥手多一次 FIN' },
+          { k: '子网掩码', v: '<code>IP = 网络号 + 主机号</code>;CIDR 用 /n 表示前缀位数' },
+          { k: 'HTTP', v: '<code>GET / POST / PUT / DELETE</code>;状态码 1xx~5xx;HTTPS = HTTP + TLS' },
+          { k: 'DNS', v: '域名 → IP;迭代查询 + 递归查询;根 → 顶级 → 权威' }
+        ],
+        terms: ['OSI', 'TCP', 'UDP', 'ARP', 'DNS', 'HTTP', 'HTTPS', 'CIDR', 'VLAN'],
+        mnemonic: '「TCP 三次 SYN,四次 FIN」',
+        sources: ['cheatsheets/networking.md', 'exam-bank/04-networking.md']
+      },
+      {
+        id: 'uml',
+        name: 'UML 建模',
+        en: 'UML Diagrams',
+        icon: 'shapes',
+        freq: 4,
+        types: ['comp'],
+        summary: '14 种图、6 类关系、4+1 视图。综合 3-4 题,案例题高频画图题。',
+        points: [
+          { k: '14 种图', v: '结构图(类/对象/构件/部署/包/组合/制品) + 行为图(用例/活动/状态机/序列/通信/时序/交互概览)' },
+          { k: '6 类关系', v: '<code>依赖 / 关联 / 聚合 / 组合 / 泛化 / 实现</code> — 强度递增' },
+          { k: '类图核心', v: '类名 / 属性 / 操作;可见性 + public # protected - private' },
+          { k: '序列图', v: '对象 + 生命线 + 消息;实线箭头同步、虚线箭头返回' },
+          { k: '状态机', v: '状态 + 转移 + 事件 + 监护条件;初态实心圆、终态嵌套圆' },
+          { k: '4+1 视图', v: '逻辑 / 开发 / 进程 / 物理 / +1 用例 — 4+1 视图模型' }
+        ],
+        terms: ['类图', '序列图', '状态机', '用例图', '活动图', '构件图', '部署图'],
+        mnemonic: '「依关聚组泛实 — 关系六型」',
+        sources: ['cheatsheets/uml-diagrams.md', 'exam-bank/05-uml.md']
+      },
+      {
+        id: 'ip-standards',
+        name: '知识产权与标准化',
+        en: 'IP & Standards',
+        icon: 'scale',
+        freq: 3,
+        types: ['comp'],
+        summary: '著作权、专利、商标保护期、GB/T 强制性 / 推荐性。综合 2-3 题必考,送分题。',
+        points: [
+          { k: '保护期', v: '<code>著作权(公民)50年 / 法人50年;专利20年;商标10年(可续)</code>' },
+          { k: '知识产权', v: '著作权 / 专利权 / 商标权 / 商业秘密 — 软件著作权登记非强制但举证有效' },
+          { k: '标准化代号', v: '<code>GB 强制 / GB/T 推荐 / GB/Z 指导 / GB/* 修改单</code>;ISO / IEC / IEEE 国际' },
+          { k: '软件著作权', v: '自作品完成之日自动产生,不需申请;登记证书作为举证证据' },
+          { k: '专利三性', v: '新颖性 / 创造性 / 实用性 — 软件专利难,需技术方案' }
+        ],
+        terms: ['著作权', '专利权', '商标权', 'GB', 'GB/T', 'ISO', 'IEC'],
+        mnemonic: '「著作五零,专利二零,商标一零可续」',
+        sources: ['cheatsheets/ip-and-standards.md', 'exam-bank/06-ip-and-standards.md']
+      },
+      {
+        id: 'software-engineering',
+        name: '软件工程',
+        en: 'Software Engineering',
+        icon: 'workflow',
+        freq: 3,
+        types: ['comp'],
+        summary: '开发模型、CMMI、需求层次、测试类型、维护类型。综合 3-4 题。',
+        points: [
+          { k: '开发模型', v: '瀑布 / 增量 / 演化(原型 + 螺旋) / 敏捷(Sc/XP/Scrum);迭代风险降低' },
+          { k: 'CMMI 5 级', v: '<code>初始 / 可重复 / 已定义 / 量化管理 / 优化</code> — 级别越高成熟度越高' },
+          { k: '需求层次', v: '业务需求 → 用户需求 → 系统需求;功能 + 非功能(Quality Attributes)' },
+          { k: '测试层次', v: '单元 → 集成 → 系统 → 确认 → 验收;V 模型对应' },
+          { k: '维护类型', v: '改正性 / 适应性 / 完善性 / 预防性 — 完善性占比最大(~60%)' },
+          { k: '质量模型', v: 'ISO 25010 — 功能性 / 性能 / 兼容性 / 易用性 / 可靠性 / 安全性 / 可维护性 / 可移植性' }
+        ],
+        terms: ['CMMI', '瀑布', '敏捷', 'Scrum', 'V模型', 'ISO25010'],
+        mnemonic: '「CMMI — 初重定量优」',
+        sources: ['cheatsheets/software-engineering-cmmi.md', 'exam-bank/07-software-engineering.md']
+      },
+      {
+        id: 'project-management',
+        name: '项目管理',
+        en: 'Project Management',
+        icon: 'gantt',
+        freq: 3,
+        types: ['comp'],
+        summary: '关键路径 CPM、PERT 三点估算、挣值分析 EVM。综合 3-4 题,公式题集中。',
+        points: [
+          { k: '关键路径', v: '最长路径 = 项目最短完成时间;<code>总时差 = LS - ES = LF - EF</code>' },
+          { k: 'PERT', v: '<code>期望工期 = (乐观 + 4×最可能 + 悲观) / 6</code>;标准差 = (悲观 - 乐观) / 6' },
+          { k: '挣值 EVM', v: '<code>PV / EV / AC</code>;CPI = EV/AC;SPI = EV/PV — CPI<1 成本超支' },
+          { k: 'WBS', v: '工作分解结构 — 任务细分到可管理包;100% 原则' },
+          { k: '风险', v: '识别 → 分析(定性 + 定量) → 应对(规避/转移/减轻/接受);风险登记册' },
+          { k: '进度压缩', v: '赶工(增加资源) / 快速跟进(并行任务)— 都增加风险' }
+        ],
+        terms: ['CPM', 'PERT', 'EVM', 'CPI', 'SPI', 'WBS', '风险矩阵'],
+        mnemonic: '「EV 除 AC 看 CPI,EV 除 PV 看 SPI」',
+        sources: ['cheatsheets/project-management-calculations.md', 'exam-bank/08-project-management.md']
+      },
+      {
+        id: 'software-metrics',
+        name: '软件度量',
+        en: 'Software Metrics',
+        icon: 'ruler',
+        freq: 3,
+        types: ['comp'],
+        summary: '函数点 FP、McCabe 复杂度、Halstead、耦合内聚。综合 2-3 题。',
+        points: [
+          { k: '函数点 FP', v: '五类组件 — 外部输入 / 输出 / 查询 + 内部逻辑文件 + 外部接口文件;14 个复杂度调整因子' },
+          { k: 'McCabe', v: '<code>V(G) = E - N + 2P</code>;环路复杂度;V(G) ≤ 10 视为可测' },
+          { k: 'Halstead', v: '程序词汇表 n1 / n2;长度 N = N1+N2;容量 H = N × log2(n1+n2)' },
+          { k: '内聚(强→弱)', v: '<code>功能 / 信息 / 通信 / 过程 / 时间 / 逻辑 / 偶然</code> — 功能最强' },
+          { k: '耦合(弱→强)', v: '<code>非直接 / 数据 / 标记 / 控制 / 外部 / 公共 / 内容</code> — 内容最强(最差)' }
+        ],
+        terms: ['FP', 'McCabe', 'Halstead', '耦合', '内聚', '圈复杂度'],
+        mnemonic: '「内聚七阶功能最强;耦合七阶内容最弱」',
+        sources: ['cheatsheets/software-metrics.md', 'exam-bank/09-software-metrics.md']
+      }
+    ]
+  },
+  2: {
+    title: '架构圣殿',
+    rooms: [
+      {
+        id: 'architecture-styles',
+        name: '架构风格',
+        en: 'Architecture Styles',
+        icon: 'compass',
+        freq: 5,
+        types: ['comp', 'case', 'paper'],
+        summary: '5 大类、数据流 / 调用返回 / 独立构件 / 数据为中心 / 虚拟机。三科通用超高频。',
+        points: [
+          { k: '5 大类', v: '<code>数据流(管道-过滤器) / 调用返回(分层/C-S) / 独立构件(事件系统) / 数据为中心(仓库) / 虚拟机(解释器/规则系统)</code>' },
+          { k: '分层架构', v: '三层(表示-业务-数据) / 四层(增加基础设施);层间单向依赖' },
+          { k: '客户端-服务器', v: 'C/S(胖客户) / B/S(瘦客户);演进到富客户端(SPA)' },
+          { k: '微内核', v: '核心系统 + 插件;Eclipse、OSGi;扩展性好但核心设计复杂' },
+          { k: '事件驱动', v: '隐式调用 / 显式调用;发布-订阅;松耦合但难测试' },
+          { k: '微服务', v: '单一职责 + 独立部署 + 去中心化;与单体、SOA 对比常考' }
+        ],
+        terms: ['分层', 'C/S', 'B/S', '微内核', '事件驱动', '微服务', 'MDA', 'SOA'],
+        mnemonic: '「数据调云独虚中」',
+        sources: ['cheatsheets/architecture-styles.md', 'exam-bank/10-architecture-styles.md']
+      },
+      {
+        id: 'quality-attributes',
+        name: '质量属性',
+        en: 'Quality Attributes',
+        icon: 'shield',
+        freq: 5,
+        types: ['comp', 'case', 'paper'],
+        summary: '6 大属性、场景 6 元组、可用战术。三科通用,论文与案例分析核心。',
+        points: [
+          { k: '6 大属性', v: '<code>可用性 / 可修改性 / 性能 / 安全性 / 可测试性 / 易用性</code>' },
+          { k: '场景 6 元组', v: '刺激源 / 刺激 / 环境 / 制品 / 响应 / 响应度量 — 描述质量需求的标准格式' },
+          { k: '可用性战术', v: '故障检测(心跳/ping) → 恢复(冗余/检查点/回滚) → 防止(事务/进程监视)' },
+          { k: '可修改性战术', v: '局部化(高内聚)/ 防止连锁(信息隐藏)/ 推迟绑定(运行时注册)' },
+          { k: '性能战术', v: '减少资源需求(提高效率) / 增加资源(并行/缓存) / 资源仲裁' },
+          { k: '安全战术', v: '抵抗(认证/授权/加密)/ 检测(IDS/审计)/ 恢复(备份/冗余)' }
+        ],
+        terms: ['可用性', '可修改性', '性能', '安全性', '战术', '6元组', '效用树'],
+        mnemonic: '「用测安改性易 — 六属」',
+        sources: ['cheatsheets/quality-attributes.md', 'exam-bank/11-quality-attributes.md']
+      },
+      {
+        id: 'atam',
+        name: 'ATAM 架构评估',
+        en: 'ATAM Evaluation',
+        icon: 'check-circle',
+        freq: 5,
+        types: ['case', 'paper'],
+        summary: '9 步骤、4 类点(架构/决策/风险/非风险)、效用树。案例分析几乎必考。',
+        points: [
+          { k: '9 步骤', v: '<code>介绍 ATAM / 商定评估目标 / 介绍架构 / 确定质量属性效用树 / 分析架构方法 / 头脑风暴场景 / 分析场景 / 评估结果 / 复盘</code>' },
+          { k: '4 类点', v: '架构方法(<em>architectural approaches</em>)、架构决策、风险、非风险(sensitivity points)' },
+          { k: '效用树', v: '质量属性 → 属性求精 → 场景;用效用(高/中/低)标记优先级' },
+          { k: 'SAAM', v: '早期评估,关注场景;适合单一质量属性' },
+          { k: 'CBAM', v: '在 ATAM 基础上加入成本/收益分析,辅助决策' },
+          { k: '场景优先级', v: '效用 × 风险 × 成本 — 综合排序' }
+        ],
+        terms: ['ATAM', 'SAAM', 'CBAM', '效用树', '敏感点', '权衡点'],
+        mnemonic: '「架构决策风险非风险」',
+        sources: ['cheatsheets/architecture-evaluation.md', 'exam-bank/12-atam-evaluation.md']
+      },
+      {
+        id: 'design-patterns',
+        name: '设计模式 GoF 23',
+        en: 'Design Patterns',
+        icon: 'puzzle',
+        freq: 4,
+        types: ['comp', 'case'],
+        summary: '23 种分 3 类 — 创建 5 / 结构 7 / 行为 11。综合 4-6 题,案例常考 UML 画图。',
+        points: [
+          { k: '创建型 5', v: '<code>单例 / 工厂方法 / 抽象工厂 / 建造者 / 原型</code>' },
+          { k: '结构型 7', v: '<code>适配器 / 桥接 / 组合 / 装饰器 / 外观 / 享元 / 代理</code>' },
+          { k: '行为型 11', v: '<code>职责链 / 命令 / 解释器 / 迭代器 / 中介者 / 备忘录 / 观察者 / 状态 / 策略 / 模板方法 / 访问者</code>' },
+          { k: '高频考点', v: '单例(7 种实现)/ 工厂方法 / 观察者 / 装饰器 / 适配器 / 策略 / 代理 / MVC(复合)' },
+          { k: '模式对比', v: '装饰器 vs 继承 / 代理 vs 装饰器 / 策略 vs 状态 / 工厂方法 vs 抽象工厂' }
+        ],
+        terms: ['单例', '工厂', '观察者', '装饰器', '适配器', '策略', '代理', 'MVC'],
+        mnemonic: '「创五构七行十一」',
+        sources: ['cheatsheets/design-patterns-gof23.md', 'exam-bank/13-design-patterns.md']
+      },
+      {
+        id: 'absd-views',
+        name: 'ABSD 与 4+1 视图',
+        en: 'ABSD & 4+1 Views',
+        icon: 'sitemap',
+        freq: 3,
+        types: ['comp'],
+        summary: 'ABSD 三阶段、4+1 视图、ADL 架构描述语言。综合 2-3 题。',
+        points: [
+          { k: 'ABSD 三阶段', v: '<code>架构需求 → 架构实现 → 架构复审</code>;以需求驱动,文档化' },
+          { k: '4+1 视图', v: '<code>逻辑视图(功能)/ 开发视图(模块)/ 进程视图(并发)/ 物理视图(部署)/ +1 用例视图</code>' },
+          { k: '视图用户', v: '逻辑-用户/客户;开发-程序员;进程-系统集成;物理-系统工程师' },
+          { k: 'ADL', v: '架构描述语言 — Acme/Darwin/Wright;组件 + 连接件 + 配置' },
+          { k: 'DSSA', v: '特定领域软件架构 — 领域分析/设计/实现 三阶段' }
+        ],
+        terms: ['ABSD', '4+1', 'ADL', 'DSSA', '产品线'],
+        mnemonic: '「需实审;逻开进程物」',
+        sources: ['cheatsheets/absd-and-adl.md', 'exam-bank/14-absd-views.md']
+      }
+    ]
+  },
+  3: {
+    title: '专题之翼',
+    rooms: [
+      {
+        id: 'cloud-native',
+        name: '云原生与微服务',
+        en: 'Cloud Native & Microservice',
+        icon: 'cloud',
+        freq: 5,
+        types: ['comp', 'case', 'paper'],
+        summary: '12-Factor、DDD 战略/战术、Service Mesh、容器化、K8s。三科通用,案例论文最高频。',
+        points: [
+          { k: '12-Factor', v: '<code>代码库 / 依赖 / 配置 / 后端服务 / 构建发布运行 / 进程 / 端口绑定 / 并发 / 易处理 / 开发生产等价 / 日志 / 管理进程</code>' },
+          { k: 'DDD', v: '战略(限界上下文/子域) + 战术(实体/值对象/聚合/领域事件/仓储)' },
+          { k: '服务拆分', v: '业务能力 / 子域 / 单一职责;过细增加分布式事务' },
+          { k: '服务网格', v: 'Istio / Linkerd;Sidecar 模式把通信逻辑从应用剥离' },
+          { k: '容器化', v: '镜像 + 容器 + 仓库;Docker 与虚拟机镜像区别(共享内核)' },
+          { k: 'K8s 核心', v: 'Pod / Deployment / Service / Ingress / ConfigMap / Secret;声明式 API' },
+          { k: 'Serverless', v: 'FaaS 函数即服务 + BaaS 后端即服务;按调用计费,冷启动问题' }
+        ],
+        terms: ['微服务', 'DDD', '12-Factor', 'Service Mesh', 'K8s', 'Serverless', 'FaaS'],
+        mnemonic: '「十二十二原则;微服务 4 要:独小轻协」',
+        sources: ['cheatsheets/devops-cicd.md', 'exam-bank/15-microservice-cloud-native.md']
+      },
+      {
+        id: 'middleware',
+        name: '中间件',
+        en: 'Middleware',
+        icon: 'plug',
+        freq: 4,
+        types: ['case', 'paper'],
+        summary: 'MQ 点对点/发布订阅、RPC、ESB、API 网关、JMS/AMQP。案例论文高频。',
+        points: [
+          { k: 'MQ 分类', v: '<code>点对点(Queue)/ 发布订阅(Topic)</code>;RabbitMQ / Kafka / RocketMQ' },
+          { k: 'RPC', v: '远程过程调用;REST(语义化)/ gRPC(Protobuf+HTTP/2)/ RMI/Java' },
+          { k: 'ESB', v: '企业服务总线 — 协议适配/路由/转换/编排;SOA 核心' },
+          { k: 'API 网关', v: '统一入口:鉴权/限流/路由/聚合;Kong / Zuul / Spring Cloud Gateway' },
+          { k: 'JMS vs AMQP', v: 'JMS Java 标准 / AMQP 协议跨语言;RabbitMQ 支持 AMQP' },
+          { k: '中间件分类', v: '通信 / 事务 / 数据 / 应用 / 消息 — 各自解决不同问题' }
+        ],
+        terms: ['MQ', 'RPC', 'gRPC', 'ESB', 'API Gateway', 'JMS', 'AMQP'],
+        mnemonic: '「MQ 解耦异步削峰;RPC 同步强一致」',
+        sources: ['cheatsheets/middleware-comparison.md', 'exam-bank/16-middleware.md']
+      },
+      {
+        id: 'distributed-transactions',
+        name: '分布式事务',
+        en: 'Distributed Transactions',
+        icon: 'link',
+        freq: 4,
+        types: ['case', 'paper'],
+        summary: 'CAP/BASE、2PC/3PC、TCC、Saga、可靠消息最终一致。案例论文必考。',
+        points: [
+          { k: 'CAP', v: '<code>一致性 / 可用性 / 分区容错</code> 三选二;分布式 P 必然存在 → AP 或 CP' },
+          { k: 'BASE', v: '<code>基本可用 / 软状态 / 最终一致</code> — 对应 ACID 的弱化' },
+          { k: '2PC', v: '两阶段提交 — 准备 + 提交;协调者单点;同步阻塞' },
+          { k: '3PC', v: '增加预提交 + 超时机制,降低阻塞;但实现复杂' },
+          { k: 'TCC', v: '<code>Try(预留)/ Confirm(确认)/ Cancel(取消)</code> — 业务侵入大但高性能' },
+          { k: 'Saga', v: '长事务拆子事务 + 补偿;两种协调 — 编排 / 编制' },
+          { k: '可靠消息', v: '本地消息表 / RocketMQ 事务消息 / 最大努力通知' }
+        ],
+        terms: ['CAP', 'BASE', '2PC', '3PC', 'TCC', 'Saga', '可靠消息'],
+        mnemonic: '「CP/AP 二选;2PC 同步,TCC 业务」',
+        sources: ['cheatsheets/distributed-transactions.md', 'exam-bank/17-distributed-transactions.md']
+      },
+      {
+        id: 'cache',
+        name: '缓存',
+        en: 'Caching Patterns',
+        icon: 'zap',
+        freq: 4,
+        types: ['case'],
+        summary: '三大问题(穿透/击穿/雪崩)、Cache-Aside、Read-Through、最终一致性。案例高频。',
+        points: [
+          { k: '三大问题', v: '<code>穿透(查不存在数据)/ 击穿(热点 key 失效)/ 雪崩(大量 key 同时失效)</code>' },
+          { k: '穿透方案', v: '布隆过滤器(存在性判断)/ 空值缓存(短 TTL)' },
+          { k: '击穿方案', v: '互斥锁(只允许一个线程回源)/ 逻辑过期(后台异步刷新)' },
+          { k: '雪崩方案', v: '随机过期时间 / 多级缓存 / 请求队列限流' },
+          { k: '读策略', v: '<code>Cache-Aside(应用主导)/ Read-Through(缓存读 DB)/ Write-Behind(异步写)</code>' },
+          { k: '一致性', v: 'Cache-Aside + 延迟双删 / 订阅 binlog + 异步刷新(Canal)' }
+        ],
+        terms: ['Redis', 'Cache-Aside', '布隆过滤器', '击穿', '雪崩', '双删'],
+        mnemonic: '「穿击雪 — 布 / 锁 / 散」',
+        sources: ['cheatsheets/cache-patterns.md', 'exam-bank/18-cache.md']
+      },
+      {
+        id: 'big-data',
+        name: '大数据架构',
+        en: 'Big Data',
+        icon: 'bar-chart',
+        freq: 3,
+        types: ['case'],
+        summary: 'Lambda(批+速)/ Kappa(流)、数据湖 vs 数仓、NoSQL CAP 选择。综合 2-3 题。',
+        points: [
+          { k: 'Lambda', v: '<code>批处理层(Batch) + 速度层(Speed) + 服务层(Serving)</code>;数据重算 + 实时' },
+          { k: 'Kappa', v: '<code>流处理统一</code>;Kafka 重放 + Flink 流计算;架构更简单' },
+          { k: 'Hadoop 生态', v: 'HDFS 存储 + YARN 调度 + MapReduce 计算;Hive/Pig/Spark' },
+          { k: '数仓 vs 数据湖', v: '数仓 — 结构化、Schema-on-Write;数据湖 — 原始、Schema-on-Read' },
+          { k: 'NoSQL CAP', v: 'Redis(AP)/ MongoDB(CP)/ Cassandra(AP)/ HBase(CP)' }
+        ],
+        terms: ['Lambda', 'Kappa', 'Hadoop', 'Kafka', 'Flink', '数据湖'],
+        mnemonic: '「Lambda 双写,Kappa 单流」',
+        sources: ['cheatsheets/big-data-patterns.md', 'exam-bank/19-big-data.md']
+      },
+      {
+        id: 'reliability',
+        name: '软件可靠性',
+        en: 'Reliability',
+        icon: 'activity',
+        freq: 4,
+        types: ['comp', 'case', 'paper'],
+        summary: 'MTBF/MTTR/可用性、串并联可靠性、容灾 RTO/RPO、限流熔断降级。',
+        points: [
+          { k: '基本指标', v: '<code>MTBF(平均故障间隔)/ MTTR(平均修复时间)/ 可用性 A = MTBF/(MTBF+MTTR)</code>' },
+          { k: '串联可靠性', v: '<code>R_series = R1 × R2 × ... × Rn</code> — 任一故障系统故障' },
+          { k: '并联可靠性', v: '<code>R_parallel = 1 - (1-R1)(1-R2)...(1-Rn)</code> — 冗余提升' },
+          { k: '容灾指标', v: '<code>RTO(恢复时间目标)/ RPO(数据丢失目标)</code>;两地三中心方案' },
+          { k: '保护三件套', v: '<code>限流(流量控制)/ 熔断(快速失败)/ 降级(返回兜底)</code> — 高可用保障' },
+          { k: '冗余设计', v: '热备 / 温备 / 冷备;主备 / 主主;脑裂问题' }
+        ],
+        terms: ['MTBF', 'MTTR', '可用性', 'RTO', 'RPO', '熔断', '限流', '降级'],
+        mnemonic: '「MTBF 大、MTTR 小 → 可用性高」',
+        sources: ['exam-bank/20-reliability.md']
+      },
+      {
+        id: 'security',
+        name: '安全架构',
+        en: 'Security',
+        icon: 'lock',
+        freq: 4,
+        types: ['comp', 'case', 'paper'],
+        summary: 'CIA、STRIDE 威胁建模、PKI、对称/非对称、国密 SM2/3/4、等保 2.0。',
+        points: [
+          { k: 'CIA', v: '<code>机密性 / 完整性 / 可用性</code>;扩展 — 不可否认性、可控性、可审计性' },
+          { k: 'STRIDE', v: '<code>伪装 / 篡改 / 抵赖 / 信息泄露 / 拒绝服务 / 权限提升</code> — 微软威胁建模' },
+          { k: '加密对比', v: '对称(DES/3DES/AES/SM4)+ 快 + 密钥管理难;非对称(RSA/ECC/SM2)+ 慢 + 公私钥' },
+          { k: 'PKI', v: 'CA 证书颁发机构 + 数字证书 + 数字签名;HTTPS/SSL 全流程' },
+          { k: '国密', v: 'SM1/SM4 对称;SM2 非对称;SM3 哈希;SM9 标识密码' },
+          { k: '等保 2.0', v: '<code>五级</code>(用户自主 / 审计 / 保护 / 结构化 / 主动);云计算/移动扩展要求' },
+          { k: '纵深防御', v: '网络/主机/应用/数据 多层防护;零信任 — 默认不信任任何访问' }
+        ],
+        terms: ['CIA', 'STRIDE', 'PKI', 'CA', 'SM2', 'SM3', 'SM4', '等保', '零信任'],
+        mnemonic: '「CIA 三元;STRIDE 六胁」',
+        sources: ['exam-bank/21-security.md']
+      },
+      {
+        id: 'embedded',
+        name: '嵌入式与实时',
+        en: 'Embedded Systems',
+        icon: 'cpu',
+        freq: 3,
+        types: ['case'],
+        summary: 'RMS 速率单调、EDF 最早截止、优先级反转、CBSD 构件组装。',
+        points: [
+          { k: 'RMS', v: '速率单调调度 — 周期越短优先级越高;静态优先级;可调度性判定 <code>U ≤ n(2^(1/n) - 1)</code>' },
+          { k: 'EDF', v: '最早截止优先 — 动态优先级;利用率可达 100%;但系统开销大' },
+          { k: '优先级反转', v: '低优先级持有高优先级所需资源 — 解决:优先级继承 / 优先级天花板' },
+          { k: '实时分类', v: '硬实时(必须满足)/ 软实时(可偶尔超出)' },
+          { k: 'CBSD', v: '基于构件的软件开发 — 构件(可组装单元)+ 连接件 + 约束' },
+          { k: '嵌入式架构', v: '分层 / 微内核 / 事件驱动 / 状态机 — 资源受限' }
+        ],
+        terms: ['RMS', 'EDF', '优先级反转', 'CBSD', '硬实时', '软实时'],
+        mnemonic: '「RMS 短周高优;EDF 早死高优」',
+        sources: ['cheatsheets/embedded-realtime.md', 'exam-bank/22-embedded.md']
+      }
+    ]
+  },
+  4: {
+    title: '案例之园',
+    rooms: [
+      {
+        id: 'case-atam',
+        name: '架构评估',
+        en: 'Architecture Evaluation (ATAM)',
+        icon: 'check-circle',
+        freq: 5,
+        types: ['case', 'paper'],
+        summary: '第 1 题必做,25 分。效用树 + 四类点(敏感/权衡/风险/非风险) + 6 元组填空。',
+        points: [
+          { k: '6 元组', v: '<code>源 / 刺激 / 制品 / 环境 / 响应 / 度量</code>;例:【用户】在【大促】对【订单服务】在【正常运行】时【下单】需【RT < 500ms,成功率 > 99.99%】' },
+          { k: '敏感点', v: '"为了...我们选..." / 直接决定质量属性;例:主备切换 < 30s 对可用性' },
+          { k: '权衡点', v: '"既...又..." / 提升 X 但降低 Y;例:HTTPS 提升安全但降性能' },
+          { k: '风险点', v: '"可能导致 / 存在隐患";例:单点 MQ 未持久化' },
+          { k: '非风险点', v: '"已验证 / 业界成熟";例:Kafka 集群、MySQL 主从' },
+          { k: '答题套路', v: '三段式 — <code>结论(1句) → 理由(2-3点) → 量化指标</code>;必带「关键用」技术名词' },
+          { k: '关键词', v: '题干数字如"每天 X 万订单 / 99.9% 可用 / RT < 200ms" = 得分提示' }
+        ],
+        terms: ['ATAM', '效用树', '敏感点', '权衡点', '风险点', '非风险点', '6元组'],
+        mnemonic: '「敏权风非 — 四点齐」',
+        sources: ['past-papers/case-types/01-architecture-evaluation.md', 'cheatsheets/case-answer-patterns.md']
+      },
+      {
+        id: 'case-database',
+        name: '数据库设计',
+        en: 'Database Design',
+        icon: 'database',
+        freq: 5,
+        types: ['case'],
+        summary: 'ER 图 + 范式分解 + 候选键 + 读写锁 / NoSQL 选型。2024 上半年 T4 是 3NF 分解 + 并发控制。',
+        points: [
+          { k: 'ER → 关系', v: '实体 → 关系表;1:1 合并 / 1:N 外键 / M:N 中间表;属性分原子' },
+          { k: '范式分解', v: '求候选键(只出现在右部不可单独为键);3NF 分解 — <code>保持依赖 + 无损连接</code>' },
+          { k: '并发控制', v: '两段锁 / 乐观锁 / 读写锁;隔离级别 — 读未提交 → 串行化' },
+          { k: '反范式', v: '读多写少时反范式提性能;冗余字段 + 索引;' },
+          { k: 'NoSQL 选型', v: 'Redis 缓存 / MongoDB 文档 / HBase 列族 / Neo4j 图;CAP 取舍' },
+          { k: '秒杀场景', v: 'Redis 预减库存 + 异步下单 + MQ 削峰;超卖 — 乐观锁 / 分布式锁' }
+        ],
+        terms: ['ER图', '候选键', '3NF', 'BCNF', '读写锁', '乐观锁', '悲观锁'],
+        mnemonic: '「ER 一对多 — 合并外键中间表」',
+        sources: ['past-papers/case-types/02-database-design.md', 'exam-bank/03-database.md']
+      },
+      {
+        id: 'case-style',
+        name: '架构风格对比',
+        en: 'Style Comparison & Selection',
+        icon: 'compass',
+        freq: 4,
+        types: ['case', 'paper'],
+        summary: '5 大类对比 + 选型理由。考题常给场景让你"选 2 个 + 论证优劣"。',
+        points: [
+          { k: '选型三要素', v: '<code>业务特征(并发量/一致性) + 质量属性优先级 + 团队能力</code>' },
+          { k: '常用对比', v: '分层 vs 微服务(规模/团队);SOA vs 微服务(协议粒度);事件驱动 vs 调用返回(耦合度)' },
+          { k: '答题框架', v: '<code>场景特征(2点) → 风格特点(2点) → 匹配(1点) → 风险(1点)</code>' },
+          { k: '管道-过滤器', v: '流式数据处理 / 易组合 / 难共享状态;数据 ETL 场景' },
+          { k: '微内核', v: '核心系统 + 插件;扩展性 / 一致性 / 性能;产品化平台' },
+          { k: '论文万能句', v: '"综合考虑系统的扩展性需求与团队分布式技术储备,最终选用微服务架构,辅以事件驱动实现跨服务解耦..."' }
+        ],
+        terms: ['分层', '微服务', '事件驱动', '微内核', 'SOA', '管道-过滤器'],
+        mnemonic: '「风选三看 — 业务属性团队」',
+        sources: ['past-papers/case-types/03-style-comparison.md', 'cheatsheets/architecture-styles.md']
+      },
+      {
+        id: 'case-uml',
+        name: 'UML 建模',
+        en: 'UML Modeling',
+        icon: 'shapes',
+        freq: 4,
+        types: ['case'],
+        summary: '画用例图 / 类图 / 序列图 / 状态机图。煤矿安全预警 2022 下半年 T2 是 DFD + ER + 数据字典组合题。',
+        points: [
+          { k: '用例图', v: '参与者 + 用例 + 关系(包含/扩展/泛化);系统边界矩形' },
+          { k: '类图', v: '类名/属性/方法 + 关系;6 关系 — 依赖/关联/聚合/组合/泛化/实现' },
+          { k: '序列图', v: '对象 + 生命线 + 激活条 + 消息;实线同步虚线返回' },
+          { k: '状态机图', v: '状态 + 转移 + 事件 + 监护;订单流转 / 设备状态切换' },
+          { k: 'DFD', v: '数据流图 — 加工/数据流/数据存储/外部实体;0 层 / 1 层分解' },
+          { k: '画图规范', v: '<code>元素清晰 / 命名规范 / 关系箭头方向 / 关键路径标号</code> — 阅卷按点给分' }
+        ],
+        terms: ['用例图', '类图', '序列图', '状态机', 'DFD', '数据字典'],
+        mnemonic: '「用例类序状 — 画图四件套」',
+        sources: ['past-papers/case-types/04-uml-modeling.md', 'cheatsheets/uml-diagrams.md']
+      },
+      {
+        id: 'case-microservice',
+        name: '微服务拆分',
+        en: 'Microservice Refactoring',
+        icon: 'cloud',
+        freq: 4,
+        types: ['case', 'paper'],
+        summary: 'DDD 限界上下文 + 服务拆分 + 数据一致性 + 灰度发布。论文最高频主题。',
+        points: [
+          { k: '拆分原则', v: '<code>单一职责 + 独立部署 + 高内聚低耦合</code>;过细 → 分布式事务增多' },
+          { k: 'DDD 战略', v: '子域(核心/支撑/通用) + 限界上下文 + 上下文映射;事件风暴工作坊' },
+          { k: '数据一致性', v: '跨服务避免分布式事务 — Saga / 可靠消息 / TCC;最终一致优先' },
+          { k: 'API 网关', v: '统一入口 + 鉴权/限流/路由/聚合;BFF 模式按端区分' },
+          { k: '灰度发布', v: '蓝绿 / 金丝雀 / 滚动;流量染色 + 业务开关;避免单点失败扩散' },
+          { k: '可观测性', v: '链路追踪(SkyWalking) + 日志(ELK) + 指标(Prometheus);SLO 设定' }
+        ],
+        terms: ['DDD', '限界上下文', 'Saga', '灰度', '金丝雀', 'Service Mesh'],
+        mnemonic: '「DDD 拆服务;网关聚入口」',
+        sources: ['past-papers/case-types/05-microservice-refactor.md', 'exam-bank/15-microservice-cloud-native.md']
+      },
+      {
+        id: 'case-messaging',
+        name: '消息与缓存',
+        en: 'Messaging & Caching',
+        icon: 'zap',
+        freq: 4,
+        types: ['case'],
+        summary: 'MQ 选型 + 三大缓存问题 + 一致性策略。2024 下半年 T2 命中 Cache-Aside,2026 上半年 T1 命中 IoT + 时序库。',
+        points: [
+          { k: 'MQ 选型', v: '<code>Kafka(高吞吐日志) / RabbitMQ(事务消息) / RocketMQ(金融级) / MQTT(IoT 轻量)</code>' },
+          { k: '消息可靠性', v: '生产者重试 + Broker 持久化 + 消费者 ACK + 幂等消费 + 死信队列' },
+          { k: '顺序消息', v: 'Kafka 分区内有序;业务层 hash 到同一 partition;全局顺序需单 partition' },
+          { k: '缓存三大问题', v: '<code>穿透(布隆)/ 击穿(互斥锁)/ 雪崩(随机过期)</code>' },
+          { k: '缓存一致性', v: 'Cache-Aside + 延迟双删 / Canal 订阅 binlog / 设置合理 TTL' },
+          { k: '时序数据', v: 'IoT 高频写入 — InfluxDB / TDengine / TimescaleDB;按时间分区,降采样' }
+        ],
+        terms: ['Kafka', 'RabbitMQ', 'MQTT', '死信队列', '幂等', '布隆过滤器'],
+        mnemonic: '「MQ — 持久 ACK 幂等;缓存 — 穿击雪」',
+        sources: ['past-papers/case-types/06-messaging-caching.md', 'cheatsheets/cache-patterns.md']
+      },
+      {
+        id: 'case-reliability',
+        name: '可靠性与容灾',
+        en: 'Reliability & DR',
+        icon: 'activity',
+        freq: 4,
+        types: ['case', 'paper'],
+        summary: 'MTBF/MTTR + 容错技术 + RTO/RPO + 异地多活。2024 上半年 T3 命中恢复块 vs N 版本。',
+        points: [
+          { k: '容错技术', v: '<code>恢复块(try-backup) / N 版本(N-version) / 冗余 + 切换</code>' },
+          { k: '恢复块', v: '主版本 + 后备版本 + 验收测试;故障则切换后备;适合业务逻辑明确' },
+          { k: 'N 版本', v: 'N 个独立实现 + 投票器;屏蔽单实现 bug;开发成本高' },
+          { k: 'RTO / RPO', v: '<code>RTO 恢复时间 / RPO 数据丢失</code>;同城双活 RTO≈0;异地灾备 RTO=小时级' },
+          { k: '异地多活', v: '单元化 + 数据同步 + 流量调度;挑战 — 数据冲突 / 延迟 / 一致性' },
+          { k: '限流熔断降级', v: 'Sentinel / Hystrix;QPS 限流 + 异常率熔断 + 兜底返回' }
+        ],
+        terms: ['MTBF', 'MTTR', 'RTO', 'RPO', '多活', '熔断'],
+        mnemonic: '「恢复块 — 主后备;N版本 — 多实现投票」',
+        sources: ['past-papers/case-types/13-reliability-design.md', 'exam-bank/20-reliability.md']
+      },
+      {
+        id: 'case-evolution',
+        name: '架构演化',
+        en: 'Architecture Evolution',
+        icon: 'sitemap',
+        freq: 3,
+        types: ['case', 'paper'],
+        summary: '单体到微服务 + 6R 迁移 + 绞杀者模式。2024 高频,论文高频。',
+        points: [
+          { k: '演化原则', v: '业务驱动 + 渐进式 + 价值优先;避免大爆炸重写' },
+          { k: '6R 迁移', v: '<code>Rehost(重主机) / Replatform(换平台) / Repurchase(换产品) / Refactor(重构) / Rearchitect(重架构) / Retire(退役)</code>' },
+          { k: '绞杀者模式', v: '新旧系统并存 → 路由逐步切换 → 旧系统退役;风险可控' },
+          { k: '防腐层', v: 'Anti-Corruption Layer — 新旧系统间适配器;防止旧模型污染新域' },
+          { k: '数据迁移', v: '双写 + 校验 + 切换;影子流量比对;回滚预案必备' },
+          { k: '论文主题', v: '"从单体到微服务的架构演化" / "遗留系统云原生改造" — 必背题' }
+        ],
+        terms: ['6R', '绞杀者', '防腐层', '双写', '影子流量'],
+        mnemonic: '「绞杀者 — 路由逐步切;防腐层 — 适配器」',
+        sources: ['past-papers/case-types/11-architecture-evolution.md', 'exam-bank/26-soa-evolution.md']
+      }
+    ]
+  }
+};
+
+/* SVG icon library (stroke icons, no emoji) */
+const ICONS = {
+  cpu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>',
+  layers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+  database: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
+  network: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="6"/><rect x="16" y="16" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/><path d="M5 16v-4h14v4"/><line x1="12" y1="12" x2="12" y2="8"/></svg>',
+  shapes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><rect x="13" y="3" width="8" height="8" rx="1"/><polygon points="8 21 3 14 13 14"/></svg>',
+  scale: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="7" x2="21" y2="7"/><path d="M6 7l-3 6h6L6 7z"/><path d="M18 7l-3 6h6l-3-6z"/></svg>',
+  workflow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="15" width="6" height="6" rx="1"/><path d="M9 6h12M3 18h6M18 9v6"/></svg>',
+  gantt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="3" x2="6" y2="21"/><rect x="9" y="8" width="9" height="3"/><rect x="11" y="13" width="7" height="3"/><rect x="13" y="18" width="5" height="3"/></svg>',
+  ruler: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14l8-8 12 12-8 8L2 14z"/><line x1="7" y1="9" x2="8" y2="10"/><line x1="10" y1="6" x2="11" y2="7"/><line x1="13" y1="9" x2="14" y2="10"/><line x1="16" y1="6" x2="17" y2="7"/><line x1="9" y1="13" x2="10" y2="14"/><line x1="12" y1="10" x2="13" y2="11"/><line x1="15" y1="13" x2="16" y2="14"/></svg>',
+  compass: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  'check-circle': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  puzzle: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.023.27-.27.5-.55.5H4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h2.94c.55 0 1-.45 1-1v-2c0-.55.45-1 1-1h2c.55 0 1 .45 1 1v2c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.94c0-.28.22-.5.5-.5h2c1.1 0 2-.9 2-2V9.5c0-.28-.22-.5-.5-.5h-2.94c-.28 0-.5-.22-.5-.5V6c0-1.1-.9-2-2-2h-2.94z"/></svg>',
+  sitemap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/><rect x="16" y="16" width="6" height="6"/><path d="M12 8v4M5 16v-2h14v2M12 12v4"/></svg>',
+  cloud: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>',
+  plug: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6M5 8h14v4a7 7 0 0 1-14 0V8z"/><path d="M12 19v3"/></svg>',
+  link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  'bar-chart': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
+  activity: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'
+};
+
+/* ============================================================
+   Render
+   ============================================================ */
+function typeLabel(t) {
+  return { comp: '综合', case: '案例', paper: '论文' }[t] || t;
+}
+function starString(n) {
+  return '★'.repeat(n) + '☆'.repeat(5 - n);
+}
+
+function renderRoom(room) {
+  const tags = room.types.map(t =>
+    `<span class="tag ${t}">${typeLabel(t)}</span>`
+  ).join('');
+  return `
+    <article class="room" data-freq="${room.freq}" data-types="${room.types.join(' ')}" data-keywords="${(room.name + ' ' + room.en + ' ' + room.summary + ' ' + room.terms.join(' ')).toLowerCase()}" data-id="${room.id}">
+      <div class="room-head">
+        <div class="room-icon">${ICONS[room.icon] || ICONS.shield}</div>
+        <div class="room-freq"><span class="stars">${starString(room.freq)}</span></div>
+      </div>
+      <div class="room-name">${room.name}</div>
+      <div class="room-en">${room.en}</div>
+      <div class="room-summary">${room.summary}</div>
+      <div class="room-tags">${tags}</div>
+      <div class="room-cta">入厅探访</div>
+    </article>
+  `;
+}
+
+function renderFloor(levelKey, levelData) {
+  const container = document.getElementById(`rooms-${levelKey}`);
+  if (!container) return;
+  container.innerHTML = levelData.rooms.map(renderRoom).join('');
+}
+
+/* Render all floors */
+Object.entries(PALACE).forEach(([k, v]) => renderFloor(k, v));
+
+/* ============================================================
+   Modal — Room detail
+   ============================================================ */
+const modal = document.getElementById('modal');
+const modalPanel = document.getElementById('modal-panel');
+
+function openRoom(id) {
+  let target = null;
+  for (const lvl of Object.values(PALACE)) {
+    target = lvl.rooms.find(r => r.id === id);
+    if (target) break;
+  }
+  if (!target) return;
+
+  const tags = target.types.map(t =>
+    `<span class="tag ${t}">${typeLabel(t)}</span>`
+  ).join('');
+
+  const pointsHtml = target.points.map(p =>
+    `<li><strong>${p.k}</strong> ${p.v}</li>`
+  ).join('');
+
+  const termsHtml = target.terms.map(t => `<span class="term">${t}</span>`).join('');
+  const sourcesHtml = target.sources.map(s => `<span class="source">${s}</span>`).join('');
+
+  modalPanel.innerHTML = `
+    <div class="modal-head">
+      <div class="room-icon">${ICONS[target.icon] || ICONS.shield}</div>
+      <div style="flex:1">
+        <h3>${target.name}</h3>
+        <p class="room-en">${target.en}</p>
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:center">
+          <span class="room-freq"><span class="stars">${starString(target.freq)}</span></span>
+          ${tags}
+        </div>
+      </div>
+      <button class="modal-close" aria-label="关闭">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h4>房间描述</h4>
+        <p style="color:var(--ivory-1); font-size:1rem; line-height:1.7">${target.summary}</p>
+      </div>
+
+      <div class="modal-section">
+        <h4>核心概念 (${target.points.length})</h4>
+        <ul class="points">${pointsHtml}</ul>
+      </div>
+
+      ${target.mnemonic ? `
+      <div class="modal-section">
+        <h4>记忆口诀</h4>
+        <div class="mnemonic">
+          <div class="mnemonic-text">${target.mnemonic}</div>
+        </div>
+      </div>
+      ` : ''}
+
+      <div class="modal-section">
+        <h4>关键术语 (${target.terms.length})</h4>
+        <div class="terms">${termsHtml}</div>
+      </div>
+
+      <div class="modal-section">
+        <h4>原始资料</h4>
+        <div class="source-row">${sourcesHtml}</div>
+      </div>
+    </div>
+  `;
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  modalPanel.querySelector('.modal-close').addEventListener('click', closeModal);
+}
+
+function closeModal() {
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+});
+
+/* Delegate room clicks */
+document.addEventListener('click', (e) => {
+  const room = e.target.closest('.room');
+  if (room && !room.classList.contains('hidden')) {
+    openRoom(room.dataset.id);
+  }
+});
+
+/* ============================================================
+   Filters & Search
+   ============================================================ */
+const state = { exam: 'all', freq: 'all', query: '' };
+
+function applyFilters() {
+  const q = state.query.trim().toLowerCase();
+  document.querySelectorAll('.room').forEach(el => {
+    const freq = parseInt(el.dataset.freq, 10);
+    const types = (el.dataset.types || '').split(' ');
+    const kw = el.dataset.keywords || '';
+
+    let match = true;
+    if (state.exam !== 'all' && !types.includes(state.exam)) match = false;
+    if (state.freq !== 'all' && freq < parseInt(state.freq, 10)) match = false;
+    if (q && !kw.includes(q)) match = false;
+
+    el.classList.toggle('hidden', !match);
+  });
+
+  /* Update level visibility — hide level if all rooms hidden */
+  document.querySelectorAll('.level').forEach(level => {
+    const visible = level.querySelectorAll('.room:not(.hidden)').length;
+    level.style.display = visible > 0 ? '' : 'none';
+  });
+}
+
+document.querySelectorAll('[data-filter]').forEach(group => {
+  const filterName = group.dataset.filter;
+  group.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    state[filterName] = btn.dataset.value;
+    applyFilters();
+  });
+});
+
+document.getElementById('search').addEventListener('input', (e) => {
+  state.query = e.target.value;
+  applyFilters();
+});
+
+/* ============================================================
+   Animated counters
+   ============================================================ */
+function animateCounter(el, dur = 1200) {
+  const target = parseInt(el.dataset.count, 10);
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(target * eased);
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const counters = document.querySelectorAll('[data-count]');
+counters.forEach(animateCounter);
+
+/* Keyboard shortcut — "/" to focus search */
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  }
+});
+</script>
+  <button class="theme-toggle" id="theme-toggle" title="切换深/浅主题 (T)" onclick="toggleTheme()">☾</button>
+  <script>
+  (function() {
+    const KEY = 'calc-theme';
+    function apply(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = theme === 'light' ? '☀' : '☾';
+    }
+    window.toggleTheme = function() {
+      const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = cur === 'light' ? 'dark' : 'light';
+      try { localStorage.setItem(KEY, next); } catch(e) {}
+      apply(next);
+    };
+    try {
+      const saved = localStorage.getItem(KEY);
+      if (saved) apply(saved);
+    } catch(e) {}
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey
+          && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ''))) {
+        toggleTheme();
+      }
+    });
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>考点缩写全景 v2 · 系统架构设计师</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@500;700;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root {
+  --ink-0: #06091a;
+  --ink-1: #0a0f1f;
+  --ink-2: #131a2e;
+  --ink-3: #1c2440;
+  --ink-4: #2a3056;
+  --gold-1: #e8c384;
+  --gold-2: #d4a574;
+  --gold-3: #b88a52;
+  --gold-4: #8b6f3e;
+  --ivory-0: #faf6e8;
+  --ivory-1: #f5f0e1;
+  --ivory-2: #c4bda7;
+  --ivory-3: #8e8a7a;
+  --crimson: #c8553d;
+  --emerald: #5d8a6f;
+  --azure: #4a6fa5;
+  --violet: #6f5d8a;
+  --amber-deep: #b8673f;
+  --copper: #c8956a;
+  --steel: #5a7d8a;
+  --deep-emerald: #3d8a6b;
+  --mauve: #9c6b8a;
+  --font-display: 'Cinzel', 'Noto Serif SC', serif;
+  --font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --font-cn: 'Noto Serif SC', 'Songti SC', serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: var(--ink-0);
+  font-family: var(--font-body);
+  color: var(--ivory-1);
+  background-image:
+    radial-gradient(ellipse at 20% 10%, rgba(212, 165, 116, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(74, 111, 165, 0.08) 0%, transparent 50%);
+  background-attachment: fixed;
+  overflow: hidden;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(212, 165, 116, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 165, 116, 0.02) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ===== Header ===== */
+header {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 50;
+  padding: 16px 28px;
+  background: rgba(6, 9, 26, 0.85);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid var(--ink-4);
+  display: flex; align-items: center; gap: 18px;
+}
+.brand {
+  font-family: var(--font-display);
+  font-size: 0.74rem; letter-spacing: 0.32em;
+  text-transform: uppercase; color: var(--gold-3);
+  flex: 0 0 auto;
+}
+.brand::before {
+  content: ''; display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--gold-2);
+  border-radius: 50%;
+  margin-right: 12px;
+  vertical-align: middle;
+  box-shadow: 0 0 8px var(--gold-2);
+}
+h1 {
+  font-family: var(--font-cn);
+  font-weight: 700; font-size: 1.15rem;
+  color: var(--ivory-0); margin: 0;
+  letter-spacing: 0.04em;
+}
+.stat-strip {
+  display: flex; gap: 12px;
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+.stat-pill {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: rgba(212, 165, 116, 0.06);
+  border: 1px solid rgba(212, 165, 116, 0.18);
+  border-radius: 12px;
+  color: var(--ivory-2);
+}
+.stat-pill strong {
+  color: var(--gold-2);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.search-box {
+  position: relative;
+  width: 240px;
+}
+.search-box input {
+  width: 100%;
+  padding: 7px 12px 7px 32px;
+  background: rgba(19, 26, 46, 0.7);
+  border: 1px solid var(--ink-4);
+  border-radius: 16px;
+  color: var(--ivory-1);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-box input::placeholder { color: var(--ivory-3); }
+.search-box input:focus { border-color: var(--gold-3); }
+.search-box::before {
+  content: '⌕';
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold-3);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+/* ===== Layout ===== */
+main {
+  position: fixed;
+  top: 65px; bottom: 0;
+  left: 0; right: 0;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 0;
+  z-index: 1;
+}
+#chart-wrap {
+  position: relative;
+  padding: 0;
+  border-right: 1px solid var(--ink-4);
+}
+#chart { width: 100%; height: 100%; }
+#chart-title {
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 5;
+}
+#chart-title .t1 {
+  font-family: var(--font-cn);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ivory-0);
+  letter-spacing: 0.04em;
+}
+#chart-title .t2 {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory-3);
+  margin-top: 3px;
+}
+.breadcrumb {
+  position: absolute;
+  bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  background: rgba(10, 15, 31, 0.7);
+  border: 1px solid var(--ink-4);
+  border-radius: 14px;
+  padding: 5px 14px;
+  color: var(--ivory-2);
+  z-index: 5;
+  white-space: nowrap;
+}
+.breadcrumb .crumb {
+  cursor: pointer;
+  color: var(--ivory-2);
+  transition: color 0.15s;
+}
+.breadcrumb .crumb:hover { color: var(--gold-2); }
+.breadcrumb .sep { color: var(--ink-4); }
+.breadcrumb .crumb.active { color: var(--gold-2); font-weight: 600; }
+
+/* ===== Detail panel ===== */
+aside {
+  background: linear-gradient(180deg, var(--ink-1), var(--ink-0));
+  overflow-y: auto;
+  padding: 18px 20px 30px;
+}
+aside::-webkit-scrollbar { width: 6px; }
+aside::-webkit-scrollbar-track { background: transparent; }
+aside::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 3px; }
+
+.panel-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ivory-3);
+}
+.panel-empty .glyph {
+  font-size: 2.5rem;
+  color: var(--ink-4);
+  margin-bottom: 12px;
+}
+.panel-empty .msg {
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory-3);
+}
+.panel-empty .hint {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  margin-top: 16px;
+  color: var(--ivory-3);
+  line-height: 1.8;
+}
+.panel-empty .hint .kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 1px solid var(--ink-4);
+  border-radius: 3px;
+  background: var(--ink-2);
+  color: var(--gold-2);
+  font-size: 0.7rem;
+}
+
+.tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.freq-tag {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+.freq-5 { color: #ff6b6b; border-color: rgba(255,107,107,0.4); background: rgba(255,107,107,0.08); }
+.freq-4 { color: var(--gold-2); border-color: rgba(212,165,116,0.4); background: rgba(212,165,116,0.08); }
+.freq-3 { color: var(--azure); border-color: rgba(74,111,165,0.4); background: rgba(74,111,165,0.08); }
+.freq-2 { color: var(--ivory-3); border-color: rgba(142,138,122,0.3); background: rgba(142,138,122,0.05); }
+
+.cat-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  color: var(--ivory-2);
+}
+
+.detail-name {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ivory-0);
+  margin: 8px 0 4px;
+  line-height: 1.1;
+}
+.detail-zh {
+  font-family: var(--font-cn);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--gold-1);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  margin: 18px 0 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.section-label::before {
+  content: ''; width: 14px; height: 1px;
+  background: var(--gold-3);
+}
+.detail-body {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--ivory-1);
+  background: var(--ink-2);
+  border-left: 2px solid var(--gold-3);
+  padding: 10px 14px;
+  border-radius: 0 4px 4px 0;
+}
+.tip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.tip-card {
+  background: var(--ink-2);
+  border: 1px solid var(--ink-4);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+.tip-card .lbl {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-3);
+  margin-bottom: 4px;
+}
+.tip-card .val {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ivory-1);
+}
+.related-list {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.related-chip {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--ink-3);
+  border: 1px solid var(--ink-4);
+  color: var(--ivory-1);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.related-chip:hover {
+  background: var(--ink-4);
+  border-color: var(--gold-3);
+  color: var(--gold-2);
+}
+
+/* ===== Search results dropdown ===== */
+.search-results {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  margin-top: 4px;
+  max-height: 360px;
+  overflow-y: auto;
+  background: rgba(10, 15, 31, 0.98);
+  border: 1px solid var(--gold-3);
+  border-radius: 4px;
+  z-index: 60;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  display: none;
+}
+.search-results.show { display: block; }
+.search-result {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--ink-3);
+  transition: background 0.15s;
+  font-size: 0.82rem;
+}
+.search-result:hover { background: var(--ink-3); }
+.search-result:last-child { border-bottom: none; }
+.search-result .abbr {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--gold-2);
+  margin-right: 6px;
+}
+.search-result .cat {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ivory-3);
+  margin-left: 6px;
+}
+.search-result .zh {
+  color: var(--ivory-2);
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+
+/* ===== Bottom legend ===== */
+.legend {
+  position: fixed;
+  bottom: 0; left: 0; right: 380px;
+  padding: 10px 24px;
+  background: rgba(6, 9, 26, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--ink-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 0.72rem;
+  z-index: 30;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-display);
+  letter-spacing: 0.12em;
+  color: var(--ivory-2);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.legend-item:hover { background: var(--ink-3); color: var(--ivory-0); }
+.legend-item.active { background: var(--ink-3); color: var(--gold-2); border-left: 2px solid var(--gold-2); padding-left: 6px; }
+.legend-item.dim { opacity: 0.35; }
+.legend-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.legend-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ivory-3);
+}
+
+@media (max-width: 980px) {
+  main { grid-template-columns: 1fr; grid-template-rows: 1fr 280px; }
+  aside { border-top: 1px solid var(--ink-4); }
+  .legend { right: 0; }
+  .stat-strip { display: none; }
+  .search-box { width: 180px; }
+}
+
+/* ===== Light Theme (ink ↔ ivory flip) ===== */
+[data-theme="light"] {
+  --ink-0: #f5efde;
+  --ink-1: #ebe4cf;
+  --ink-2: #ddd2b3;
+  --ink-3: #c9bd9a;
+  --ink-4: #a89a72;
+  --gold-1: #8a6a2c;
+  --gold-2: #a07a32;
+  --gold-3: #6f5421;
+  --gold-4: #4a3814;
+  --gold-5: #2e2208;
+  --ivory-0: #1a1a1a;
+  --ivory-1: #2a2a2a;
+  --ivory-2: #4d4a40;
+  --ivory-3: #6f6b5d;
+  --crimson: #a83d27;
+  --emerald: #3f6b53;
+  --azure: #355080;
+  --violet: #564268;
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse at 30% 20%, rgba(140, 100, 40, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 80%, rgba(53, 80, 128, 0.08) 0%, transparent 55%);
+}
+
+[data-theme="light"] header,
+[data-theme="light"] aside,
+[data-theme="light"] .legend,
+[data-theme="light"] #chart-title,
+[data-theme="light"] .panel,
+[data-theme="light"] .search-box input,
+[data-theme="light"] .search-results,
+[data-theme="light"] .breadcrumb .crumb {
+  border-color: var(--ink-3);
+}
+
+[data-theme="light"] .search-box input,
+[data-theme="light"] .search-results {
+  background: var(--ink-1);
+  color: var(--ivory-1);
+}
+
+[data-theme="light"] .kbd {
+  background: var(--ink-1);
+  color: var(--ivory-1);
+  border-color: var(--ink-3);
+}
+
+/* ===== Theme toggle button ===== */
+.theme-toggle {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 9999;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-4);
+  background: var(--ink-2);
+  color: var(--gold-1);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  transition: all 0.2s var(--ease-out);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.theme-toggle:hover {
+  border-color: var(--gold-1);
+  background: var(--ink-3);
+  transform: rotate(15deg);
+}
+[data-theme="light"] .theme-toggle {
+  box-shadow: 0 2px 6px rgba(60,40,10,0.18);
+}
+
+@media print {
+  body, html { background: white !important; color: #1a1a1a !important; }
+  .theme-toggle, .legend, .search-box, header { display: none !important; }
+  [data-theme="light"] { --ink-0:#fff; --ink-1:#fff; --ink-2:#f7f3e8; --ink-3:#d4c9a5; --ink-4:#a89a72; --ivory-0:#1a1a1a; --ivory-1:#1a1a1a; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="brand">Abbreviations · v2</span>
+  <h1>考点缩写全景</h1>
+  <div class="stat-strip">
+    <div class="stat-pill"><strong>13</strong> 类</div>
+    <div class="stat-pill"><strong>394</strong> 缩写</div>
+    <div class="stat-pill"><strong>90%+</strong> 真题覆盖</div>
+  </div>
+  <div class="search-box">
+    <input id="search-input" placeholder="搜缩写或中文…" autocomplete="off" />
+    <div class="search-results" id="search-results"></div>
+  </div>
+</header>
+
+<main>
+  <div id="chart-wrap">
+    <div id="chart-title">
+      <div class="t1">系统架构设计师 · 考点英文缩写</div>
+      <div class="t2">Click to drill · Esc to return · Hover for details</div>
+    </div>
+    <div id="chart"></div>
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="crumb active" data-level="0">系统架构师</span>
+    </div>
+  </div>
+  <aside id="aside">
+    <div class="panel-empty">
+      <div class="glyph">⌬</div>
+      <div class="msg">未选中缩写</div>
+      <div class="hint">
+        悬停查看简释<br>
+        点击分类/缩写查看详情<br>
+        <span class="kbd">/</span> 搜索 · <span class="kbd">Esc</span> 返回
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div class="legend" id="legend"></div>
+
+<script>
+// ============== 数据：13 类 / 394 缩写（来自 abbreviations-sunburst.html）==============
+const CATS = [
+  { id: 'arch', color: '#d4a574', items: [
+    { n: 'ADL', z: '架构描述语言', f: 4 },
+    { n: '4+1', z: '4+1视图模型：逻辑/进程/开发/物理视图+场景', f: 5 },
+    { n: 'RUP', z: '统一软件开发过程', f: 3 },
+    { n: 'SAAM', z: '软件架构分析方法', f: 3 },
+    { n: 'ATAM', z: '架构权衡分析方法（效用树/敏感点/权衡点）', f: 5 },
+    { n: 'CBAM', z: '成本效益分析方法', f: 3 },
+    { n: 'QAW', z: '质量属性工作坊', f: 2 },
+    { n: 'ASR', z: '架构关键需求', f: 4 },
+    { n: 'DSSA', z: '特定领域软件架构', f: 4 },
+    { n: 'HLA', z: '高层体系架构（分布式仿真）', f: 2 },
+    { n: 'MVC', z: '模型-视图-控制器', f: 4 },
+    { n: 'MVVM', z: '模型-视图-视图模型', f: 3 },
+    { n: 'C/S', z: '客户机/服务器架构', f: 4 },
+    { n: 'B/S', z: '浏览器/服务器架构', f: 4 },
+    { n: 'P2P', z: '对等网络/点对点架构', f: 2 },
+    { n: 'ABSD', z: '基于架构的软件设计（教程第7章核心）', f: 5 },
+    { n: 'SPL', z: '软件产品线（核心资产+可变性）', f: 3 },
+    { n: 'C2', z: 'C2架构风格（层次式+消息驱动）', f: 2 },
+    { n: 'UniCon', z: 'ADL：支持多风格的架构描述语言（CMU）', f: 2 },
+    { n: 'Wright', z: 'ADL：基于CSP描述构件交互', f: 2 },
+    { n: 'Rapide', z: 'ADL：事件驱动，支持可执行模拟', f: 2 },
+    { n: 'Darwin', z: 'ADL：用于分布式系统描述', f: 2 },
+    { n: 'Acme', z: 'ADL：通用架构交换语言', f: 2 }
+  ]},
+  { id: 'middleware', color: '#b88a52', items: [
+    { n: 'SOA', z: '面向服务的架构', f: 5 },
+    { n: 'SCA', z: '服务组件架构', f: 3 },
+    { n: 'ESB', z: '企业服务总线', f: 4 },
+    { n: 'EAI', z: '企业应用集成', f: 3 },
+    { n: 'BPEL', z: '业务流程执行语言', f: 3 },
+    { n: 'BPMN', z: '业务流程建模与标注', f: 3 },
+    { n: 'CORBA', z: '公共对象请求代理体系结构', f: 4 },
+    { n: 'RPC', z: '远程过程调用', f: 5 },
+    { n: 'RMI', z: '远程方法调用', f: 3 },
+    { n: 'DCOM', z: '分布式组件对象模型', f: 2 },
+    { n: 'J2EE', z: 'Java企业版平台（Java EE）', f: 4 },
+    { n: 'EJB', z: '企业级Java组件', f: 4 },
+    { n: 'JMS', z: 'Java消息服务', f: 3 },
+    { n: 'JTA', z: 'Java事务API', f: 2 },
+    { n: 'JSP(Java)', z: 'Java服务器页面', f: 2 },
+    { n: '2PC', z: '两阶段提交（分布式事务）', f: 4 },
+    { n: '3PC', z: '三阶段提交', f: 3 },
+    { n: 'TCC', z: 'Try-Confirm-Cancel 补偿型事务', f: 5 },
+    { n: 'MQ', z: '消息队列', f: 4 },
+    { n: 'AMQP', z: '高级消息队列协议', f: 3 },
+    { n: 'MQTT', z: '消息队列遥测传输（IoT主流协议）', f: 4 },
+    { n: 'CoAP', z: '受限应用协议（IoT轻量）', f: 2 },
+    { n: 'Paxos', z: '分布式一致性协议（Lamport提出）', f: 4 },
+    { n: 'Raft', z: '易理解的共识算法（etcd/Consul）', f: 4 },
+    { n: 'ZAB', z: 'ZooKeeper原子广播协议', f: 3 },
+    { n: 'Gossip', z: '流行病协议，最终一致（Cassandra）', f: 3 },
+    { n: 'XA', z: 'X/Open 分布式事务标准', f: 3 },
+    { n: 'Saga', z: '长事务补偿模式（编排/编制）', f: 4 }
+  ]},
+  { id: 'db', color: '#c8553d', items: [
+    { n: 'RDBMS', z: '关系数据库管理系统', f: 3 },
+    { n: 'SQL', z: '结构化查询语言（含DDL/DML/DCL）', f: 4 },
+    { n: 'BCNF', z: '巴斯-科德范式', f: 3 },
+    { n: 'ACID', z: '事务四特性：原子/一致/隔离/持久', f: 5 },
+    { n: 'CAP', z: '一致性/可用性/分区容错性（三选二）', f: 5 },
+    { n: 'BASE', z: '基本可用/软状态/最终一致', f: 4 },
+    { n: 'NoSQL', z: '非关系型数据库', f: 4 },
+    { n: 'MVCC', z: '多版本并发控制', f: 3 },
+    { n: 'OLTP', z: '联机事务处理', f: 4 },
+    { n: 'OLAP', z: '联机分析处理', f: 4 },
+    { n: 'ETL', z: '抽取-转换-加载', f: 4 },
+    { n: 'DW', z: '数据仓库', f: 4 },
+    { n: 'DM', z: '数据集市', f: 3 },
+    { n: 'ODS', z: '操作数据存储', f: 3 },
+    { n: 'ODS/DWD/DWS/ADS', z: '数仓四层：操作/明细/汇总/应用', f: 4 },
+    { n: 'JDBC', z: 'Java数据库连接', f: 3 },
+    { n: 'ORM', z: '对象关系映射', f: 3 },
+    { n: 'TPC', z: '事务处理性能委员会（TPC-C/TPC-H基准）', f: 2 },
+    { n: '1NF', z: '第一范式：属性不可再分', f: 5 },
+    { n: '2NF', z: '第二范式：消除非主属性部分依赖', f: 5 },
+    { n: '3NF', z: '第三范式：消除非主属性传递依赖', f: 5 },
+    { n: '4NF', z: '第四范式：消除多值依赖', f: 3 },
+    { n: 'DDL', z: '数据定义语言（CREATE/ALTER/DROP）', f: 3 },
+    { n: 'DML', z: '数据操作语言（SELECT/INSERT/UPDATE/DELETE）', f: 3 },
+    { n: 'DCL', z: '数据控制语言（GRANT/REVOKE）', f: 2 },
+    { n: 'TCL', z: '事务控制语言（COMMIT/ROLLBACK）', f: 2 },
+    { n: 'RAID0', z: '条带（无冗余，性能高）', f: 3 },
+    { n: 'RAID1', z: '镜像（冗余100%，空间利用率50%）', f: 3 },
+    { n: 'RAID5', z: '奇偶校验条带（最少3盘，允许坏1块）', f: 4 },
+    { n: 'RAID6', z: '双奇偶校验条带（允许坏2块）', f: 3 },
+    { n: 'RAID10', z: '先镜像后条带（性能+冗余）', f: 3 }
+  ]},
+  { id: 'cloud', color: '#e8c384', items: [
+    { n: 'IaaS', z: '基础设施即服务', f: 4 },
+    { n: 'PaaS', z: '平台即服务', f: 4 },
+    { n: 'SaaS', z: '软件即服务', f: 4 },
+    { n: 'DaaS', z: '数据即服务', f: 2 },
+    { n: 'XaaS', z: '一切皆服务', f: 2 },
+    { n: 'FaaS', z: '函数即服务（Serverless）', f: 3 },
+    { n: 'KVM', z: '基于内核的虚拟机', f: 2 },
+    { n: 'Docker', z: '容器引擎', f: 3 },
+    { n: 'K8s', z: 'Kubernetes 容器编排平台', f: 4 },
+    { n: 'HDFS', z: 'Hadoop分布式文件系统', f: 3 },
+    { n: 'MapReduce', z: '分布式并行计算模型', f: 3 },
+    { n: 'YARN', z: 'Hadoop资源调度器', f: 2 },
+    { n: 'HBase', z: '分布式列式数据库', f: 3 },
+    { n: 'Hive', z: '数据仓库查询工具（SQL化）', f: 3 },
+    { n: 'Spark', z: '内存计算框架', f: 3 },
+    { n: 'Kafka', z: '分布式消息队列', f: 4 },
+    { n: 'ZooKeeper', z: '分布式协调服务', f: 3 },
+    { n: 'Flink', z: '流批一体计算框架', f: 3 },
+    { n: 'BI', z: '商业智能', f: 3 },
+    { n: 'Lambda', z: 'Lambda架构（批层+速度层双链路）', f: 4 },
+    { n: 'Kappa', z: 'Kappa架构（单一流处理链路）', f: 4 },
+    { n: 'Lakehouse', z: '湖仓一体（数据湖+数仓事务）', f: 3 },
+    { n: 'Iceberg', z: 'Apache Iceberg 表格式（湖仓）', f: 3 },
+    { n: 'Hudi', z: 'Apache Hudi 表格式（湖仓）', f: 2 },
+    { n: 'Delta Lake', z: 'Delta Lake 表格式（湖仓）', f: 3 },
+    { n: 'RDD', z: 'Spark弹性分布式数据集', f: 3 },
+    { n: 'DAG', z: '有向无环图（Spark执行模型）', f: 3 },
+    { n: 'MPP', z: '大规模并行处理数据库（Greenplum）', f: 3 },
+    { n: 'S3', z: 'AWS对象存储', f: 2 },
+    { n: 'OSS', z: '阿里云对象存储', f: 2 },
+    { n: 'Ceph', z: '分布式统一存储系统', f: 2 }
+  ]},
+  { id: 'net', color: '#4a6fa5', items: [
+    { n: 'OSI', z: '开放系统互连参考模型（7层）', f: 5 },
+    { n: 'TCP/IP', z: '传输控制协议/网际协议', f: 5 },
+    { n: 'LAN', z: '局域网', f: 3 },
+    { n: 'WAN', z: '广域网', f: 3 },
+    { n: 'WLAN', z: '无线局域网', f: 2 },
+    { n: 'VLAN', z: '虚拟局域网', f: 3 },
+    { n: 'VPN', z: '虚拟专用网络', f: 3 },
+    { n: 'NAT', z: '网络地址转换', f: 4 },
+    { n: 'DNS', z: '域名系统', f: 4 },
+    { n: 'DHCP', z: '动态主机配置协议', f: 4 },
+    { n: 'HTTP', z: '超文本传输协议', f: 4 },
+    { n: 'HTTPS', z: '安全超文本传输协议', f: 4 },
+    { n: 'SMTP', z: '简单邮件传输协议', f: 3 },
+    { n: 'ARP', z: '地址解析协议', f: 3 },
+    { n: 'ICMP', z: '网际控制报文协议', f: 3 },
+    { n: 'OSPF', z: '开放最短路径优先（链路状态）', f: 4 },
+    { n: 'BGP', z: '边界网关协议', f: 3 },
+    { n: 'MPLS', z: '多协议标签交换', f: 2 },
+    { n: 'SDN', z: '软件定义网络（转发与控制分离）', f: 4 },
+    { n: 'NFV', z: '网络功能虚拟化', f: 3 },
+    { n: 'CDN', z: '内容分发网络', f: 3 },
+    { n: 'QoS', z: '服务质量', f: 3 },
+    { n: 'DAS', z: '直连存储', f: 2 },
+    { n: 'NAS', z: '网络附加存储', f: 3 },
+    { n: 'SAN', z: '存储区域网络', f: 3 },
+    { n: 'RAID', z: '独立磁盘冗余阵列', f: 4 },
+    { n: 'LB', z: '负载均衡', f: 4 },
+    { n: 'FTP', z: '文件传输协议（端口20/21）', f: 3 },
+    { n: 'SSH', z: '安全外壳协议（端口22，加密远程登录）', f: 3 },
+    { n: 'Telnet', z: '远程登录协议（端口23，明文）', f: 2 },
+    { n: 'POP3', z: '邮局协议v3（端口110，收取邮件）', f: 2 },
+    { n: 'IMAP', z: '互联网邮件访问协议（端口143）', f: 2 },
+    { n: 'SNMP', z: '简单网络管理协议（端口161/162）', f: 2 },
+    { n: 'RDP', z: '远程桌面协议（端口3389）', f: 2 },
+    { n: 'RIP', z: '路由信息协议（距离矢量，跳数≤15）', f: 3 },
+    { n: 'IS-IS', z: '中间系统到中间系统（链路状态，运营商）', f: 2 },
+    { n: 'PPTP', z: '点对点隧道协议（已不推荐）', f: 2 },
+    { n: 'L2TP', z: '二层隧道协议（与IPSec结合）', f: 2 },
+    { n: 'DMZ', z: '非军事区（Web/邮件服务器隔离区）', f: 3 },
+    { n: 'IGMP', z: '互联网组管理协议（组播成员管理）', f: 2 },
+    { n: 'RARP', z: '反向地址解析（MAC→IP，已被BOOTP/DHCP取代）', f: 2 },
+    { n: 'NFS', z: '网络文件系统（UNIX/Linux文件共享）', f: 2 },
+    { n: 'SMB', z: '服务器消息块协议（Windows共享）', f: 2 },
+    { n: 'iSCSI', z: '基于IP的SCSI（块级存储）', f: 2 },
+    { n: 'FC', z: '光纤通道（SAN高速存储）', f: 2 }
+  ]},
+  { id: 'sec', color: '#b8673f', items: [
+    { n: 'AES', z: '高级加密标准（对称）', f: 4 },
+    { n: 'DES', z: '数据加密标准（对称，56位）', f: 3 },
+    { n: 'RSA', z: '非对称加密算法', f: 4 },
+    { n: 'ECC', z: '椭圆曲线密码体制', f: 3 },
+    { n: 'MD5', z: '消息摘要算法（散列）', f: 4 },
+    { n: 'SHA', z: '安全散列算法', f: 4 },
+    { n: 'HMAC', z: '基于散列的消息认证码', f: 3 },
+    { n: 'MAC(认证)', z: '消息认证码', f: 3 },
+    { n: 'SSL', z: '安全套接层', f: 3 },
+    { n: 'TLS', z: '传输层安全协议（SSL后继）', f: 4 },
+    { n: 'PKI', z: '公钥基础设施', f: 3 },
+    { n: 'CA', z: '证书颁发机构', f: 3 },
+    { n: 'X.509', z: '数字证书标准', f: 3 },
+    { n: 'SSO', z: '单点登录', f: 4 },
+    { n: 'RBAC', z: '基于角色的访问控制', f: 4 },
+    { n: 'ABAC', z: '基于属性的访问控制', f: 3 },
+    { n: 'DAC', z: '自主访问控制', f: 3 },
+    { n: 'MAC(强制)', z: '强制访问控制', f: 3 },
+    { n: 'IPSec', z: 'IP安全协议', f: 3 },
+    { n: 'IDS', z: '入侵检测系统', f: 3 },
+    { n: 'IPS', z: '入侵防御系统', f: 3 },
+    { n: 'WAF', z: 'Web应用防火墙', f: 3 },
+    { n: 'DDoS', z: '分布式拒绝服务攻击', f: 4 },
+    { n: 'XSS', z: '跨站脚本攻击', f: 3 },
+    { n: 'CSRF', z: '跨站请求伪造', f: 3 },
+    { n: 'OWASP', z: '开放Web应用安全项目', f: 3 },
+    { n: 'RPO', z: '恢复点目标（容灾）', f: 4 },
+    { n: 'RTO', z: '恢复时间目标（容灾）', f: 4 },
+    { n: 'STRIDE', z: '6类威胁建模：仿冒/篡改/抵赖/泄露/DoS/提权', f: 4 },
+    { n: 'CIA', z: '信息安全三要素：保密性/完整性/可用性', f: 5 },
+    { n: '等保2.0', z: '网络安全等级保护2.0（GB/T 22239）', f: 3 },
+    { n: '3DES', z: '三重DES加密（双密钥112位，三密钥168位）', f: 3 },
+    { n: 'SM4', z: '国密对称分组密码（128位密钥）', f: 3 },
+    { n: 'SM2', z: '国密非对称算法（基于椭圆曲线）', f: 3 },
+    { n: 'LDAP', z: '轻量目录访问协议（企业统一身份）', f: 3 },
+    { n: 'SAML', z: '安全断言标记语言（SSO跨域）', f: 3 },
+    { n: 'OpenID', z: '开放身份认证协议（OAuth侧重授权）', f: 2 },
+    { n: 'Kerberos', z: '票据认证协议（域内SSO，Windows AD）', f: 3 },
+    { n: 'PGP', z: '良好隐私加密（邮件+文件签名）', f: 2 },
+    { n: 'S/MIME', z: '安全多用途互联网邮件扩展', f: 2 },
+    { n: 'SIEM', z: '安全信息与事件管理（日志聚合分析）', f: 3 },
+    { n: 'SOC', z: '安全运营中心', f: 3 },
+    { n: 'EDR', z: '端点检测与响应', f: 2 },
+    { n: 'XDR', z: '扩展检测与响应（端点+网络+云）', f: 2 },
+    { n: 'DLP', z: '数据防泄漏（敏感数据外发管控）', f: 3 },
+    { n: 'HIDS', z: '主机入侵检测系统', f: 3 },
+    { n: 'NIDS', z: '网络入侵检测系统', f: 3 },
+    { n: 'PCI-DSS', z: '支付卡行业数据安全标准', f: 2 },
+    { n: 'HIPAA', z: '健康保险可携性与责任法案（医疗合规）', f: 2 },
+    { n: 'GDPR', z: '欧盟通用数据保护条例', f: 3 },
+    { n: 'CSP', z: '内容安全策略（防XSS，HTTP头）', f: 3 }
+  ]},
+  { id: 'uml', color: '#6f5d8a', items: [
+    { n: 'UML', z: '统一建模语言', f: 5 },
+    { n: 'OOA', z: '面向对象分析', f: 3 },
+    { n: 'OOD', z: '面向对象设计', f: 3 },
+    { n: 'OOP', z: '面向对象程序设计', f: 3 },
+    { n: 'DFD', z: '数据流图', f: 4 },
+    { n: 'DD', z: '数据字典', f: 3 },
+    { n: 'ERD', z: '实体-联系图', f: 4 },
+    { n: 'SA', z: '结构化分析', f: 3 },
+    { n: 'SD', z: '结构化设计', f: 3 },
+    { n: 'SP', z: '结构化程序设计', f: 2 },
+    { n: 'JSP(Jackson)', z: 'Jackson结构化程序设计', f: 2 },
+    { n: 'JSD', z: 'Jackson系统开发方法', f: 2 },
+    { n: 'VDM', z: '维也纳开发方法（形式化）', f: 2 },
+    { n: 'DDD', z: '领域驱动设计', f: 4 },
+    { n: 'TDD', z: '测试驱动开发', f: 3 },
+    { n: 'MDA', z: '模型驱动架构', f: 3 },
+    { n: 'PIM', z: '平台无关模型', f: 2 },
+    { n: 'PSM', z: '平台相关模型', f: 2 },
+    { n: 'FURPS', z: '功能/易用/可靠/性能/可支持性', f: 3 },
+    { n: 'SysML', z: '系统建模语言（系统工程UML扩展）', f: 3 },
+    { n: 'HIPO', z: '层次输入/处理/输出图（结构化设计）', f: 2 },
+    { n: 'N-S', z: '盒图（Nassi-Shneiderman图）', f: 2 },
+    { n: 'STD', z: '状态转换图（结构化分析行为模型）', f: 2 },
+    { n: 'ER', z: '实体（E-R模型基础元素）', f: 3 }
+  ]},
+  { id: 'pm', color: '#8b6f3e', items: [
+    { n: 'SDLC', z: '软件生命周期', f: 3 },
+    { n: 'XP', z: '极限编程', f: 3 },
+    { n: 'Scrum', z: '敏捷开发框架', f: 4 },
+    { n: 'CMM', z: '能力成熟度模型', f: 3 },
+    { n: 'CMMI', z: '能力成熟度模型集成', f: 5 },
+    { n: 'SPICE', z: '软件过程改进与能力测定（ISO/IEC 15504）', f: 2 },
+    { n: 'SRS', z: '软件需求规格说明书', f: 3 },
+    { n: 'V&V', z: '验证与确认', f: 3 },
+    { n: 'SCM(配置)', z: '软件配置管理', f: 3 },
+    { n: 'SQA', z: '软件质量保证', f: 3 },
+    { n: 'ISO/IEC 9126', z: '软件质量特性模型（现ISO 25010）', f: 3 },
+    { n: 'WBS', z: '工作分解结构', f: 3 },
+    { n: 'PERT', z: '计划评审技术（三点估算）', f: 3 },
+    { n: 'CPM', z: '关键路径法', f: 4 },
+    { n: 'EVM', z: '挣值管理', f: 4 },
+    { n: 'PV', z: '计划价值', f: 4 },
+    { n: 'EV', z: '挣值', f: 4 },
+    { n: 'AC', z: '实际成本', f: 4 },
+    { n: 'CPI(成本)', z: '成本绩效指数=EV/AC', f: 4 },
+    { n: 'SPI', z: '进度绩效指数=EV/PV', f: 4 },
+    { n: 'NPV', z: '净现值', f: 3 },
+    { n: 'IRR', z: '内部收益率', f: 3 },
+    { n: 'ROI', z: '投资回报率', f: 3 },
+    { n: 'PMBOK', z: '项目管理知识体系（PMI，与CMMI区分）', f: 3 },
+    { n: 'BAC', z: '完工预算', f: 4 },
+    { n: 'EAC', z: '完工估算=BAC/CPI（典型差异）', f: 4 },
+    { n: 'ETC', z: '完工尚需成本=EAC-AC', f: 4 },
+    { n: 'SV', z: '进度偏差=EV-PV（正=超前）', f: 4 },
+    { n: 'CV', z: '成本偏差=EV-AC（正=节约）', f: 4 },
+    { n: 'CCB', z: '配置控制委员会（变更审批）', f: 3 },
+    { n: 'α测试', z: 'Alpha测试（开发方受控环境）', f: 3 },
+    { n: 'β测试', z: 'Beta测试（用户真实环境）', f: 3 },
+    { n: 'MC/DC', z: '修改条件/判定覆盖（航空DO-178B强制）', f: 3 },
+    { n: 'WMC', z: 'CK度量：加权方法数', f: 2 },
+    { n: 'DIT', z: 'CK度量：继承深度', f: 2 },
+    { n: 'NOC', z: 'CK度量：子类数', f: 2 },
+    { n: 'CBO', z: 'CK度量：类间耦合', f: 2 },
+    { n: 'RFC', z: 'CK度量：响应集合', f: 2 },
+    { n: 'LCOM', z: 'CK度量：方法间缺乏内聚', f: 2 }
+  ]},
+  { id: 'os', color: '#5d8a6f', items: [
+    { n: 'CISC', z: '复杂指令集计算机', f: 3 },
+    { n: 'RISC', z: '精简指令集计算机', f: 3 },
+    { n: 'SISD/SIMD', z: '弗林分类：单/多指令流×单/多数据流', f: 3 },
+    { n: 'MISD/MIMD', z: '多指令流单数据流/多指令流多数据流', f: 2 },
+    { n: 'SMP', z: '对称多处理', f: 3 },
+    { n: 'MPP', z: '大规模并行处理', f: 3 },
+    { n: 'NUMA', z: '非一致内存访问', f: 2 },
+    { n: 'DMA', z: '直接存储器访问', f: 3 },
+    { n: 'TLB', z: '地址转换后备缓冲（快表）', f: 3 },
+    { n: 'MMU', z: '存储管理单元', f: 4 },
+    { n: 'PCB', z: '进程控制块', f: 3 },
+    { n: 'TCB', z: '线程控制块', f: 2 },
+    { n: 'RTOS', z: '实时操作系统', f: 4 },
+    { n: 'SoC', z: '片上系统', f: 3 },
+    { n: 'DSP', z: '数字信号处理器', f: 2 },
+    { n: 'FPGA', z: '现场可编程门阵列', f: 2 },
+    { n: 'ASIC', z: '专用集成电路', f: 2 },
+    { n: 'FCFS/SJF/RR', z: '调度算法：先来先服务/最短作业优先/时间片轮转', f: 4 },
+    { n: 'LRU/LFU/FIFO', z: '页面置换：最近最少/最不经常/先进先出', f: 4 },
+    { n: 'OPT', z: '最佳页面置换算法', f: 3 },
+    { n: 'MIPS', z: '每秒百万条指令', f: 3 },
+    { n: 'MFLOPS', z: '每秒百万次浮点运算', f: 2 },
+    { n: 'CPI(指令)', z: '每条指令周期数', f: 3 },
+    { n: 'SRTF', z: '最短剩余时间优先（可抢占SJF）', f: 3 },
+    { n: 'Priority', z: '优先级调度算法', f: 3 },
+    { n: 'MLFQ', z: '多级反馈队列调度', f: 3 },
+    { n: 'CLOCK', z: '时钟页面置换（LRU近似）', f: 3 },
+    { n: 'SSTF', z: '最短寻道优先（磁盘调度）', f: 3 },
+    { n: 'SCAN', z: '扫描算法/电梯算法（磁盘调度）', f: 3 },
+    { n: 'C-SCAN', z: '循环扫描算法（磁盘调度）', f: 2 },
+    { n: 'LOOK', z: '改进型SCAN（磁盘调度）', f: 2 },
+    { n: 'FAT', z: '文件分配表（FAT32文件系统）', f: 2 },
+    { n: 'NTFS', z: 'NT文件系统（Windows）', f: 2 },
+    { n: 'ext4', z: '第四代扩展文件系统（Linux）', f: 2 },
+    { n: 'XFS', z: '高性能日志文件系统（Linux）', f: 2 },
+    { n: '哈佛结构', z: '哈佛体系结构（指令/数据总线分离）', f: 3 },
+    { n: '冯·诺依曼', z: '冯·诺依曼体系结构（存储程序）', f: 3 },
+    { n: 'Amdahl', z: '阿姆达尔定律（加速比上限）', f: 3 }
+  ]},
+  { id: 'rel', color: '#c8956a', items: [
+    { n: 'RAS', z: '可靠性/可用性/可维护性', f: 4 },
+    { n: 'MTBF', z: '平均无故障时间', f: 5 },
+    { n: 'MTTF', z: '平均失效前时间', f: 4 },
+    { n: 'MTTR', z: '平均修复时间', f: 5 },
+    { n: 'SPEC', z: '标准性能评价组织（基准测试）', f: 2 },
+    { n: 'SRE', z: 'Site Reliability Engineering 站点可靠性工程', f: 3 },
+    { n: 'N版本', z: 'N版本程序设计（N-Version Programming）', f: 4 },
+    { n: '恢复块', z: 'Recovery Block 恢复块法', f: 4 },
+    { n: '5个9', z: '可用性99.999%（年停机<5.26分钟）', f: 4 }
+  ]},
+  { id: 'enterprise', color: '#5a7d8a', items: [
+    { n: 'EA', z: '企业架构', f: 3 },
+    { n: 'TOGAF', z: '开放组架构框架', f: 4 },
+    { n: 'ADM', z: '架构开发方法（TOGAF核心）', f: 3 },
+    { n: 'Zachman', z: '扎克曼企业架构框架', f: 3 },
+    { n: 'BPR', z: '业务流程重组', f: 3 },
+    { n: 'ERP', z: '企业资源计划', f: 4 },
+    { n: 'MRP', z: '物料需求计划', f: 3 },
+    { n: 'MRPII', z: '制造资源计划', f: 2 },
+    { n: 'CRM', z: '客户关系管理', f: 4 },
+    { n: 'SCM(供应链)', z: '供应链管理', f: 4 },
+    { n: 'OA', z: '办公自动化', f: 3 },
+    { n: 'MIS', z: '管理信息系统', f: 3 },
+    { n: 'DSS', z: '决策支持系统', f: 3 },
+    { n: 'ES', z: '专家系统', f: 2 },
+    { n: 'EDI', z: '电子数据交换', f: 2 },
+    { n: 'IRP', z: '信息资源规划', f: 2 },
+    { n: 'TCO', z: '总拥有成本', f: 3 },
+    { n: 'ITIL', z: 'IT基础设施库（IT服务管理）', f: 3 },
+    { n: 'COBIT', z: '信息及相关技术控制目标', f: 3 },
+    { n: 'SLA', z: '服务水平协议', f: 3 },
+    { n: 'BPM', z: '业务流程管理（与BPEL/BPMN区分）', f: 3 },
+    { n: 'OLA', z: '操作级别协议（ITIL内部SLA）', f: 2 },
+    { n: 'KPI', z: '关键绩效指标（IT服务度量）', f: 2 }
+  ]},
+  { id: 'web', color: '#9c6b8a', items: [
+    { n: 'REST', z: '表述性状态转移（资源化接口风格）', f: 4 },
+    { n: 'SOAP', z: '简单对象访问协议', f: 4 },
+    { n: 'WSDL', z: 'Web服务描述语言', f: 3 },
+    { n: 'UDDI', z: '通用描述、发现与集成', f: 2 },
+    { n: 'XML', z: '可扩展标记语言', f: 3 },
+    { n: 'JSON', z: 'JS对象表示法（轻量数据交换）', f: 4 },
+    { n: 'JWT', z: 'JSON Web Token 无状态令牌', f: 3 },
+    { n: 'OAuth', z: '开放授权协议', f: 3 },
+    { n: 'WebSocket', z: '全双工通信协议', f: 3 },
+    { n: 'gRPC', z: '高性能开源RPC框架（Protobuf）', f: 4 },
+    { n: 'API', z: '应用程序接口', f: 4 },
+    { n: 'URI', z: '统一资源标识符（含URL/URN）', f: 3 },
+    { n: 'URL', z: '统一资源定位符（URI子集）', f: 3 },
+    { n: 'URN', z: '统一资源名称（URI子集）', f: 2 },
+    { n: 'HTML', z: '超文本标记语言', f: 3 },
+    { n: 'CSS', z: '层叠样式表', f: 2 },
+    { n: 'JS', z: 'JavaScript 脚本语言', f: 2 },
+    { n: 'CORS', z: '跨域资源共享（浏览器同源策略例外）', f: 3 }
+  ]},
+  { id: 'newtech', color: '#3d8a6b', items: [
+    { n: 'AI', z: '人工智能', f: 4 },
+    { n: 'ML', z: '机器学习', f: 4 },
+    { n: 'DL', z: '深度学习', f: 3 },
+    { n: 'NLP', z: '自然语言处理', f: 3 },
+    { n: 'CNN', z: '卷积神经网络', f: 3 },
+    { n: 'RNN', z: '循环神经网络', f: 2 },
+    { n: 'LSTM', z: '长短期记忆网络', f: 2 },
+    { n: 'IoT', z: '物联网', f: 5 },
+    { n: 'NB-IoT', z: '窄带物联网', f: 3 },
+    { n: 'AR', z: '增强现实', f: 3 },
+    { n: 'VR', z: '虚拟现实', f: 3 },
+    { n: 'MR', z: '混合现实', f: 2 },
+    { n: 'RPA', z: '机器人流程自动化', f: 3 },
+    { n: 'PoW', z: '工作量证明（区块链共识）', f: 3 },
+    { n: 'PoS', z: '权益证明', f: 2 },
+    { n: 'PBFT', z: '实用拜占庭容错', f: 3 },
+    { n: 'LLM', z: '大语言模型（GPT/Claude/文心）', f: 5 },
+    { n: 'RAG', z: '检索增强生成（外挂知识库）', f: 4 },
+    { n: 'GPT', z: '生成式预训练Transformer', f: 4 },
+    { n: 'Transformer', z: 'Transformer模型（注意力机制）', f: 4 },
+    { n: 'BERT', z: '双向编码表示（预训练Transformer）', f: 3 },
+    { n: 'AIGC', z: '人工智能生成内容', f: 3 },
+    { n: 'CoT', z: '思维链推理（Chain of Thought）', f: 3 },
+    { n: 'Embedding', z: '向量嵌入（文本→稠密向量）', f: 4 },
+    { n: '向量数据库', z: '向量数据库（Milvus/Pinecone/Qdrant）', f: 4 },
+    { n: 'MCP', z: 'Model Context Protocol 模型上下文协议', f: 3 },
+    { n: 'A2A', z: 'Agent-to-Agent 智能体互操作', f: 2 },
+    { n: 'Function Call', z: '函数调用（LLM调用外部工具）', f: 3 },
+    { n: 'DT', z: 'Digital Twin 数字孪生', f: 3 },
+    { n: '5G', z: '第五代移动通信（eMBB/mMTC/URLLC）', f: 4 },
+    { n: '6G', z: '第六代移动通信（通感一体化）', f: 2 },
+    { n: 'Web3', z: '去中心化网络（区块链+加密经济）', f: 3 },
+    { n: 'NFT', z: '非同质化代币（数字资产凭证）', f: 2 },
+    { n: 'DeFi', z: '去中心化金融（智能合约金融）', f: 2 }
+  ]}
+];
+
+// 分类中文名
+const CAT_NAMES = {
+  arch: '架构基础与风格', middleware: '中间件与分布式', db: '数据库', cloud: '云与大数据',
+  net: '网络与存储', sec: '信息安全', uml: '系统分析与建模', pm: '软件工程与项目管理',
+  os: '计算机体系与OS', rel: '可靠性与性能', enterprise: '企业信息化与IT服务',
+  web: 'Web与接口', newtech: '新技术'
+};
+
+// ============== ECharts 配置 ==============
+const chartDom = document.getElementById('chart');
+const myChart = echarts.init(chartDom);
+
+function buildOption(rootId = null) {
+  const series = {
+    type: 'sunburst',
+    data: rootId ? (() => {
+      const cat = CATS.find(c => c.id === rootId);
+      return [{
+        name: CAT_NAMES[rootId],
+        catId: 'cat-root',
+        value: cat.items.length,
+        label: {
+          show: true,
+          position: 'inside',
+          rotate: 0,
+          fontSize: 11,
+          fontWeight: 'bold',
+          color: cat.color,
+          fontFamily: '"Noto Serif SC", "Cinzel", serif',
+          formatter: () => `${CAT_NAMES[rootId]}`,
+          textBorderColor: 'rgba(6, 9, 26, 0.9)',
+          textBorderWidth: 3
+        },
+        emphasis: {
+          label: { fontSize: 13 },
+          itemStyle: { opacity: 0.45 }
+        },
+        itemStyle: { color: cat.color, opacity: 0.18, borderColor: cat.color, borderWidth: 2 },
+        cursor: 'pointer',
+        children: cat.items.map(it => ({
+          name: it.n, value: 1, itemStyle: { color: cat.color },
+          catId: cat.id, freq: it.f, zh: it.z
+        }))
+      }];
+    })() : [{
+      name: '系统架构师',
+      catId: 'root',
+      itemStyle: { color: '#0a0f1f', borderColor: '#d4a574', borderWidth: 2 },
+      children: CATS.map(cat => ({
+        name: CAT_NAMES[cat.id],
+        catId: cat.id,
+        itemStyle: { color: cat.color },
+        children: cat.items.map(it => ({
+          name: it.n, value: 1, itemStyle: { color: cat.color },
+          catId: cat.id, freq: it.f, zh: it.z
+        }))
+      }))
+    }],
+    center: ['50%', '54%'],
+    radius: rootId ? ['15%', '70%'] : ['0%', '70%'],
+    sort: null,
+    nodeClick: false,
+    emphasis: { focus: 'ancestor', itemStyle: { borderColor: '#d4a574', borderWidth: 2 } },
+    label: {
+      color: '#f5f0e1',
+      textBorderColor: 'rgba(6, 9, 26, 0.85)',
+      textBorderWidth: 2,
+      fontFamily: 'Inter, "PingFang SC", "Noto Serif SC", sans-serif'
+    },
+    levels: rootId ? [
+      {},
+      { label: { rotate: 'radial', fontSize: 11, fontWeight: 'bold', color: '#faf6e8', minAngle: 14, width: 100, overflow: 'truncate' }, itemStyle: { borderWidth: 2, borderColor: '#06091a' } }
+    ] : [
+      {},
+      { label: { rotate: 0, fontSize: 13, fontWeight: 'bold', color: '#faf6e8', width: 90, overflow: 'truncate' }, itemStyle: { borderColor: '#06091a', borderWidth: 0 } },
+      { label: { rotate: 'radial', fontSize: 11, fontWeight: 'bold', minAngle: 12, color: '#faf6e8', width: 200, overflow: 'truncate' }, itemStyle: { borderWidth: 3, borderColor: '#06091a' } },
+      { label: { rotate: 'radial', fontSize: 9, minAngle: 4, color: '#faf6e8', width: 42, overflow: 'truncate', ellipsis: '…', textBorderWidth: 1 }, itemStyle: { borderWidth: 1, borderColor: '#06091a', opacity: 0.96 } }
+    ],
+    labelLayout: { hideOverlap: true }
+  };
+
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item',
+      triggerOn: 'mousemove|click',
+      confine: true,
+      backgroundColor: 'rgba(10, 15, 31, 0.96)',
+      borderColor: '#b88a52',
+      borderWidth: 1,
+      textStyle: { fontSize: 12, lineHeight: 18, color: '#f5f0e1', fontFamily: 'Inter, "PingFang SC", sans-serif' },
+      padding: [10, 14],
+      extraCssText: 'box-shadow: 0 8px 24px rgba(0,0,0,0.5); border-radius: 4px;',
+      formatter: function (params) {
+        const info = params.treePathInfo || [];
+        const names = [];
+        for (let i = 1; i < info.length; i++) names.push(info[i].name);
+        let s = names.join(' › ');
+        const d = params.data || {};
+        if (d.zh) s += '\n' + d.zh;
+        return s;
+      }
+    },
+    series: [{
+      ...series,
+      name: '考点缩写'
+    }]
+  };
+}
+
+// ============== 状态 ==============
+let currentRoot = null; // 当前下钻的 catId
+let selectedItem = null;
+
+// ============== 渲染 ==============
+function render() {
+  myChart.setOption(buildOption(currentRoot), true);
+  updateBreadcrumb();
+  updateLegendActive();
+  // 重置详情面板（除非有选中项）
+  if (!selectedItem) showEmpty();
+}
+
+function updateBreadcrumb() {
+  const bc = document.getElementById('breadcrumb');
+  if (!currentRoot) {
+    bc.innerHTML = '<span class="crumb active" data-level="0">系统架构师</span>';
+    return;
+  }
+  bc.innerHTML = `
+    <span class="crumb" data-level="0">系统架构师</span>
+    <span class="sep">›</span>
+    <span class="crumb active">${CAT_NAMES[currentRoot]}</span>
+  `;
+}
+
+document.getElementById('breadcrumb').addEventListener('click', (e) => {
+  const c = e.target.closest('.crumb');
+  if (!c || c.classList.contains('active')) return;
+  if (c.dataset.level === '0') {
+    currentRoot = null;
+    selectedItem = null;
+    render();
+  }
+});
+
+// ============== 点击事件 ==============
+myChart.on('click', function (params) {
+  if (!params) return;
+  const info = params.treePathInfo || [];
+  const depth = info.length - 1;
+  // 合并 treePathInfo[depth] + params.data（drilled 模式下 params.data 可能给 wrapper）
+  const node = Object.assign({}, info[depth] || {}, params.data || {});
+  if (!node || (!node.name && !node.catId)) return;
+
+  // 1) 命中具体缩写（有 zh）→ 始终打开详情面板（最优先）
+  if (node.zh) {
+    selectItem(node, depth);
+    return;
+  }
+
+  // 2) 否则处理导航
+  if (currentRoot) {
+    // 下钻视图：点到 wrapper（depth=0 或 catId='cat-root'）= 返回根
+    if (depth === 0 || node.catId === 'cat-root') {
+      currentRoot = null;
+      selectedItem = null;
+      render();
+    }
+  } else {
+    // 根视图：点到分类（catId 是真实分类 id）= 下钻
+    const realCat = node.catId && node.catId !== 'root' && CATS.some(c => c.id === node.catId);
+    if (realCat) {
+      currentRoot = node.catId;
+      selectedItem = null;
+      render();
+    }
+  }
+});
+
+function selectItem(data, depth) {
+  selectedItem = data;
+  const cat = CATS.find(c => c.id === data.catId);
+  showDetail({
+    name: data.name,
+    zh: data.zh,
+    freq: data.freq,
+    catName: cat ? CAT_NAMES[cat.id] : '',
+    catColor: cat ? cat.color : '#888',
+    catId: data.catId
+  });
+}
+
+function showEmpty() {
+  document.getElementById('aside').innerHTML = `
+    <div class="panel-empty">
+      <div class="glyph">⌬</div>
+      <div class="msg">未选中缩写</div>
+      <div class="hint">
+        悬停查看简释<br>
+        点击分类/缩写查看详情<br>
+        <span class="kbd">/</span> 搜索 · <span class="kbd">Esc</span> 返回
+      </div>
+    </div>`;
+}
+
+function freqTag(f) {
+  if (f >= 5) return '<span class="freq-tag freq-5">★★★★★ 必背</span>';
+  if (f >= 4) return '<span class="freq-tag freq-4">★★★★ 高频</span>';
+  if (f >= 3) return '<span class="freq-tag freq-3">★★★ 常考</span>';
+  return '<span class="freq-tag freq-2">★★ 了解</span>';
+}
+
+function showDetail(it) {
+  const cat = CATS.find(c => c.id === it.catId);
+  const sameCat = cat ? cat.items.filter(i => i.n !== it.name).slice(0, 10) : [];
+  const relatedChips = sameCat.map(i => `<span class="related-chip" data-name="${i.n}">${i.n}</span>`).join('');
+
+  document.getElementById('aside').innerHTML = `
+    <div class="tag-row">
+      ${freqTag(it.freq)}
+      <span class="cat-tag" style="color:${it.catColor}">● ${it.catName}</span>
+    </div>
+    <div class="detail-name">${it.name}</div>
+    <div class="detail-zh">${it.zh}</div>
+    <div class="tip-grid">
+      <div class="tip-card">
+        <div class="lbl">分类</div>
+        <div class="val" style="color:${it.catColor}">${it.catName}</div>
+      </div>
+      <div class="tip-card">
+        <div class="lbl">频度</div>
+        <div class="val">${'★'.repeat(it.freq)}${'☆'.repeat(5 - it.freq)}</div>
+      </div>
+    </div>
+    <div class="section-label">本类相关</div>
+    <div class="related-list">${relatedChips || '<span style="color:var(--ivory-3);font-size:0.8rem">无</span>'}</div>
+    <div class="section-label">考试提示</div>
+    <div class="detail-body">
+      ${examTipFor(it.name, it.catName)}
+    </div>
+    <div class="section-label">操作</div>
+    <button id="drill-btn" style="
+      width: 100%; padding: 10px;
+      background: var(--ink-2); border: 1px solid var(--gold-3);
+      color: var(--gold-2); border-radius: 4px;
+      font-family: var(--font-display); font-size: 0.8rem;
+      letter-spacing: 0.18em; cursor: pointer;
+      transition: all 0.15s;">
+      ▼ 下钻到「${it.catName}」
+    </button>
+  `;
+
+  document.querySelectorAll('.related-chip').forEach(ch => {
+    ch.addEventListener('click', () => {
+      const name = ch.dataset.name;
+      const it2 = cat.items.find(i => i.n === name);
+      if (it2) selectItem({ name: it2.n, zh: it2.z, freq: it2.f, catId: it.catId }, 2);
+    });
+  });
+
+  document.getElementById('drill-btn').addEventListener('click', () => {
+    currentRoot = it.catId;
+    render();
+  });
+}
+
+// 考试提示（覆盖全 394 项；按需匹配，缺失走 fallback）
+function examTipFor(name, cat) {
+  const TIPS = {
+    // ===== 架构基础与风格 =====
+    'ADL': '架构描述语言。CMU 5 件套：UniCon/Wright/Rapide/Darwin/Acme。综合偶考。',
+    '4+1': '★必背★ Kruchten 99 年提出。逻辑/开发/进程/物理 + 场景（+1）。综合每年 1 题，案例画图基础。',
+    'RUP': '统一过程。4 阶段（起始/细化/构造/移交）× 9 工作流（横：业务建模/需求/分析/设计/实现/测试/部署/配置/项目管理；纵：迭代）。',
+    'SAAM': '架构分析早期方法。5 步：场景→需求→架构描述→场景评估→交互分析。ATAM 的前身。',
+    'ATAM': '★案例 T1 必背★ 9 步流程。判别"敏感点 / 权衡点 / 风险点 / 非风险点"。效用树=质量属性+场景优先级。',
+    'CBAM': 'ATAM 后续的成本-效益环节，将效用树映射到 ROI/预算。',
+    'QAW': '质量属性工作坊。6 类质量：可用/可修改/性能/安全/可测试/易用。',
+    'ASR': '架构关键需求 = 质量属性 + 业务关键约束。',
+    'DSSA': '领域专用架构 4 要素：领域模型/参考需求/参考设计/核心资产。',
+    'HLA': '高层体系架构，分布式仿真联邦：Fed/成员/对象/交互/RTI。',
+    'MVC': '3 部分：Model 数据+业务 / View 界面 / Controller 调度。',
+    'MVVM': 'View ↔ ViewModel 双向绑定，WPF/Vue/Flutter 都用。',
+    'C/S': '客户端+服务器两层。vs B/S：客户端安装重/性能高/维护难。',
+    'B/S': '浏览器+Web 服务器+DB 三层。免安装/升级方便。',
+    'P2P': '节点既是 client 也是 server。BT/电驴。',
+    'ABSD': '教程第 7 章核心方法。3 阶段：需求→设计→文档化。',
+    'SPL': '软件产品线。核心资产库 + 可变性机制 + 应用衍生。',
+    'C2': '风格判断：层次式 + 消息总线驱动。',
+    'UniCon': 'CMU ADL：支持多风格描述。',
+    'Wright': 'CMU ADL：基于 CSP 描述构件交互。',
+    'Rapide': 'CMU ADL：事件驱动，可执行模拟。',
+    'Darwin': 'CMU ADL：用于分布式系统描述。',
+    'Acme': 'CMU ADL：通用架构交换语言。',
+
+    // ===== 中间件与分布式 =====
+    'SOA': '★高频★ 中心化 ESB + 粗粒度服务。vs 微服务：SOA 中心化/微服务去中心化。',
+    'SCA': 'SOA 编程模型，依赖注入容器（IBM/Tibco 推动）。',
+    'ESB': 'SOA 中枢。协议转换+路由+编排。',
+    'EAI': '4 类集成：表示集成/数据集成/控制集成/业务集成。',
+    'BPEL': 'Web 服务业务流程编排语言（Orchestration）。',
+    'BPMN': '业务流程建模与标注标准，与 BPEL 配套使用。',
+    'CORBA': '跨语言 RPC。IIOP 协议 + ORB 中间件。',
+    'RPC': '★高频★ 远程过程调用，gRPC 是现代代表。',
+    'RMI': 'Java 专用 RPC，序列化对象。',
+    'DCOM': '微软分布式组件，已被 WCF 替代。',
+    'J2EE': 'Java 企业版 13 规范：JSP/Servlet/EJB/JMS/JTA/JNDI/JDBC/JCA/JMX/JPA...',
+    'EJB': '3 类 Bean：Session（业务）/ Entity（持久，已被 JPA 替代）/ MessageDriven（消息）。',
+    'JMS': '两种模型：P2P（Queue，1 对 1）+ Pub/Sub（Topic，1 对多）。',
+    'JTA': '分布式事务管理 API，与 2PC 配套。',
+    'JSP(Java)': 'JSP = HTML+Java 片段。vs Servlet：JSP 重展示、Servlet 重控制。',
+    '2PC': '两阶段提交：准备+提交。同步阻塞，协调者单点风险。',
+    '3PC': '三阶段提交：canCommit+preCommit+doCommit。+超时机制降低阻塞，但分区下仍可能不一致。',
+    'TCC': '★互联网分布式事务主流★ Try（预留）/ Confirm（确认）/ Cancel（释放）。',
+    'MQ': '异步通信，削峰填谷。',
+    'AMQP': 'RabbitMQ 底层协议。跨语言。',
+    'MQTT': '★2026 上 T1 真题★ IoT 主流协议。QoS 0（至多一次）/ 1（至少一次）/ 2（恰好一次）。',
+    'CoAP': '受限应用协议，类 HTTP 但走 UDP。',
+    'Paxos': 'Lamport 提出的分布式一致性协议，理论深奥难懂。',
+    'Raft': 'Paxos 简化版，3 角色：Leader / Follower / Candidate。etcd/Consul 用。',
+    'ZAB': 'ZooKeeper 原子广播协议，类 Paxos。',
+    'Gossip': '流行病协议，最终一致。Cassandra/Redis Cluster 用。',
+    'XA': 'X/Open 分布式事务标准（数据库驱动级）。',
+    'Saga': '长事务拆分。编排（中央协调）+ 编制（消息链）。补偿事务。',
+
+    // ===== 数据库 =====
+    'RDBMS': '关系型数据库。Oracle/MySQL/SQL Server/PostgreSQL。',
+    'SQL': '4 类语言：DDL / DML / DCL / TCL。',
+    'BCNF': '3NF 扩展。消除主属性对候选键的部分依赖。',
+    'ACID': '★高频★ A 原子 / C 一致 / I 隔离 / D 持久。对比 BASE。',
+    'CAP': '★★必背★★ 三选二，必须 P。CP = ZK/HBase/Consul；AP = Eureka/Cassandra。',
+    'BASE': '基本可用 + 软状态 + 最终一致。AP 的实现哲学。',
+    'NoSQL': '4 类：KV（Redis）/文档（MongoDB）/列族（HBase）/图（Neo4j）。',
+    'MVCC': '多版本并发。InnoDB 靠 undo log 实现。',
+    'OLTP': '联机事务处理，高并发短事务。',
+    'OLAP': '联机分析处理，复杂查询大数据量。',
+    'ETL': '抽取-转换-加载。数仓核心流程。',
+    'DW': '数据仓库。Bill Inmon 提出。面向主题/集成/稳定/反映历史变化。',
+    'DM': '数据集市，部门级 DW。',
+    'ODS': '操作数据存储。DW 的临时区。',
+    'ODS/DWD/DWS/ADS': '★数仓 4 层架构★ ODS 原始 → DWD 明细 → DWS 汇总 → ADS 应用。',
+    'JDBC': 'Java 数据库连接标准。',
+    'ORM': '对象关系映射。Hibernate/MyBatis/JPA。',
+    'TPC': '事务处理性能委员会。TPC-C 联机 / TPC-H 决策支持。',
+    '1NF': '原子性，每字段不可分。',
+    '2NF': '消除非主属性对主键的部分依赖。',
+    '3NF': '★★必背★★ 消除非主属性对主键的传递依赖。案例 T2 计算题。',
+    '4NF': '消除多值依赖。',
+    'DDL': '数据定义。CREATE / ALTER / DROP / TRUNCATE。',
+    'DML': '数据操作。SELECT / INSERT / UPDATE / DELETE。',
+    'DCL': '数据控制。GRANT / REVOKE。',
+    'TCL': '事务控制。COMMIT / ROLLBACK / SAVEPOINT。',
+    'RAID0': '条带，无冗余。性能↑，可用=N。',
+    'RAID1': '镜像，冗余 100%。空间利用率 50%。',
+    'RAID5': '★案例计算题★ 至少 3 盘，单盘校验，可坏 1 块。空间=(N-1)×单盘。',
+    'RAID6': '双校验条带，可坏 2 块。空间=(N-2)×单盘。',
+    'RAID10': '先镜像后条带。性能+冗余。空间=N/2×单盘。',
+
+    // ===== 云与大数据 =====
+    'IaaS': '基础设施即服务，提供 VM/存储/网络。',
+    'PaaS': '平台即服务，提供运行时+中间件+开发工具。',
+    'SaaS': '软件即服务，提供应用。',
+    'DaaS': '数据即服务。',
+    'XaaS': '一切皆服务。',
+    'FaaS': '函数即服务，Serverless 计算，函数粒度。',
+    'KVM': 'Linux 内核虚拟化。',
+    'Docker': '容器引擎，镜像+容器+仓库。',
+    'K8s': 'Kubernetes 容器编排。核心：Pod / Service / Deployment / Ingress。',
+    'HDFS': '块默认 128MB，3 副本机制。',
+    'MapReduce': 'Map + Shuffle + Reduce 两阶段。',
+    'YARN': 'ResourceManager + NodeManager 资源调度。',
+    'HBase': '列式 KV 存储，HDFS 之上。',
+    'Hive': 'HQL → MapReduce/Spark。',
+    'Spark': 'RDD 内存计算。比 MR 快 10-100×。',
+    'Kafka': '分区+副本+ISR。流处理主流。',
+    'ZooKeeper': 'ZAB 协议，集群协调/配置中心/分布式锁。',
+    'Flink': '流批一体。Checkpoint+Watermark 核心。',
+    'BI': '商业智能。报表+OLAP+数据可视化。',
+    'Lambda': '★高频★ 批+流双链路架构。',
+    'Kappa': '★高频★ 单一流处理链路（Kafka+Flink）。',
+    'Lakehouse': '湖仓一体。数据湖+数仓事务。',
+    'Iceberg': 'Apache Iceberg 表格式。ACID 事务+Schema 演化。',
+    'Hudi': 'Apache Hudi 表格式。增量处理+Upsert。',
+    'Delta Lake': 'Delta Lake 表格式。Spark 生态。',
+    'RDD': 'Spark 弹性分布式数据集，5 大特性。',
+    'DAG': '有向无环图。Spark/Tez/Airflow 执行模型。',
+    'MPP': '大规模并行处理。Greenplum/ClickHouse/TDengine。',
+    'S3': 'AWS 对象存储。',
+    'OSS': '阿里云对象存储。',
+    'Ceph': '分布式统一存储（块/文件/对象）。',
+
+    // ===== 网络与存储 =====
+    'OSI': '★必背★ 7 层：物理/链路/网络/传输/会话/表示/应用。',
+    'TCP/IP': '4 层：链路/网络（IP）/传输（TCP/UDP）/应用。',
+    'LAN': '局域网。',
+    'WAN': '广域网。',
+    'WLAN': '无线局域网。',
+    'VLAN': '虚拟局域网。',
+    'VPN': '虚拟专用网络，隧道+加密。',
+    'NAT': '内网私有地址 → 公网地址转换。',
+    'DNS': '域名→IP。UDP 53。',
+    'DHCP': '动态分配 IP。UDP 67/68。',
+    'HTTP': '超文本传输协议。TCP 80。',
+    'HTTPS': 'HTTP + TLS。TCP 443。',
+    'SMTP': '邮件发送。TCP 25。',
+    'ARP': 'IP → MAC。',
+    'ICMP': 'Internet 控制报文。ping/traceroute 用。',
+    'OSPF': '开放最短路径优先，链路状态协议。',
+    'BGP': '边界网关协议，运营商骨干。',
+    'MPLS': '多协议标签交换。',
+    'SDN': '软件定义网络，控制面+转发面解耦。',
+    'NFV': '网络功能虚拟化。',
+    'CDN': '★高频★ 内容分发网络，边缘缓存。',
+    'QoS': '服务质量（带宽/时延/抖动/丢包率）。',
+    'DAS': '直连存储。',
+    'NAS': '网络附加存储，文件级。',
+    'SAN': '存储区域网络，块级。',
+    'RAID': '独立磁盘冗余阵列。0/1/5/6/10。',
+    'LB': '负载均衡。LVS 4 层 + Nginx 7 层。',
+    'FTP': '文件传输协议。TCP 20/21。',
+    'SSH': '安全外壳协议。TCP 22。',
+    'Telnet': '远程登录明文协议。TCP 23。',
+    'POP3': '邮件接收。TCP 110。',
+    'IMAP': '邮件访问。TCP 143。',
+    'SNMP': '简单网络管理。UDP 161/162。',
+    'RDP': '远程桌面协议。TCP 3389。',
+    'RIP': '路由信息协议，距离矢量，跳数≤15。',
+    'IS-IS': '中间系统到中间系统，链路状态，运营商用。',
+    'PPTP': '点对点隧道协议（已不推荐）。',
+    'L2TP': '二层隧道协议，与 IPSec 结合。',
+    'DMZ': '非军事区，隔离区。',
+    'IGMP': '互联网组管理协议。',
+    'RARP': '反向地址解析 MAC→IP（已废）。',
+    'NFS': '网络文件系统，UNIX/Linux 文件共享。',
+    'SMB': '服务器消息块，Windows 共享。',
+    'iSCSI': '基于 IP 的 SCSI，块级存储。',
+    'FC': '光纤通道，SAN 高速存储。',
+
+    // ===== 信息安全 =====
+    'AES': '高级加密标准，对称。128/192/256 位密钥。',
+    'DES': '数据加密标准，对称 56 位（已不安全）。',
+    'RSA': '非对称。密钥 1024/2048/8192 位。',
+    'ECC': '椭圆曲线密码。密钥短效率高。',
+    'MD5': '消息摘要，128 位（已不安全）。',
+    'SHA': '安全散列。SHA-1（已废）/SHA-256/SHA-3。',
+    'HMAC': '基于散列的消息认证码。',
+    'MAC(认证)': '消息认证码。',
+    'SSL': '安全套接层（已废，被 TLS 取代）。',
+    'TLS': '★高频★ TLS 1.2/1.3 主流。',
+    'PKI': '公钥基础设施。CA+证书+CRL。',
+    'CA': '证书颁发机构。',
+    'X.509': '数字证书标准。',
+    'SSO': '★高频★ 单点登录。3 协议：SAML / OAuth / OpenID。',
+    'RBAC': '基于角色的访问控制。',
+    'ABAC': '基于属性的访问控制。',
+    'DAC': '自主访问控制（Linux 文件权限）。',
+    'MAC(强制)': '强制访问控制（军方/政府）。',
+    'IPSec': 'IP 安全协议族，VPN 用。',
+    'IDS': '入侵检测系统。',
+    'IPS': '入侵防御系统。',
+    'WAF': 'Web 应用防火墙。',
+    'DDoS': '分布式拒绝服务。SYN Flood / UDP Flood / HTTP Flood。',
+    'XSS': '跨站脚本攻击。反射型 / 存储型 / DOM 型。',
+    'CSRF': '跨站请求伪造。',
+    'OWASP': '开放 Web 应用安全项目，Top 10 清单。',
+    'RPO': '恢复点目标（容灾）。',
+    'RTO': '恢复时间目标（容灾）。',
+    'STRIDE': '★必背★ 6 类威胁：Spoofing / Tampering / Repudiation / Information disclosure / Denial / Elevation。',
+    'CIA': '★★必背★★ 三要素：保密性 / 完整性 / 可用性。',
+    '等保2.0': '网络安全等级保护 2.0。GB/T 22239-2019。5 级。',
+    '3DES': '三重 DES。双密钥 112 位 / 三密钥 168 位。',
+    'SM4': '国密对称分组，128 位密钥。',
+    'SM2': '国密非对称，基于椭圆曲线。',
+    'LDAP': '轻量目录访问协议。',
+    'SAML': '安全断言标记语言。SSO 跨域。',
+    'OpenID': '开放身份认证协议。',
+    'Kerberos': '票据认证协议。Windows AD 用。',
+    'PGP': '良好隐私，邮件+文件加密。',
+    'S/MIME': '安全多用途邮件扩展。',
+    'SIEM': '安全信息与事件管理。',
+    'SOC': '安全运营中心。',
+    'EDR': '端点检测与响应。',
+    'XDR': '扩展检测与响应（端点+网络+云）。',
+    'DLP': '数据防泄漏。',
+    'HIDS': '主机入侵检测系统。',
+    'NIDS': '网络入侵检测系统。',
+    'PCI-DSS': '支付卡行业数据安全标准。',
+    'HIPAA': '健康保险可携性与责任法案。',
+    'GDPR': '欧盟通用数据保护条例。',
+    'CSP': '内容安全策略 HTTP 头，防 XSS。',
+
+    // ===== 系统分析与建模 =====
+    'UML': '★必背★ 14 种图：结构（类/对象/构件/部署/包/组合结构）+ 行为（活动/状态/用例/时序/通信/交互概览/定时）+ 制品。',
+    'OOA': '面向对象分析。',
+    'OOD': '面向对象设计。',
+    'OOP': '面向对象程序设计。',
+    'DFD': '★高频★ 数据流图。4 元素：加工 / 数据流 / 数据存储 / 外部实体。',
+    'DD': '数据字典。',
+    'ERD': '★高频★ 实体-联系图。3 元素：实体 / 属性 / 联系（1:1 / 1:N / M:N）。',
+    'SA': '结构化分析。',
+    'SD': '结构化设计。',
+    'SP': '结构化程序设计。',
+    'JSP(Jackson)': 'Jackson 结构化程序设计方法。',
+    'JSD': 'Jackson 系统开发方法。',
+    'VDM': '维也纳开发方法，形式化。',
+    'DDD': '★2024-2026 新热点★ 限界上下文 / 实体 / 值对象 / 领域服务 / 聚合根。',
+    'TDD': '测试驱动开发，红绿重构。',
+    'MDA': '模型驱动架构。PIM → PSM → Code。',
+    'PIM': '平台无关模型。',
+    'PSM': '平台相关模型。',
+    'FURPS': '功能 / 易用 / 可靠 / 性能 / 可支持（+ 设计约束）。',
+    'SysML': '系统工程建模语言，UML 扩展。',
+    'HIPO': '层次输入/处理/输出图。',
+    'N-S': '盒图（Nassi-Shneiderman 图）。',
+    'STD': '状态转换图。',
+    'ER': '实体，E-R 模型基础元素。',
+
+    // ===== 软件工程与项目管理 =====
+    'SDLC': '软件生命周期。瀑布 / 迭代 / 敏捷。',
+    'XP': '极限编程。12 实践：结对编程 / 持续集成 / TDD / 重构 / 小版本发布...',
+    'Scrum': '敏捷框架。3 角色（PO/SM/Dev）+ 4 会议（计划/站会/评审/回顾）+ 2 制品（Backlog/Increment）。',
+    'CMM': '能力成熟度模型。',
+    'CMMI': '★必背★ 5 级：初始 → 已管理 → 已定义 → 量化管理 → 优化。',
+    'SPICE': 'ISO/IEC 15504 软件过程改进国际标准。',
+    'SRS': '软件需求规格说明书。',
+    'V&V': '验证（Verification, 是否符合规范）+ 确认（Validation, 是否满足需求）。',
+    'SCM(配置)': '软件配置管理。',
+    'SQA': '软件质量保证。',
+    'ISO/IEC 9126': '软件质量 6 大特性：功能 / 可靠 / 易用 / 效率 / 维护 / 可移植。已废改为 ISO 25010。',
+    'WBS': '工作分解结构。',
+    'PERT': '计划评审技术，三点估算。',
+    'CPM': '关键路径法。',
+    'EVM': '★案例必考★ 挣值管理。',
+    'PV': '计划价值。',
+    'EV': '挣值。',
+    'AC': '实际成本。',
+    'CPI(成本)': '★必背★ 成本绩效指数=EV/AC。>1 节约，<1 超支。',
+    'SPI': '进度绩效指数=EV/PV。>1 超前，<1 滞后。',
+    'NPV': '净现值。',
+    'IRR': '内部收益率。',
+    'ROI': '投资回报率。',
+    'PMBOK': '项目管理知识体系。≠ CMMI：方法论 vs 过程成熟度。',
+    'BAC': '完工预算。',
+    'EAC': '完工估算=BAC/CPI（典型差异）。',
+    'ETC': '完工尚需成本=EAC-AC。',
+    'SV': '进度偏差=EV-PV。正=超前。',
+    'CV': '成本偏差=EV-AC。正=节约。',
+    'CCB': '配置控制委员会。',
+    'α测试': 'Alpha 测试，开发方受控环境。',
+    'β测试': 'Beta 测试，用户真实环境。',
+    'MC/DC': '修改条件/判定覆盖。航空 DO-178B 强制。',
+    'WMC': 'CK 度量：加权方法数。',
+    'DIT': 'CK 度量：继承深度。',
+    'NOC': 'CK 度量：子类数。',
+    'CBO': 'CK 度量：类间耦合。',
+    'RFC': 'CK 度量：响应集合。',
+    'LCOM': 'CK 度量：方法间缺乏内聚。',
+
+    // ===== 计算机体系与 OS =====
+    'CISC': '复杂指令集。x86。',
+    'RISC': '精简指令集。ARM/MIPS。',
+    'SISD/SIMD': '弗林分类。单指令流×单数据流 + 单指令流×多数据流。',
+    'MISD/MIMD': '弗林分类。多指令流×单数据流 + 多指令流×多数据流。',
+    'SMP': '对称多处理，共享内存。',
+    'MPP': '大规模并行处理，分布式内存。',
+    'NUMA': '非一致内存访问。',
+    'DMA': '直接存储器访问。',
+    'TLB': '地址转换后备缓冲（快表）。',
+    'MMU': '存储管理单元。',
+    'PCB': '进程控制块。',
+    'TCB': '线程控制块。',
+    'RTOS': '实时操作系统。VxWorks / RT-Thread。',
+    'SoC': '片上系统。',
+    'DSP': '数字信号处理器。',
+    'FPGA': '现场可编程门阵列。',
+    'ASIC': '专用集成电路。',
+    'FCFS/SJF/RR': '调度算法：先来先服务 / 最短作业优先 / 时间片轮转。',
+    'LRU/LFU/FIFO': '页面置换：最近最少 / 最不经常 / 先进先出。',
+    'OPT': '最佳页面置换算法（理论基准）。',
+    'MIPS': '每秒百万条指令。',
+    'MFLOPS': '每秒百万次浮点运算。',
+    'CPI(指令)': '每条指令周期数。',
+    'SRTF': '最短剩余时间优先（可抢占 SJF）。',
+    'Priority': '优先级调度。',
+    'MLFQ': '多级反馈队列调度。',
+    'CLOCK': '时钟页面置换，LRU 近似。',
+    'SSTF': '最短寻道优先（磁盘调度）。',
+    'SCAN': '扫描算法 / 电梯算法。',
+    'C-SCAN': '循环扫描。',
+    'LOOK': '改进型 SCAN。',
+    'FAT': '文件分配表，FAT32。',
+    'NTFS': 'NT 文件系统，Windows。',
+    'ext4': '第四代扩展文件系统，Linux。',
+    'XFS': '高性能日志文件系统，Linux。',
+    '哈佛结构': '哈佛体系结构，指令/数据总线分离。',
+    '冯·诺依曼': '冯·诺依曼体系结构，存储程序。',
+    'Amdahl': '阿姆达尔定律，加速比上限。',
+
+    // ===== 可靠性与性能 =====
+    'RAS': '可靠性 / 可用性 / 可维护性。',
+    'MTBF': '★必背★ 平均无故障时间。',
+    'MTTF': '平均失效前时间。',
+    'MTTR': '★必背★ 平均修复时间。',
+    'SPEC': '标准性能评价组织，基准测试。',
+    'SRE': 'Google 站点可靠性工程。',
+    'N版本': '★案例必考★ N 版本程序设计，多版本冗余并行。',
+    '恢复块': '★案例必考★ 恢复块法，主块+备块+验收测试。',
+    '5个9': '可用性 99.999%，年停 <5.26 分钟。',
+
+    // ===== 企业信息化与IT服务 =====
+    'EA': '企业架构。',
+    'TOGAF': '★高频★ 开放组架构框架。ADM 4 阶段：架构愿景 / 业务 / 信息 / 技术 / 机会与解决方案 / 迁移治理。',
+    'ADM': 'TOGAF 架构开发方法。',
+    'Zachman': '扎克曼企业架构框架。5W1H × 6 行 = 36 格。',
+    'BPR': '业务流程重组。Hammer 提出。',
+    'ERP': '企业资源计划。',
+    'MRP': '物料需求计划。',
+    'MRPII': '制造资源计划。',
+    'CRM': '客户关系管理。',
+    'SCM(供应链)': '供应链管理。',
+    'OA': '办公自动化。',
+    'MIS': '管理信息系统。',
+    'DSS': '决策支持系统。',
+    'ES': '专家系统。',
+    'EDI': '电子数据交换。',
+    'IRP': '信息资源规划。',
+    'TCO': '总拥有成本。',
+    'ITIL': '★高频★ IT 基础设施库。IT 服务管理最佳实践。',
+    'COBIT': '信息及相关技术控制目标。',
+    'SLA': '服务水平协议。',
+    'BPM': '业务流程管理。',
+    'OLA': '操作级别协议，ITIL 内部 SLA。',
+    'KPI': '关键绩效指标。',
+
+    // ===== Web 与接口 =====
+    'REST': '★高频★ 表述性状态转移。HTTP+JSON。资源化接口。',
+    'SOAP': '简单对象访问协议。XML+WSDL。',
+    'WSDL': 'Web 服务描述语言。',
+    'UDDI': '通用描述、发现与集成。',
+    'XML': '可扩展标记语言。',
+    'JSON': 'JS 对象表示法，轻量数据交换。',
+    'JWT': 'JSON Web Token。无状态令牌。',
+    'OAuth': '开放授权协议。',
+    'WebSocket': '全双工通信协议。',
+    'gRPC': '★高频★ 高性能开源 RPC 框架，Protobuf + HTTP/2。',
+    'API': '应用程序接口。',
+    'URI': '统一资源标识符（含 URL/URN）。',
+    'URL': '统一资源定位符。',
+    'URN': '统一资源名称。',
+    'HTML': '超文本标记语言。',
+    'CSS': '层叠样式表。',
+    'JS': 'JavaScript 脚本语言。',
+    'CORS': '跨域资源共享。',
+
+    // ===== 新技术 =====
+    'AI': '人工智能。',
+    'ML': '机器学习。',
+    'DL': '深度学习。',
+    'NLP': '自然语言处理。',
+    'CNN': '卷积神经网络。',
+    'RNN': '循环神经网络。',
+    'LSTM': '长短期记忆网络。',
+    'IoT': '★必背★ 物联网。感知层 / 网络层 / 平台层 / 应用层。',
+    'NB-IoT': '窄带物联网。',
+    'AR': '增强现实。',
+    'VR': '虚拟现实。',
+    'MR': '混合现实。',
+    'RPA': '机器人流程自动化。',
+    'PoW': '工作量证明，比特币用。',
+    'PoS': '权益证明。',
+    'PBFT': '实用拜占庭容错。',
+    'LLM': '★2024-2026 必背★ 大语言模型。GPT / Claude / 文心一言。',
+    'RAG': '★高频★ 检索增强生成。外挂知识库+LLM。',
+    'GPT': '生成式预训练 Transformer。',
+    'Transformer': '注意力机制模型，LLM 基础架构。',
+    'BERT': '双向编码表示，预训练 Transformer。',
+    'AIGC': '人工智能生成内容。',
+    'CoT': '思维链推理（Chain of Thought）。',
+    'Embedding': '向量嵌入，文本→稠密向量。',
+    '向量数据库': '向量数据库。Milvus / Pinecone / Qdrant。',
+    'MCP': 'Model Context Protocol，模型上下文协议。',
+    'A2A': 'Agent-to-Agent，智能体互操作。',
+    'Function Call': 'LLM 调用外部工具。',
+    'DT': 'Digital Twin 数字孪生。',
+    '5G': '★高频★ 三场景：eMBB / mMTC / URLLC。',
+    '6G': '通感一体化。',
+    'Web3': '去中心化网络。',
+    'NFT': '非同质化代币。',
+    'DeFi': '去中心化金融。'
+  };
+  return TIPS[name] || `${name} 属于【${cat}】，综合/案例按主题考查。建议结合真题和官方教材确认掌握度。`;
+}
+
+// ============== 搜索 ==============
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+function doSearch(q) {
+  q = q.trim().toLowerCase();
+  if (!q) { searchResults.classList.remove('show'); return; }
+  const matches = [];
+  CATS.forEach(cat => {
+    cat.items.forEach(it => {
+      if (it.n.toLowerCase().includes(q) || it.z.toLowerCase().includes(q)) {
+        matches.push({ n: it.n, z: it.z, catId: cat.id, catName: CAT_NAMES[cat.id], color: cat.color, freq: it.f });
+      }
+    });
+  });
+  if (matches.length === 0) {
+    searchResults.innerHTML = '<div class="search-result" style="color:var(--ivory-3)">未找到匹配</div>';
+    searchResults.classList.add('show');
+    return;
+  }
+  matches.sort((a, b) => b.freq - a.freq);
+  searchResults.innerHTML = matches.slice(0, 30).map(m => `
+    <div class="search-result" data-name="${m.n}" data-cat="${m.catId}">
+      <span class="abbr">${m.n}</span><span class="cat" style="color:${m.color}">● ${m.catName}</span>
+      <div class="zh">${m.z}</div>
+    </div>
+  `).join('') + (matches.length > 30 ? `<div class="search-result" style="text-align:center;color:var(--ivory-3);font-size:0.74rem">还有 ${matches.length - 30} 项未显示…</div>` : '');
+  searchResults.classList.add('show');
+
+  searchResults.querySelectorAll('.search-result[data-name]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const catId = el.dataset.cat;
+      const name = el.dataset.name;
+      const it = CATS.find(c => c.id === catId).items.find(i => i.n === name);
+      currentRoot = catId;
+      selectedItem = { name: it.n, zh: it.z, freq: it.f, catId };
+      render();
+      selectItem(selectedItem, 2);
+      searchResults.classList.remove('show');
+      searchInput.value = '';
+    });
+  });
+}
+
+searchInput.addEventListener('input', e => doSearch(e.target.value));
+searchInput.addEventListener('focus', () => { if (searchInput.value) doSearch(searchInput.value); });
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-box')) searchResults.classList.remove('show');
+});
+
+// ============== 键盘快捷键 ==============
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  } else if (e.key === 'Escape') {
+    if (selectedItem) {
+      selectedItem = null;
+      showEmpty();
+    } else if (currentRoot) {
+      currentRoot = null;
+      render();
+    } else if (document.activeElement === searchInput) {
+      searchInput.blur();
+      searchResults.classList.remove('show');
+    }
+  }
+});
+
+// ============== Legend ==============
+function buildLegend() {
+  const legend = document.getElementById('legend');
+  legend.innerHTML = CATS.map(c => `
+    <div class="legend-item" data-cat="${c.id}">
+      <span class="legend-dot" style="background:${c.color}"></span>
+      <span>${CAT_NAMES[c.id]}</span>
+      <span class="legend-count">${c.items.length}</span>
+    </div>
+  `).join('');
+  legend.querySelectorAll('.legend-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const catId = el.dataset.cat;
+      if (currentRoot === catId) {
+        currentRoot = null;
+        selectedItem = null;
+      } else {
+        currentRoot = catId;
+        selectedItem = null;
+      }
+      render();
+    });
+  });
+}
+
+function updateLegendActive() {
+  document.querySelectorAll('.legend-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.cat === currentRoot);
+  });
+}
+
+buildLegend();
+render();
+
+// ============== Resize ==============
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => myChart.resize(), 80);
+});
+</script>
+  <button class="theme-toggle" id="theme-toggle" title="切换深/浅主题 (T)" onclick="toggleTheme()">☾</button>
+  <script>
+  (function() {
+    const KEY = 'calc-theme';
+    function apply(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      const btn = document.getElementById('theme-toggle');
+      if (btn) btn.textContent = theme === 'light' ? '☀' : '☾';
+    }
+    window.toggleTheme = function() {
+      const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = cur === 'light' ? 'dark' : 'light';
+      try { localStorage.setItem(KEY, next); } catch(e) {}
+      apply(next);
+      // re-render ECharts with appropriate contrast (chart keeps internal palette but UI flips)
+      if (typeof render === 'function') {
+        try { render(); } catch(e) {}
+      }
+    };
+    try {
+      const saved = localStorage.getItem(KEY);
+      if (saved) apply(saved);
+    } catch(e) {}
+    document.addEventListener('keydown', function(e) {
+      if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.metaKey && !e.altKey
+          && !/^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName || ''))) {
+        toggleTheme();
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
