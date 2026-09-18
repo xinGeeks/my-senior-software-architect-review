@@ -32,6 +32,7 @@
   --steel: #5a7d8a;
   --deep-emerald: #3d8a6b;
   --mauve: #9c6b8a;
+  --ink-1-rgb: 10, 15, 31;
   --font-display: 'Cinzel', 'Noto Serif SC', serif;
   --font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'JetBrains Mono', 'Consolas', monospace;
@@ -63,7 +64,7 @@ header {
   position: fixed; top: 0; left: 0; right: 0;
   z-index: 50;
   padding: 16px 28px;
-  background: rgba(6, 9, 26, 0.85);
+  background: rgba(var(--ink-1-rgb), 0.85);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border-bottom: 1px solid var(--ink-4);
@@ -355,6 +356,106 @@ aside::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 3px; }
   color: var(--gold-2);
 }
 
+/* ===== 记忆口诀 / 知识点展开 ===== */
+.mnemonic-card {
+  background: linear-gradient(135deg, rgba(212,165,116,0.08), rgba(74,111,165,0.06));
+  border: 1px solid var(--gold-3);
+  border-radius: 4px;
+  padding: 12px 14px;
+  margin-top: 6px;
+}
+.mnemonic-card .verse {
+  font-family: var(--font-cn);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--gold-1);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  text-align: center;
+  padding: 4px 0;
+}
+.mnemonic-card .verse em {
+  font-style: normal;
+  color: var(--crimson);
+}
+.mnemonic-card .gloss {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--ivory-2);
+  line-height: 1.6;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(212,165,116,0.25);
+}
+
+.kn-detail {
+  background: var(--ink-2);
+  border: 1px solid var(--ink-4);
+  border-radius: 4px;
+  margin-top: 6px;
+}
+.kn-detail + .kn-detail { margin-top: 6px; }
+.kn-detail summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-2);
+  list-style: none;
+  display: flex; align-items: center; gap: 6px;
+  user-select: none;
+  transition: color 0.15s;
+}
+.kn-detail summary::-webkit-details-marker { display: none; }
+.kn-detail summary::before {
+  content: '▸';
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--gold-3);
+  transition: transform 0.15s;
+}
+.kn-detail[open] summary::before { transform: rotate(90deg); }
+.kn-detail summary:hover { color: var(--gold-1); }
+.kn-detail .kn-body {
+  padding: 0 14px 12px 32px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--ivory-1);
+}
+.kn-detail .kn-body ul {
+  margin: 4px 0; padding-left: 18px;
+}
+.kn-detail .kn-body li { margin: 2px 0; }
+.kn-detail .kn-body code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: var(--ink-3);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--gold-2);
+}
+.kn-detail .kn-body .vs {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px; align-items: center;
+  background: var(--ink-3);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 6px 0;
+  font-size: 0.82rem;
+}
+.kn-detail .kn-body .vs .lhs { color: var(--gold-2); text-align: right; }
+.kn-detail .kn-body .vs .rhs { color: var(--azure); }
+.kn-detail .kn-body .vs .sep {
+  font-family: var(--font-display);
+  color: var(--crimson);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+}
+
 /* ===== Search results dropdown ===== */
 .search-results {
   position: absolute;
@@ -404,7 +505,7 @@ aside::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 3px; }
   position: fixed;
   bottom: 0; left: 0; right: 380px;
   padding: 10px 24px;
-  background: rgba(6, 9, 26, 0.92);
+  background: rgba(var(--ink-1-rgb), 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid var(--ink-4);
@@ -466,6 +567,13 @@ aside::-webkit-scrollbar-thumb { background: var(--ink-4); border-radius: 3px; }
   --emerald: #3f6b53;
   --azure: #355080;
   --violet: #564268;
+  --ink-1-rgb: 235, 228, 207;
+}
+
+[data-theme="light"] header,
+[data-theme="light"] .legend {
+  background: rgba(var(--ink-1-rgb), 0.88);
+  border-color: var(--ink-3);
 }
 
 [data-theme="light"] body {
@@ -1063,6 +1171,11 @@ function buildOption(rootId = null) {
     radius: rootId ? ['15%', '70%'] : ['0%', '70%'],
     sort: null,
     nodeClick: false,
+    selectedMode: 'single',
+    select: {
+      focus: 'ancestor',
+      itemStyle: { borderColor: '#fff', borderWidth: 3, shadowBlur: 16, shadowColor: 'rgba(212,165,116,0.65)' }
+    },
     emphasis: { focus: 'ancestor', itemStyle: { borderColor: '#d4a574', borderWidth: 2 } },
     label: {
       color: '#f5f0e1',
@@ -1115,13 +1228,46 @@ function buildOption(rootId = null) {
 let currentRoot = null; // 当前下钻的 catId
 let selectedItem = null;
 
+// 构造 [rootNode, catNode, itemNode] 形式的 treePathInfo，供 sunburstSelect 使用
+function findTreePath(name, catId) {
+  const cat = CATS.find(c => c.id === catId);
+  if (!cat) return null;
+  const it = cat.items.find(i => i.n === name);
+  if (!it) return null;
+  if (currentRoot) {
+    return [
+      { name: CAT_NAMES[currentRoot], catId: 'cat-root' },
+      { name: CAT_NAMES[currentRoot], catId: currentRoot },
+      { name: it.n, catId: catId }
+    ];
+  }
+  return [
+    { name: '系统架构师', catId: 'root' },
+    { name: CAT_NAMES[catId], catId: catId },
+    { name: it.n, catId: catId }
+  ];
+}
+
 // ============== 渲染 ==============
 function render() {
   myChart.setOption(buildOption(currentRoot), true);
   updateBreadcrumb();
   updateLegendActive();
   // 重置详情面板（除非有选中项）
-  if (!selectedItem) showEmpty();
+  if (!selectedItem) {
+    showEmpty();
+  } else {
+    // setOption 后重新触发高亮
+    const path = findTreePath(selectedItem.name, selectedItem.catId);
+    if (path) {
+      myChart.dispatchAction({
+        type: 'sunburstSelect',
+        seriesIndex: 0,
+        data: [{ name: path[2].name, catId: selectedItem.catId }],
+        treePathInfo: path
+      });
+    }
+  }
 }
 
 function updateBreadcrumb() {
@@ -1183,6 +1329,17 @@ myChart.on('click', function (params) {
 
 function selectItem(data, depth) {
   selectedItem = data;
+  // 让 sunburst 选中状态保持高亮（即使鼠标移走也不消失）
+  myChart.dispatchAction({ type: 'sunburstUnselect', seriesIndex: 0 });
+  const targetPath = findTreePath(data.name, data.catId);
+  if (targetPath) {
+    myChart.dispatchAction({
+      type: 'sunburstSelect',
+      seriesIndex: 0,
+      data: [{ name: targetPath[2].name, catId: data.catId }],
+      treePathInfo: targetPath
+    });
+  }
   const cat = CATS.find(c => c.id === data.catId);
   showDetail({
     name: data.name,
@@ -1219,6 +1376,26 @@ function showDetail(it) {
   const sameCat = cat ? cat.items.filter(i => i.n !== it.name).slice(0, 10) : [];
   const relatedChips = sameCat.map(i => `<span class="related-chip" data-name="${i.n}">${i.n}</span>`).join('');
 
+  // 记忆口诀：有就显示,没有就提示走通用口诀
+  const mn = MEMORY[it.name];
+  const mnemonicBlock = mn ? `
+    <div class="mnemonic-card">
+      <div class="verse">${mn.verse.replace(/\n/g, '<br>')}</div>
+      <div class="gloss">💡 ${mn.gloss}</div>
+    </div>` : `
+    <div class="mnemonic-card">
+      <div class="verse">${it.name} = 抓三关键词</div>
+      <div class="gloss">💡 ${it.catName} 类缩写,先拆解字面含义,再结合案例辨析。</div>
+    </div>`;
+
+  // 知识点展开
+  const kn = expandKnowledge(it.name, it.catName);
+  const knowledgeBlock = kn.map((k, i) => `
+    <details class="kn-detail" ${i === 0 ? 'open' : ''}>
+      <summary>${k.label}</summary>
+      <div class="kn-body">${k.html}</div>
+    </details>`).join('');
+
   document.getElementById('aside').innerHTML = `
     <div class="tag-row">
       ${freqTag(it.freq)}
@@ -1238,10 +1415,10 @@ function showDetail(it) {
     </div>
     <div class="section-label">本类相关</div>
     <div class="related-list">${relatedChips || '<span style="color:var(--ivory-3);font-size:0.8rem">无</span>'}</div>
-    <div class="section-label">考试提示</div>
-    <div class="detail-body">
-      ${examTipFor(it.name, it.catName)}
-    </div>
+    <div class="section-label">📌 记忆口诀</div>
+    ${mnemonicBlock}
+    <div class="section-label">🔍 知识点展开</div>
+    ${knowledgeBlock}
     <div class="section-label">操作</div>
     <button id="drill-btn" style="
       width: 100%; padding: 10px;
@@ -1268,7 +1445,568 @@ function showDetail(it) {
   });
 }
 
-// 考试提示（覆盖全 394 项；按需匹配，缺失走 fallback）
+// ============== 记忆口诀 ==============
+const MEMORY = {
+  // ===== 架构 =====
+  'ATAM':  { verse: '效用树挖坑九步走,\n敏感权衡风险四子分', gloss: '9 步流程 + 4 个判别结果（敏感点/权衡点/风险点/非风险点）。' },
+  '4+1':   { verse: '逻开进程物,加一场景图', gloss: '逻辑/开发/进程/物理 4 视图 + 1 场景（用例驱动）。' },
+  'ABSD':  { verse: '需求设计文档化,三阶段步步通', gloss: 'ABSD = 基于架构的软件设计，教程第 7 章核心方法。' },
+  'DSSA':  { verse: '模参设核,四要素合一', gloss: '领域模型 / 参考需求 / 参考设计 / 核心资产。' },
+  'MVC':   { verse: '模视控,各管一摊', gloss: 'Model 数据+业务 / View 界面 / Controller 调度。' },
+  'SOA':   { verse: '中心 ESB 粗服务,\n对比微服去中心', gloss: 'SOA 中心化+粗粒度；微服务去中心化+细粒度。' },
+
+  // ===== 中间件/分布式 =====
+  'SOA':   { verse: '中心 ESB 粗服务', gloss: '中心化 + 粗粒度服务。' },
+  'ESB':   { verse: '协议路由加编排,中枢全靠它', gloss: 'SOA 中枢：协议转换 + 路由 + 编排。' },
+  'RPC':   { verse: '远程过程像本地', gloss: '本地调用变成网络调用,gRPC 是现代代表。' },
+  '2PC':   { verse: '准备提交两步走,\n同步阻塞单点愁', gloss: '协调者单点风险 + 同步阻塞。' },
+  '3PC':   { verse: '三阶段加超时,分区仍可能乱', gloss: 'canCommit + preCommit + doCommit,降低阻塞但 P 下仍不一致。' },
+  'TCC':   { verse: '试确取,三步走天涯', gloss: '互联网分布式事务主流：Try 预留 / Confirm 确认 / Cancel 释放。' },
+  'Paxos': { verse: '难懂难懂,Lamport 的梦魇', gloss: '理论深奥,Raft 是简化版。' },
+  'Raft':  { verse: '领追候,三人一台戏', gloss: 'Leader / Follower / Candidate；etcd/Consul 用。' },
+  'Saga':  { verse: '长事拆短,补偿救场', gloss: '编排（中央）+ 编制（消息链），补偿事务。' },
+
+  // ===== 数据库 =====
+  'ACID':  { verse: '原一隔持,事务四铁律', gloss: 'Atomic 原子 / Consistent 一致 / Isolated 隔离 / Durable 持久。' },
+  'CAP':   { verse: '三选二必有 P,\nCP 选 ZK,AP 选 Eureka', gloss: '一致性/可用性/分区容错性,分区必选。CP=ZK/HBase；AP=Eureka/Cassandra。' },
+  'BASE':  { verse: '基软终,AP 哲学', gloss: 'Basically Available / Soft state / Eventually consistent。' },
+  '1NF':   { verse: '字段不可再分', gloss: '原子性：每个字段不可再分。' },
+  '2NF':   { verse: '消部分依赖', gloss: '消除非主属性对主键的部分依赖。' },
+  '3NF':   { verse: '消传递依赖', gloss: '消除非主属性对主键的传递依赖。案例 T2 计算题。' },
+  'BCNF':  { verse: '三 NF 加一条：主属性也别部分', gloss: '3NF 扩展,消除主属性对候选键的部分依赖。' },
+  'RAID5': { verse: '三盘起步坏一块,空间 N 减一', gloss: '至少 3 盘 + 单盘校验 + 可坏 1 块；空间=(N-1)×单盘。' },
+  'OLTP':  { verse: '联机事务高并发短', gloss: 'On-Line Transaction Processing,高并发短事务。' },
+  'OLAP':  { verse: '联机分析查得慢', gloss: 'On-Line Analytical Processing,复杂查询+大数据量。' },
+  'ODS/DWD/DWS/ADS': { verse: '原明细汇应,数仓四层架', gloss: 'ODS 原始 → DWD 明细 → DWS 汇总 → ADS 应用。' },
+
+  // ===== 云/大数据 =====
+  'IaaS':  { verse: '基础设施租给你', gloss: '提供 VM/存储/网络。' },
+  'PaaS':  { verse: '平台搭好你来写', gloss: '提供运行时 + 中件 + 开发工具。' },
+  'SaaS':  { verse: '软件直接打开用', gloss: '提供完整应用。' },
+  'FaaS':  { verse: '函数即服,无服务器', gloss: 'Serverless 计算,函数粒度。' },
+  'K8s':   { verse: 'K8s 调度,Pod 起步', gloss: 'Kubernetes 容器编排；核心：Pod/Service/Deployment/Ingress。' },
+  'Kafka': { verse: '分区副本 ISR,流处理之王', gloss: 'Partition + Replica + ISR,主流消息队列。' },
+  'HDFS':  { verse: '128MB 三副本,大文件切块存', gloss: '块默认 128MB,3 副本机制。' },
+  'Spark': { verse: 'RDD 内存算,比 MR 快百倍', gloss: 'RDD 弹性分布式数据集 + 内存计算。' },
+  'Lambda':{ verse: '批流双链老架构', gloss: '批层 + 速度层两条链路。' },
+  'Kappa': { verse: '单流 Kafka 加 Flink', gloss: '单一流处理链路,Kafka + Flink。' },
+
+  // ===== 网络 =====
+  'OSI':   { verse: '物链网传会表应,七层从上往下数', gloss: '物理/链路/网络/传输/会话/表示/应用。' },
+  'TCP/IP':{ verse: '链网(IP)传(TCP/UDP)应,四层合并记', gloss: '链路/网络/传输/应用。' },
+  'DNS':   { verse: '域名查 IP,UDP 53', gloss: '把域名解析成 IP 地址。' },
+  'HTTP':  { verse: '明文 80', gloss: '超文本传输协议,TCP 80 端口。' },
+  'HTTPS': { verse: '加密 443', gloss: 'HTTP + TLS,TCP 443。' },
+  'SDN':   { verse: '转控分离,软件定义', gloss: '控制面 + 转发面解耦。' },
+  'CDN':   { verse: '边缘缓存分发快', gloss: 'Content Delivery Network,内容分发网络。' },
+  'LB':    { verse: 'LVS 四层 Nginx 七层', gloss: '负载均衡：LVS 4 层 + Nginx 7 层。' },
+  'DMZ':   { verse: '非军隔离,Web 邮件区', gloss: '非军事区,放对外服务的 Web/邮件服务器。' },
+
+  // ===== 安全 =====
+  'CIA':   { verse: '保完可用,三要素记心间', gloss: 'Confidentiality 保密性 / Integrity 完整性 / Availability 可用性。' },
+  'STRIDE':{ verse: '仿篡抵泄 DoS 权,六类威胁记牢', gloss: 'Spoofing/Tampering/Repudiation/Info disclosure/DoS/Elevation。' },
+  'AES':   { verse: '对称 128/192/256', gloss: '高级加密标准,密钥长度可选。' },
+  'RSA':   { verse: '非对 1024/2048/8192', gloss: '非对称加密,密钥长度递增。' },
+  'SHA':   { verse: 'SHA-1 废,256/3 上', gloss: 'SHA-1 已不安全,SHA-256/SHA-3 主流。' },
+  'SSO':   { verse: '一登通行,三协议 SAML/OAuth/OpenID', gloss: '单点登录,SAML/OAuth/OpenID 三种协议。' },
+  'RBAC':  { verse: '角色定权,用户挂角', gloss: '基于角色的访问控制。' },
+  'ABAC':  { verse: '属性定权,灵活细', gloss: '基于属性的访问控制,比 RBAC 更灵活。' },
+  'MAC(强制)': { verse: '强制访问军方用', gloss: 'Mandatory Access Control,军方/政府使用。' },
+  'DDoS':  { verse: 'SYN/UDP/HTTP 三种洪水', gloss: '分布式拒绝服务：SYN Flood / UDP Flood / HTTP Flood。' },
+  'XSS':   { verse: '反射存储 DOM 型', gloss: '跨站脚本攻击三种类型。' },
+  'CSRF':  { verse: '跨站请求,借刀杀人', gloss: '诱导已登录用户发起未授权请求。' },
+  'RPO':   { verse: '恢复点,丢多少', gloss: 'Recovery Point Objective,容灾指标。' },
+  'RTO':   { verse: '恢复时间,停多久', gloss: 'Recovery Time Objective,容灾指标。' },
+  '等保2.0': { verse: '五级等保,GB/T 22239', gloss: '网络安全等级保护 2.0,5 级。' },
+
+  // ===== UML/建模 =====
+  'UML':   { verse: '14 图记牢:6 结构 7 行为 1 制品', gloss: '结构 6（类/对象/构件/部署/包/组合）+ 行为 7（活动/状态/用例/时序/通信/交互概览/定时）+ 制品。' },
+  'DFD':   { verse: '加工流存外,四元素画图', gloss: '数据流图：加工 / 数据流 / 数据存储 / 外部实体。' },
+  'ERD':   { verse: '实属连,1:1/1:N/M:N', gloss: '实体-联系图三元素：实体/属性/联系。' },
+  'DDD':   { verse: '限界上下文聚合根,实体值对象域服务', gloss: '领域驱动设计核心概念。' },
+  'TDD':   { verse: '红绿重构,循环往复', gloss: '测试驱动开发。' },
+  'MDA':   { verse: 'PIM → PSM → Code,模型驱动', gloss: '平台无关 → 平台相关 → 代码。' },
+
+  // ===== 软件工程/项目管理 =====
+  'CMMI':  { verse: '初管定量优,五级步步高', gloss: '初始 → 已管理 → 已定义 → 量化管理 → 优化。' },
+  'CMM':   { verse: 'CMMI 的前身,五级', gloss: '能力成熟度模型。' },
+  'Scrum': { verse: '三角色四会议两制品', gloss: 'PO/SM/Dev + 计划/站会/评审/回顾 + Backlog/Increment。' },
+  'XP':    { verse: '12 实践:结对 TDD 重构小版', gloss: '极限编程核心实践。' },
+  'EVM':   { verse: 'PV/EV/AC,挣值三剑客', gloss: '计划价值 / 挣值 / 实际成本。' },
+  'CPI(成本)': { verse: 'EV/AC,大于 1 节约', gloss: '成本绩效指数。' },
+  'SPI':   { verse: 'EV/PV,大于 1 超前', gloss: '进度绩效指数。' },
+  'SV':    { verse: 'EV-PV,正数超前', gloss: '进度偏差。' },
+  'CV':    { verse: 'EV-AC,正数节约', gloss: '成本偏差。' },
+  'BAC/EAC/ETC': { verse: 'BAC 完工预算,EAC=BAC/CPI,ETC=EAC-AC', gloss: '典型差异公式。' },
+  'PERT':  { verse: '三点估算,加权平均', gloss: '计划评审技术:(乐观+4×最可能+悲观)/6。' },
+  'CPM':   { verse: '关键路径,最长决定', gloss: '关键路径法决定项目最短工期。' },
+  'WBS':   { verse: '工作分解,层层拆', gloss: 'Work Breakdown Structure,工作分解结构。' },
+  'CCB':   { verse: '变更审批委员会', gloss: 'Configuration Control Board。' },
+  'α测试': { verse: '开发方内测,Alpha', gloss: 'Alpha 测试,受控环境。' },
+  'β测试': { verse: '用户实测,Beta', gloss: 'Beta 测试,真实环境。' },
+  'V&V':   { verse: 'V 是规范,V 是需求', gloss: 'Verification 是否符合规范,Validation 是否满足需求。' },
+
+  // ===== OS/体系 =====
+  'CISC':  { verse: '复杂指令 x86', gloss: 'Complex Instruction Set Computer。' },
+  'RISC':  { verse: '精简指令 ARM/MIPS', gloss: 'Reduced Instruction Set Computer。' },
+  '冯·诺依曼': { verse: '存储程序,指令数据同总线', gloss: '冯·诺依曼体系结构。' },
+  '哈佛结构': { verse: '指令数据分开走', gloss: '哈佛体系结构,指令/数据总线分离。' },
+  'Amdahl':{ verse: '加速比有上限', gloss: '阿姆达尔定律,系统加速比受限于串行部分。' },
+  'LRU/LFU/FIFO': { verse: '最近最少最不频先进', gloss: '三种页面置换算法。' },
+  'FCFS/SJF/RR': { verse: '先来先服最短作业时间片', gloss: '三种经典调度算法。' },
+
+  // ===== 可靠性 =====
+  'MTBF':  { verse: '平均无故障', gloss: 'Mean Time Between Failures。' },
+  'MTTR':  { verse: '平均修复,越短越好', gloss: 'Mean Time To Repair。' },
+  'MTTF':  { verse: '失效前时间', gloss: 'Mean Time To Failure。' },
+  'RAS':   { verse: '可靠可用可维护', gloss: 'Reliability/Availability/Serviceability。' },
+  '5个9':  { verse: '99.999%,年停不到 6 分', gloss: '可用性 99.999%,年停机 < 5.26 分钟。' },
+  'N版本': { verse: '多版并行,投票决', gloss: 'N-Version Programming,多版本冗余。' },
+  '恢复块': { verse: '主备加验收', gloss: 'Recovery Block,主块 + 备块 + 验收测试。' },
+
+  // ===== 企业架构 =====
+  'TOGAF': { verse: 'ADM 四阶段,愿景业务信息技术', gloss: '架构愿景/业务/信息/技术 + 机会解决方案/迁移治理。' },
+  'Zachman': { verse: '5W1H × 6 行 = 36 格', gloss: '扎克曼框架,What/How/Where/Who/When/Why × 6 行。' },
+  'ERP':   { verse: '企业资源全打通', gloss: 'Enterprise Resource Planning。' },
+  'CRM':   { verse: '客户关系管理', gloss: 'Customer Relationship Management。' },
+  'ITIL':  { verse: 'IT 服务管理最佳实践', gloss: 'IT Infrastructure Library。' },
+  'SLA':   { verse: '服务水平有协议', gloss: 'Service Level Agreement。' },
+  'BPR':   { verse: '业务流程重锤炼', gloss: 'Business Process Reengineering,Hammer 提出。' },
+
+  // ===== Web =====
+  'REST':  { verse: '资源化 HTTP+JSON', gloss: '表述性状态转移,资源接口风格。' },
+  'SOAP':  { verse: 'XML+WSDL,重型', gloss: '简单对象访问协议。' },
+  'JWT':   { verse: '无状态令牌', gloss: 'JSON Web Token。' },
+  'OAuth': { verse: '开放授权,不是认证', gloss: 'OAuth 侧重授权,OpenID 侧重认证。' },
+  'gRPC':  { verse: 'Protobuf + HTTP/2', gloss: '高性能开源 RPC 框架。' },
+  'WebSocket': { verse: '全双工长连接', gloss: '客户端服务器双向实时通信。' },
+  'CORS':  { verse: '跨域例外,浏览器同源策略', gloss: 'Cross-Origin Resource Sharing。' },
+
+  // ===== 新技术 =====
+  'IoT':   { verse: '感网平应,四层架构', gloss: '感知层 / 网络层 / 平台层 / 应用层。' },
+  'AI/ML/DL': { verse: 'AI 大圈 ML 中圈 DL 小圈', gloss: '人工智能 > 机器学习 > 深度学习。' },
+  'LLM':   { verse: '大模型 GPT Claude 文心', gloss: 'Large Language Model。' },
+  'RAG':   { verse: '外挂知识库,检索再生成', gloss: 'Retrieval-Augmented Generation。' },
+  'CoT':   { verse: '思维链,一步步推', gloss: 'Chain of Thought,让 LLM 显式推理。' },
+  'Embedding': { verse: '文本变稠密向量', gloss: 'Embedding = 向量化。' },
+  '向量数据库': { verse: 'Milvus/Pinecone/Qdrant', gloss: '向量数据库存 Embedding。' },
+  'MCP':   { verse: '模型上下文协议,LLM 调工具', gloss: 'Model Context Protocol。' },
+  'Function Call': { verse: 'LLM 调外部函数', gloss: '让 LLM 调用工具的标准机制。' },
+  '5G':    { verse: 'eMBB/mMTC/URLLC 三场景', gloss: '增强移动宽带 / 海量物联 / 超可靠低时延。' },
+  'DT':    { verse: '数字孪生,虚实映射', gloss: 'Digital Twin,物理实体到虚拟模型的双向映射。' },
+  'Web3':  { verse: '去中心+加密经济', gloss: '区块链 + 加密经济。' },
+  'PBFT':  { verse: '实用拜占庭容错', gloss: 'Practical Byzantine Fault Tolerance。' },
+  'PoW':   { verse: '算力换币', gloss: '工作量证明,比特币用。' },
+  'PoS':   { verse: '持币生币', gloss: '权益证明。' }
+};
+
+// ============== 知识点展开 ==============
+function expandKnowledge(name, catName) {
+  const K = {
+    // ===== 架构 =====
+    'ATAM': `
+      <ul>
+        <li><b>9 步流程</b>：场景→需求→架构→属性→分析属性→识别敏感/权衡→评估权衡→风险非风险→沟通</li>
+        <li><b>4 个判别</b>：敏感点（影响一个属性）、权衡点（影响多个属性）、风险点（不达目标）、非风险点</li>
+        <li><b>效用树</b>：质量属性（可用/可修改/性能/安全/易用/可测试）+ 场景优先级</li>
+        <li><b>典型题</b>：案例 T1 给架构描述，问哪些是敏感点/权衡点</li>
+      </ul>`,
+    '4+1': `
+      <ul>
+        <li><b>提出者</b>：Kruchten 1995 年（注意是 95 不是 99）</li>
+        <li><b>4 视图</b>：逻辑（功能）/ 开发（模块组织）/ 进程（并发）/ 物理（部署）</li>
+        <li><b>+1 场景</b>：用用例驱动,把 4 视图串起来</li>
+        <li><b>对比</b>：4+1 偏 OO,RUP 4 视图偏迭代</li>
+      </ul>`,
+    'ABSD': `
+      <ul>
+        <li><b>3 阶段</b>：架构需求 → 架构设计 → 架构文档化</li>
+        <li><b>核心</b>：教程第 7 章,案例 T1 经常问"采用什么方法"</li>
+        <li><b>与其他</b>：DSSA 关注领域重用,ABSD 关注单个系统</li>
+      </ul>`,
+    'DSSA': `
+      <ul>
+        <li><b>4 要素</b>：领域模型 / 参考需求 / 参考设计 / 核心资产</li>
+        <li><b>角色</b>：领域专家 + 领域设计人员 + 领域实现人员</li>
+        <li><b>应用</b>：产品线工程,核心资产复用</li>
+      </ul>`,
+    'MVC': `
+      <div class="vs">
+        <div class="lhs">Model<br>数据+业务</div>
+        <div class="sep">VS</div>
+        <div class="rhs">View<br>界面</div>
+      </div>
+      <ul><li>Controller：调度,接收请求→调 Model→选 View</li></ul>`,
+    'MVVM': `
+      <div class="vs">
+        <div class="lhs">MVC<br>Controller 单向</div>
+        <div class="sep">VS</div>
+        <div class="rhs">MVVM<br>双向绑定</div>
+      </div>
+      <ul><li>WPF / Vue / Flutter 都用 MVVM</li></ul>`,
+    'SOA': `
+      <div class="vs">
+        <div class="lhs">SOA<br>中心 ESB + 粗粒度</div>
+        <div class="sep">VS</div>
+        <div class="rhs">微服务<br>去中心 + 细粒度</div>
+      </div>
+      <ul><li>SOA 强调"复用",微服务强调"独立部署"</li></ul>`,
+    'ESB': `
+      <ul>
+        <li><b>5 大功能</b>：协议转换 / 路由 / 编排 / 监控 / 安全</li>
+        <li><b>位置</b>：SOA 中枢,所有服务接入</li>
+        <li><b>缺点</b>：中心化变性能瓶颈和单点</li>
+      </ul>`,
+
+    // ===== 中间件/分布式 =====
+    'RPC': `
+      <ul>
+        <li><b>原理</b>：本地调用变成网络调用,序列化+网络+反序列化</li>
+        <li><b>代表</b>：gRPC（HTTP/2 + Protobuf）、Dubbo、Thrift</li>
+        <li><b>对比</b>：HTTP API 灵活但慢,RPC 快但耦合</li>
+      </ul>`,
+    '2PC': `
+      <ul>
+        <li><b>两阶段</b>：准备（vote）+ 提交（commit）</li>
+        <li><b>问题</b>：同步阻塞、协调者单点、数据不一致（部分提交）</li>
+        <li><b>适用</b>：数据库驱动级 XA 事务</li>
+      </ul>`,
+    'TCC': `
+      <ul>
+        <li><b>三步</b>：Try 预留 / Confirm 确认 / Cancel 释放</li>
+        <li><b>互联网主流</b>：阿里 Seata、ByteTCC</li>
+        <li><b>对比</b>：比 2PC 性能好,业务侵入大</li>
+      </ul>`,
+    'Paxos': `
+      <ul>
+        <li><b>提出</b>：Lamport 1998 年</li>
+        <li><b>角色</b>：Proposer / Acceptor / Learner</li>
+        <li><b>特点</b>：理论完美,工程难实现</li>
+      </ul>`,
+    'Raft': `
+      <ul>
+        <li><b>3 角色</b>：Leader / Follower / Candidate</li>
+        <li><b>2 流程</b>：Leader 选举 + 日志复制</li>
+        <li><b>用户</b>：etcd / Consul / TiKV</li>
+      </ul>`,
+
+    // ===== 数据库 =====
+    'ACID': `
+      <div class="vs">
+        <div class="lhs">ACID<br>强一致<br>传统 RDBMS</div>
+        <div class="sep">VS</div>
+        <div class="rhs">BASE<br>最终一致<br>NoSQL</div>
+      </div>
+      <ul><li>A 原子：全做或全不做</li><li>C 一致：事务前后约束一致</li><li>I 隔离：并发互不干扰</li><li>D 持久：落盘不丢</li></ul>`,
+    'CAP': `
+      <div class="vs">
+        <div class="lhs">CP<br>ZK/HBase/Consul</div>
+        <div class="sep">VS</div>
+        <div class="rhs">AP<br>Eureka/Cassandra</div>
+      </div>
+      <ul>
+        <li><b>P 必选</b>：分区容错是分布式前提</li>
+        <li><b>误区</b>：三选二不是非此即彼,可动态调整</li>
+        <li><b>典型题</b>：Redis Cluster 是 AP,ZooKeeper 是 CP</li>
+      </ul>`,
+    'BASE': `
+      <ul>
+        <li><b>BA</b>：基本可用（允许部分失败）</li>
+        <li><b>S</b>：软状态（中间态）</li>
+        <li><b>E</b>：最终一致</li>
+        <li><b>适用</b>：NoSQL、高并发互联网场景</li>
+      </ul>`,
+    '1NF': `<ul><li>每字段不可再分（原子性）</li><li>例：地址字段拆成省/市/区</li></ul>`,
+    '2NF': `<ul><li>消除非主属性对主键的部分依赖</li><li>前提：必须有复合主键</li></ul>`,
+    '3NF': `
+      <ul>
+        <li>消除非主属性对主键的传递依赖</li>
+        <li>案例 T2 计算题高频</li>
+        <li>BCNF = 3NF + 消除主属性对候选键的部分依赖</li>
+      </ul>`,
+    'RAID5': `
+      <div class="vs">
+        <div class="lhs">RAID0<br>性能↑ 无冗余</div>
+        <div class="sep">VS</div>
+        <div class="rhs">RAID1<br>镜像 50% 利用</div>
+      </div>
+      <ul>
+        <li><b>RAID5</b>：3 盘起步,坏 1 块,空间=(N-1)×单盘</li>
+        <li><b>RAID6</b>：可坏 2 块,空间=(N-2)×单盘</li>
+        <li><b>RAID10</b>：先镜像后条带,性能+冗余</li>
+      </ul>`,
+
+    // ===== 网络 =====
+    'OSI': `
+      <ul>
+        <li>7 层（自下而上）：物理→链路→网络→传输→会话→表示→应用</li>
+        <li>记忆：<code>物链网传会表应</code></li>
+        <li>对比 TCP/IP 4 层：OSI 是参考,TCP/IP 是实现</li>
+      </ul>`,
+    'TCP/IP': `
+      <ul>
+        <li>4 层：链路 / 网络（IP）/ 传输（TCP/UDP）/ 应用</li>
+        <li>TCP 三次握手 / 四次挥手（必考）</li>
+        <li>UDP 无连接,适合实时视频/游戏</li>
+      </ul>`,
+    'DNS': `
+      <ul>
+        <li>域名→IP,UDP 53</li>
+        <li>查询方式：递归 + 迭代</li>
+        <li>常见记录：A / AAAA / CNAME / MX / NS</li>
+      </ul>`,
+    'HTTP': `
+      <div class="vs">
+        <div class="lhs">HTTP<br>明文 80</div>
+        <div class="sep">VS</div>
+        <div class="rhs">HTTPS<br>加密 443</div>
+      </div>
+      <ul><li>HTTPS = HTTP + TLS</li><li>常用方法：GET / POST / PUT / DELETE</li></ul>`,
+    'SDN': `
+      <ul>
+        <li>控制面（控制器）+ 转发面（交换机）解耦</li>
+        <li>南向接口：OpenFlow</li>
+        <li>代表：OpenDaylight / ONOS</li>
+      </ul>`,
+    'CDN': `
+      <ul>
+        <li>边缘节点缓存静态资源</li>
+        <li>调度策略：DNS / HTTP 302 / Anycast</li>
+        <li>代表：阿里云 CDN / Akamai / Cloudflare</li>
+      </ul>`,
+
+    // ===== 安全 =====
+    'CIA': `
+      <ul>
+        <li>C 保密性：不让未授权看</li>
+        <li>I 完整性：不让未授权改</li>
+        <li>A 可用性：让授权随时用</li>
+        <li>扩展：不可抵赖性、可控性</li>
+      </ul>`,
+    'STRIDE': `
+      <ul>
+        <li>S Spoofing 仿冒</li>
+        <li>T Tampering 篡改</li>
+        <li>R Repudiation 抵赖</li>
+        <li>I Info disclosure 信息泄露</li>
+        <li>D Denial of Service</li>
+        <li>E Elevation of Privilege 提权</li>
+      </ul>`,
+    'AES': `
+      <ul>
+        <li>对称分组密码,块 128 位</li>
+        <li>密钥：128 / 192 / 256 位</li>
+        <li>替代 DES（已不安全）</li>
+      </ul>`,
+    'RSA': `
+      <ul>
+        <li>非对称,基于大整数分解难题</li>
+        <li>密钥：1024（已弱）/ 2048 / 4096 / 8192</li>
+        <li>慢,常用于密钥协商 + 签名</li>
+      </ul>`,
+    'SSO': `
+      <ul>
+        <li>三协议：SAML（XML）/ OAuth（授权）/ OpenID（认证）</li>
+        <li>流程：用户登录 → IdP 发 ticket → 访问各 SP</li>
+        <li>Kerberos：域内 SSO,Windows AD 用</li>
+      </ul>`,
+    'RBAC': `
+      <div class="vs">
+        <div class="lhs">RBAC<br>角色定权</div>
+        <div class="sep">VS</div>
+        <div class="rhs">ABAC<br>属性定权</div>
+      </div>
+      <ul><li>RBAC 简单,适合企业内</li><li>ABAC 灵活,适合云原生</li></ul>`,
+    'DDoS': `
+      <ul>
+        <li>SYN Flood：半连接耗资源</li>
+        <li>UDP Flood：大包占带宽</li>
+        <li>HTTP Flood：CC 攻击,耗应用</li>
+        <li>防御：高防 IP / 限流 / CDN</li>
+      </ul>`,
+    'RPO': `
+      <div class="vs">
+        <div class="lhs">RPO<br>恢复点目标<br>丢多少</div>
+        <div class="sep">VS</div>
+        <div class="rhs">RTO<br>恢复时间目标<br>停多久</div>
+      </div>
+      <ul><li>RPO=0 需同步复制,RPO=1h 可异步</li></ul>`,
+
+    // ===== UML/建模 =====
+    'UML': `
+      <ul>
+        <li><b>结构图 6</b>：类 / 对象 / 构件 / 部署 / 包 / 组合结构</li>
+        <li><b>行为图 7</b>：活动 / 状态 / 用例 / 时序 / 通信 / 交互概览 / 定时</li>
+        <li><b>制品</b>：1 种</li>
+        <li>关系：依赖 / 关联 / 聚合 / 组合 / 泛化 / 实现</li>
+      </ul>`,
+    'DFD': `
+      <ul>
+        <li>4 元素：加工 / 数据流 / 数据存储 / 外部实体</li>
+        <li>vs UML 活动图：DFD 偏数据,活动图偏控制</li>
+        <li>结构化分析核心工具</li>
+      </ul>`,
+    'DDD': `
+      <ul>
+        <li>限界上下文 Bounded Context</li>
+        <li>实体 / 值对象 / 领域服务 / 聚合根</li>
+        <li>战术设计与战略设计</li>
+        <li>2024-2026 新热点</li>
+      </ul>`,
+
+    // ===== 软件工程 =====
+    'CMMI': `
+      <ul>
+        <li>5 级：初始 → 已管理 → 已定义 → 量化管理 → 优化</li>
+        <li>每级含若干 PA（过程域）</li>
+        <li>vs PMBOK：CMMI 关注过程成熟度,PMBOK 关注项目知识体系</li>
+      </ul>`,
+    'Scrum': `
+      <div class="vs">
+        <div class="lhs">3 角色<br>PO/SM/Dev</div>
+        <div class="sep">VS</div>
+        <div class="rhs">4 会议<br>计划站会评审回顾</div>
+      </div>
+      <ul><li>2 制品：Product Backlog + Increment</li><li>Sprint 周期：1-4 周</li></ul>`,
+    'EVM': `
+      <ul>
+        <li>PV 计划价值 / EV 挣值 / AC 实际成本</li>
+        <li>CPI = EV/AC,>1 节约</li>
+        <li>SPI = EV/PV,>1 超前</li>
+        <li>CV = EV-AC,SV = EV-PV</li>
+        <li>EAC = BAC/CPI（典型差异）</li>
+      </ul>`,
+
+    // ===== OS =====
+    '冯·诺依曼': `
+      <div class="vs">
+        <div class="lhs">冯·诺依曼<br>指令数据同总线</div>
+        <div class="sep">VS</div>
+        <div class="rhs">哈佛<br>指令数据分开</div>
+      </div>
+      <ul><li>冯氏瓶颈：总线争用,DSP 多用哈佛</li></ul>`,
+    'Amdahl': `
+      <ul>
+        <li>加速比 S = 1 / ((1-P) + P/N)</li>
+        <li>P：可并行比例,N：处理器数</li>
+        <li>极限 = 1/(1-P),受串行部分制约</li>
+      </ul>`,
+    'LRU/LFU/FIFO': `
+      <ul>
+        <li>FIFO：先进先出,实现简单</li>
+        <li>LRU：最近最少使用,性能好,实现复杂</li>
+        <li>LFU：最不经常使用,Counter 排序</li>
+        <li>OPT：理论最优,不可实现（基准）</li>
+      </ul>`,
+
+    // ===== 可靠性 =====
+    'MTBF': `
+      <div class="vs">
+        <div class="lhs">MTBF<br>平均无故障时间</div>
+        <div class="sep">VS</div>
+        <div class="rhs">MTTR<br>平均修复时间</div>
+      </div>
+      <ul><li>可用性 = MTBF / (MTBF + MTTR)</li><li>5 个 9：99.999% = 年停 < 5.26 分钟</li></ul>`,
+
+    // ===== 企业架构 =====
+    'TOGAF': `
+      <ul>
+        <li>ADM 4 阶段核心：架构愿景 / 业务架构 / 信息系统架构 / 技术架构</li>
+        <li>前置：预备阶段（Principles）</li>
+        <li>后续：机会与解决方案 / 迁移规划 / 实施治理 / 架构变更管理</li>
+        <li>核心交付物：架构需求规格 / 架构路线图</li>
+      </ul>`,
+    'Zachman': `
+      <ul>
+        <li>6×6 矩阵：5W1H × 6 行（范围/业务模型/系统模型/技术模型/详细表示/功能系统）</li>
+        <li>与 TOGAF 互补：Zachman 是分类法,TOGAF 是流程</li>
+      </ul>`,
+    'ITIL': `
+      <ul>
+        <li>IT 服务管理最佳实践</li>
+        <li>5 个核心：服务战略 / 设计 / 转换 / 运营 / 持续改进</li>
+        <li>vs COBIT：ITIL 偏服务,COBIT 偏治理</li>
+      </ul>`,
+
+    // ===== Web =====
+    'REST': `
+      <ul>
+        <li>6 大约束：客户-服务器 / 无状态 / 可缓存 / 统一接口 / 分层系统 / 按需代码</li>
+        <li>资源 URI 命名（名词复数）</li>
+        <li>HTTP 方法映射 CRUD</li>
+      </ul>`,
+    'gRPC': `
+      <div class="vs">
+        <div class="lhs">REST<br>HTTP/1.1 + JSON</div>
+        <div class="sep">VS</div>
+        <div class="rhs">gRPC<br>HTTP/2 + Protobuf</div>
+      </div>
+      <ul><li>gRPC 性能高,适合内部服务</li><li>REST 通用,适合对外 API</li></ul>`,
+
+    // ===== 新技术 =====
+    'LLM': `
+      <ul>
+        <li>基于 Transformer,千亿参数起步</li>
+        <li>代表：GPT-4 / Claude / Gemini / 文心 / 通义</li>
+        <li>提示工程技巧：Few-shot / CoT / ReAct</li>
+        <li>2024-2026 综合/案例必考</li>
+      </ul>`,
+    'RAG': `
+      <ul>
+        <li>流程：Query → Embedding → 检索 → TopK → Prompt → LLM</li>
+        <li>解决幻觉 + 知识更新</li>
+        <li>关键组件：Embedding 模型 + 向量库 + 检索器</li>
+      </ul>`,
+    'MCP': `
+      <ul>
+        <li>Model Context Protocol,Anthropic 2024 推出</li>
+        <li>让 LLM 标准化调用外部工具和数据源</li>
+        <li>类似"AI 时代的 USB-C 接口"</li>
+      </ul>`,
+    'IoT': `
+      <ul>
+        <li>4 层架构：感知 / 网络 / 平台 / 应用</li>
+        <li>关键技术：传感器 / RFID / 5G / 边缘计算</li>
+        <li>对比工业互联网：IoT 偏消费,IIoT 偏工业</li>
+      </ul>`,
+    '5G': `
+      <ul>
+        <li>eMBB 增强移动宽带（视频）</li>
+        <li>mMTC 海量机器通信（IoT）</li>
+        <li>URLLC 超可靠低时延（车联网/工业）</li>
+        <li>vs 4G：速度↑100 倍,时延↓10 倍</li>
+      </ul>`,
+    'Web3': `
+      <ul>
+        <li>去中心化 + 加密经济</li>
+        <li>核心技术：区块链 + 智能合约 + DAO</li>
+        <li>应用：DeFi / NFT / GameFi</li>
+      </ul>`
+  };
+
+  // 通用 fallback
+  const fallbacks = [
+    {
+      label: '定义',
+      html: `<ul><li><b>${name}</b> = ${catName} 类别的英文缩写</li><li>全称见上方"中文解释"</li></ul>`
+    },
+    {
+      label: '所属分类',
+      html: `<ul><li>归类：${catName}</li><li>同分类下的其他缩写见上方"本类相关"</li></ul>`
+    },
+    {
+      label: '考试要点',
+      html: `<ul><li>综合题：常考概念辨析</li><li>案例题：根据上下文判断使用哪种技术</li><li>建议结合真题和官方教材系统掌握</li></ul>`
+    }
+  ];
+
+  if (K[name]) {
+    return [{ label: '知识要点', html: K[name] }];
+  }
+  return fallbacks;
+}
+
+// ============== 原有：考试提示（覆盖全 394 项；按需匹配，缺失走 fallback） ==============
 function examTipFor(name, cat) {
   const TIPS = {
     // ===== 架构基础与风格 =====
