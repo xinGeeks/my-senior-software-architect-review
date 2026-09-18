@@ -940,10 +940,11 @@ function focusOnChapter(name) {
 }
 
 // 任意节点聚焦：仅高亮该节点所在子树（向上父链 + 向下所有子节点）
-function focusOnNode(nodeId) {
+function focusOnNode(nodeId, { center = true } = {}) {
   currentFocus = nodeId;
   const related = relatedSubtree(nodeId);
   applyHighlight(related);
+  if (center) centerOnNode(nodeId);
   // 侧栏高亮：找到该节点所属的章节
   const n = nodes.find(x => x.id === nodeId);
   const chName = n ? (chapterIds.has(nodeId) ? nodeId : n.parent) : null;
@@ -974,6 +975,30 @@ function applyHighlight(highlightSet) {
   });
 }
 
+// 把指定节点置于可视区域中心：不移动节点，改为平移画布（roam dx/dy）
+function centerOnNode(nodeId) {
+  // 等 force 动画收敛后再读坐标
+  setTimeout(() => {
+    const opt = chart.getOption();
+    const series = opt.series && opt.series[0];
+    if (!series) return;
+    const data = series.data;
+    const target = data.find(d => d.id === nodeId);
+    if (!target || target.x == null || target.y == null) return;
+    const container = document.getElementById('chart');
+    const w = container.clientWidth, h = container.clientHeight;
+    // 用 graphRoam 平移画布（不修改节点坐标），把节点移到屏幕中央
+    const dx = (w / 2) - target.x;
+    const dy = (h / 2) - target.y;
+    chart.dispatchAction({
+      type: 'graphRoam',
+      seriesIndex: 0,
+      dx,
+      dy
+    });
+  }, 1300);
+}
+
 function resetFocus() {
   currentFocus = null;
   chart.setOption({ series: [{ data: nodes, links: links }] });
@@ -993,16 +1018,13 @@ chart.on('click', { dataType: 'node' }, (params) => {
 chart.on('dblclick', () => resetFocus());
 
 // hover：临时高亮相关子树；mouseout：恢复（保留点击聚焦状态）
-let hoverActive = false;
 chart.on('mouseover', { dataType: 'node' }, (params) => {
   if (currentFocus === params.data.id) return;
   const related = relatedSubtree(params.data.id);
   applyHighlight(related);
-  hoverActive = true;
 });
 chart.on('mouseout', { dataType: 'node' }, () => {
-  hoverActive = false;
-  if (currentFocus) focusOnNode(currentFocus);
+  if (currentFocus) focusOnNode(currentFocus, { center: false });
   else resetFocus();
 });
 
