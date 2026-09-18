@@ -1792,6 +1792,7 @@ renderChart();
 
 // ---------- Interactions ----------
 let currentFocus = null;
+let currentFilter = false;   // 当前 focus 是否为 filter 模式（侧栏章节点击）
 
 // 给定节点 id，收集它本身 + 向下所有子节点 + 向上所有祖先节点
 function relatedSubtree(rootId) {
@@ -1825,15 +1826,16 @@ function relatedSubtree(rootId) {
 
 // 保留旧的章节聚焦接口（侧栏按钮仍调用）
 function focusOnChapter(name) {
-  // 章节 → 与 graph 章节节点点击行为对齐：整个子树高亮 + 居中
-  focusOnNode(name, { center: true });
+  // 章节索引点击：只显示该章节的图（其他章节完全隐藏）
+  focusOnNode(name, { center: true, filter: true });
 }
 
 // 任意节点聚焦：仅高亮该节点所在子树（向上父链 + 向下所有子节点）
-function focusOnNode(nodeId, { center = true } = {}) {
+function focusOnNode(nodeId, { center = true, filter = false } = {}) {
   currentFocus = nodeId;
+  currentFilter = filter;
   const related = relatedSubtree(nodeId);
-  applyHighlight(related);
+  applyHighlight(related, filter);
   if (center) centerOnNode(nodeId);
   // 侧栏高亮：找到该节点所属的章节
   const n = nodes.find(x => x.id === nodeId);
@@ -1841,25 +1843,29 @@ function focusOnNode(nodeId, { center = true } = {}) {
   highlightSidebar(chName);
 }
 
-function applyHighlight(highlightSet) {
+function applyHighlight(highlightSet, filter = false) {
+  // filter=true: 不相关节点/边完全隐藏（opacity 0）；否则仅 dim
+  const offOpacity = filter ? 0 : 0.12;
+  const offLabelOpacity = filter ? 0 : 1;
   chart.setOption({
     series: [{
       data: nodes.map(n => ({
         ...n,
         itemStyle: {
           ...n.itemStyle,
-          opacity: highlightSet.has(n.id) ? (n.category === 0 ? 1 : (n.isCross ? 1 : 0.85)) : 0.12
+          opacity: highlightSet.has(n.id) ? (n.category === 0 ? 1 : (n.isCross ? 1 : 0.85)) : offOpacity
         },
         label: {
           ...n.label,
           color: highlightSet.has(n.id)
             ? (n.category === 0 ? getCss('--label-primary') : (n.isCross ? getCss('--accent') : getCss('--label-secondary')))
-            : getCss('--label-dim')
+            : getCss('--label-dim'),
+          opacity: offLabelOpacity
         }
       })),
       links: links.map(l => {
         const isHit = highlightSet.has(l.source) && highlightSet.has(l.target);
-        return { ...l, lineStyle: { ...l.lineStyle, opacity: isHit ? 0.6 : 0.04 } };
+        return { ...l, lineStyle: { ...l.lineStyle, opacity: isHit ? 0.6 : (filter ? 0 : 0.04) } };
       })
     }]
   });
@@ -1891,7 +1897,8 @@ function centerOnNode(nodeId) {
 
 function resetFocus() {
   currentFocus = null;
-  chart.setOption({ series: [{ data: nodes, links: links }] });
+  // 还原所有节点/链接为初始状态（处理 filter 模式下的 opacity=0）
+  applyHighlight(new Set(nodes.map(n => n.id)), false);
   highlightSidebar(null);
 }
 
@@ -1911,10 +1918,10 @@ chart.on('dblclick', () => resetFocus());
 chart.on('mouseover', { dataType: 'node' }, (params) => {
   if (currentFocus === params.data.id) return;
   const related = relatedSubtree(params.data.id);
-  applyHighlight(related);
+  applyHighlight(related, currentFilter);
 });
 chart.on('mouseout', { dataType: 'node' }, () => {
-  if (currentFocus) focusOnNode(currentFocus, { center: false });
+  if (currentFocus) focusOnNode(currentFocus, { center: false, filter: currentFilter });
   else resetFocus();
 });
 
