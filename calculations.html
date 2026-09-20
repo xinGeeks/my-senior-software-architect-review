@@ -79,6 +79,8 @@
 [data-theme="light"] svg [fill="#4a6fa5"]   { fill: #2c4d7a !important; }
 [data-theme="light"] svg [fill="#6f5d8a"]   { fill: #503f6a !important; }
 [data-theme="light"] svg [fill="#5d8a6f"]   { fill: #2f5c47 !important; }
+[data-theme="light"] svg [fill="#8b8b9e"]   { fill: #6a6a7a !important; }
+[data-theme="light"] svg [fill="#b8a76a"]   { fill: #b8985a !important; }
 [data-theme="light"] svg [stroke="#06091a"] { stroke: #ffffff !important; }
 [data-theme="light"] svg [stroke="#0a0f1f"] { stroke: #ebe4cf !important; }
 [data-theme="light"] svg [stroke="#131a2e"] { stroke: #ddd5ba !important; }
@@ -94,6 +96,9 @@
 [data-theme="light"] svg [stroke="#c8553d"] { stroke: #a6392b !important; }
 [data-theme="light"] svg [stroke="#4a6fa5"] { stroke: #2c4d7a !important; }
 [data-theme="light"] svg [stroke="#6f5d8a"] { stroke: #503f6a !important; }
+[data-theme="light"] svg [stroke="#5d8a6f"] { stroke: #2f5c47 !important; }
+[data-theme="light"] svg [stroke="#8b8b9e"] { stroke: #6a6a7a !important; }
+[data-theme="light"] svg [stroke="#b8a76a"] { stroke: #b8985a !important; }
 
 /* 浅色主题覆盖：边框/装饰/特殊背景 */
 [data-theme="light"] body { background: var(--ink-0); color: var(--ivory-0); }
@@ -2899,15 +2904,15 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>Cache 访问 Tc (ns)</label>
-            <input id="ca-tc" type="number" value="10" min="1" oninput="calcCache()">
+            <input id="ca-tc" type="number" value="10" min="1" oninput="raf('calcCache')">
           </div>
           <div class="calc-field">
             <label>主存访问 Tm (ns)</label>
-            <input id="ca-tm" type="number" value="100" min="1" oninput="calcCache()">
+            <input id="ca-tm" type="number" value="100" min="1" oninput="raf('calcCache')">
           </div>
           <div class="calc-field" style="flex:2">
             <label>命中率 h：<span id="ca-h-val" style="color:var(--gold-1);font-family:var(--font-mono)">0.90</span></label>
-            <input id="ca-h" type="range" min="0" max="100" value="90" step="1" oninput="calcCache()">
+            <input id="ca-h" type="range" min="0" max="100" value="90" step="1" oninput="raf('calcCache')">
           </div>
         </div>
         <div class="cache-bar" id="ca-bar"></div>
@@ -2941,10 +2946,10 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互可视化 · 时空图（Reservation Table）</div>
         <div class="calc-row">
-          <div class="calc-field"><label>段数 k</label><input id="pl-k" type="number" value="5" min="2" max="10" oninput="plInit()"></div>
-          <div class="calc-field"><label>指令数 n</label><input id="pl-n" type="number" value="8" min="1" max="30" oninput="plInit()"></div>
-          <div class="calc-field"><label>Δt</label><input id="pl-dt" type="number" value="1" min="1" oninput="plInit()"></div>
-          <div class="calc-field"><label>尾部空隙</label><input id="pl-gap" type="number" value="0" min="0" max="5" oninput="plInit()"></div>
+          <div class="calc-field"><label>段数 k</label><input id="pl-k" type="number" value="5" min="2" max="10" oninput="raf('plInit')"></div>
+          <div class="calc-field"><label>指令数 n</label><input id="pl-n" type="number" value="8" min="1" max="30" oninput="raf('plInit')"></div>
+          <div class="calc-field"><label>Δt</label><input id="pl-dt" type="number" value="1" min="1" oninput="raf('plInit')"></div>
+          <div class="calc-field"><label>尾部空隙</label><input id="pl-gap" type="number" value="0" min="0" max="5" oninput="raf('plInit')"></div>
         </div>
         <div class="sp-grid" id="pl-grid"></div>
         <div id="pl-out" class="calc-result"></div>
@@ -2984,16 +2989,16 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>结构</label>
-            <select id="rel-mode" onchange="relInit()" style="padding:6px;background:var(--ink-2);color:var(--ivory-0);border:1px solid var(--ink-4);border-radius:4px;font-family:var(--font-cn)">
+            <select id="rel-mode" onchange="raf('relInit')" style="padding:6px;background:var(--ink-2);color:var(--ivory-0);border:1px solid var(--ink-4);border-radius:4px;font-family:var(--font-cn)">
               <option value="series">串联 Series</option>
               <option value="parallel">并联 Parallel</option>
               <option value="nmk">N 模冗余 / K 取 N 表决</option>
             </select>
           </div>
-          <div class="calc-field"><label>模块数 m</label><input id="rel-m" type="number" value="3" min="2" max="6" oninput="relInit()"></div>
+          <div class="calc-field"><label>模块数 m</label><input id="rel-m" type="number" value="3" min="2" max="6" oninput="raf('relInit')"></div>
           <div class="calc-field" style="flex:2">
             <label>单模块可靠性 R：<span id="rel-r-val" style="color:var(--gold-1);font-family:var(--font-mono)">0.90</span></label>
-            <input id="rel-r" type="range" min="50" max="99" value="90" step="1" oninput="relInit()">
+            <input id="rel-r" type="range" min="50" max="99" value="90" step="1" oninput="raf('relInit')">
           </div>
         </div>
         <div class="rel-builder" id="rel-builder"></div>
@@ -3035,15 +3040,15 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>请求序列（逗号分隔）</label>
-            <input id="dk-req" type="text" value="98,183,37,122,14,124,65,67" oninput="drawDisk()">
+            <input id="dk-req" type="text" value="98,183,37,122,14,124,65,67" oninput="raf('drawDisk')">
           </div>
           <div class="calc-field">
             <label>起始磁头</label>
-            <input id="dk-head" type="number" value="53" min="0" max="199" oninput="drawDisk()">
+            <input id="dk-head" type="number" value="53" min="0" max="199" oninput="raf('drawDisk')">
           </div>
           <div class="calc-field">
             <label>磁道范围</label>
-            <input id="dk-max" type="number" value="199" min="20" max="500" oninput="drawDisk()">
+            <input id="dk-max" type="number" value="199" min="20" max="500" oninput="raf('drawDisk')">
           </div>
         </div>
         <div class="nad-tab" id="dk-alg-tab">
@@ -3088,7 +3093,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>信息位数 m</label>
-            <input id="hm-m" type="number" value="11" min="1" max="32" oninput="drawHamming()">
+            <input id="hm-m" type="number" value="11" min="1" max="32" oninput="raf('drawHamming')">
           </div>
           <div class="calc-field" style="justify-content:flex-end">
             <button class="pr-reset-btn" onclick="hmLoadExample()">载入真题</button>
@@ -3135,7 +3140,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>IP 类别</label>
-            <select id="sn-class" onchange="drawSubnet()">
+            <select id="sn-class" onchange="raf('drawSubnet')">
               <option value="8" selected>A 类（/8）</option>
               <option value="16">B 类（/16）</option>
               <option value="24">C 类（/24）</option>
@@ -3143,12 +3148,12 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
           <div class="calc-field">
             <label>子网前缀 /n</label>
-            <input id="sn-prefix" type="range" min="9" max="30" value="26" step="1" oninput="drawSubnet()">
+            <input id="sn-prefix" type="range" min="9" max="30" value="26" step="1" oninput="raf('drawSubnet')">
             <span id="sn-prefix-val" style="color:var(--gold-1);font-family:var(--font-mono);font-size:0.86rem">/26</span>
           </div>
           <div class="calc-field">
             <label>示例 IP</label>
-            <input id="sn-ip" type="text" value="192.168.10.0" oninput="drawSubnet()">
+            <input id="sn-ip" type="text" value="192.168.10.0" oninput="raf('drawSubnet')">
           </div>
         </div>
         <div class="subnet-canvas-wrap" id="sn-canvas-wrap"></div>
@@ -3253,11 +3258,11 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>输入 IP 地址</label>
-            <input id="ip-input" type="text" value="192.168.1.10" oninput="ipConvert()">
+            <input id="ip-input" type="text" value="192.168.1.10" oninput="raf('ipConvert')">
           </div>
           <div class="calc-field">
             <label>或者输入整数</label>
-            <input id="ip-int" type="number" value="3232235786" oninput="ipFromInt()">
+            <input id="ip-int" type="number" value="3232235786" oninput="raf('ipFromInt')">
           </div>
         </div>
         <div class="ip-quad" id="ip-quad"></div>
@@ -3348,14 +3353,14 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互可视化 · 位矩阵 + 字号/位号联动</div>
         <div class="calc-row">
-          <div class="calc-field"><label>柱面数</label><input id="bm-cy" type="number" value="8" min="1" max="32" oninput="drawBitmap()"></div>
-          <div class="calc-field"><label>盘面数</label><input id="bm-sf" type="number" value="4" min="1" max="16" oninput="drawBitmap()"></div>
-          <div class="calc-field"><label>每面扇区</label><input id="bm-se" type="number" value="8" min="1" max="64" oninput="drawBitmap()"></div>
-          <div class="calc-field"><label>每字位数</label><input id="bm-wb" type="number" value="32" min="8" max="64" step="8" oninput="drawBitmap()"></div>
+          <div class="calc-field"><label>柱面数</label><input id="bm-cy" type="number" value="8" min="1" max="32" oninput="raf('drawBitmap')"></div>
+          <div class="calc-field"><label>盘面数</label><input id="bm-sf" type="number" value="4" min="1" max="16" oninput="raf('drawBitmap')"></div>
+          <div class="calc-field"><label>每面扇区</label><input id="bm-se" type="number" value="8" min="1" max="64" oninput="raf('drawBitmap')"></div>
+          <div class="calc-field"><label>每字位数</label><input id="bm-wb" type="number" value="32" min="8" max="64" step="8" oninput="raf('drawBitmap')"></div>
         </div>
         <div class="calc-row">
-          <div class="calc-field"><label>字号 b</label><input id="bm-b" type="number" value="2" min="0" oninput="drawBitmap()"></div>
-          <div class="calc-field"><label>位号 j</label><input id="bm-j" type="number" value="5" min="0" oninput="drawBitmap()"></div>
+          <div class="calc-field"><label>字号 b</label><input id="bm-b" type="number" value="2" min="0" oninput="raf('drawBitmap')"></div>
+          <div class="calc-field"><label>位号 j</label><input id="bm-j" type="number" value="5" min="0" oninput="raf('drawBitmap')"></div>
           <div class="calc-field" style="justify-content:flex-end">
             <button id="bm-rand" type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto" onclick="randBitmap()">🎲 随机分配</button>
           </div>
@@ -3415,11 +3420,11 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>逻辑地址位数</label>
-            <input id="pg-abits" type="number" value="32" min="16" max="32" step="8" oninput="drawPaging()">
+            <input id="pg-abits" type="number" value="32" min="16" max="32" step="8" oninput="raf('drawPaging')">
           </div>
           <div class="calc-field">
             <label>页大小</label>
-            <select id="pg-size" onchange="drawPaging()">
+            <select id="pg-size" onchange="raf('drawPaging')">
               <option value="12" selected>4 KB (2¹²)</option>
               <option value="13">8 KB (2¹³)</option>
               <option value="14">16 KB (2¹⁴)</option>
@@ -3428,7 +3433,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
           <div class="calc-field">
             <label>逻辑地址（十进制）</label>
-            <input id="pg-addr" type="number" value="12288" min="0" oninput="drawPaging()">
+            <input id="pg-addr" type="number" value="12288" min="0" oninput="raf('drawPaging')">
           </div>
         </div>
         <div id="pg-bar" class="page-addr-bar"></div>
@@ -3489,15 +3494,15 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>段号位数</label>
-            <input id="sp-s" type="number" value="4" min="1" max="16" oninput="drawSegPage()">
+            <input id="sp-s" type="number" value="4" min="1" max="16" oninput="raf('drawSegPage')">
           </div>
           <div class="calc-field">
             <label>页号位数</label>
-            <input id="sp-p" type="number" value="12" min="1" max="20" oninput="drawSegPage()">
+            <input id="sp-p" type="number" value="12" min="1" max="20" oninput="raf('drawSegPage')">
           </div>
           <div class="calc-field">
             <label>偏移位数</label>
-            <input id="sp-w" type="number" value="12" min="6" max="16" oninput="drawSegPage()">
+            <input id="sp-w" type="number" value="12" min="6" max="16" oninput="raf('drawSegPage')">
           </div>
           <div class="calc-field" style="justify-content:flex-end">
             <button class="pr-reset-btn" onclick="spLoadExample()">载入真题</button>
@@ -3674,8 +3679,8 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互器 · 编辑 Max/Allocation 矩阵 + 自动跑安全算法</div>
         <div class="pr-controls">
-          <div><label>进程数 n</label><input id="bk-n" type="number" value="5" min="1" max="8" style="width:50px" onchange="bkBuild()"></div>
-          <div><label>资源种类 m</label><input id="bk-m" type="number" value="3" min="1" max="6" style="width:50px" onchange="bkBuild()"></div>
+          <div><label>进程数 n</label><input id="bk-n" type="number" value="5" min="1" max="8" style="width:50px" onchange="raf('bkBuild')"></div>
+          <div><label>资源种类 m</label><input id="bk-m" type="number" value="3" min="1" max="6" style="width:50px" onchange="raf('bkBuild')"></div>
           <button class="pr-play-btn" onclick="bkRun()">🔍 试求安全序列</button>
           <button class="pr-reset-btn" onclick="bkReset()">清空</button>
           <button class="pr-reset-btn" onclick="bkLoadExample()">载入真题</button>
@@ -3725,9 +3730,9 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互计算器 · 输入 m/n/判定数自动算 V(G)</div>
         <div class="calc-row">
-          <div class="calc-field"><label>边数 m</label><input id="mc-edges" type="number" value="12" min="0" oninput="calcMcCabe()"></div>
-          <div class="calc-field"><label>节点数 n</label><input id="mc-nodes" type="number" value="10" min="0" oninput="calcMcCabe()"></div>
-          <div class="calc-field"><label>判定节点数</label><input id="mc-dec" type="number" value="3" min="0" oninput="calcMcCabe()"></div>
+          <div class="calc-field"><label>边数 m</label><input id="mc-edges" type="number" value="12" min="0" oninput="raf('calcMcCabe')"></div>
+          <div class="calc-field"><label>节点数 n</label><input id="mc-nodes" type="number" value="10" min="0" oninput="raf('calcMcCabe')"></div>
+          <div class="calc-field"><label>判定节点数</label><input id="mc-dec" type="number" value="3" min="0" oninput="raf('calcMcCabe')"></div>
         </div>
         <div id="mc-out" class="calc-result"></div>
         <div class="mc-toolbar">
@@ -3770,23 +3775,23 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <thead><tr><th style="text-align:left">功能类型</th><th>项数</th><th>简单</th><th>中等</th><th>复杂</th><th>权重小计</th></tr></thead>
           <tbody>
             <tr><td class="func">外部输入 EI</td>
-              <td><input class="cell" id="fp-ei-n" type="number" value="3" min="0" oninput="fpCalc()"></td>
+              <td><input class="cell" id="fp-ei-n" type="number" value="3" min="0" oninput="raf('fpCalc')"></td>
               <td class="weight">×3</td><td class="weight">×4</td><td class="weight">×6</td>
               <td id="fp-ei-w">12</td></tr>
             <tr><td class="func">外部输出 EO</td>
-              <td><input class="cell" id="fp-eo-n" type="number" value="2" min="0" oninput="fpCalc()"></td>
+              <td><input class="cell" id="fp-eo-n" type="number" value="2" min="0" oninput="raf('fpCalc')"></td>
               <td class="weight">×4</td><td class="weight">×5</td><td class="weight">×7</td>
               <td id="fp-eo-w">10</td></tr>
             <tr><td class="func">外部查询 EQ</td>
-              <td><input class="cell" id="fp-eq-n" type="number" value="1" min="0" oninput="fpCalc()"></td>
+              <td><input class="cell" id="fp-eq-n" type="number" value="1" min="0" oninput="raf('fpCalc')"></td>
               <td class="weight">×3</td><td class="weight">×4</td><td class="weight">×6</td>
               <td id="fp-eq-w">4</td></tr>
             <tr><td class="func">内部逻辑文件 ILF</td>
-              <td><input class="cell" id="fp-ilf-n" type="number" value="2" min="0" oninput="fpCalc()"></td>
+              <td><input class="cell" id="fp-ilf-n" type="number" value="2" min="0" oninput="raf('fpCalc')"></td>
               <td class="weight">×7</td><td class="weight">×10</td><td class="weight">×15</td>
               <td id="fp-ilf-w">20</td></tr>
             <tr><td class="func">外部接口文件 EIF</td>
-              <td><input class="cell" id="fp-eif-n" type="number" value="1" min="0" oninput="fpCalc()"></td>
+              <td><input class="cell" id="fp-eif-n" type="number" value="1" min="0" oninput="raf('fpCalc')"></td>
               <td class="weight">×5</td><td class="weight">×7</td><td class="weight">×10</td>
               <td id="fp-eif-w">7</td></tr>
           </tbody>
@@ -3840,7 +3845,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>代码规模 KLOC</label>
-            <input id="co-kloc" type="number" value="50" min="1" max="500" oninput="drawCOCOMO()">
+            <input id="co-kloc" type="number" value="50" min="1" max="500" oninput="raf('drawCOCOMO')">
           </div>
           <div class="calc-field" style="flex:1">
             <label>关注模式</label>
@@ -3982,17 +3987,17 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>属性集 R（逗号分隔）</label>
-            <input id="nf-r" class="txt" type="text" value="SNO,SN,CNO,CN,GRADE" oninput="nfCheck()">
+            <input id="nf-r" class="txt" type="text" value="SNO,SN,CNO,CN,GRADE" oninput="raf('nfCheck')">
           </div>
           <div class="calc-field" style="flex:2">
             <label>候选码（多条用分号）</label>
-            <input id="nf-key" class="txt" type="text" value="SNO,CNO" oninput="nfCheck()">
+            <input id="nf-key" class="txt" type="text" value="SNO,CNO" oninput="raf('nfCheck')">
           </div>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
             <label>FD 集（每条用分号）</label>
-            <input id="nf-fd" class="txt" type="text" value="SNO->SN;CNO->CN;SNO,CNO->GRADE" oninput="nfCheck()">
+            <input id="nf-fd" class="txt" type="text" value="SNO->SN;CNO->CN;SNO,CNO->GRADE" oninput="raf('nfCheck')">
           </div>
         </div>
         <div class="nf-presets">
@@ -4069,17 +4074,17 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>属性集 U（逗号分隔）</label>
-            <input id="fd-attrs" type="text" value="A,B,C,D,E" oninput="fdInit()">
+            <input id="fd-attrs" type="text" value="A,B,C,D,E" oninput="raf('fdInit')">
           </div>
           <div class="calc-field" style="flex:3">
             <label>函数依赖 F（每条 FD 用分号分隔，如 A->B,C）</label>
-            <input id="fd-list" type="text" value="A->B;B->C;C->D;D->E" oninput="fdInit()">
+            <input id="fd-list" type="text" value="A->B;B->C;C->D;D->E" oninput="raf('fdInit')">
           </div>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
             <label>起始属性 X（求 X⁺）</label>
-            <input id="fd-start" type="text" value="A" oninput="fdInit()">
+            <input id="fd-start" type="text" value="A" oninput="raf('fdInit')">
           </div>
           <div class="calc-field" style="justify-content:flex-end">
             <button type="button" style="background:var(--emerald);border:1px solid var(--emerald);color:var(--ivory-0);padding:6px 14px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto" onclick="fdFindKeys()">🔍 自动求所有候选码</button>
@@ -4183,10 +4188,10 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互计算器 · A→B→C 与 A→D→C 双路径</div>
         <div class="calc-row">
-          <div class="calc-field"><label>A 工期 (天)</label><input id="cpm-a" type="number" value="5" min="1" oninput="calcCPM()"></div>
-          <div class="calc-field"><label>B 工期</label><input id="cpm-b" type="number" value="4" min="1" oninput="calcCPM()"></div>
-          <div class="calc-field"><label>D 工期</label><input id="cpm-d" type="number" value="6" min="1" oninput="calcCPM()"></div>
-          <div class="calc-field"><label>C 工期</label><input id="cpm-c" type="number" value="3" min="1" oninput="calcCPM()"></div>
+          <div class="calc-field"><label>A 工期 (天)</label><input id="cpm-a" type="number" value="5" min="1" oninput="raf('calcCPM')"></div>
+          <div class="calc-field"><label>B 工期</label><input id="cpm-b" type="number" value="4" min="1" oninput="raf('calcCPM')"></div>
+          <div class="calc-field"><label>D 工期</label><input id="cpm-d" type="number" value="6" min="1" oninput="raf('calcCPM')"></div>
+          <div class="calc-field"><label>C 工期</label><input id="cpm-c" type="number" value="3" min="1" oninput="raf('calcCPM')"></div>
         </div>
         <div id="cpm-out" class="calc-result"></div>
         <svg id="cpm-svg" class="cpm-canvas" width="100%" height="220"></svg>
@@ -4232,19 +4237,19 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>乐观 O</label>
-            <input id="pt-O" type="number" value="4" min="0" step="0.5" oninput="drawPERT()">
+            <input id="pt-O" type="number" value="4" min="0" step="0.5" oninput="raf('drawPERT')">
           </div>
           <div class="calc-field">
             <label>最可能 M</label>
-            <input id="pt-M" type="number" value="6" min="0" step="0.5" oninput="drawPERT()">
+            <input id="pt-M" type="number" value="6" min="0" step="0.5" oninput="raf('drawPERT')">
           </div>
           <div class="calc-field">
             <label>悲观 P</label>
-            <input id="pt-P" type="number" value="8" min="0" step="0.5" oninput="drawPERT()">
+            <input id="pt-P" type="number" value="8" min="0" step="0.5" oninput="raf('drawPERT')">
           </div>
           <div class="calc-field">
             <label>截止 T</label>
-            <input id="pt-T" type="number" value="7" min="0" step="0.5" oninput="drawPERT()">
+            <input id="pt-T" type="number" value="7" min="0" step="0.5" oninput="raf('drawPERT')">
           </div>
         </div>
         <div class="pert-svg-wrap">
@@ -4292,10 +4297,10 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互计算器 · 输入四个值自动算 EAC/ETC/VAC</div>
         <div class="calc-row">
-          <div class="calc-field"><label>PV 计划值</label><input id="evm-pv" type="number" value="5" min="0" oninput="calcEVM()"></div>
-          <div class="calc-field"><label>EV 挣值</label><input id="evm-ev" type="number" value="4" min="0" oninput="calcEVM()"></div>
-          <div class="calc-field"><label>AC 实际成本</label><input id="evm-ac" type="number" value="5.5" min="0" step="0.1" oninput="calcEVM()"></div>
-          <div class="calc-field"><label>BAC 完工预算</label><input id="evm-bac" type="number" value="10" min="0" oninput="calcEVM()"></div>
+          <div class="calc-field"><label>PV 计划值</label><input id="evm-pv" type="number" value="5" min="0" oninput="raf('calcEVM')"></div>
+          <div class="calc-field"><label>EV 挣值</label><input id="evm-ev" type="number" value="4" min="0" oninput="raf('calcEVM')"></div>
+          <div class="calc-field"><label>AC 实际成本</label><input id="evm-ac" type="number" value="5.5" min="0" step="0.1" oninput="raf('calcEVM')"></div>
+          <div class="calc-field"><label>BAC 完工预算</label><input id="evm-bac" type="number" value="10" min="0" oninput="raf('calcEVM')"></div>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
@@ -4307,7 +4312,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
           <div class="calc-field">
             <label>ETC 估算（仅非典型用）</label>
-            <input id="evm-etc-manual" type="number" value="5" min="0" step="0.1" oninput="calcEVM()">
+            <input id="evm-etc-manual" type="number" value="5" min="0" step="0.1" oninput="raf('calcEVM')">
           </div>
         </div>
         <div id="evm-out" class="calc-result"></div>
@@ -4599,19 +4604,19 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field">
             <label>带宽 W (Hz)</label>
-            <input id="ch-w" type="number" value="3000" min="0" oninput="drawChannel()">
+            <input id="ch-w" type="number" value="3000" min="0" oninput="raf('drawChannel')">
           </div>
           <div class="calc-field">
             <label>信号级数 N</label>
-            <input id="ch-n" type="number" value="4" min="2" oninput="drawChannel()">
+            <input id="ch-n" type="number" value="4" min="2" oninput="raf('drawChannel')">
           </div>
           <div class="calc-field">
             <label>S/N (dB)</label>
-            <input id="ch-sndb" type="number" value="30" min="-10" max="100" oninput="chFromDb()">
+            <input id="ch-sndb" type="number" value="30" min="-10" max="100" oninput="raf('chFromDb')">
           </div>
           <div class="calc-field">
             <label>S/N (线性)</label>
-            <input id="ch-snlin" type="number" value="1000" min="0" oninput="chFromLinear()">
+            <input id="ch-snlin" type="number" value="1000" min="0" oninput="raf('chFromLinear')">
           </div>
         </div>
         <div class="ccap-compare">
@@ -4698,11 +4703,11 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互计算器 · 漏斗式自动算机器数</div>
         <div class="calc-row">
-          <div class="calc-field"><label>DAU 日活 (万)</label><input id="cap-dau" type="number" value="100" min="0" oninput="calcCap()"></div>
-          <div class="calc-field"><label>每人每天访问次数</label><input id="cap-freq" type="number" value="5" min="0" oninput="calcCap()"></div>
-          <div class="calc-field"><label>峰值倍数</label><input id="cap-peak" type="number" value="10" min="1" oninput="calcCap()"></div>
-          <div class="calc-field"><label>单机 QPS</label><input id="cap-single" type="number" value="800" min="1" oninput="calcCap()"></div>
-          <div class="calc-field"><label>页面 KB</label><input id="cap-size" type="number" value="200" min="1" oninput="calcCap()"></div>
+          <div class="calc-field"><label>DAU 日活 (万)</label><input id="cap-dau" type="number" value="100" min="0" oninput="raf('calcCap')"></div>
+          <div class="calc-field"><label>每人每天访问次数</label><input id="cap-freq" type="number" value="5" min="0" oninput="raf('calcCap')"></div>
+          <div class="calc-field"><label>峰值倍数</label><input id="cap-peak" type="number" value="10" min="1" oninput="raf('calcCap')"></div>
+          <div class="calc-field"><label>单机 QPS</label><input id="cap-single" type="number" value="800" min="1" oninput="raf('calcCap')"></div>
+          <div class="calc-field"><label>页面 KB</label><input id="cap-size" type="number" value="200" min="1" oninput="raf('calcCap')"></div>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
@@ -5079,7 +5084,7 @@ function fpInit() {
   const grid = document.getElementById('fp-tcf');
   if (!grid) return;
   grid.innerHTML = TCF_FACTORS.map((f, i) =>
-    `<div class="tcf-c">${f}<br>w=${TCF_WEIGHTS[i]}<br><input id="fp-tcf-${i}" type="number" value="3" min="0" max="5" oninput="fpCalc()"></div>`
+    `<div class="tcf-c">${f}<br>w=${TCF_WEIGHTS[i]}<br><input id="fp-tcf-${i}" type="number" value="3" min="0" max="5" oninput="raf('fpCalc')"></div>`
   ).join('');
   fpCalc();
 }
@@ -5255,13 +5260,48 @@ function fpPreset(kind) {
 })();
 
 /* ================== Theme Toggle ================== */
+const T = {};   // 主题色缓存（Canvas 走这里，SVG 走 CSS 属性选择器批量覆盖）
+function refreshThemeColors() {
+  const s = getComputedStyle(document.documentElement);
+  const css = (k) => s.getPropertyValue(k).trim();
+  const rgba = (hex, a) => {
+    const h = hex.replace('#','');
+    return `rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`;
+  };
+  T.bg           = css('--ink-0');
+  T.label        = css('--ivory-3');
+  T.allocFill    = css('--gold-2');
+  T.freeFill     = css('--ink-3');
+  T.allocStroke  = css('--gold-4');
+  T.freeStroke   = css('--ink-4');
+  T.highlight    = css('--crimson');
+  T.boundaryFill = rgba(css('--crimson'), 0.12);
+  T.boundaryStroke = rgba(css('--crimson'), 0.5);
+  T.pulse        = rgba(css('--gold-1'), 0.9);
+}
+refreshThemeColors();
+
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') || 'dark';
   const next = cur === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('calc-theme', next);
   document.getElementById('theme-toggle').textContent = next === 'light' ? '☀' : '☾';
+  refreshThemeColors();
+  if (document.getElementById('bm-canvas')) drawBitmap();  // Canvas 不受 CSS 切换影响,需主动重绘
 }
+
+/* ================== rAF 节流（高频 oninput 不再每帧都重建 SVG/Canvas）================== */
+const _rafPending = new Set();
+window.raf = function(name) {
+  if (_rafPending.has(name)) return;
+  _rafPending.add(name);
+  requestAnimationFrame(() => {
+    _rafPending.delete(name);
+    const fn = window[name];
+    if (typeof fn === 'function') fn();
+  });
+};
 </script>
 
 <script>
@@ -5308,11 +5348,11 @@ function drawBitmap() {
   ctx.clearRect(0, 0, W, H);
 
   // 背景
-  ctx.fillStyle = '#06091a';
+  ctx.fillStyle = T.bg;
   ctx.fillRect(0, 0, W, H);
 
   // 列号（位号 0..wb-1）
-  ctx.fillStyle = '#8e8a7a';
+  ctx.fillStyle = T.label;
   ctx.font = '9px JetBrains Mono';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'bottom';
@@ -5332,9 +5372,9 @@ function drawBitmap() {
     for (let c = lastIdxInRow; c < wb; c++) {
       const x = padLeft + c * cellSize;
       const y = padTop + r * cellSize;
-      ctx.fillStyle = 'rgba(200, 85, 61, 0.12)';
+      ctx.fillStyle = T.boundaryFill;
       ctx.fillRect(x, y, cellSize, cellSize);
-      ctx.strokeStyle = 'rgba(200, 85, 61, 0.5)';
+      ctx.strokeStyle = T.boundaryStroke;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x, y); ctx.lineTo(x + cellSize, y + cellSize);
@@ -5350,14 +5390,14 @@ function drawBitmap() {
     const x = padLeft + c * cellSize;
     const y = padTop + r * cellSize;
     const isAlloc = bmAlloc[i] === 1;
-    ctx.fillStyle = isAlloc ? '#d4a574' : '#1c2440';
+    ctx.fillStyle = isAlloc ? T.allocFill : T.freeFill;
     ctx.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
     if (isAlloc) {
-      ctx.strokeStyle = '#8b6f3e';
+      ctx.strokeStyle = T.allocStroke;
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, y + 0.5, cellSize - 1, cellSize - 1);
     } else {
-      ctx.strokeStyle = '#2a3056';
+      ctx.strokeStyle = T.freeStroke;
       ctx.lineWidth = 1;
       ctx.strokeRect(x + 0.5, y + 0.5, cellSize - 1, cellSize - 1);
     }
@@ -5371,11 +5411,11 @@ function drawBitmap() {
     const c = j;
     const x = padLeft + c * cellSize;
     const y = padTop + r * cellSize;
-    ctx.strokeStyle = '#c8553d';
+    ctx.strokeStyle = T.highlight;
     ctx.lineWidth = 3;
     ctx.strokeRect(x + 1.5, y + 1.5, cellSize - 3, cellSize - 3);
     // 脉冲圈
-    ctx.strokeStyle = 'rgba(232, 195, 132, 0.9)';
+    ctx.strokeStyle = T.pulse;
     ctx.lineWidth = 1.5;
     ctx.strokeRect(x - 2, y - 2, cellSize + 4, cellSize + 4);
   }
@@ -6393,9 +6433,9 @@ function nadInit() {
         <div class="dst"><span class="label">目的 IP:端口</span><div class="field">203.0.113.10<span class="port">:80</span></div></div>
       </div>`;
     inputs.innerHTML = `
-      <div class="calc-field"><label>公网 IP 数</label><input id="nat-ip" type="number" value="1" min="1" oninput="nadCalcNAT()"></div>
-      <div class="calc-field"><label>可用端口数</label><input id="nat-port" type="number" value="64511" min="1" oninput="nadCalcNAT()"></div>
-      <div class="calc-field"><label>每主机均连接数</label><input id="nat-conn" type="number" value="1.2" min="0.1" step="0.1" oninput="nadCalcNAT()"></div>`;
+      <div class="calc-field"><label>公网 IP 数</label><input id="nat-ip" type="number" value="1" min="1" oninput="raf('nadCalcNAT')"></div>
+      <div class="calc-field"><label>可用端口数</label><input id="nat-port" type="number" value="64511" min="1" oninput="raf('nadCalcNAT')"></div>
+      <div class="calc-field"><label>每主机均连接数</label><input id="nat-conn" type="number" value="1.2" min="0.1" step="0.1" oninput="raf('nadCalcNAT')"></div>`;
     nadCalcNAT();
   } else if (nadMode === 'arp') {
     cont.innerHTML = `
@@ -6408,8 +6448,8 @@ function nadInit() {
         <div class="nad-node ext"><div class="name">MAC 地址</div><div class="desc">AA:BB:CC:DD:EE:FF</div></div>
       </div>`;
     inputs.innerHTML = `
-      <div class="calc-field"><label>总主机数</label><input id="arp-total" type="number" value="1000" min="1" oninput="nadCalcARP()"></div>
-      <div class="calc-field"><label>本期新增主机数</label><input id="arp-new" type="number" value="200" min="0" oninput="nadCalcARP()"></div>`;
+      <div class="calc-field"><label>总主机数</label><input id="arp-total" type="number" value="1000" min="1" oninput="raf('nadCalcARP')"></div>
+      <div class="calc-field"><label>本期新增主机数</label><input id="arp-new" type="number" value="200" min="0" oninput="raf('nadCalcARP')"></div>`;
     nadCalcARP();
   } else if (nadMode === 'dns') {
     cont.innerHTML = `
@@ -6439,8 +6479,8 @@ function nadInit() {
         </div>
       </div>`;
     inputs.innerHTML = `
-      <div class="calc-field"><label>域名层级（根→顶级→权威）</label><input id="dns-levels" type="number" value="3" min="1" max="6" oninput="nadCalcDNS()"></div>
-      <div class="calc-field"><label>查询次数（每级）</label><input id="dns-each" type="number" value="1" min="1" oninput="nadCalcDNS()"></div>`;
+      <div class="calc-field"><label>域名层级（根→顶级→权威）</label><input id="dns-levels" type="number" value="3" min="1" max="6" oninput="raf('nadCalcDNS')"></div>
+      <div class="calc-field"><label>查询次数（每级）</label><input id="dns-each" type="number" value="1" min="1" oninput="raf('nadCalcDNS')"></div>`;
     nadCalcDNS();
   }
 }
@@ -6526,22 +6566,22 @@ function mmInit() {
   const inputs = document.getElementById('mm-inputs');
   if (mmMode === 'audio') {
     inputs.innerHTML = `
-      <div class="calc-field"><label>采样频率 (kHz)</label><input id="mm-fs" type="number" value="44.1" min="8" step="0.1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>量化位数 (bit)</label><input id="mm-bit" type="number" value="16" min="8" max="32" step="8" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>声道数</label><input id="mm-ch" type="number" value="2" min="1" max="8" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>时长 (秒)</label><input id="mm-t" type="number" value="60" min="1" oninput="mmCalc()"></div>`;
+      <div class="calc-field"><label>采样频率 (kHz)</label><input id="mm-fs" type="number" value="44.1" min="8" step="0.1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>量化位数 (bit)</label><input id="mm-bit" type="number" value="16" min="8" max="32" step="8" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>声道数</label><input id="mm-ch" type="number" value="2" min="1" max="8" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>时长 (秒)</label><input id="mm-t" type="number" value="60" min="1" oninput="raf('mmCalc')"></div>`;
   } else if (mmMode === 'image') {
     inputs.innerHTML = `
-      <div class="calc-field"><label>宽度 (像素)</label><input id="mm-w" type="number" value="1920" min="1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>高度 (像素)</label><input id="mm-h" type="number" value="1080" min="1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>每像素位数 (bpp)</label><input id="mm-bpp" type="number" value="24" min="1" max="32" oninput="mmCalc()"></div>`;
+      <div class="calc-field"><label>宽度 (像素)</label><input id="mm-w" type="number" value="1920" min="1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>高度 (像素)</label><input id="mm-h" type="number" value="1080" min="1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>每像素位数 (bpp)</label><input id="mm-bpp" type="number" value="24" min="1" max="32" oninput="raf('mmCalc')"></div>`;
   } else if (mmMode === 'video') {
     inputs.innerHTML = `
-      <div class="calc-field"><label>宽度</label><input id="mm-w" type="number" value="1920" min="1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>高度</label><input id="mm-h" type="number" value="1080" min="1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>帧率 (fps)</label><input id="mm-fps" type="number" value="30" min="1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>时长 (秒)</label><input id="mm-t" type="number" value="60" min="1" oninput="mmCalc()"></div>
-      <div class="calc-field"><label>每像素位数</label><input id="mm-bpp" type="number" value="24" min="1" max="32" oninput="mmCalc()"></div>`;
+      <div class="calc-field"><label>宽度</label><input id="mm-w" type="number" value="1920" min="1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>高度</label><input id="mm-h" type="number" value="1080" min="1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>帧率 (fps)</label><input id="mm-fps" type="number" value="30" min="1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>时长 (秒)</label><input id="mm-t" type="number" value="60" min="1" oninput="raf('mmCalc')"></div>
+      <div class="calc-field"><label>每像素位数</label><input id="mm-bpp" type="number" value="24" min="1" max="32" oninput="raf('mmCalc')"></div>`;
   }
   mmCalc();
 }
