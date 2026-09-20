@@ -1603,9 +1603,7 @@ function doSearch(q) {
   searchQ = q;
   document.querySelectorAll('.sidebar-item').forEach(el => {
     const t = el.querySelector('.item-title').textContent.toLowerCase();
-    const match = !q || t.includes(q);
-    el.classList.toggle('dimmed', !match);
-    if (match && q) el.classList.add('search-hit'); else el.classList.remove('search-hit');
+    el.classList.toggle('dimmed', q && !t.includes(q));
   });
   // highlight all sections
   document.querySelectorAll('.block-body p').forEach(p => restoreText(p));
@@ -1639,10 +1637,10 @@ function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme');
   const next = cur === 'light' ? 'dark' : 'light';
   document.documentElement.setAttribute('data-theme', next);
-  try { localStorage.setItem('calc-theme', next); } catch(e) {}
+  try { localStorage.setItem('case-theme-v1', next); } catch(e) {}
 }
 try {
-  const saved = localStorage.getItem('calc-theme');
+  const saved = localStorage.getItem('case-theme-v1');
   if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
 } catch(e) {}
 
