@@ -3050,6 +3050,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             <label>磁道范围</label>
             <input id="dk-max" type="number" value="199" min="20" max="500" oninput="raf('drawDisk')">
           </div>
+          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randDisk()">🎲 随机序列</button>
         </div>
         <div class="nad-tab" id="dk-alg-tab">
           <button class="is-active" data-alg="FCFS" onclick="dkSetAlg('FCFS')">FCFS</button>
@@ -3147,14 +3148,14 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             </select>
           </div>
           <div class="calc-field">
-            <label>子网前缀 /n</label>
+            <label>子网前缀 /n <span id="sn-prefix-val" style="color:var(--gold-1);font-family:var(--font-mono);font-size:0.86rem;margin-left:6px">/26</span></label>
             <input id="sn-prefix" type="range" min="9" max="30" value="26" step="1" oninput="raf('drawSubnet')">
-            <span id="sn-prefix-val" style="color:var(--gold-1);font-family:var(--font-mono);font-size:0.86rem">/26</span>
           </div>
           <div class="calc-field">
             <label>示例 IP</label>
             <input id="sn-ip" type="text" value="192.168.10.0" oninput="raf('drawSubnet')">
           </div>
+          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randSubnet()">🎲 随机出题</button>
         </div>
         <div class="subnet-canvas-wrap" id="sn-canvas-wrap"></div>
         <div id="sn-summary" class="calc-result"></div>
@@ -3553,6 +3554,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button class="pr-play-btn" onclick="prAuto()" id="pr-auto-btn">⏵ 自动</button>
           <button class="pr-reset-btn" onclick="prReset()">⟲ 重置</button>
           <button class="pr-reset-btn" onclick="prLoadExample()">载入真题</button>
+          <button class="pr-reset-btn" onclick="randPR()">🎲 随机</button>
         </div>
         <div id="pr-pointer" class="pr-pointer">输入引用串后点 ▶ 开始</div>
         <div class="pr-refstring" id="pr-refbar"></div>
@@ -3684,6 +3686,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button class="pr-play-btn" onclick="bkRun()">🔍 试求安全序列</button>
           <button class="pr-reset-btn" onclick="bkReset()">清空</button>
           <button class="pr-reset-btn" onclick="bkLoadExample()">载入真题</button>
+          <button class="pr-reset-btn" onclick="randBanker()">🎲 随机</button>
         </div>
         <div id="bk-mat-wrap"></div>
         <div id="bk-log" class="banker-log" style="display:none"></div>
@@ -3733,6 +3736,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>边数 m</label><input id="mc-edges" type="number" value="12" min="0" oninput="raf('calcMcCabe')"></div>
           <div class="calc-field"><label>节点数 n</label><input id="mc-nodes" type="number" value="10" min="0" oninput="raf('calcMcCabe')"></div>
           <div class="calc-field"><label>判定节点数</label><input id="mc-dec" type="number" value="3" min="0" oninput="raf('calcMcCabe')"></div>
+          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randMcCabe()">🎲 随机</button>
         </div>
         <div id="mc-out" class="calc-result"></div>
         <div class="mc-toolbar">
@@ -4192,6 +4196,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>B 工期</label><input id="cpm-b" type="number" value="4" min="1" oninput="raf('calcCPM')"></div>
           <div class="calc-field"><label>D 工期</label><input id="cpm-d" type="number" value="6" min="1" oninput="raf('calcCPM')"></div>
           <div class="calc-field"><label>C 工期</label><input id="cpm-c" type="number" value="3" min="1" oninput="raf('calcCPM')"></div>
+          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randCPM()">🎲 随机</button>
         </div>
         <div id="cpm-out" class="calc-result"></div>
         <svg id="cpm-svg" class="cpm-canvas" width="100%" height="220"></svg>
@@ -4301,6 +4306,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>EV 挣值</label><input id="evm-ev" type="number" value="4" min="0" oninput="raf('calcEVM')"></div>
           <div class="calc-field"><label>AC 实际成本</label><input id="evm-ac" type="number" value="5.5" min="0" step="0.1" oninput="raf('calcEVM')"></div>
           <div class="calc-field"><label>BAC 完工预算</label><input id="evm-bac" type="number" value="10" min="0" oninput="raf('calcEVM')"></div>
+          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randEVM()">🎲 随机</button>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
@@ -4941,6 +4947,16 @@ function pad(s, n) { s = String(s); return s + ' '.repeat(Math.max(0, n - s.leng
 
 <script>
 /* ================== Calculator 4: McCabe V(G) (2.1) ================== */
+function randMcCabe() {
+  // 随机生成合法三元组 (m, n, p),满足 m = n + p - 1 (连通图)
+  const n = 5 + Math.floor(Math.random() * 8);          // 5-12 节点
+  const p = 1 + Math.floor(Math.random() * 5);          // 1-5 判定
+  const m = n + p - 1 + Math.floor(Math.random() * 3);  // 略多于最小边,出现环路
+  document.getElementById('mc-edges').value = m;
+  document.getElementById('mc-nodes').value = n;
+  document.getElementById('mc-dec').value = p;
+  raf('calcMcCabe');
+}
 function calcMcCabe() {
   const edges = +document.getElementById('mc-edges').value || 0;
   const nodes = +document.getElementById('mc-nodes').value || 0;
@@ -6341,6 +6357,18 @@ function dkPlan(requests, head, max, alg) {
   }
   return { seq, totalMove, end: cur };
 }
+function randDisk() {
+  const max = +document.getElementById('dk-max').value || 199;
+  const n = 6 + Math.floor(Math.random() * 4);    // 6-9 个请求
+  const seq = [];
+  while (seq.length < n) {
+    const r = Math.floor(Math.random() * (max + 1));
+    if (!seq.includes(r)) seq.push(r);
+  }
+  document.getElementById('dk-req').value = seq.join(',');
+  document.getElementById('dk-head').value = Math.floor(Math.random() * (max + 1));
+  raf('drawDisk');
+}
 function drawDisk() {
   const reqStr = document.getElementById('dk-req').value || '';
   const requests = reqStr.split(/[,，\s]+/).map(s => parseInt(s, 10)).filter(n => !isNaN(n));
@@ -7218,6 +7246,15 @@ function prLoadExample() {
   document.getElementById('pr-frames').value = '3';
   prReset();
 }
+function randPR() {
+  const pages = 4 + Math.floor(Math.random() * 4);   // 4-7 页
+  const len = 12 + Math.floor(Math.random() * 8);    // 12-19 长
+  const seq = [];
+  for (let i = 0; i < len; i++) seq.push(Math.floor(Math.random() * pages));
+  document.getElementById('pr-refstr').value = seq.join(',');
+  document.getElementById('pr-frames').value = String(3 + Math.floor(Math.random() * 3));  // 3-5 框
+  prReset();
+}
 function prRender() {
   // 引用串条
   const refbar = document.getElementById('pr-refbar');
@@ -7414,6 +7451,30 @@ function bkLoadExample() {
     for (let j = 0; j < 3; j++) {
       document.getElementById(`bk-max-${i}-${j}`).value = max[i][j];
       document.getElementById(`bk-alloc-${i}-${j}`).value = alloc[i][j];
+    }
+  }
+  bkUpdateNeed();
+}
+function randBanker() {
+  const n = 4 + Math.floor(Math.random() * 3);   // 4-6 进程
+  const m = 3 + Math.floor(Math.random() * 2);   // 3-4 资源
+  document.getElementById('bk-n').value = n;
+  document.getElementById('bk-m').value = m;
+  bkBuild();
+  // 每类资源总量 5-9, Available 取总量的 1/3~1/2 (确保安全序列存在)
+  const total = [];
+  const avail = [];
+  for (let j = 0; j < m; j++) {
+    total[j] = 5 + Math.floor(Math.random() * 5);
+    avail[j] = Math.max(1, Math.floor(total[j] * (0.3 + Math.random() * 0.2)));
+  }
+  document.getElementById('bk-avail').value = avail.join(',');
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+      const mx = avail[j] + 1 + Math.floor(Math.random() * (total[j] - avail[j] + 2));
+      const al = Math.floor(Math.random() * Math.min(mx, avail[j] + 1));
+      document.getElementById(`bk-max-${i}-${j}`).value = mx;
+      document.getElementById(`bk-alloc-${i}-${j}`).value = al;
     }
   }
   bkUpdateNeed();
@@ -7619,6 +7680,19 @@ function utShow(detail) {
 
 <script>
 /* ================== 1.6 Subnetting ================== */
+function randSubnet() {
+  const cls = [8, 16, 24][Math.floor(Math.random() * 3)];
+  const prefix = cls + 2 + Math.floor(Math.random() * 6);  // 借 2-7 位
+  const maxHost = cls === 8 ? 126 : cls === 16 ? 254 : 254;
+  const a = cls === 8 ? 10 + Math.floor(Math.random() * 117) : cls === 16 ? 128 + Math.floor(Math.random() * 64) : 192;
+  const b = cls === 8 ? Math.floor(Math.random() * 256) : cls === 16 ? Math.floor(Math.random() * 256) : 168;
+  const c = Math.floor(Math.random() * 256);
+  document.getElementById('sn-class').value = cls;
+  document.getElementById('sn-prefix').value = prefix;
+  document.getElementById('sn-prefix-val').textContent = '/' + prefix;
+  document.getElementById('sn-ip').value = `${a}.${b}.${c}.0`;
+  raf('drawSubnet');
+}
 function drawSubnet() {
   const cls = +document.getElementById('sn-class').value;
   const prefix = +document.getElementById('sn-prefix').value;
@@ -7793,6 +7867,13 @@ function drawPaging() {
 
 /* ================== CPM Enhanced ================== */
 let cpmNodePos = { A: [80, 90], B: [220, 40], D: [220, 140], C: [380, 90] };
+function randCPM() {
+  document.getElementById('cpm-a').value = 2 + Math.floor(Math.random() * 9);
+  document.getElementById('cpm-b').value = 2 + Math.floor(Math.random() * 9);
+  document.getElementById('cpm-c').value = 2 + Math.floor(Math.random() * 9);
+  document.getElementById('cpm-d').value = 2 + Math.floor(Math.random() * 9);
+  raf('calcCPM');
+}
 function calcCPM() {
   const a = +document.getElementById('cpm-a').value;
   const b = +document.getElementById('cpm-b').value;
@@ -7928,6 +8009,17 @@ function enableCPMDrag() {
 
 /* ================== 4.3 EVM Enhanced ================== */
 let evmMode = 'typical';  // 'typical' | 'atypical'
+function randEVM() {
+  const BAC = 10 + Math.floor(Math.random() * 21);          // 10-30
+  const PV = +(BAC * (0.3 + Math.random() * 0.4)).toFixed(1); // 30%-70% of BAC
+  const EV = +(PV * (0.7 + Math.random() * 0.6)).toFixed(1);  // ±30% vs PV
+  const AC = +(EV * (0.8 + Math.random() * 0.6)).toFixed(1);  // ±30% vs EV
+  document.getElementById('evm-pv').value = PV;
+  document.getElementById('evm-ev').value = EV;
+  document.getElementById('evm-ac').value = AC;
+  document.getElementById('evm-bac').value = BAC;
+  raf('calcEVM');
+}
 function setEvmMode(mode) {
   evmMode = mode;
   document.getElementById('evm-mode-typical').classList.toggle('is-active', mode === 'typical');
