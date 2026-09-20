@@ -2085,6 +2085,62 @@ body::before {
 .banker-log .step.ok { color: var(--emerald); }
 .banker-log .step.dead { color: var(--crimson); }
 
+/* ========== Resource Graph (1.14) ========== */
+.rg-canvas-wrap {
+  background: var(--ink-0);
+  border: 1px solid var(--ink-4);
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 12px;
+  min-height: 380px;
+}
+.rg-canvas-wrap svg { display: block; margin: 0 auto; width: 100%; max-width: 520px; height: auto; }
+.rg-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 18px;
+  font-family: var(--font-cn); font-size: 0.78rem;
+  color: var(--ivory-2); margin: 8px 4px 0;
+}
+.rg-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.rg-legend-dot { width: 14px; height: 14px; display: inline-block; border-radius: 50%; }
+.rg-legend-line { width: 18px; height: 2px; display: inline-block; }
+.rg-node-proc { fill: var(--ink-3); stroke: var(--gold-3); stroke-width: 2; transition: fill .25s; }
+.rg-node-proc.is-dead { fill: var(--crimson); stroke: var(--crimson); animation: rgPulse 1.1s ease-in-out infinite; }
+.rg-node-res { fill: var(--ink-2); stroke: var(--azure); stroke-width: 2; }
+.rg-dot { fill: var(--gold-1); }
+.rg-edge-req { stroke: var(--crimson); stroke-width: 1.6; fill: none; }
+.rg-edge-assg { stroke: var(--emerald); stroke-width: 1.6; fill: none; }
+.rg-edge.is-cycle { stroke-width: 3.2; animation: rgPulse 1s ease-in-out infinite; }
+.rg-label {
+  font-family: var(--font-cn); font-size: 12px; fill: var(--ivory-0);
+  user-select: none;
+}
+.rg-label-edge {
+  font-family: var(--font-mono); font-size: 9px; fill: var(--ivory-3);
+  user-select: none;
+}
+@keyframes rgPulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+.rg-pill {
+  display: inline-block; padding: 2px 9px; font-size: 0.74rem;
+  font-family: var(--font-cn); letter-spacing: .04em;
+  border-radius: 11px; margin-right: 6px;
+}
+.rg-pill.dead { background: rgba(200,85,61,.18); color: var(--crimson); border: 1px solid rgba(200,85,61,.4); }
+.rg-pill.ok { background: rgba(93,138,111,.18); color: var(--emerald); border: 1px solid rgba(93,138,111,.4); }
+.rg-pill.warn { background: rgba(232,168,95,.16); color: var(--gold-2); border: 1px solid rgba(232,168,95,.4); }
+.rg-summary {
+  margin-top: 10px; padding: 10px 12px;
+  background: var(--ink-2); border-radius: 6px;
+  font-family: var(--font-cn); font-size: 0.88rem; color: var(--ivory-1);
+  border-left: 3px solid var(--ink-4);
+}
+.rg-summary.is-dead { border-left-color: var(--crimson); }
+.rg-summary.is-ok { border-left-color: var(--emerald); }
+[data-theme="light"] .rg-node-proc { fill: #e8e2d0; stroke: var(--gold-2); }
+[data-theme="light"] .rg-node-res { fill: #f4eedc; stroke: var(--azure); }
+[data-theme="light"] .rg-label { fill: #2a2618; }
+[data-theme="light"] .rg-label-edge { fill: #6a5d3e; }
+[data-theme="light"] .rg-summary { background: #f4eedc; }
+
 /* ========== Coupling/Cohesion (2.4) ========== */
 .cc-row {
   display: grid;
@@ -2862,7 +2918,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 <div class="app-body">
 <nav class="app-sidebar" id="sidebar">
   <div class="sidebar-section" data-section="sec1">
-    <div class="sidebar-section-title">📚 计算机系统+OS <span class="sidebar-section-count">13</span></div>
+    <div class="sidebar-section-title">📚 计算机系统+OS <span class="sidebar-section-count">14</span></div>
     <div class="sidebar-items" id="items-sec1"></div>
   </div>
   <div class="sidebar-section" data-section="sec2">
@@ -3717,11 +3773,82 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         3 进程，每个最多需 5 个同类资源<br>
         不死锁最小资源数 = 3×(5−1)+1 = <b>13 个</b>
       </div>
-    
+
 </article>
 
+
+    <article class="card-detail tier-2" data-id="c14a" data-section="sec1">
+
       <span class="tier-label">⭐⭐ 低频</span>
-      
+      <div class="card-title">1.14 进程资源图</div>
+      <div class="exam-flag"><span class="freq">×4</span><span>真题考过</span><span class="years">2023下·2024下·2025上·2025下</span></div>
+      <div class="card-sub">Resource Allocation Graph · Deadlock Detection</div>
+
+      <div class="calc">
+        <div class="calc-title">交互器 · 载入例题 → 检测死锁(DFS 找环)</div>
+        <div class="pr-controls">
+          <button class="pr-play-btn" onclick="rgRun()">🔍 检测死锁</button>
+          <button class="pr-reset-btn" onclick="rgLoadExample('deadlock_single')">📥 必死锁例</button>
+          <button class="pr-reset-btn" onclick="rgLoadExample('no_deadlock_multi')">📥 不死锁例</button>
+          <button class="pr-reset-btn" onclick="rgLoadExample('safe')">📥 无环例</button>
+          <button class="pr-reset-btn" onclick="rgRandom()">🎲 随机</button>
+          <button class="pr-reset-btn" onclick="rgClear()">清空</button>
+        </div>
+
+        <div class="rg-canvas-wrap" id="rg-canvas"></div>
+
+        <div class="rg-legend">
+          <span class="rg-legend-item"><span class="rg-legend-dot" style="background:var(--ink-3);border:2px solid var(--gold-3)"></span> 进程 (P)</span>
+          <span class="rg-legend-item"><span class="rg-legend-dot" style="background:var(--ink-2);border:2px solid var(--azure)"></span> 资源 (R,点=实例)</span>
+          <span class="rg-legend-item"><span class="rg-legend-line" style="background:var(--crimson)"></span> 申请边 P→R</span>
+          <span class="rg-legend-item"><span class="rg-legend-line" style="background:var(--emerald)"></span> 占有边 R→P</span>
+          <span class="rg-legend-item"><span class="rg-legend-line" style="background:var(--crimson);height:6px"></span> 环 / 死锁</span>
+        </div>
+
+        <div id="rg-summary" class="rg-summary">点击「📥 载入」或「🔍 检测死锁」开始分析。</div>
+        <div id="rg-log" class="banker-log" style="display:none;margin-top:10px"></div>
+      </div>
+
+      <span class="formula-label">节点类型</span>
+      <div class="formula">
+        <b>进程 (P)</b>:圆形节点<br>
+        <b>资源 (R)</b>:矩形节点,内含 N 个小圆点表示该资源实例数<br>
+        <b>申请边</b>:P → R(红色,需 1 个实例)<br>
+        <b>占有边</b>:R → P(绿色,已分配 1 个实例给该进程)
+      </div>
+
+      <span class="formula-label">死锁判定</span>
+      <div class="formula">
+        ① 将申请 + 占有边合并为有向图(P→R + R→P)<br>
+        ② DFS 找环:对每个未访问节点深度遍历,若遇栈中节点则找到环<br>
+        <b>单实例资源</b>:环中所有进程必死锁(无富余实例可释放)<br>
+        <b>多实例资源</b>:环存在 ≠ 死锁,需检查实例余量是否够打破环
+      </div>
+
+      <span class="formula-label">不死锁的两种情况</span>
+      <div class="formula">
+        ① 图中无任何环 → 安全<br>
+        ② 有环但环外进程能执行完成并释放资源,环内进程获取实例后也能完成 → 不死锁
+      </div>
+
+      <div class="example">
+        <div class="example-label">▸ 典型题</div>
+        三进程 P1/P2/P3,三资源 R1/R2/R3 各 1 实例。<br>
+        P1 申请 R1,R1 已被 P3 占有;<br>
+        P2 申请 R2,R2 已被 P1 占有;<br>
+        P3 申请 R3,R3 已被 P2 占有。<br>
+        <b>存在环 P1→R1→P3→R3→P2→R2→P1 → 三进程全死锁。</b>
+      </div>
+
+      <div class="trap">
+        <b>陷阱</b>:多实例 ≠ 安全。例如 3P×3R 各 1 实例成环必死锁;若其中一个资源实例数 ≥ 2,环外的进程能先执行完释放实例,环内进程拿到实例也能完成 → 不死锁。
+      </div>
+
+</article>
+
+
+      <span class="tier-label">⭐⭐ 低频</span>
+
 
 <article class="card-detail tier-2" data-id="c14" data-section="sec2">
 
@@ -6280,6 +6407,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('pg-abits')) drawPaging();
   if (document.getElementById('pr-refstr')) prReset();
   if (document.getElementById('bk-n')) bkBuild();
+  if (document.getElementById('rg-canvas')) rgInit();
   if (document.getElementById('cc-coupling')) ccInit();
   if (document.getElementById('ut-tree')) utInit();
   if (document.getElementById('co-kloc')) drawCOCOMO();
@@ -7533,6 +7661,324 @@ function bkRun() {
       <div class="step ok">▶ 初始 Work = [${avail.join(',')}]</div>
       ${log.map(s => `<div class="step ok">▶ 第 ${s.step+1} 步：找到 P${s.pid}（Need ≤ Work=[${s.work.join(',')}]），执行后 Work = [${work.map((v,j) => s.work[j] + alloc[s.pid][j]).join(',')}]</div>`).join('')}
       <div class="step dead" style="margin-top:6px;font-weight:600">✗ 不存在安全序列 → 系统<strong>不安全</strong>，当前状态可能死锁</div>`;
+  }
+}
+
+/* ================== 1.14 Resource Allocation Graph ================== */
+const RG_EXAMPLES = {
+  deadlock_single: {
+    title: '单实例环 · 3P×3R 必死锁',
+    procs: [
+      { id: 'P1', x: 90,  y: 90  },
+      { id: 'P2', x: 90,  y: 220 },
+      { id: 'P3', x: 90,  y: 350 }
+    ],
+    resources: [
+      { id: 'R1', x: 380, y: 90,  inst: 1 },
+      { id: 'R2', x: 380, y: 220, inst: 1 },
+      { id: 'R3', x: 380, y: 350, inst: 1 }
+    ],
+    request: [['P1','R1'], ['P2','R2'], ['P3','R3']],
+    assign:   [['R1','P3'], ['R2','P1'], ['R3','P2']]
+  },
+  no_deadlock_multi: {
+    title: '多实例环 · 3P×3R 不死锁(可释放)',
+    procs: [
+      { id: 'P1', x: 90, y: 90  },
+      { id: 'P2', x: 90, y: 220 },
+      { id: 'P3', x: 90, y: 350 }
+    ],
+    resources: [
+      { id: 'R1', x: 380, y: 90,  inst: 2 },
+      { id: 'R2', x: 380, y: 220, inst: 1 },
+      { id: 'R3', x: 380, y: 350, inst: 1 }
+    ],
+    request: [['P1','R1'], ['P2','R2'], ['P3','R3']],
+    assign:   [['R1','P3'], ['R2','P1'], ['R3','P2']]
+  },
+  safe: {
+    title: '无环安全状态',
+    procs: [
+      { id: 'P1', x: 100, y: 130 },
+      { id: 'P2', x: 100, y: 300 }
+    ],
+    resources: [
+      { id: 'R1', x: 380, y: 130, inst: 3 },
+      { id: 'R2', x: 380, y: 300, inst: 1 }
+    ],
+    request: [['P1','R2']],
+    assign:   [['R1','P1'], ['R2','P2']]
+  }
+};
+
+let rgState = null;
+
+function rgInit() {
+  rgLoadExample();
+}
+
+function rgLoadExample(key) {
+  key = key || 'deadlock_single';
+  rgState = JSON.parse(JSON.stringify(RG_EXAMPLES[key]));
+  rgRender();
+}
+
+function rgRandom() {
+  const nP = 3 + Math.floor(Math.random() * 2);
+  const nR = 2 + Math.floor(Math.random() * 2);
+  const procs = []; const resources = []; const request = []; const assign = [];
+  for (let i = 0; i < nP; i++) procs.push({ id: 'P'+(i+1), x: 90, y: 80 + i*(320/Math.max(1,nP-1)) });
+  for (let j = 0; j < nR; j++) resources.push({ id: 'R'+(j+1), x: 380, y: 80 + j*(320/Math.max(1,nR-1)), inst: 1 + Math.floor(Math.random()*2) });
+  // 随机连边（确保每个进程至少有 1 个 request 或 1 个 assign）
+  for (let i = 0; i < nP; i++) {
+    if (Math.random() < 0.7) request.push(['P'+(i+1), 'R'+(1+Math.floor(Math.random()*nR))]);
+    if (Math.random() < 0.7) {
+      const ri = 1 + Math.floor(Math.random()*nR);
+      assign.push(['R'+ri, 'P'+(i+1)]);
+    }
+  }
+  rgState = { title: '随机生成', procs, resources, request, assign };
+  rgRender();
+}
+
+function rgClear() {
+  rgState = { title: '', procs: [], resources: [], request: [], assign: [] };
+  rgRender();
+  document.getElementById('rg-log').style.display = 'none';
+  document.getElementById('rg-summary').className = 'rg-summary';
+  document.getElementById('rg-summary').textContent = '已清空。选例题 → 「📥 载入」重新加载。';
+}
+
+function rgRender() {
+  const wrap = document.getElementById('rg-canvas');
+  if (!wrap) return;
+  if (!rgState) { wrap.innerHTML = '<div style="padding:60px;text-align:center;color:var(--ivory-3)">未加载数据</div>'; return; }
+
+  const W = 520, H = 460;
+  const procR = 22;
+  const resW = 60, resH = 50;
+  const dotR = 4;
+
+  // 找节点坐标
+  const procMap = {};  rgState.procs.forEach(p => procMap[p.id] = p);
+  const resMap = {};   rgState.resources.forEach(r => resMap[r.id] = r);
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="rg-arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--crimson)"/></marker>
+      <marker id="rg-arr-grn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--emerald)"/></marker>
+    </defs>`;
+
+  // 标题
+  if (rgState.title) {
+    svg += `<text x="${W/2}" y="22" text-anchor="middle" class="rg-label" style="font-size:13px;font-weight:700;fill:var(--gold-2)">${rgState.title}</text>`;
+  }
+
+  // 边先画（节点在下层）
+  function edgePoint(fromX, fromY, toX, toY, shrinkFrom, shrinkTo) {
+    // 缩短端点避免压住节点
+    const dx = toX - fromX, dy = toY - fromY;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    return [
+      { x: fromX + dx/len*shrinkFrom, y: fromY + dy/len*shrinkFrom },
+      { x: toX - dx/len*shrinkTo, y: toY - dy/len*shrinkTo }
+    ];
+  }
+
+  rgState.request.forEach(([p, r]) => {
+    const P = procMap[p], R = resMap[r]; if (!P || !R) return;
+    const [s, t] = edgePoint(P.x, P.y, R.x, R.y, procR+2, resW/2+2);
+    svg += `<line x1="${s.x}" y1="${s.y}" x2="${t.x}" y2="${t.y}" class="rg-edge rg-edge-req" marker-end="url(#rg-arr-red)"></line>`;
+  });
+  rgState.assign.forEach(([r, p]) => {
+    const R = resMap[r], P = procMap[p]; if (!R || !P) return;
+    const [s, t] = edgePoint(R.x, R.y, P.x, P.y, resW/2+2, procR+2);
+    svg += `<line x1="${s.x}" y1="${s.y}" x2="${t.x}" y2="${t.y}" class="rg-edge rg-edge-assg" marker-end="url(#rg-arr-grn)"></line>`;
+  });
+
+  // 资源节点（矩形 + 实例点）
+  rgState.resources.forEach(r => {
+    const inst = r.inst || 1;
+    const dotSpacing = Math.min(8, (resW-12) / Math.max(inst, 1));
+    const startX = r.x - resW/2 + 8 + (inst>1 ? (resW - 16 - dotSpacing*(inst-1))/2 : 0);
+    svg += `<rect x="${r.x-resW/2}" y="${r.y-resH/2}" width="${resW}" height="${resH}" rx="6" class="rg-node-res"></rect>`;
+    svg += `<text x="${r.x}" y="${r.y-3}" text-anchor="middle" class="rg-label" style="font-weight:700">${r.id}</text>`;
+    for (let i = 0; i < inst; i++) {
+      const cx = startX + i * dotSpacing;
+      svg += `<circle cx="${cx}" cy="${r.y + 12}" r="${dotR}" class="rg-dot"></circle>`;
+    }
+    svg += `<text x="${r.x+resW/2+6}" y="${r.y+4}" class="rg-label-edge">×${inst}</text>`;
+  });
+
+  // 进程节点（圆形）
+  rgState.procs.forEach(p => {
+    svg += `<circle cx="${p.x}" cy="${p.y}" r="${procR}" class="rg-node-proc"></circle>`;
+    svg += `<text x="${p.x}" y="${p.y+4}" text-anchor="middle" class="rg-label" style="font-weight:700">${p.id}</text>`;
+  });
+
+  svg += `</svg>`;
+  wrap.innerHTML = svg;
+}
+
+function rgRun() {
+  if (!rgState || !rgState.procs.length) {
+    alert('请先点击「📥 载入」或「🎲 随机」加载例题');
+    return;
+  }
+  // 合并有向图
+  const adj = new Map();
+  const allNodes = new Set();
+  rgState.procs.forEach(p => allNodes.add(p.id));
+  rgState.resources.forEach(r => allNodes.add(r.id));
+  function addEdge(u, v) {
+    if (!allNodes.has(u) || !allNodes.has(v)) return;
+    if (!adj.has(u)) adj.set(u, []);
+    adj.get(u).push(v);
+  }
+  rgState.request.forEach(([p,r]) => addEdge(p, r));
+  rgState.assign.forEach(([r,p]) => addEdge(r, p));
+
+  const color = {};   // 0=未访问 1=在栈 2=已完成
+  const cycles = [];
+  const path = [];
+
+  function dfs(u) {
+    color[u] = 1;
+    path.push(u);
+    for (const v of (adj.get(u) || [])) {
+      if (color[v] === 1) {
+        const idx = path.indexOf(v);
+        if (idx >= 0) cycles.push(path.slice(idx).concat(v));
+      } else if (color[v] === 0) {
+        dfs(v);
+      } else if (color[v] === 2 && path.includes(v)) {
+        // 跨子树回到祖先节点(同一 DFS 树内) — 不计入(已在前面 1 分支发现)
+      }
+    }
+    path.pop();
+    color[u] = 2;
+  }
+
+  Array.from(allNodes).forEach(u => {
+    if (color[u] === undefined) dfs(u);
+  });
+
+  // 简化：去掉重复环（首节点相同+首尾连接相同）
+  const uniqCycles = [];
+  const seenKey = new Set();
+  cycles.forEach(cyc => {
+    // 旋转到首节点最小
+    let minIdx = 0;
+    for (let i = 1; i < cyc.length - 1; i++) if (cyc[i] < cyc[minIdx]) minIdx = i;
+    const rotated = cyc.slice(minIdx, cyc.length-1).concat(cyc.slice(0, minIdx), cyc[minIdx]);
+    const key = rotated.slice(0, -1).join('→');
+    if (!seenKey.has(key)) { seenKey.add(key); uniqCycles.push(cyc); }
+  });
+
+  // 死锁进程集合：环上的所有 P
+  const deadlockedProcs = new Set();
+  uniqCycles.forEach(cyc => cyc.forEach(n => {
+    if (rgState.procs.some(p => p.id === n)) deadlockedProcs.add(n);
+  }));
+
+  // 渲染高亮 + 日志 + 总结
+  rgHighlight(uniqCycles, deadlockedProcs);
+  rgShowLog(uniqCycles, deadlockedProcs);
+  rgShowSummary(uniqCycles, deadlockedProcs);
+}
+
+function rgHighlight(cycles, deadlocked) {
+  // 给 SVG 节点加 .is-dead / .is-cycle 类
+  document.querySelectorAll('#rg-canvas svg .rg-node-proc').forEach(c => {
+    const txt = c.nextElementSibling;
+    const id = txt ? txt.textContent : '';
+    if (deadlocked.has(id)) c.classList.add('is-dead');
+    else c.classList.remove('is-dead');
+  });
+  // 边的循环高亮：检查每条边的 (u,v) 是否在任一 cycle 中
+  document.querySelectorAll('#rg-canvas svg line.rg-edge').forEach(line => {
+    line.classList.remove('is-cycle');
+  });
+  document.querySelectorAll('#rg-canvas svg line.rg-edge').forEach(line => {
+    const x1 = +line.getAttribute('x1'), y1 = +line.getAttribute('y1');
+    const x2 = +line.getAttribute('x2'), y2 = +line.getAttribute('y2');
+    // 找最近的两个节点
+    const pts = [];
+    rgState.procs.forEach(p => pts.push({id:p.id, x:p.x, y:p.y, r:22}));
+    rgState.resources.forEach(r => pts.push({id:r.id, x:r.x, y:r.y, r:30}));
+    function nearest(px, py) {
+      let best = null, bestD = 1e9;
+      pts.forEach(pt => {
+        const d = Math.sqrt((pt.x-px)**2 + (pt.y-py)**2);
+        if (d < bestD) { bestD = d; best = pt; }
+      });
+      return best;
+    }
+    const a = nearest(x1, y1), b = nearest(x2, y2);
+    if (!a || !b) return;
+    const edgeKey = a.id + '→' + b.id;
+    for (const cyc of cycles) {
+      for (let i = 0; i < cyc.length - 1; i++) {
+        if ((cyc[i] === a.id && cyc[i+1] === b.id) ||
+            (cyc[i] === b.id && cyc[i+1] === a.id)) {
+          line.classList.add('is-cycle');
+          break;
+        }
+      }
+    }
+  });
+}
+
+function rgShowLog(cycles, deadlocked) {
+  const logEl = document.getElementById('rg-log');
+  logEl.style.display = 'block';
+  const procIds = rgState.procs.map(p => p.id).join(', ');
+  const resIds = rgState.resources.map(r => `${r.id}×${r.inst}`).join(', ');
+
+  let html = `<div class="step ok">▶ 图初始化：进程 {${procIds}}，资源 {${resIds}}</div>`;
+  html += `<div class="step ok">▶ 构建有向图：${rgState.request.length} 条申请边 (P→R) + ${rgState.assign.length} 条占有边 (R→P) = ${rgState.request.length + rgState.assign.length} 条边</div>`;
+  html += `<div class="step ok">▶ DFS 遍历：访问 ${rgState.procs.length + rgState.resources.length} 个节点，搜索环...</div>`;
+
+  if (cycles.length === 0) {
+    html += `<div class="step ok" style="font-weight:600">✓ 未找到环 — 系统<strong>安全</strong></div>`;
+  } else {
+    cycles.forEach((cyc, i) => {
+      const path = cyc.join(' → ');
+      const procsOnCyc = cyc.filter(n => rgState.procs.some(p => p.id === n));
+      html += `<div class="step dead">⚠ 环 #${i+1}：${path}</div>`;
+      if (procsOnCyc.length) {
+        html += `<div class="step dead">   ↳ 环上进程：${procsOnCyc.join(', ')}（${procsOnCyc.length > 1 ? '互相等待资源' : '等待环上资源'}）</div>`;
+      }
+    });
+    if (deadlocked.size > 0) {
+      html += `<div class="step dead" style="font-weight:600;margin-top:4px">✗ 死锁！进程 {${Array.from(deadlocked).join(', ')}} 互相等待，无法推进</div>`;
+    } else {
+      html += `<div class="step ok" style="font-weight:600;margin-top:4px">⚠ 有环但环内无进程节点（异常）</div>`;
+    }
+  }
+  logEl.innerHTML = html;
+}
+
+function rgShowSummary(cycles, deadlocked) {
+  const sum = document.getElementById('rg-summary');
+  if (cycles.length === 0) {
+    sum.className = 'rg-summary is-ok';
+    sum.innerHTML = `<span class="rg-pill ok">安全</span>图中<strong>无环</strong>，所有进程都能获得所需资源完成执行。`;
+  } else if (deadlocked.size > 0) {
+    const multi = rgState.resources.some(r => r.inst >= 2);
+    const cycNames = cycles.map(c => c.join('→')).join(' / ');
+    sum.className = 'rg-summary is-dead';
+    if (multi) {
+      sum.innerHTML = `<span class="rg-pill dead">必死锁</span>存在环 <code style="color:var(--crimson)">${cycNames}</code>。<br>
+        环上进程 <strong>{${Array.from(deadlocked).join(', ')}}</strong> 全部为<strong>单实例资源环</strong>，实例数都为 1，环外无可借资源 → 必死锁。<br>
+        <span style="color:var(--ivory-3);font-size:0.84rem">提示：若把任一资源实例数改 ≥2，环内进程能获释放后的实例完成执行，不再死锁。</span>`;
+    } else {
+      sum.innerHTML = `<span class="rg-pill dead">必死锁</span>存在环 <code style="color:var(--crimson)">${cycNames}</code>。<br>
+        环上进程 <strong>{${Array.from(deadlocked).join(', ')}}</strong> 互相等待对方占有的资源，无富余实例 → <strong>死锁</strong>。`;
+    }
+  } else {
+    sum.className = 'rg-summary';
+    sum.innerHTML = `<span class="rg-pill warn">异常</span>存在环但环内无进程节点，请检查图。`;
   }
 }
 
