@@ -338,6 +338,71 @@ mark.kw {
   border-bottom:1px dashed var(--ink-3); margin-bottom:8px;
 }
 
+/* ============== 真题解析 ============== */
+.qas-section {
+  margin:14px 0; padding:14px 18px;
+  background:var(--ink-1); border:1px solid var(--ink-3);
+  border-left:3px solid var(--crimson); border-radius:var(--radius-md);
+}
+.qas-section .head {
+  font-family:var(--font-cn); font-size:.86rem; color:var(--crimson);
+  font-weight:700; letter-spacing:.06em; margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.qas-section .head::before { content:"📝"; }
+.qas-item {
+  display:grid; grid-template-columns:84px 1fr; gap:10px;
+  padding:8px 0; font-family:var(--font-cn); font-size:.86rem;
+  color:var(--ivory-1); line-height:1.55;
+  border-bottom:1px dashed var(--ink-3);
+}
+.qas-item:last-child { border-bottom:none; }
+.qas-year {
+  font-family:var(--font-mono); font-size:.78rem;
+  color:var(--crimson); font-weight:700;
+  padding:3px 4px; text-align:center;
+  background:rgba(200,85,61,.12); border:1px solid rgba(200,85,61,.35);
+  border-radius:3px; height:fit-content; white-space:nowrap;
+}
+.qas-content { color:var(--ivory-1); }
+[data-theme="light"] .qas-year { background:rgba(160,68,48,.15); border-color:rgba(160,68,48,.4); }
+
+/* Q&A full version */
+.qas-full-card {
+  margin-top:10px; padding:12px 14px;
+  background:var(--ink-2); border:1px solid var(--ink-3);
+  border-radius:var(--radius-sm);
+}
+.qas-full-card + .qas-full-card { margin-top:8px; }
+.qas-full-meta {
+  display:flex; gap:8px; align-items:center; margin-bottom:10px;
+  font-family:var(--font-mono); font-size:.78rem;
+}
+.qas-full-meta .qas-year { font-size:.78rem; }
+.qas-pts {
+  color:var(--gold-1); font-weight:700;
+  padding:2px 8px; background:rgba(212,168,95,.12);
+  border:1px solid rgba(212,168,95,.35); border-radius:3px;
+}
+.qas-full-q, .qas-full-a {
+  font-family:var(--font-cn); font-size:.86rem; color:var(--ivory-1);
+  line-height:1.65; margin-bottom:8px;
+}
+.qas-full-q .lbl, .qas-full-a .lbl {
+  display:inline-block; font-size:.72rem; color:var(--gold-1);
+  font-weight:700; letter-spacing:.1em; margin-right:6px;
+  padding:1px 6px; background:rgba(212,168,95,.1);
+  border-radius:2px; vertical-align:1px;
+}
+.qas-full-a ol {
+  margin:6px 0 0; padding-left:22px;
+}
+.qas-full-a li {
+  margin-bottom:4px; color:var(--ivory-1);
+}
+.qas-full-a li::marker { color:var(--gold-2); }
+[data-theme="light"] .qas-pts { background:rgba(160,122,62,.15); border-color:rgba(160,122,62,.4); }
+
 /* ============== Mobile ============== */
 @media (max-width:900px) {
   .app-body { grid-template-columns:1fr; }
@@ -510,7 +575,15 @@ const TOPICS = {
   <div class="viz-card"><div class="lbl">⑤ 响应 (Response)</div>应能够正常处理请求并正确返回结果</div>
   <div class="viz-card gold"><div class="lbl">⑥ 响应度量 (Measure)</div>95% 请求响应时间 ≤ 300ms，吞吐量 ≥ 1000 TPS</div>
 </div>`,
-core:`常用质量属性：性能、可用性、安全性、可修改性（可维护性）、可测试性、易用性；功能性、可靠性（容错、健壮性）常作为区分项出现。\n质量属性场景（QAS）六要素：刺激源、刺激、环境、制品、响应、响应度量。\n质量属性效用树：树根为"效用"，一级节点为质量属性（性能、可用性、安全性、可修改性等），逐级细化到叶子——可度量的质量属性场景；评估时按"重要性"和"实现难度"打分排序，决定架构优先级。\n架构评估方法：SAAM（场景架构分析法，基于场景评估可修改性等）；ATAM（架构权衡分析法，引入权衡，识别敏感点、权衡点、风险点、非风险点，分 4 个活动领域、9 个步骤）；CBAM（成本效益分析法，从经济角度评估架构决策）。\n关键术语：敏感点——影响某一质量属性的构件特性；权衡点——同时影响多个质量属性的敏感点；风险点——可能导致问题的架构决策；非风险点——不会导致问题的架构决策。`, exam:`质量属性几乎是案例分析第 1 题的固定考点。典型问法：给一段系统需求（场景 a～n），逐一判断属于功能性还是哪个质量属性，用"功能性／性能／可用性／安全性／可修改性"等标准词作答。\n质量属性场景六要素填空：刺激源、刺激、环境、制品、响应、响应度量。\n给出效用树补全节点，或说明优先级排序依据；结合 ATAM 识别敏感点、权衡点、风险点。\n真题印证：2024 下半年（质量属性填空＋心跳策略故障检测）、2025 上半年大模型训练平台（性能：1 分钟内完成资源分配；可用性：20 分钟内切换备用库）、2025 下半年电动车充电管理系统（3 秒内响应、加密传输等场景）。`, pit:`功能性≠质量属性：功能性描述"系统能做什么"（如"支持用户登录"），质量属性描述"做得怎么样"（如"登录响应小于 1 秒"）。\n性能 vs 可用性：性能关注响应时间、吞吐量、并发数；可用性关注故障检测与恢复（MTBF／MTTR、切换时间）。\n安全性：认证、授权、数据加密、防篡改、审计；可修改性：新增／修改功能的成本与影响范围。\nATAM 输出术语必须准确：敏感点、权衡点、风险点、非风险点，答题时一一对应。` },
+core:`常用质量属性：性能、可用性、安全性、可修改性（可维护性）、可测试性、易用性；功能性、可靠性（容错、健壮性）常作为区分项出现。\n质量属性场景（QAS）六要素：刺激源、刺激、环境、制品、响应、响应度量。\n质量属性效用树：树根为"效用"，一级节点为质量属性（性能、可用性、安全性、可修改性等），逐级细化到叶子——可度量的质量属性场景；评估时按"重要性"和"实现难度"打分排序，决定架构优先级。\n架构评估方法：SAAM（场景架构分析法，基于场景评估可修改性等）；ATAM（架构权衡分析法，引入权衡，识别敏感点、权衡点、风险点、非风险点，分 4 个活动领域、9 个步骤）；CBAM（成本效益分析法，从经济角度评估架构决策）。\n关键术语：敏感点——影响某一质量属性的构件特性；权衡点——同时影响多个质量属性的敏感点；风险点——可能导致问题的架构决策；非风险点——不会导致问题的架构决策。`, exam:`质量属性几乎是案例分析第 1 题的固定考点。典型问法：给一段系统需求（场景 a～n），逐一判断属于功能性还是哪个质量属性，用"功能性／性能／可用性／安全性／可修改性"等标准词作答。\n质量属性场景六要素填空：刺激源、刺激、环境、制品、响应、响应度量。\n给出效用树补全节点，或说明优先级排序依据；结合 ATAM 识别敏感点、权衡点、风险点。\n真题印证：2024 下半年（质量属性填空＋心跳策略故障检测）、2025 上半年大模型训练平台（性能：1 分钟内完成资源分配；可用性：20 分钟内切换备用库）、2025 下半年电动车充电管理系统（3 秒内响应、加密传输等场景）。`, pit:`功能性≠质量属性：功能性描述"系统能做什么"（如"支持用户登录"），质量属性描述"做得怎么样"（如"登录响应小于 1 秒"）。\n性能 vs 可用性：性能关注响应时间、吞吐量、并发数；可用性关注故障检测与恢复（MTBF／MTTR、切换时间）。\n安全性：认证、授权、数据加密、防篡改、审计；可修改性：新增／修改功能的成本与影响范围。\nATAM 输出术语必须准确：敏感点、权衡点、风险点、非风险点，答题时一一对应。`,
+qas:[
+  { year:'2025 上半年', pts:'15 分',
+    q:'【背景】某 AI 大模型训练平台为科研用户提供 GPU 集群调度服务，日均作业提交量约 8000 笔，峰值时段可达 15000 笔/小时。平台包含 Web 门户、调度器、训练节点池、对象存储四大组件。\n【问题】请按 QAS 六要素，给出"性能"质量属性的完整场景描述。',
+    a:'刺激源：大量并发科研用户\n刺激：在高峰期提交大批 GPU 训练作业\n环境：系统正常运行的高峰期，集群处于满载边缘\n制品：Web 门户、调度器、训练节点池、对象存储\n响应：调度器正常接收并合理分配训练作业，所有作业正确排队或执行\n响应度量：作业提交请求的 95% 响应时间 ≤ 1 分钟；高峰时段吞吐量 ≥ 10000 笔/小时' },
+  { year:'2025 下半年', pts:'12 分',
+    q:'【背景】某电动车充电管理系统要求：充电桩故障时，业务必须在 3 秒内切换到备用桩并完成计费结算；用户支付数据传输须全程加密。\n【问题】请指出上述描述分别对应哪些质量属性，并用 QAS 六要素描述"可用性"场景。',
+    a:'3 秒切换对应可用性；传输加密对应安全性。\n可用性 QAS 六要素：\n刺激源：充电桩内部硬件故障\n刺激：主用充电桩异常下线\n环境：系统正常运行，计费业务持续中\n制品：充电桩控制器、计费服务、备用桩池\n响应：自动检测故障、切换到备用桩并继续完成计费结算\n响应度量：故障检测 + 切换 + 结算完成总时长 ≤ 3 秒' }
+] },
 
 'c2-2': { chap:2, title:'系统架构图', tier:1, tag:'必答', viz:`<div class="viz-title">4+1 视图金字塔（Kruchten）</div>
 <div class="viz-pyramid">
@@ -533,7 +606,15 @@ core:`常用质量属性：性能、可用性、安全性、可修改性（可�
   <div class="viz-card"><div class="lbl">仓库风格</div>数据库、黑板、知识库</div>
   <div class="viz-card"><div class="lbl">典型分层</div>接入→应用→数据→存储</div>
 </div>`,
-core:`4+1 视图模型（Kruchten）：逻辑视图（功能、类与对象）、开发视图（模块组织）、进程视图（并发、同步、性能）、物理视图（部署、硬件），场景（用例）贯穿四视图。\nC4 模型：Context（系统上下文）→ Container（容器／应用）→ Component（组件）→ Code（代码），逐层细化。\n常见架构风格：数据流风格（批处理、管道-过滤器）；调用／返回风格（主程序-子程序、面向对象、层次结构）；独立构件风格（进程通信、事件驱动／隐式调用、发布-订阅）；虚拟机风格（解释器、规则系统）；仓库风格（数据库、黑板系统、知识库）。\n典型分层架构要素：客户端／接入层 → 网关 → 应用服务层 → 数据访问层 → 数据存储层（数据库／缓存），横向贯穿监控、日志、安全。`, exam:`必答与选答均可能出现。问法：识别题中架构属于哪种风格并说明理由；补全架构图缺失组件；根据需求描述画分层架构图或部署架构图。\n画图时要素完整、标注清晰；文字说明按"分层职责＋数据流向＋关键组件选型"展开。`, pit:`架构风格与架构模式（如 MVC）区分：模式是风格内的具体做法，风格更宏观。\n画图时勿漏横向支撑（监控、日志、安全、配置中心），阅卷老师看这些扣分项。` },
+core:`4+1 视图模型（Kruchten）：逻辑视图（功能、类与对象）、开发视图（模块组织）、进程视图（并发、同步、性能）、物理视图（部署、硬件），场景（用例）贯穿四视图。\nC4 模型：Context（系统上下文）→ Container（容器／应用）→ Component（组件）→ Code（代码），逐层细化。\n常见架构风格：数据流风格（批处理、管道-过滤器）；调用／返回风格（主程序-子程序、面向对象、层次结构）；独立构件风格（进程通信、事件驱动／隐式调用、发布-订阅）；虚拟机风格（解释器、规则系统）；仓库风格（数据库、黑板系统、知识库）。\n典型分层架构要素：客户端／接入层 → 网关 → 应用服务层 → 数据访问层 → 数据存储层（数据库／缓存），横向贯穿监控、日志、安全。`, exam:`必答与选答均可能出现。问法：识别题中架构属于哪种风格并说明理由；补全架构图缺失组件；根据需求描述画分层架构图或部署架构图。\n画图时要素完整、标注清晰；文字说明按"分层职责＋数据流向＋关键组件选型"展开。`, pit:`架构风格与架构模式（如 MVC）区分：模式是风格内的具体做法，风格更宏观。\n画图时勿漏横向支撑（监控、日志、安全、配置中心），阅卷老师看这些扣分项。`,
+qas:[
+  { year:'2024 上半年', pts:'14 分',
+    q:'【背景】某电商平台拟重构订单系统，要求支持订单创建、查询、支付、库存扣减四大功能。系统需保证订单服务 7×24 可用，峰值 TPS 5000，订单状态变更可追溯。\n【问题】① 画出系统分层架构图；② 标注关键组件及数据流向；③ 指出至少 2 个横向支撑机制。',
+    a:'分层架构图（自顶向下）：\n接入层：API 网关（Kong／APISIX）→ 路由、限流、鉴权\n应用层：订单服务、库存服务、支付服务（微服务／模块化）\n数据访问层：OrderDAO、InventoryDAO、PaymentDAO（封装 MyBatis／JPA）\n数据存储层：MySQL（订单主库）＋ Elasticsearch（订单查询）＋ Redis（热点缓存）\n横向支撑：监控告警（Prometheus＋Grafana）、日志收集（EFK）、配置中心（Nacos）、链路追踪（SkyWalking）\n关键数据流：用户 → 网关 → 订单服务 → 库存服务（扣减） → MySQL（持久化）→ Binlog → 缓存更新' },
+  { year:'2025 上半年', pts:'10 分',
+    q:'【背景】某物流调度系统需要实时处理 50 万辆车的位置上报、写订单、调度指令，采用消息队列＋流处理。\n【问题】指出该架构所属的架构风格，并说明理由。',
+    a:'所属风格：独立构件风格——事件驱动／隐式调用。\n理由：\n车辆位置、订单、调度指令均为独立构件（Producer），通过消息队列（Kafka）发布事件；\n下游流处理引擎（Flink）订阅事件，触发相应处理逻辑；\n构件之间不直接调用，通过事件（隐式调用）松耦合；\n天然支持高并发、削峰、可扩展（新增订阅者不影响发布者）。' }
+] },
 
 'c2-3': { chap:2, title:'面向对象设计原则', tier:2, tag:'必答', viz:`<div class="viz-title">SOLID + LD · 七大原则速记</div>
 <div class="viz-grid c3">
@@ -553,7 +634,15 @@ core:`4+1 视图模型（Kruchten）：逻辑视图（功能、类与对象）�
   <span class="step">+</span>
   <span class="step">组合替代继承 CARP</span>
 </div>`,
-core:`单一职责原则（SRP）：一个类只负责一个职责，变化原因只有一个。\n开闭原则（OCP）：对扩展开放、对修改关闭，通过抽象和多态应对需求变更。\n里氏替换原则（LSP）：子类可替换父类且不破坏程序正确性；重写方法不能改变父类行为契约。\n依赖倒置原则（DIP）：高层模块不依赖低层模块，二者都依赖抽象；面向接口编程而非实现。\n接口隔离原则（ISP）：接口功能单一，客户端不应被迫依赖不需要的方法。\n迪米特法则（LoD／最少知识原则）：一个对象应对其他对象保持最少的了解，只与直接朋友通信。\n合成复用原则（CARP）：优先使用对象组合而非继承达到复用目的。`, exam:`常与设计模式一起考查。问法：识别违反的原则；针对违反的原则给出重构方案；判断某段代码是否满足某原则。\n真题印证：2021 下半年（设计原则辨析）、2023 上半年（设计模式与原则结合）。`, pit:`SRP 的"职责"粒度需结合业务场景，勿过度拆分；OCP 的关键是预判变化点，预先抽象。\n继承 vs 组合：组合更灵活、耦合低，但继承能简化代码；优先组合，必要时才用继承。` },
+core:`单一职责原则（SRP）：一个类只负责一个职责，变化原因只有一个。\n开闭原则（OCP）：对扩展开放、对修改关闭，通过抽象和多态应对需求变更。\n里氏替换原则（LSP）：子类可替换父类且不破坏程序正确性；重写方法不能改变父类行为契约。\n依赖倒置原则（DIP）：高层模块不依赖低层模块，二者都依赖抽象；面向接口编程而非实现。\n接口隔离原则（ISP）：接口功能单一，客户端不应被迫依赖不需要的方法。\n迪米特法则（LoD／最少知识原则）：一个对象应对其他对象保持最少的了解，只与直接朋友通信。\n合成复用原则（CARP）：优先使用对象组合而非继承达到复用目的。`, exam:`常与设计模式一起考查。问法：识别违反的原则；针对违反的原则给出重构方案；判断某段代码是否满足某原则。\n真题印证：2021 下半年（设计原则辨析）、2023 上半年（设计模式与原则结合）。`, pit:`SRP 的"职责"粒度需结合业务场景，勿过度拆分；OCP 的关键是预判变化点，预先抽象。\n继承 vs 组合：组合更灵活、耦合低，但继承能简化代码；优先组合，必要时才用继承。`,
+qas:[
+  { year:'2021 下半年', pts:'12 分',
+    q:'【背景】某订单类 Order 内部同时包含订单创建、订单查询、订单统计、报表导出四个职责的方法；随着功能演进，类文件已超 3000 行，每次修改都要回归全部功能。\n【问题】① 该类违反了哪个原则？② 给出重构方案。',
+    a:'违反原则：单一职责原则（SRP）—— 一个类承担了 4 个不相关的变化原因（创建变更、查询优化、统计口径调整、报表格式变更）。\n重构方案：\n按职责拆分为 OrderCreateService（创建）、OrderQueryService（查询）、OrderStatisticsService（统计）、ReportExportService（导出）；\nOrder 实体只保留状态、属性、领域行为；\n抽取通用字段到 OrderBaseVO；\n通过依赖注入或静态工厂聚合使用。' },
+  { year:'2023 上半年', pts:'15 分',
+    q:'【背景】某支付系统使用策略模式封装三种支付方式（支付宝、微信、银联），每新增一种支付方式都要修改 PaymentContext 的 switch-case 分支并改动原有代码，测试需全量回归。\n【问题】① 该设计违反了哪个原则？② 用 OCP 重构。',
+    a:'违反原则：开闭原则（OCP）—— 对扩展（新增支付方式）开放但对修改（改 PaymentContext）也开放，导致每次扩展都改原代码。\n重构：定义 PaymentStrategy 接口（pay、refund）；每种支付方式实现接口（AlipayStrategy、WechatStrategy、UnionPayStrategy）；PaymentContext 通过 Map<String,PaymentStrategy> 注入；新增支付方式只需添加实现类 + 注册 Bean，零修改原代码。\n附加：配合依赖倒置（DIP），高层策略调用面向接口而非实现类。' }
+] },
 
 'c2-4': { chap:2, title:'UML', tier:2, tag:'必答', viz:`<div class="viz-title">UML 图分类 + 关系强度</div>
 <div class="viz-grid c2">
@@ -570,7 +659,15 @@ core:`单一职责原则（SRP）：一个类只负责一个职责，变化原�
   <span class="step">关联</span><span class="arrow">></span>
   <span class="step">依赖</span>
 </div>`,
-core:`结构图：类图（类、接口、关联／依赖／泛化／实现）、对象图、组件图、部署图、制品图、包图。\n行为图：用例图（参与者、用例、系统边界）、活动图（流程、并行、分支）、状态机图（状态、事件、迁移）。\n交互图：序列图（时间顺序的消息）、通信图（对象间的关联与消息）、交互概览图、时序图。\n图的关系强度：泛化 = 实现 > 组合 > 聚合 > 关联 > 依赖。\nUML 扩展机制：构造型（Stereotype，《》）、标记值（Tagged Value）、约束（Constraint，{}）。`, exam:`必答常见。问法：根据描述画类图或序列图；识别图中的关系类型；区分用例图与活动图、序列图与通信图。\n画图要点：类图三栏（类名、属性、方法），关系连线带基数，泛化用空心三角箭头；序列图消息带序号。`, pit:`组合（实心菱形，整体-部分强生命周期）vs 聚合（空心菱形，整体-部分弱生命周期）易混。\n用例图不要画系统内部细节，只描述参与者与用例的交互关系；类图不要画方法实现细节。` },
+core:`结构图：类图（类、接口、关联／依赖／泛化／实现）、对象图、组件图、部署图、制品图、包图。\n行为图：用例图（参与者、用例、系统边界）、活动图（流程、并行、分支）、状态机图（状态、事件、迁移）。\n交互图：序列图（时间顺序的消息）、通信图（对象间的关联与消息）、交互概览图、时序图。\n图的关系强度：泛化 = 实现 > 组合 > 聚合 > 关联 > 依赖。\nUML 扩展机制：构造型（Stereotype，《》）、标记值（Tagged Value）、约束（Constraint，{}）。`, exam:`必答常见。问法：根据描述画类图或序列图；识别图中的关系类型；区分用例图与活动图、序列图与通信图。\n画图要点：类图三栏（类名、属性、方法），关系连线带基数，泛化用空心三角箭头；序列图消息带序号。`, pit:`组合（实心菱形，整体-部分强生命周期）vs 聚合（空心菱形，整体-部分弱生命周期）易混。\n用例图不要画系统内部细节，只描述参与者与用例的交互关系；类图不要画方法实现细节。`,
+qas:[
+  { year:'2023 上半年', pts:'10 分',
+    q:'【背景】某订单系统的类图中：User 与 Order 之间为"用户下单"；Order 与 OrderItem 之间为"包含"；OrderItem 与 Product 之间为"引用商品"；Payment 与 Order 之间为"支付订单"；Refund 继承 Payment。\n【问题】指出各关系类型（关联／聚合／泛化／依赖），并说明理由。',
+    a:'关系判定：\nUser ── Order：关联（双向导航的普通引用，User 类不依赖 Order 生命周期）\nOrder ◇─ OrderItem：聚合（OrderItem 生命周期依赖 Order，Order 删除则 OrderItem 删除）\nOrderItem ── Product：关联（引用商品 ID，非生命周期依赖）\nPayment ── Order：依赖（Payment 类操作 Order 但不持有 Order 作为属性，方法参数或局部变量）\nRefund ▷ Payment：泛化（Refund 继承 Payment，is-a 关系）' },
+  { year:'2024 下半年', pts:'12 分',
+    q:'【背景】用户下单流程：① 用户提交订单 → ② 系统验证库存 → ③ 扣减库存 → ④ 创建支付订单 → ⑤ 调用支付网关 → ⑥ 支付成功回调 → ⑦ 更新订单状态 → ⑧ 发送通知。\n【问题】用 UML 画出该流程的序列图（对象 + 消息 + 返回），标注消息序号。',
+    a:'序列图要素：\n对象生命线（垂直虚线）：User → OrderService → InventoryService → PaymentService → PaymentGateway → NotificationService\n消息流（带序号箭头）：\n1: submitOrder()  → OrderService\n2: deductStock()  → InventoryService\n3: stockResult    → PaymentService\n4: createPayment() → PaymentService\n5: pay()          → PaymentGateway\n6: callback       → PaymentService\n7: updateStatus() → OrderService\n8: notify()       → NotificationService\n要点：返回消息用虚线箭头；激活条覆盖消息处理时间；PaymentGateway 异步回调用异步消息箭头。' }
+] },
 
 'c2-5': { chap:2, title:'数据流图', tier:2, tag:'必答', viz:`<div class="viz-title">DFD 四元素 + 分层示意</div>
 <svg viewBox="0 0 560 160">
@@ -600,7 +697,15 @@ core:`结构图：类图（类、接口、关联／依赖／泛化／实现）�
   <div class="viz-card gold"><div class="lbl">🟡 奇迹</div>有输出无输入 — 无中生有</div>
   <div class="viz-card"><div class="lbl">⚪ 灰洞</div>输入不足以产生输出</div>
 </div>`,
-core:`DFD 元素：外部实体（E，方框）、加工（P，圆角矩形）、数据存储（D，开口矩形／两条横线）、数据流（箭头，标注数据内容）。\nDFD 分层：顶层（Context Diagram，系统与外部实体交互）→ 0 层（主要加工）→ 1 层、2 层……逐步细化；父图与子图平衡（输入输出数据流一致）。\n分层原则：加工编号（P1、P1.1、P1.1.1）；每个加工至少有 1 个输入流和 1 个输出流（黑洞奇迹）；父图输入输出流在子图中必须保持平衡。`, exam:`必答常见，结合需求分析考查。问法：根据描述画 DFD；补全缺失的加工或数据流；判断分层是否平衡；指出图中错误（黑洞、奇迹、灰洞）。\n真题印证：历年多次考查 DFD 绘制与平衡性检查。`, pit:`黑洞（只有输入无输出）、奇迹（只有输出无输入）、灰洞（输入不足以产生输出）是 DFD 的三类错误，阅卷常见扣分点。\nDFD 关注数据流动，不反映控制流与时间顺序；这是与程序流程图的关键区别。` },
+core:`DFD 元素：外部实体（E，方框）、加工（P，圆角矩形）、数据存储（D，开口矩形／两条横线）、数据流（箭头，标注数据内容）。\nDFD 分层：顶层（Context Diagram，系统与外部实体交互）→ 0 层（主要加工）→ 1 层、2 层……逐步细化；父图与子图平衡（输入输出数据流一致）。\n分层原则：加工编号（P1、P1.1、P1.1.1）；每个加工至少有 1 个输入流和 1 个输出流（黑洞奇迹）；父图输入输出流在子图中必须保持平衡。`, exam:`必答常见，结合需求分析考查。问法：根据描述画 DFD；补全缺失的加工或数据流；判断分层是否平衡；指出图中错误（黑洞、奇迹、灰洞）。\n真题印证：历年多次考查 DFD 绘制与平衡性检查。`, pit:`黑洞（只有输入无输出）、奇迹（只有输出无输入）、灰洞（输入不足以产生输出）是 DFD 的三类错误，阅卷常见扣分点。\nDFD 关注数据流动，不反映控制流与时间顺序；这是与程序流程图的关键区别。`,
+qas:[
+  { year:'2023 下半年', pts:'12 分',
+    q:'【背景】某图书管理系统顶层 DFD 显示：读者→借书请求→系统；系统→借书数据→借阅记录库；系统→借书请求→管理员。但 0 层 DFD 中"P1 借书加工"只有"读者信息"输入流，没有输出流。\n【问题】指出该 DFD 中的错误类型，并给出修正建议。',
+    a:'错误类型：黑洞（只有输入无输出）—— 加工 P1 输入"读者信息"却无任何输出流，违反了 DFD 加工"至少 1 输入 + 1 输出"的规则。\n修正建议：\n1. 补全 P1 的输出流：P1 → "借阅记录" → 借阅记录文件（持久化借书结果）；\n2. 同时确认顶层图中"系统→借书数据→借阅记录库"这条数据流应在 0 层展开为 P1 的输出；\n3. 检查父图与子图的平衡（Balance）：子图输入输出数据流必须与父图中对应加工的输入输出一致。\n其他常见错误：奇迹（有输出无输入）、灰洞（输入不足以产生输出）。' },
+  { year:'2024 上半年', pts:'10 分',
+    q:'【背景】某电商系统的 DFD 中，P2.1（订单验证）加工的输入数据流只有"订单信息"，输出数据流为"验证结果"+"库存扣减请求"。但实际处理中该加工还要查询"商品信息"才能完成验证。\n【问题】该 DFD 存在什么问题？请补全。',
+    a:'问题：灰洞（输入不足以产生输出）—— 仅靠"订单信息"无法独立完成订单验证，必须读取"商品信息"才能校验商品是否存在、价格是否正确。该数据流在 DFD 中被遗漏。\n补全方案：\n1. 增加数据流："商品信息" ← 商品库（数据存储 D）→ P2.1；\n2. 增加数据流："库存状态" ← 库存库 → P2.1（验证库存是否充足）；\n3. 输出保持："验证结果"→ 后续加工 + "库存预占"→ 库存库。\n原则：每个加工的输入数据必须包含完成该加工所需的全部信息。' }
+] },
 
 'c2-6': { chap:2, title:'领域驱动设计', tier:3, tag:'选答 加分', viz:`<div class="viz-title">DDD 战略 vs 战术 · 分层架构</div>
 <div class="viz-grid c2">
@@ -619,7 +724,15 @@ core:`DFD 元素：外部实体（E，方框）、加工（P，圆角矩形）�
   <span class="arrow">→</span>
   <span class="step">内部模型保持稳定</span>
 </div>`,
-core:`战略设计：限界上下文（Bounded Context）、上下文映射（Context Map：共享内核、防腐层、开放主机、遵奉者等）；通用语言（Ubiquitous Language）是核心。\n战术设计：实体（Entity，唯一标识）、值对象（Value Object，无标识、按值相等）、聚合（Aggregate，一致性边界与根实体）、领域服务（Domain Service）、领域事件（Domain Event）。\n分层架构（DDD 视角）：用户接口层 → 应用层 → 领域层 → 基础设施层；领域层是核心，不依赖外层。\n设计要素：聚合根管理生命周期与一致性边界；领域事件用于跨聚合通信；防腐层（ACL）隔离外部系统变化。`, exam:`新热点，与微服务结合考查。问法：识别限界上下文边界；给出聚合根设计；解释防腐层作用；对比 DDD 与传统三层架构。\n答题要点：业务复杂时优先 DDD；战术模式服务于战略模式，避免为模式而模式。`, pit:`不要把 DDD 套到简单 CRUD 系统，会增加复杂度反而降低效率。\n聚合边界要小，过大聚合导致并发冲突；不要跨聚合直接引用，通过 ID 关联。` },
+core:`战略设计：限界上下文（Bounded Context）、上下文映射（Context Map：共享内核、防腐层、开放主机、遵奉者等）；通用语言（Ubiquitous Language）是核心。\n战术设计：实体（Entity，唯一标识）、值对象（Value Object，无标识、按值相等）、聚合（Aggregate，一致性边界与根实体）、领域服务（Domain Service）、领域事件（Domain Event）。\n分层架构（DDD 视角）：用户接口层 → 应用层 → 领域层 → 基础设施层；领域层是核心，不依赖外层。\n设计要素：聚合根管理生命周期与一致性边界；领域事件用于跨聚合通信；防腐层（ACL）隔离外部系统变化。`, exam:`新热点，与微服务结合考查。问法：识别限界上下文边界；给出聚合根设计；解释防腐层作用；对比 DDD 与传统三层架构。\n答题要点：业务复杂时优先 DDD；战术模式服务于战略模式，避免为模式而模式。`, pit:`不要把 DDD 套到简单 CRUD 系统，会增加复杂度反而降低效率。\n聚合边界要小，过大聚合导致并发冲突；不要跨聚合直接引用，通过 ID 关联。`,
+qas:[
+  { year:'2024 下半年', pts:'13 分',
+    q:'【背景】某电商平台需将"订单、库存、商品、支付、用户、积分、营销"七大模块拆分为微服务，要求各服务边界清晰、可独立演进。\n【问题】① 用 DDD 给出限界上下文划分；② 指出哪些上下文之间需要 ACL（防腐层）。',
+    a:'限界上下文划分（BC）：\n用户上下文（BC-User）：用户档案、认证、收货地址\n商品上下文（BC-Product）：商品、SPU／SKU、类目、库存\n订单上下文（BC-Order）：订单、订单项、订单状态机\n支付上下文（BC-Payment）：支付流水、退款、对账\n积分上下文（BC-Loyalty）：积分账户、积分流水\n营销上下文（BC-Marketing）：优惠券、促销活动、满减规则\nACL（防腐层）位置：\n订单上下文 → 支付上下文（通过 ACL 适配不同支付渠道协议）\n订单上下文 → 库存上下文（通过 ACL 适配库存扣减接口，防止库存接口变更影响订单）\n营销上下文 → 订单上下文（优惠券规则变化不应侵入订单领域）' },
+  { year:'2025 上半年', pts:'12 分',
+    q:'【背景】订单聚合根 Order 内包含：orderId、userId、status、items（List<OrderItem>）、receiver、coupon、logistics。要求修改订单并发 500 TPS 下保持数据一致性。\n【问题】① 指出聚合设计的潜在问题；② 给出重构方案。',
+    a:'问题分析：\n聚合过大：包含物流、优惠券导致一致性边界模糊，500 TPS 下锁冲突严重；\n跨聚合引用：Order 直接持有 Coupon 实体违反"聚合间通过 ID 引用"；\n修改成本高：任一字段变更都触发聚合整体持久化与并发冲突；\n并发热点：同一订单并发修改时整聚合加锁。\n重构方案：\n拆分聚合：保留 Order（orderId、userId、status、orderItemsIds）；独立出 LogisticsAggregate、CouponUsageAggregate；\n跨聚合通过 ID 关联（couponId、logisticsId 代替实体）；\n订单状态变更通过领域事件（OrderPaidEvent）解耦下游；\n按聚合根粒度加锁（仅锁 Order，避免锁物流、优惠券）；\n引入快照表 + 异步任务处理非核心字段更新。' }
+] },
 
 'c3-1': { chap:3, title:'Redis', tier:1, tag:'选答 高频', viz:`<div class="viz-title">9 种数据类型 + 三大缓存问题</div>
 <div class="viz-grid c3">
@@ -643,7 +756,15 @@ core:`战略设计：限界上下文（Bounded Context）、上下文映射（Co
   <div class="viz-card gold"><div class="lbl">🟡 击穿</div>热点 key 过期 · 互斥锁 / 逻辑过期</div>
   <div class="viz-card b"><div class="lbl">🔵 雪崩</div>大批 key 同时失效 · 随机过期 / 多级缓存</div>
 </div>`,
-core:`数据类型与场景：String（缓存、计数器、分布式锁）、Hash（对象、购物车）、List（消息队列、时间线）、Set（去重、共同好友）、ZSet（排行榜、延时队列）、Bitmap（签到统计）、HyperLogLog（UV 统计）、Geo（地理位置）、Stream（消息队列）。\n持久化：RDB（快照，fork 子进程，文件小恢复快，可能丢最近一次快照后数据）；AOF（追加日志，可配置每秒／每次写 fsync，数据更完整，文件较大）；混合持久化（RDB＋AOF）。\n过期与淘汰：惰性删除＋定期删除；内存淘汰策略：noeviction、allkeys-lru、volatile-lru、allkeys-lfu、volatile-lfu、allkeys-random、volatile-random、volatile-ttl。\n缓存三大问题：穿透（查询不存在的数据→布隆过滤器、缓存空值、参数校验）；击穿（热点 key 过期瞬间大量请求打库→互斥锁保证一致可能阻塞、逻辑过期返回旧数据＋后台更新牺牲一致）；雪崩（大量 key 同时过期或实例宕机→过期时间加随机值、多级缓存、集群高可用、限流降级）。\n一致性：Cache Aside（先更新 DB 再删缓存）、Read／Write Through、Write Behind（异步写，可能丢数据）。\n高可用：主从复制（异步）、哨兵 Sentinel（监控＋自动故障转移）、Cluster 集群（16384 个哈希槽，去中心化）。\nvs Memcached：Redis 支持丰富数据类型、持久化、主从／集群、Lua 脚本；Memcached 纯内存 KV、多线程、简单、不支持持久化。`, exam:`选做题高频，每年切入角度不同。已考角度：与 Memcached 对比、Redis 数据结构选型、缓存击穿方案对比。\n2025 下半年真题：缓存击穿——王工互斥锁方案（一致性高、可能阻塞）vs 李工逻辑过期方案（性能好、数据可能短暂过期），要求对比并给出建议（按业务一致性要求选择，或两者结合：加锁但设置超时）。\n答题要点：问题定义 → 解决方案 → 优缺点 → 适用场景。`, pit:`穿透／击穿／雪崩三者勿混：穿透=查不存在的数据；击穿=单个热点 key 过期；雪崩=大批 key 同时失效。\n分布式锁释放要用 Lua 脚本保证"判断持有者＋删除"原子性。` },
+core:`数据类型与场景：String（缓存、计数器、分布式锁）、Hash（对象、购物车）、List（消息队列、时间线）、Set（去重、共同好友）、ZSet（排行榜、延时队列）、Bitmap（签到统计）、HyperLogLog（UV 统计）、Geo（地理位置）、Stream（消息队列）。\n持久化：RDB（快照，fork 子进程，文件小恢复快，可能丢最近一次快照后数据）；AOF（追加日志，可配置每秒／每次写 fsync，数据更完整，文件较大）；混合持久化（RDB＋AOF）。\n过期与淘汰：惰性删除＋定期删除；内存淘汰策略：noeviction、allkeys-lru、volatile-lru、allkeys-lfu、volatile-lfu、allkeys-random、volatile-random、volatile-ttl。\n缓存三大问题：穿透（查询不存在的数据→布隆过滤器、缓存空值、参数校验）；击穿（热点 key 过期瞬间大量请求打库→互斥锁保证一致可能阻塞、逻辑过期返回旧数据＋后台更新牺牲一致）；雪崩（大量 key 同时过期或实例宕机→过期时间加随机值、多级缓存、集群高可用、限流降级）。\n一致性：Cache Aside（先更新 DB 再删缓存）、Read／Write Through、Write Behind（异步写，可能丢数据）。\n高可用：主从复制（异步）、哨兵 Sentinel（监控＋自动故障转移）、Cluster 集群（16384 个哈希槽，去中心化）。\nvs Memcached：Redis 支持丰富数据类型、持久化、主从／集群、Lua 脚本；Memcached 纯内存 KV、多线程、简单、不支持持久化。`, exam:`选做题高频，每年切入角度不同。已考角度：与 Memcached 对比、Redis 数据结构选型、缓存击穿方案对比。\n2025 下半年真题：缓存击穿——王工互斥锁方案（一致性高、可能阻塞）vs 李工逻辑过期方案（性能好、数据可能短暂过期），要求对比并给出建议（按业务一致性要求选择，或两者结合：加锁但设置超时）。\n答题要点：问题定义 → 解决方案 → 优缺点 → 适用场景。`, pit:`穿透／击穿／雪崩三者勿混：穿透=查不存在的数据；击穿=单个热点 key 过期；雪崩=大批 key 同时失效。\n分布式锁释放要用 Lua 脚本保证"判断持有者＋删除"原子性。`,
+qas:[
+  { year:'2025 下半年', pts:'14 分',
+    q:'【背景】某电商商品详情页（热点 Key：item:detail:10086）日常 QPS 5 万，大促峰值 200 万。该 Key 平时 TTL 30 分钟，在大促期间突然过期瞬间，大量请求直接打到数据库，导致 DB CPU 100%、连接池耗尽、服务雪崩。\n【问题】① 这是缓存击穿还是雪崩？② 王工建议互斥锁（只允许一个线程查 DB 并重建缓存），李工建议逻辑过期（缓存永不过期，异步后台刷新）；请对比两者并给出推荐方案。',
+    a:'问题类型：缓存击穿——单个超热点 key 突然过期，瞬间海量请求穿透到 DB。\n方案对比：\n互斥锁：\n一致性高（同一时刻仅一个线程回源）\n可能阻塞（其他线程等待锁）\n适合：库存查询、抢购、订单详情等强一致场景\n逻辑过期：\n性能高（直接返回旧数据，不阻塞）\n可能短暂返回旧数据\n适合：商品详情、商品列表等最终一致场景\n推荐方案：两者结合 + 二级兜底\n设置逻辑过期（默认返回旧值，性能好）\n后台异步刷新失败时，降级用互斥锁保护（保证 DB 不被打挂）\n加随机 TTL（防止雪崩）+ 熔断降级（极端情况直接返回兜底数据）\n本地缓存（Caffeine，1 秒 TTL）作为 L1，再加 Redis L2' },
+  { year:'2024 上半年', pts:'12 分',
+    q:'【背景】某系统的 Redis 缓存出现异常：用户查询商品 ID = -1（不存在的 ID）每次都打 DB，因为缓存未命中；攻击者利用此缺陷发送随机 ID 请求，导致 DB 被打挂。\n【问题】① 这是什么缓存问题？② 给出 3 种解决方案并说明取舍。',
+    a:'问题类型：缓存穿透——查询不存在的数据，缓存永远不命中，每次都打到 DB。\n解决方案对比：\n1. 布隆过滤器（Bloom Filter）：\n启动时把全部有效 ID 灌入过滤器（占用内存小）\n请求先过过滤器，不存在直接返回\n存在一定误判率但无漏判，适合：ID 范围明确、攻击 ID 分布随机\n2. 缓存空值：\nDB 查不到时也缓存 null（设置短 TTL，30~60 秒）\n简单但占用内存（大量无效 key），适合：缺失 ID 较少\n3. 参数校验：\n入口校验 ID 合法性（>0、长度、数值范围）\n挡掉明显非法请求，减轻后端压力\n推荐组合：参数校验（前置拦截）+ 布隆过滤器（高命中）+ 缓存空值（兜底短 TTL）' }
+] },
 
 'c3-2': { chap:3, title:'各种锁', tier:1, tag:'选答 高频', viz:`<div class="viz-title">锁分类全景</div>
 <div class="viz-grid c3">
@@ -666,7 +787,15 @@ core:`数据类型与场景：String（缓存、计数器、分布式锁）、Ha
 <tr><td class="h">ZooKeeper</td><td>强</td><td>中</td><td>中</td><td>强一致、运维熟悉 ZK</td></tr>
 <tr><td class="h">etcd</td><td>强</td><td>中</td><td>中</td><td>K8s 生态、云原生</td></tr>
 </table>`,
-core:`悲观锁 vs 乐观锁：悲观锁（synchronized、ReentrantLock，假设并发冲突，先加锁再操作）；乐观锁（CAS、版本号，假设冲突少，更新前检查版本）。\n公平锁 vs 非公平锁：公平锁按等待顺序获取锁（FIFO），吞吐低；非公平锁允许插队，吞吐高，可能饥饿。\n可重入锁：同一线程可多次获取同一把锁（synchronized、ReentrantLock 都是）；避免死锁。\n独享锁 vs 共享锁：独享锁（写锁，互斥）；共享锁（读锁，多个读可并行）。\n分布式锁：Redis（SETNX ＋ Lua 释放）、ZooKeeper（临时顺序节点）、etcd（租约）。三要素：互斥性、安全性（超时防死锁）、可用性（集群容错）。\n分段锁（ConcurrentHashMap 思想）：降低锁粒度，提升并发。`, exam:`选答常见。问法：对比悲观／乐观锁、对比 Redis／ZooKeeper 分布式锁、解释分布式锁三要素、解决超卖问题方案设计。\n答题要点：场景特征 → 锁的选型 → 实现细节 → 风险与规避。`, pit:`分布式锁不是万能的，单机 Redis 的 SETNX 有丢失风险，生产用 RedLock 或 ZK；锁粒度不宜过粗或过细。\n乐观锁适合读多写少、冲突少；悲观锁适合写多或强一致。盲目混用会导致性能或正确性问题。` },
+core:`悲观锁 vs 乐观锁：悲观锁（synchronized、ReentrantLock，假设并发冲突，先加锁再操作）；乐观锁（CAS、版本号，假设冲突少，更新前检查版本）。\n公平锁 vs 非公平锁：公平锁按等待顺序获取锁（FIFO），吞吐低；非公平锁允许插队，吞吐高，可能饥饿。\n可重入锁：同一线程可多次获取同一把锁（synchronized、ReentrantLock 都是）；避免死锁。\n独享锁 vs 共享锁：独享锁（写锁，互斥）；共享锁（读锁，多个读可并行）。\n分布式锁：Redis（SETNX ＋ Lua 释放）、ZooKeeper（临时顺序节点）、etcd（租约）。三要素：互斥性、安全性（超时防死锁）、可用性（集群容错）。\n分段锁（ConcurrentHashMap 思想）：降低锁粒度，提升并发。`, exam:`选答常见。问法：对比悲观／乐观锁、对比 Redis／ZooKeeper 分布式锁、解释分布式锁三要素、解决超卖问题方案设计。\n答题要点：场景特征 → 锁的选型 → 实现细节 → 风险与规避。`, pit:`分布式锁不是万能的，单机 Redis 的 SETNX 有丢失风险，生产用 RedLock 或 ZK；锁粒度不宜过粗或过细。\n乐观锁适合读多写少、冲突少；悲观锁适合写多或强一致。盲目混用会导致性能或正确性问题。`,
+qas:[
+  { year:'2024 上半年', pts:'12 分',
+    q:'【背景】某秒杀系统使用 Redis SETNX 实现分布式锁扣减库存，但出现超卖（库存 -1 但库存记录显示还有）。运维发现：部分 Redis 实例宕机重启后另一实例获得锁，但旧实例的进程仍持有锁并继续扣减。\n【问题】① 分析超卖根因；② 给出改进方案。',
+    a:'根因分析：单机 Redis SETNX 无法保证互斥——Redis 集群下，节点 A 加锁后宕机，节点 B 重新加锁成功，两节点同时扣减导致超卖。\nRedis 主从切换丢失锁也是典型场景：主节点加锁后未同步到从节点，主宕机从升主，新主无锁信息。\n改进方案：\n1. 用 Redlock 算法（Redis 官方分布式锁算法）：\n   向 N（≥3）个独立 Redis 实例分别 SETNX，多数（N/2+1）成功才算加锁\n   锁超时时间短于业务执行时间，并配合看门狗（Watchdog）自动续期\n2. 或改用强一致方案：\n   ZooKeeper 临时顺序节点（强一致，临时节点断开自动删除）\n   etcd 租约（Lease）+ Revision（云原生生态首选）\n3. 业务兜底：\n   DB 唯一索引 + 乐观锁（version 字段）作为最终一致性保障\n   扣减时 WHERE stock > 0，失败回滚' },
+  { year:'2023 下半年', pts:'10 分',
+    q:'【背景】某购物车并发场景：用户 A 和用户 B 同时提交订单，库存 1 件，期望只有一人成功。系统使用 synchronized 加锁。\n【问题】① 该方案在分布式部署下是否有效？② 推荐方案及实现要点。',
+    a:'synchronized 是 JVM 内置锁，仅在单进程内有效；分布式部署下多个 JVM 进程同时扣减，仍会出现超卖。\n推荐方案：分布式锁 + DB 乐观锁双层防护\n分布式锁（Redis SETNX／Redisson）：\n  Key：lock:product:10086，Value：requestId\n  用 Lua 脚本保证"判断持有者 + 删除"原子性\n  超时时间设 3~5 秒，避免死锁\nDB 乐观锁（最终一致性保障）：\n  UPDATE stock SET count = count - 1, version = version + 1\n  WHERE product_id = 10086 AND stock > 0 AND version = #{oldVersion}\n  影响行数 0 则扣减失败\n附加：异步消息对账补偿（订单状态异常时回滚库存）' }
+] },
 
 'c3-3': { chap:3, title:'哈希与一致性哈希', tier:2, tag:'选答', viz:`<div class="viz-title">取模 vs 一致性哈希 — 扩容迁移对比</div>
 <svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
@@ -738,7 +867,15 @@ core:`悲观锁 vs 乐观锁：悲观锁（synchronized、ReentrantLock，假设
   <div class="viz-card g"><div class="lbl">扩容迁移</div>≈ 1/N（仅相邻节点）</div>
 </div>
 <div class="viz-card gold" style="margin-top:8px"><div class="lbl">💡 虚拟节点</div>每个物理节点映射 100~200 虚拟节点到环上 — 数据均匀分布</div>`,
-core:`普通哈希取模：hash(key) % N，N 为节点数。简单但扩容／缩容时几乎所有 key 都要重新映射（数据大规模迁移）。\n一致性哈希：将哈希空间组织成 0~2^32 的环形，每个节点映射到环上一个位置，每个 key 顺时针找到最近的节点存储。\n一致性哈希特性：增删节点只影响相邻节点区间内的 key，迁移量小（1/N）；数据分布可能不均——通过虚拟节点（每个物理节点映射若干虚拟节点到环上）解决均匀性问题。\n适用场景：分布式缓存（Memcached／Redis Cluster）、分布式存储（Cassandra／DynamoDB）、CDN 节点选路。`, exam:`选答常见，常与 Redis Cluster／分布式存储结合考查。问法：解释一致性哈希原理；对比取模方案；说明虚拟节点的作用；扩容后数据迁移情况分析。\n真题印证：2024 上半年（分布式缓存一致性哈希）、2023 上半年（Redis Cluster 哈希槽）。`, pit:`一致性哈希并不保证强一致性，只是降低了扩容／缩容时的迁移量。\n虚拟节点数越多分布越均匀，但元数据开销也越大，一般取 100~200 即可。` },
+core:`普通哈希取模：hash(key) % N，N 为节点数。简单但扩容／缩容时几乎所有 key 都要重新映射（数据大规模迁移）。\n一致性哈希：将哈希空间组织成 0~2^32 的环形，每个节点映射到环上一个位置，每个 key 顺时针找到最近的节点存储。\n一致性哈希特性：增删节点只影响相邻节点区间内的 key，迁移量小（1/N）；数据分布可能不均——通过虚拟节点（每个物理节点映射若干虚拟节点到环上）解决均匀性问题。\n适用场景：分布式缓存（Memcached／Redis Cluster）、分布式存储（Cassandra／DynamoDB）、CDN 节点选路。`, exam:`选答常见，常与 Redis Cluster／分布式存储结合考查。问法：解释一致性哈希原理；对比取模方案；说明虚拟节点的作用；扩容后数据迁移情况分析。\n真题印证：2024 上半年（分布式缓存一致性哈希）、2023 上半年（Redis Cluster 哈希槽）。`, pit:`一致性哈希并不保证强一致性，只是降低了扩容／缩容时的迁移量。\n虚拟节点数越多分布越均匀，但元数据开销也越大，一般取 100~200 即可。`,
+qas:[
+  { year:'2024 上半年', pts:'12 分',
+    q:'【背景】某分布式缓存系统最初 3 个节点，缓存 30 万个 key。现业务增长需扩容到 4 个节点。\n【问题】① 使用普通 hash 取模（hash % N），重新映射后有多少 key 需要迁移？② 一致性哈希方案下迁移情况如何？请说明理由。',
+    a:'① 普通取模迁移：几乎全部 key 重新映射\n   30 万 × (3-1)/3 ≈ 20 万 key（从原节点迁移到新节点）\n   扩容瞬间缓存命中率近 0，大量请求直接打 DB\n② 一致性哈希迁移：仅相邻节点区间 key 受影响\n   新节点插入到环上，仅接管下一个节点的部分区间\n   迁移量 ≈ 1/N = 1/4 ≈ 25% key\n   其余 75% key 命中不变，缓存命中率高\n一致性哈希原理：\n将节点和 key 都映射到 0~2^32 的环形空间\nkey 沿环顺时针找到的第一个节点即为存储节点\n增删节点仅影响相邻环区间，不影响整体' },
+  { year:'2023 上半年', pts:'10 分',
+    q:'【背景】某 Redis Cluster 集群使用 16384 个哈希槽，平均分配给 3 个节点（每个节点约 5461 个槽）。新增 1 个节点后，需要重新分配槽位。\n【问题】① 哈希槽与一致性哈希的关系？② 为什么不用一致性哈希而用固定 16384 槽？',
+    a:'关系：\n哈希槽是简化的一致性哈希实现——把 0~2^32 的大环切分为 16384 个固定大小的槽（每槽约 256KB key 空间），每个节点负责一段槽位。\n为什么用固定槽位：\n1. 节点配置简单：仅记录"节点→槽位区间"映射，无需复杂的环查找\n2. 槽位可灵活迁移：扩容时把部分槽位从旧节点搬到新节点（如平均搬 1/4 槽数）\n3. 集群元数据小：16384 个槽位可以用 2KB bitmap 完整表达，节点间同步成本低\n4. 多 key 操作支持：同一槽位的多个 key 可用 hash tag 强制绑定，事务/Lua 跨 key 仍可用\n一致性哈希的简化取舍：\n失去虚拟节点的灵活均匀分布（但通过哈希 CRC16 + 槽位平均分配已足够）\n换来工程实现简单、集群可管理性强' }
+] },
 
 'c3-4': { chap:3, title:'数据库性能提升', tier:1, tag:'选答 高频', viz:`<div class="viz-title">EXPLAIN type 性能阶梯（从最优到最差）</div>
 <div class="viz-stack">
@@ -756,7 +893,15 @@ core:`普通哈希取模：hash(key) % N，N 为节点数。简单但扩容／�
   <div class="viz-card g"><div class="lbl">SQL</div>避免 SELECT * / 函数 / 深分页</div>
   <div class="viz-card gold"><div class="lbl">架构</div>读写分离 · 分库分表 · 连接池</div>
 </div>`,
-core:`索引：B+树索引；覆盖索引（不回表）；联合索引最左前缀原则；唯一索引、普通索引、前缀索引。\n慢 SQL 优化：EXPLAIN 分析执行计划，关注 type（system > const > eq_ref > ref > index > ALL）、key、rows、Extra（Using filesort／Using temporary）。\n常见手段：避免 SELECT *、避免在 WHERE 子句函数运算、合理分页（深分页用延迟关联）、避免不必要的 DISTINCT／ORDER BY。\n读写分离：一主多从，主写从读写副优化查询；分库分表（垂直／水平）应对大数据量。\n连接池：HikariCP／Druid 控制连接数与超时；批处理减少连接次数。\n事务隔离级别：READ UNCOMMITTED < READ COMMITTED < REPEATABLE READ < SERIALIZABLE；MySQL InnoDB 默认 REPEATABLE READ（间隙锁防幻读）。`, exam:`选答常见，常与分库分表结合考查。问法：慢 SQL 优化步骤、EXPLAIN 字段解读、读写分离实现、深分页问题。\n真题印证：2024 上半年（SQL 优化）、历年多次考查分库分表。`, pit:`索引不是越多越好：占用空间、降低写入速度、维护成本。\n深分页（OFFSET 大）会让 MySQL 扫描大量无用行；用延迟关联（先查 ID 再 JOIN）或游标分页（基于上次结果）。` },
+core:`索引：B+树索引；覆盖索引（不回表）；联合索引最左前缀原则；唯一索引、普通索引、前缀索引。\n慢 SQL 优化：EXPLAIN 分析执行计划，关注 type（system > const > eq_ref > ref > index > ALL）、key、rows、Extra（Using filesort／Using temporary）。\n常见手段：避免 SELECT *、避免在 WHERE 子句函数运算、合理分页（深分页用延迟关联）、避免不必要的 DISTINCT／ORDER BY。\n读写分离：一主多从，主写从读写副优化查询；分库分表（垂直／水平）应对大数据量。\n连接池：HikariCP／Druid 控制连接数与超时；批处理减少连接次数。\n事务隔离级别：READ UNCOMMITTED < READ COMMITTED < REPEATABLE READ < SERIALIZABLE；MySQL InnoDB 默认 REPEATABLE READ（间隙锁防幻读）。`, exam:`选答常见，常与分库分表结合考查。问法：慢 SQL 优化步骤、EXPLAIN 字段解读、读写分离实现、深分页问题。\n真题印证：2024 上半年（SQL 优化）、历年多次考查分库分表。`, pit:`索引不是越多越好：占用空间、降低写入速度、维护成本。\n深分页（OFFSET 大）会让 MySQL 扫描大量无用行；用延迟关联（先查 ID 再 JOIN）或游标分页（基于上次结果）。`,
+qas:[
+  { year:'2024 上半年', pts:'13 分',
+    q:'【背景】某订单查询 SQL 执行缓慢：SELECT * FROM orders WHERE user_id = 10086 AND status = 1 ORDER BY create_time DESC LIMIT 100000, 20。表数据 5000 万行，单次查询耗时 8 秒。\n【问题】① 用 EXPLAIN 分析问题；② 给出优化方案。',
+    a:'① EXPLAIN 分析要点：\n   type：ref（走 user_id 索引）\n   key：idx_user_id\n   rows：扫描行数 ≈ 100020（OFFSET 100000 + LIMIT 20，需扫描前 100000 行）\n   Extra：Using filesort（按 create_time 排序额外耗性能）\n   问题：深分页（OFFSET 100000）扫描无用数据 + filesort\n\n   优化方案：\n1. 延迟关联（覆盖索引 + 主键回表）：\n   SELECT * FROM orders o\n   JOIN (SELECT id FROM orders WHERE user_id = 10086 AND status = 1 ORDER BY create_time DESC LIMIT 100000, 20) t\n   ON o.id = t.id\n   子查询只查主键 ID（覆盖索引），外层只回表 20 次\n2. 游标分页（基于上次结果）：\n   SELECT * FROM orders WHERE user_id = 10086 AND status = 1 AND create_time < #{lastTime} ORDER BY create_time DESC LIMIT 20\n   性能稳定，不随翻页深度恶化\n3. 索引优化：\n   联合索引 (user_id, status, create_time) 满足 WHERE + ORDER BY\n4. 业务兜底：\n   限制最大翻页深度（如 100 页后提示用户筛选条件）' },
+  { year:'2023 下半年', pts:'10 分',
+    q:'【背景】某慢 SQL：SELECT product_id, COUNT(*) FROM orders WHERE create_time BETWEEN "2024-01-01" AND "2024-06-30" GROUP BY product_id ORDER BY COUNT(*) DESC LIMIT 10；耗时 30 秒。\n【问题】给出索引与 SQL 优化建议。',
+    a:'问题分析：\n表数据 1 亿行，create_time 上有单列索引\nGROUP BY product_id 导致 Using temporary（临时表）\nWHERE 范围扫描 180 天数据，扫描量大\n优化建议：\n1. 联合索引（覆盖 GROUP BY）：\n   CREATE INDEX idx_time_pid ON orders(create_time, product_id)\n   索引覆盖 WHERE 范围 + GROUP BY 字段，避免回表\n2. 改写为派生表 + JOIN：\n   SELECT t.product_id, t.cnt FROM (\n     SELECT product_id, COUNT(*) cnt FROM orders\n     WHERE create_time BETWEEN "2024-01-01" AND "2024-06-30"\n     GROUP BY product_id\n   ) t ORDER BY t.cnt DESC LIMIT 10\n   内层用索引聚合，外层排序 10 条小数据\n3. 架构层优化：\n   按月分区（Partition by RANGE(create_time)）\n   离线 OLAP 数仓（ClickHouse）做统计\n   业务汇总（增量物化视图）' }
+] },
 
 'c3-5': { chap:3, title:'各种 NoSQL', tier:2, tag:'选答', viz:`<div class="viz-title">NoSQL 五大家族 + CAP 三角定位</div>
 <svg viewBox="0 0 200 200" class="tri">
@@ -777,7 +922,15 @@ core:`索引：B+树索引；覆盖索引（不回表）；联合索引最左前
 <tr><td class="h">时序</td><td>InfluxDB / TDengine</td><td>时间戳 + 指标</td><td>监控 / IoT / 金融行情</td></tr>
 <tr><td class="h">搜索</td><td>Elasticsearch</td><td>倒排索引</td><td>全文检索 / 聚合 / 向量 KNN</td></tr>
 </table>`,
-core:`键值（KV）：Redis、Memcached、DynamoDB。适合缓存、计数器、分布式锁。\n文档：MongoDB、CouchDB。Schema-free，存 JSON／BSON；适合内容管理、IoT、半结构化数据。\n列族（Wide Column）：HBase、Cassandra。按列族存储，适合海量稀疏数据、时序数据；LSM-Tree 写入快。\n图：Neo4j、JanusGraph。关系遍历快（避免 JOIN 爆炸），适合社交网络、知识图谱、推荐系统。\n时序：InfluxDB、TimescaleDB、TDengine。高写入压缩、按时间窗口聚合，适合监控、IoT、金融行情。\n搜索：Elasticsearch（ES，倒排索引）。全文检索、聚合分析、向量检索（KNN）。\nCAP 三角：一致性（Consistency）、可用性（Availability）、分区容错（Partition tolerance）。P 必选，CA／CP／AP 三选二。`, exam:`选答常见，与 CAP 定理结合。问法：根据场景选 NoSQL 类型；解释 CAP／BASE；对比关系型数据库与 NoSQL；说明 ES 倒排索引。\n答题要点：场景特征 → 数据模型 → 一致性／扩展性／查询能力 → 选型理由。`, pit:`NoSQL 不是替代关系型，而是补充。事务强一致、复杂 JOIN、报表统计仍以 RDBMS 为主。\nES 不是数据库，不适合作为唯一存储，需配合主库（MySQL／Postgres）做数据源。` },
+core:`键值（KV）：Redis、Memcached、DynamoDB。适合缓存、计数器、分布式锁。\n文档：MongoDB、CouchDB。Schema-free，存 JSON／BSON；适合内容管理、IoT、半结构化数据。\n列族（Wide Column）：HBase、Cassandra。按列族存储，适合海量稀疏数据、时序数据；LSM-Tree 写入快。\n图：Neo4j、JanusGraph。关系遍历快（避免 JOIN 爆炸），适合社交网络、知识图谱、推荐系统。\n时序：InfluxDB、TimescaleDB、TDengine。高写入压缩、按时间窗口聚合，适合监控、IoT、金融行情。\n搜索：Elasticsearch（ES，倒排索引）。全文检索、聚合分析、向量检索（KNN）。\nCAP 三角：一致性（Consistency）、可用性（Availability）、分区容错（Partition tolerance）。P 必选，CA／CP／AP 三选二。`, exam:`选答常见，与 CAP 定理结合。问法：根据场景选 NoSQL 类型；解释 CAP／BASE；对比关系型数据库与 NoSQL；说明 ES 倒排索引。\n答题要点：场景特征 → 数据模型 → 一致性／扩展性／查询能力 → 选型理由。`, pit:`NoSQL 不是替代关系型，而是补充。事务强一致、复杂 JOIN、报表统计仍以 RDBMS 为主。\nES 不是数据库，不适合作为唯一存储，需配合主库（MySQL／Postgres）做数据源。`,
+qas:[
+  { year:'2024 上半年', pts:'11 分',
+    q:'【背景】某电商平台面临三类数据存储需求：① 商品详情（结构化 + 半结构化 JSON 属性、SKU 关系）；② 用户评论（高频写、含图片点赞）；③ 实时推荐（用户-商品关系网络，需快速关系查询）。\n【问题】为每类需求选择合适的 NoSQL 类型并说明理由。',
+    a:'① 商品详情 → 文档型（MongoDB）\n   理由：SKU／SPU 多变属性，JSON 文档天然适配；类目属性 schema-free，迭代快；二级索引 + 聚合查询支持运营后台统计。\n\n② 用户评论 → 列族（HBase／Cassandra）\n   理由：高写入吞吐（评论 + 点赞事件），宽列稀疏列族天然适合"评论 ID + 各种事件"；按时间范围扫描性能优；与 HDFS／对象存储集成归档简单。\n\n③ 实时推荐 → 图数据库（Neo4j／JanusGraph）\n   理由：用户-商品-标签关系网络深度多跳查询（如"好友购买过 + 兴趣标签"），关系遍历性能远优于关系型 JOIN；Cypher／Gremlin 查询表达直观。\n\n附加：通用 KV 缓存用 Redis；全文搜索用 Elasticsearch；时序关系做 InfluxDB。' },
+  { year:'2023 下半年', pts:'10 分',
+    q:'【背景】某 IM 系统要求：消息按会话 ID 查询历史（最近 1 年）；消息按时间倒序；消息状态变更频繁（已发送→已送达→已读）；峰值写入 10 万 TPS。\n【问题】① 该场景是否适合关系型数据库？② 推荐方案并说明理由。',
+    a:'① 关系型数据库不合适：\n   单表数据量爆炸（1 年 100 亿行），索引膨胀，DDL 变更难\n   频繁状态更新产生大量随机写，SSD 寿命与性能压力大\n   按会话 ID 查询 + 倒序排序需复杂索引\n\n   推荐方案：HBase（Wide Column）\n   RowKey 设计：reverse(timestamp) + sessionId（避免热点）\n   列族：cf1（消息内容）、cf2（状态：已发送／已送达／已读）\n   利用时间戳倒序特性 + LSM-Tree 高写入\n   按会话 ID 范围扫描天然有序\n\n   附加：\n   实时消息用 Redis List／Stream\n   已读回执用 Kafka 异步事件\n   关系库做用户档案、关系链（强一致）' }
+] },
 
 'c3-6': { chap:3, title:'向量数据库', tier:3, tag:'选答 加分', viz:`<div class="viz-title">RAG 检索增强生成 · 完整流程</div>
 <div class="viz-flow">
@@ -795,7 +948,15 @@ core:`键值（KV）：Redis、Memcached、DynamoDB。适合缓存、计数器�
   <div class="viz-card gold"><div class="lbl">代表产品</div>Milvus · Qdrant · Weaviate · Chroma · pgvector</div>
 </div>
 <div class="viz-card r" style="margin-top:8px"><div class="lbl">⚠️ 纯向量检索的局限</div>混合检索（BM25 + 向量）效果更稳 — 关键词命中 + 语义匹配双保险</div>`,
-core:`Embedding：把文本、图片等映射为高维向量（512~4096 维），语义相近的内容在向量空间中距离近。常见模型：OpenAI text-embedding-3、bge-large-zh（中文）、m3e。\n向量检索：KNN（精确，最近邻，慢）、ANN（近似最近邻，快）。ANN 算法：HNSW（图索引，查询快内存高）、IVF（倒排，聚类）、PQ（乘积量化，压缩）。\n向量数据库：Milvus、Qdrant、Weaviate、Chroma、pgvector（PostgreSQL 扩展）。\n典型流程：Query → Embedding 模型 → 向量 → ANN 检索 → Top-K 结果 → 重排（Cross-Encoder）→ 回答。\nRAG 关键组件：向量库管"知识"，LLM 管"生成"；结合实现知识问答、私域知识助手。`, exam:`新热点，与 AI 大模型结合考查。问法：解释 Embedding 原理、RAG 流程、向量库选型、向量检索 vs 全文检索对比。\n真题印证：2025 上半年（结合大模型考 RAG）、2025 下半年（向量检索应用）。`, pit:`向量检索 ≠ 语义检索：纯向量可能错过关键词命中；混合检索（BM25 + 向量）效果更稳。\nEmbedding 模型选型决定检索质量，bge-large-zh 在中文场景优于通用英文模型。` },
+core:`Embedding：把文本、图片等映射为高维向量（512~4096 维），语义相近的内容在向量空间中距离近。常见模型：OpenAI text-embedding-3、bge-large-zh（中文）、m3e。\n向量检索：KNN（精确，最近邻，慢）、ANN（近似最近邻，快）。ANN 算法：HNSW（图索引，查询快内存高）、IVF（倒排，聚类）、PQ（乘积量化，压缩）。\n向量数据库：Milvus、Qdrant、Weaviate、Chroma、pgvector（PostgreSQL 扩展）。\n典型流程：Query → Embedding 模型 → 向量 → ANN 检索 → Top-K 结果 → 重排（Cross-Encoder）→ 回答。\nRAG 关键组件：向量库管"知识"，LLM 管"生成"；结合实现知识问答、私域知识助手。`, exam:`新热点，与 AI 大模型结合考查。问法：解释 Embedding 原理、RAG 流程、向量库选型、向量检索 vs 全文检索对比。\n真题印证：2025 上半年（结合大模型考 RAG）、2025 下半年（向量检索应用）。`, pit:`向量检索 ≠ 语义检索：纯向量可能错过关键词命中；混合检索（BM25 + 向量）效果更稳。\nEmbedding 模型选型决定检索质量，bge-large-zh 在中文场景优于通用英文模型。`,
+qas:[
+  { year:'2025 上半年', pts:'13 分',
+    q:'【背景】某法律 AI 助手：基于 10 万份裁判文书 + 1 万份法律法规，为律师提供类案检索与法律咨询。\n【问题】① 设计基于 RAG 的完整架构；② 解释为何用向量检索 + 关键词检索混合检索。',
+    a:'RAG 完整架构：\n数据准备（离线）：\n  原始文档 → 文档切片（500 字/段，50 字重叠）\n  Embedding 模型（bge-large-zh 中文）→ 768 维向量\n  向量 + 原文写入 Milvus／Qdrant\n  元数据（案号、审结日期、法条引用）写入 ES\n在线查询：\n  用户 Query → Embedding → 向量\n  ANN 检索（Milvus，HNSW 索引）→ Top-50 召回\n  关键词检索（ES，BM25）→ Top-50 召回\n  加权融合（RRF／线性加权）→ Top-10\n  Cross-Encoder 重排 → Top-5\n  Prompt 构造（Query + Top-5 上下文 + 角色指令）\n  LLM（GPT-4／Qwen）生成答案\n  答案 + 引用追溯（哪个文档哪一段）\n\n② 混合检索理由：\n   纯向量检索：语义近但关键词不命中（如"民法典第 1064 条"无法精确匹配）\n   纯关键词检索：精确命中但语义弱的召回差（如"违约责任"和"合同责任"）\n   混合：BM25 兜底法条精确 + 向量兜底语义扩展，recall 提升 15~25%' },
+  { year:'2025 下半年', pts:'10 分',
+    q:'【背景】某向量检索系统使用 HNSW 索引，1 亿条 768 维向量。查询耗时 P99 = 50ms，但内存占用 80GB，服务器成本高昂。\n【问题】给出降低内存占用的方案，并说明对查询性能的影响。',
+    a:'降本方案：\n1. 乘积量化（PQ）：\n   把 768 维拆为 96 个 8 维子向量\n   每子向量用 K-means 聚类为 256 个中心（1 字节编码）\n   原 768 × 4 字节 = 3072 字节 → 96 字节（压缩 32 倍）\n   内存从 80GB 降至约 3GB\n   查询性能：略下降（P99 可能从 50ms 升至 80ms）\n2. 标量量化（SQ）：\n   float32 → int8（4 字节 → 1 字节）\n   压缩 4 倍，几乎无精度损失\n   内存降至 20GB，性能几乎不变\n3. IVF-PQ 组合：\n   先 IVF（倒排聚类）粗筛到 Top-1000\n   再 PQ 精排 Top-10\n   比纯 HNSW 内存低 10 倍\n4. 磁盘索引（DiskANN）：\n   索引放 SSD，内存仅缓存热点\n   1 亿向量 80GB → 内存 5GB + 磁盘 80GB\n   性能 P99 升至 100ms 级别\n推荐：先 SQ（无损压缩）→ 不够再 PQ → 量大用 IVF-PQ → 极致用 DiskANN' }
+] },
 
 'c3-7': { chap:3, title:'NewSQL', tier:2, tag:'选答 加分', viz:`<div class="viz-title">NewSQL 三角定位：SQL + ACID + 水平扩展</div>
 <svg viewBox="0 0 360 240" class="tri">
@@ -812,7 +973,15 @@ core:`Embedding：把文本、图片等映射为高维向量（512~4096 维）�
   <div class="viz-card gold"><div class="lbl">OceanBase</div>兼容 MySQL/Oracle · Paxos · 金融级</div>
   <div class="viz-card gold"><div class="lbl">PolarDB / CockroachDB</div>存储分离 / 全球分布</div>
 </div>`,
-core:`定义：同时具备关系型 SQL 接口、ACID 事务与水平扩展能力的新型数据库。\n代表产品：TiDB（兼容 MySQL 协议，Raft 共识，HTAP 行列混合）、OceanBase（兼容 MySQL／Oracle，自研 Paxos，金融级高可用）、PolarDB（阿里云，存储计算分离）、CockroachDB（兼容 PostgreSQL，全球分布）。\n核心能力：分布式事务（Percolator／2PC）、水平扩展（自动 sharding）、强一致（Raft／Paxos 多副本）、HTAP（混合事务与分析处理）。\n适用场景：金融核心、互联网高并发、海量数据 OLTP、对一致性要求高的分布式系统。\nvs 传统分库分表（MySQL Sharding）：NewSQL 自动分片无需改应用；vs NoSQL：保留 SQL 与事务。`, exam:`选答加分配。问法：NewSQL vs 传统分库分表、TiDB／OceanBase 架构、HTAP 场景、分布式事务实现。\n真题印证：2024 上半年（NewSQL 数据库选型）、2025 下半年（云原生数据库）。`, pit:`NewSQL 性能不是线性扩展：跨节点 JOIN、分布式事务开销随节点数上升；单表热点仍是瓶颈。\n不要为了"分布式"盲目上 NewSQL，单库能撑住时不要过度设计。` },
+core:`定义：同时具备关系型 SQL 接口、ACID 事务与水平扩展能力的新型数据库。\n代表产品：TiDB（兼容 MySQL 协议，Raft 共识，HTAP 行列混合）、OceanBase（兼容 MySQL／Oracle，自研 Paxos，金融级高可用）、PolarDB（阿里云，存储计算分离）、CockroachDB（兼容 PostgreSQL，全球分布）。\n核心能力：分布式事务（Percolator／2PC）、水平扩展（自动 sharding）、强一致（Raft／Paxos 多副本）、HTAP（混合事务与分析处理）。\n适用场景：金融核心、互联网高并发、海量数据 OLTP、对一致性要求高的分布式系统。\nvs 传统分库分表（MySQL Sharding）：NewSQL 自动分片无需改应用；vs NoSQL：保留 SQL 与事务。`, exam:`选答加分配。问法：NewSQL vs 传统分库分表、TiDB／OceanBase 架构、HTAP 场景、分布式事务实现。\n真题印证：2024 上半年（NewSQL 数据库选型）、2025 下半年（云原生数据库）。`, pit:`NewSQL 性能不是线性扩展：跨节点 JOIN、分布式事务开销随节点数上升；单表热点仍是瓶颈。\n不要为了"分布式"盲目上 NewSQL，单库能撑住时不要过度设计。`,
+qas:[
+  { year:'2024 上半年', pts:'13 分',
+    q:'【背景】某互联网银行核心系统日均交易 8000 万笔，原使用 MySQL 分库分表（32 库 × 32 表共 1024 张分片表），强一致事务难以实现，跨分片 JOIN 性能差，扩容需业务配合。\n【问题】① 是否适合迁移到 NewSQL？② 推荐方案并说明迁移路径。',
+    a:'① 适合迁移到 NewSQL：\n   强一致事务需求 + 大数据量 OLTP + 弹性扩展\n   TiDB／OceanBase 均能 100% 兼容 MySQL 协议\n   自动分片无需业务改 SQL\n\n② 推荐方案：OceanBase（金融级首选）\n   兼容 MySQL 5.7 协议（应用几乎零改动）\n   自研 Paxos 多副本（RPO=0，强一致）\n   自动水平扩展（透明扩容）\n   HTAP 能力（同时支持事务和分析查询）\n\n迁移路径（"双写—切流—下线"三阶段）：\n阶段一：双写（3~6 个月）\n  MySQL 写 → 同步到 OceanBase（Canal 订阅 Binlog）\n  读仍走 MySQL\n  验证一致性（每周比对数据）\n阶段二：切流（1~2 个月）\n  按业务分批切读流量到 OceanBase\n  观察 P99 延迟、错误率\n阶段三：下线\n  数据一致性稳定后，停写 MySQL\n  备份保留 6 个月后下线\n附加：迁移中保留 MySQL ShardingSphere 作为兜底；监控对比两库指标' },
+  { year:'2025 下半年', pts:'12 分',
+    q:'【背景】某电商订单库单库数据量 8 亿行，分 16 库 64 表（1024 分片），单分片约 80 万行。但跨分片订单统计报表查询（跨多个 user_id）性能极差。\n【问题】① NewSQL 与传统 MySQL Sharding 相比的优势？② 推荐混合方案。',
+    a:'① NewSQL 优势：\n   水平扩展自动化：节点扩容即可，自动 rebalance\n   分布式事务原生支持：Percolator／2PC，避免应用层 Saga\n   强一致多副本：Raft／Paxos 协议，RPO=0\n   全局二级索引：避免跨分片聚合查询难\n   HTAP 能力：OLTP + OLAP 一体\n   运维友好：无需手动拆分逻辑键\n\n② 推荐混合方案（按场景选型）：\n   订单交易（强一致 OLTP）→ NewSQL（TiDB／OceanBase）\n   用户档案（中等规模）→ MySQL（单库够用）\n   商品库存（高频读写）→ Redis Cluster + MySQL\n   历史订单（冷数据）→ MySQL Archive + OSS\n   报表统计 → ClickHouse / Doris（OLAP 专用）\n   实时大屏 → Flink + Doris\n原则：能单库不拆；能分库分表不上 NewSQL；要强一致又要扩展才 NewSQL。' }
+] },
 
 'c3-8': { chap:3, title:'数据库高可用', tier:1, tag:'选答 高频', viz:`<div class="viz-title">主从复制 + 自动故障转移</div>
 <svg viewBox="0 0 560 200">
@@ -844,7 +1013,15 @@ core:`定义：同时具备关系型 SQL 接口、ACID 事务与水平扩展能�
   <div class="viz-card gold"><div class="lbl">半同步</div>至少一从确认 · 平衡</div>
   <div class="viz-card g"><div class="lbl">同步 / Raft</div>强一致 · 性能低</div>
 </div>`,
-core:`主从复制：异步（默认，性能好可能丢数据）、半同步（至少一从确认）、同步（强一致性能差）。\n故障切换：VIP 漂移 + Keepalived、Orchestrator、MHA（MySQL 高可用）、MGR（MySQL Group Replication，多主／单主，强一致）。\n读写分离代理：MyCat、ShardingSphere-Proxy、MaxScale、ProxySQL。\n双主／多主：Galera Cluster（同步多主，并发写冲突）、基于 Raft 的分布式数据库（TiDB／OceanBase）。\n备份与恢复：全量＋binlog 增量；PITR（Point-In-Time Recovery）；定期演练恢复流程。\n监控指标：连接数、QPS／TPS、慢查询、主从延迟、磁盘 IO、锁等待。`, exam:`选答常见。问法：主从切换过程、半同步 vs 异步对比、双主架构冲突处理、备份恢复方案。\n答题要点：架构图 + 故障检测 + 切换流程 + 数据保护 + 监控告警。`, pit:`半同步不能完全保证不丢数据，只有"至少一从收到"而非"已应用"；强一致场景用同步复制或共识协议。\n主从切换后应用要重连或重试，连接池需支持重连；VIP 漂移有脑裂风险，需双 VIP 互备。` },
+core:`主从复制：异步（默认，性能好可能丢数据）、半同步（至少一从确认）、同步（强一致性能差）。\n故障切换：VIP 漂移 + Keepalived、Orchestrator、MHA（MySQL 高可用）、MGR（MySQL Group Replication，多主／单主，强一致）。\n读写分离代理：MyCat、ShardingSphere-Proxy、MaxScale、ProxySQL。\n双主／多主：Galera Cluster（同步多主，并发写冲突）、基于 Raft 的分布式数据库（TiDB／OceanBase）。\n备份与恢复：全量＋binlog 增量；PITR（Point-In-Time Recovery）；定期演练恢复流程。\n监控指标：连接数、QPS／TPS、慢查询、主从延迟、磁盘 IO、锁等待。`, exam:`选答常见。问法：主从切换过程、半同步 vs 异步对比、双主架构冲突处理、备份恢复方案。\n答题要点：架构图 + 故障检测 + 切换流程 + 数据保护 + 监控告警。`, pit:`半同步不能完全保证不丢数据，只有"至少一从收到"而非"已应用"；强一致场景用同步复制或共识协议。\n主从切换后应用要重连或重试，连接池需支持重连；VIP 漂移有脑裂风险，需双 VIP 互备。`,
+qas:[
+  { year:'2024 上半年', pts:'12 分',
+    q:'【背景】某订单系统采用 MySQL 一主两从架构，主库宕机后切换到从库。但切换期间出现 5 秒服务不可用，且应用报错"主键冲突"。\n【问题】① 分析切换过程中的问题；② 给出改进方案。',
+    a:'问题分析：\n1. 切换耗时长（5 秒）：传统 MHA 检测 + 切换 + VIP 漂移，过程未优化\n2. 主键冲突：半同步复制下，主库已写入但未同步到从库，切换后从库升主，新主重新插入导致主键冲突\n3. VIP 漂移风险：网络抖动导致 VIP 在两节点之间反复漂移（脑裂）\n4. 应用未做重连：连接池仍指向旧主，导致部分请求失败\n\n改进方案：\n1. 切换速度：\n   MHA 优化（检测时间从 8 秒降至 3 秒）\n   或用 Orchestrator／MGR（Group Replication）自动故障转移\n2. 数据一致性：\n   升级半同步为同步复制（After Sync，等待从库 ACK）\n   或使用 MGR 单主模式（基于 Paxos 强一致）\n3. VIP 防脑裂：\n   双 VIP 互备 + 仲裁机制（第三方仲裁节点）\n   或用 DNS 域名（自动失效检测）\n4. 应用层：\n   连接池支持自动重连（HikariCP + keepalive）\n   业务幂等设计（避免重复下单）\n5. 监控：\n   主从延迟秒级告警（>5 秒触发预案）' },
+  { year:'2023 下半年', pts:'10 分',
+    q:'【背景】某电商订单库主库宕机，从库切换为主库后发现部分订单已扣款但订单状态未更新（数据丢失）。\n【问题】① 数据丢失的原因？② 如何保证切换时数据不丢？',
+    a:'① 数据丢失原因：\n   主库采用异步复制（默认），主库写入 Binlog 后立即提交事务，未等待从库 ACK\n   主库宕机时，从库未收到部分最新的 Binlog\n   切换后从库升主，丢失部分订单状态变更\n   异步复制 RPO > 0（可能有几秒数据丢失）\n\n② 保证不丢方案：\n1. 半同步复制（After Commit 模式）：\n   主库提交事务前等待至少 1 个从库 ACK\n   RPO = 0（无丢失）但 RTO 增加（多一次网络往返）\n2. 全同步复制：\n   等待所有从库 ACK，强一致但性能差\n   仅金融级场景用\n3. 基于 Raft 的分布式数据库（TiDB／OceanBase）：\n   多副本通过 Raft／Paxos 协议保证强一致\n   RPO = 0，RTO < 30 秒\n   推荐金融、订单场景使用\n4. 业务兜底：\n   关键操作二次确认（订单支付成功后异步对账）\n   Binlog 双向同步（防止双写丢失）' }
+] },
 
 'c3-9': { chap:3, title:'数据分片', tier:1, tag:'选答 高频', viz:`<div class="viz-title">垂直分片 vs 水平分片 + 三大策略</div>
 <div class="viz-grid c2">
@@ -863,7 +1040,15 @@ core:`主从复制：异步（默认，性能好可能丢数据）、半同步�
   <span class="step g">稳定不频繁变</span>
   <span class="step">常用查询字段</span>
 </div>`,
-core:`垂直分片（按业务拆分）：用户库、订单库、商品库。降低单库压力，跨库 JOIN 难。\n水平分片（按行拆分）：按用户 ID 取模、按时间、按地域。适合数据量爆炸式增长的单业务。\n分片键（Sharding Key）选择：高区分度（避免数据倾斜）、稳定（避免迁移）、常用查询字段。\n分片策略：Hash 取模（均匀但扩容难）、Range 范围（范围查询友好但可能热点）、一致性哈希（扩容迁移少）。\n中间件：ShardingSphere-JDBC（客户端）、ShardingSphere-Proxy（服务端代理）、MyCat（独立服务）。\n跨分片查询：广播表（冗余）、ER 表（按主外键绑定）、异构索引（宽表冗余）、分布式事务（Seata）。`, exam:`选答高频。问法：分片键选型、水平 vs 垂直、ShardingSphere 实现原理、跨分片 JOIN 方案、扩容迁移方案。\n真题印证：2023 下半年（数据分片方案设计）、2024 上半年（分库分表）。`, pit:`分片键一旦选定很难改；分片数预留富余（2 的幂次）方便扩容。\n跨片 JOIN、跨片事务、跨片 ORDER BY 性能差，能避免就避免，必要时用宽表／冗余。` },
+core:`垂直分片（按业务拆分）：用户库、订单库、商品库。降低单库压力，跨库 JOIN 难。\n水平分片（按行拆分）：按用户 ID 取模、按时间、按地域。适合数据量爆炸式增长的单业务。\n分片键（Sharding Key）选择：高区分度（避免数据倾斜）、稳定（避免迁移）、常用查询字段。\n分片策略：Hash 取模（均匀但扩容难）、Range 范围（范围查询友好但可能热点）、一致性哈希（扩容迁移少）。\n中间件：ShardingSphere-JDBC（客户端）、ShardingSphere-Proxy（服务端代理）、MyCat（独立服务）。\n跨分片查询：广播表（冗余）、ER 表（按主外键绑定）、异构索引（宽表冗余）、分布式事务（Seata）。`, exam:`选答高频。问法：分片键选型、水平 vs 垂直、ShardingSphere 实现原理、跨分片 JOIN 方案、扩容迁移方案。\n真题印证：2023 下半年（数据分片方案设计）、2024 上半年（分库分表）。`, pit:`分片键一旦选定很难改；分片数预留富余（2 的幂次）方便扩容。\n跨片 JOIN、跨片事务、跨片 ORDER BY 性能差，能避免就避免，必要时用宽表／冗余。`,
+qas:[
+  { year:'2023 下半年', pts:'15 分',
+    q:'【背景】某电商订单库单表数据量已达 5 亿行，DDL 操作（加索引）锁表超过 30 分钟；按 user_id 查询热点用户（10 万订单）出现严重锁等待。\n【问题】① 选择垂直分片还是水平分片？② 给出分片键与分片数设计。',
+    a:'① 水平分片（不是垂直）：\n   同一业务（订单）数据爆炸，需按行拆分；垂直分片（按业务拆）不解决此问题\n   水平分片策略选择：Hash 取模（均匀，避免热点） vs Range（范围查询）\n   本场景：单 user_id 订单量大，但 user_id 区分度高，Hash 取模合适\n\n② 分片键设计：\n   分片键：user_id（高区分度、常用查询字段）\n   分片数：2^5 = 32 个（预留 2 倍扩容空间，最终 64 个）\n   32 → 64 扩容时，迁移一半分片（每分片数据迁移一次）\n\n数据迁移方案（一致性哈希思想）：\n   双写阶段：新旧分片并行写入\n   校验阶段：T+1 日批处理对比两边数据\n   切流阶段：按用户灰度切读流量\n   回收阶段：旧分片归档保留 3 个月\n\n跨分片查询方案：\n   按 user_id 查询路由到单分片（O(1)）\n   跨 user 查询（如商家后台查所有订单）→ ES 异构索引\n   全局统计 → OLAP（ClickHouse）+ Canal 订阅 Binlog' },
+  { year:'2024 上半年', pts:'12 分',
+    q:'【背景】某订单库按 user_id Hash 取模分 32 库 32 表。运营报表查询"全平台某日订单总数"扫描所有 1024 张分片表，耗时 10 分钟；运营要查"某商家某月所有订单"也需扫描商家对应全部用户分片。\n【问题】① 分片键选型有何问题？② 给出改进方案。',
+    a:'问题分析：\n1. 商家查询性能差：商家订单分散在多个 user_id 分片，跨分片聚合慢\n2. 全局查询性能差：所有报表都需广播式扫描所有分片\n3. 分片键选 user_id 适合单用户查询，但不适合商家维度和全局统计\n\n改进方案：\n方案一：组合分片键（user_id + merchant_id）\n   引入二级索引（按 merchant_id 路由到对应分片）\n   ShardingSphere 自带 hint 分片策略\n   读多写少场景适合（订单状态更新走 user_id，商家查询走 merchant_id）\n\n方案二：读写分离 + 异构索引（推荐）：\n   写：MySQL 分库分表（user_id 分片，强一致）\n   读：Canal 订阅 Binlog → ES（按 merchant_id 索引）\n   商家后台查询走 ES，秒级响应\n   全局统计走 ClickHouse（OLAP 专用）\n\n方案三：双写：\n   应用同时写入两个库（订单库 + 商家宽表）\n   双写一致性靠消息队列（最终一致）\n   简单但侵入业务' }
+] },
 
 'c4-1': { chap:4, title:'分布式系统', tier:1, tag:'选答 高频', viz:`<div class="viz-title">CAP 三角 + BASE + 共识算法</div>
 <svg viewBox="0 0 320 260" class="tri">
@@ -890,7 +1075,15 @@ core:`垂直分片（按业务拆分）：用户库、订单库、商品库。�
   <div class="viz-card gold"><div class="lbl">Raft 三角色</div>Leader（主） · Follower（从） · Candidate（候选）</div>
   <div class="viz-card b"><div class="lbl">Snowflake 64 位</div>1 符号 + 41 时间戳 + 10 机器 + 12 序列</div>
 </div>`,
-core:`CAP 定理：一致性（Consistency）、可用性（Availability）、分区容错（Partition tolerance）三者不可兼得，必须选 P。CA（传统 RDBMS）、CP（HBase、Redis Cluster 强一致模式）、AP（Eureka、Cassandra）。\nBASE 理论：Basically Available（基本可用）、Soft state（软状态）、Eventually consistent（最终一致）。是 AP 系统的设计哲学。\n分布式事务：2PC（两阶段提交，强一致但协调者单点）、3PC（加预提交阶段，降低阻塞但实现复杂）、TCC（Try-Confirm-Cancel，业务侵入强）、Saga（长事务拆分＋补偿）、本地消息表（最终一致）、RocketMQ 事务消息。\n共识算法：Paxos（理论奠基，难实现）、Raft（易理解，etcd／TiDB 使用）：Leader 选举＋日志复制＋安全性。\n分布式 ID：雪花算法 Snowflake（64 位：时间戳＋机器 ID＋序列号）、UUID（无序索引差）、Leaf（美团，号段模式）、Redis INCR。\n负载均衡：轮询、加权轮询、最少连接、一致性哈希；硬件（F5）／软件（Nginx、LVS、HAProxy）。`, exam:`选答高频，分布式事务是必考点。问法：CAP 三选二的取舍、2PC 流程与缺陷、Raft 选举、Saga 补偿、雪花算法组成。\n真题印证：2024 上半年（分布式事务方案）、历年多次考查共识算法。`, pit:`分布式事务没"银弹"：2PC 阻塞、3PC 实现难、TCC 侵入、Saga 补偿链长——按场景选方案。\n雪花算法时钟回拨会重复 ID；用美团 Leaf / 百度 UidGenerator 等成熟方案规避。` },
+core:`CAP 定理：一致性（Consistency）、可用性（Availability）、分区容错（Partition tolerance）三者不可兼得，必须选 P。CA（传统 RDBMS）、CP（HBase、Redis Cluster 强一致模式）、AP（Eureka、Cassandra）。\nBASE 理论：Basically Available（基本可用）、Soft state（软状态）、Eventually consistent（最终一致）。是 AP 系统的设计哲学。\n分布式事务：2PC（两阶段提交，强一致但协调者单点）、3PC（加预提交阶段，降低阻塞但实现复杂）、TCC（Try-Confirm-Cancel，业务侵入强）、Saga（长事务拆分＋补偿）、本地消息表（最终一致）、RocketMQ 事务消息。\n共识算法：Paxos（理论奠基，难实现）、Raft（易理解，etcd／TiDB 使用）：Leader 选举＋日志复制＋安全性。\n分布式 ID：雪花算法 Snowflake（64 位：时间戳＋机器 ID＋序列号）、UUID（无序索引差）、Leaf（美团，号段模式）、Redis INCR。\n负载均衡：轮询、加权轮询、最少连接、一致性哈希；硬件（F5）／软件（Nginx、LVS、HAProxy）。`, exam:`选答高频，分布式事务是必考点。问法：CAP 三选二的取舍、2PC 流程与缺陷、Raft 选举、Saga 补偿、雪花算法组成。\n真题印证：2024 上半年（分布式事务方案）、历年多次考查共识算法。`, pit:`分布式事务没"银弹"：2PC 阻塞、3PC 实现难、TCC 侵入、Saga 补偿链长——按场景选方案。\n雪花算法时钟回拨会重复 ID；用美团 Leaf / 百度 UidGenerator 等成熟方案规避。`,
+qas:[
+  { year:'2024 上半年', pts:'14 分',
+    q:'【背景】某支付系统跨账户转账，要求 A 账户扣 100 元 + B 账户加 100 元 必须同时成功或同时失败。系统采用 2PC 协议，但出现协调者宕机后部分参与者阻塞无法提交的问题。\n【问题】① 分析 2PC 缺陷；② 给出至少 2 种替代方案。',
+    a:'① 2PC 缺陷：\n   同步阻塞：所有参与者在 prepare 阶段持有资源锁等待协调者指令，性能差\n   协调者单点：协调者宕机后参与者陷入"不确定"状态（不知道该提交还是回滚）\n   数据不一致：部分参与者收到 commit、部分未收到，导致状态不一致\n   容错性差：网络抖动可能造成长时间阻塞\n\n② 替代方案：\n1. TCC（Try-Confirm-Cancel）：\n   Try：预留资源（冻结 100 元，确认余额足）\n   Confirm：实际扣减（幂等）\n   Cancel：释放预留（幂等）\n   优点：避免长时间锁，性能好；缺点：业务侵入强，需改造业务接口\n   适合：支付、扣款等强一致场景\n\n2. Saga 补偿：\n   长事务拆分为 N 个本地事务\n   每步失败触发补偿事务反向回滚\n   T1 扣 A → T2 加 B；若 T2 失败 → C2 退回 A\n   优点：无锁，性能好；缺点：补偿链长，需定义补偿\n   适合：业务流程长、最终一致\n\n3. RocketMQ 事务消息：\n   生产者发送 Half 消息（对消费者不可见）\n   本地事务执行 + 消息回查\n   确认后消息对消费者可见\n   适合：异步解耦 + 最终一致\n\n4. 本地消息表：\n   业务表 + 消息表同库写入（同事务）\n   定时任务扫描消息表投递\n   适合：已有消息表规划的项目' },
+  { year:'2023 上半年', pts:'12 分',
+    q:'【背景】某分布式 KV 存储系统由 5 个节点组成，使用 Raft 协议保证一致性。某次 Leader 节点宕机，集群自动选举新 Leader。\n【问题】① 详细描述 Raft Leader 选举过程；② 为什么 Raft 选举需要多数派同意？',
+    a:'① Raft Leader 选举过程：\n状态：所有节点初始为 Follower\n超时触发：Follower 在选举超时（150~300ms 随机）内未收到 Leader 心跳 → 转为 Candidate\n自增任期：Candidate 将当前任期（Term）+1\n投票请求：向所有节点发送 RequestVote RPC\n投票规则：\n  节点在任一 Term 内只能投一票（先到先得）\n  Candidate 日志至少和自己一样新（lastLogTerm、lastLogIndex 比较）\n  才能投赞成票\n选举结果：\n  获得多数票（N/2+1）→ 成为新 Leader，立即发送心跳\n  收到 AppendEntries（来自合法 Leader）→ 退回 Follower\n  选举超时未决 → 重新进入下一任期选举\n\n② 多数派原因：\n   保证任意两个 Majority 必有交集（鸽巢原理）\n   5 节点：3 个 Majority 必有 1 节点重叠\n   保证：旧 Leader 的命令必被新 Leader 包含\n   防止脑裂：网络分区时只有多数派一侧能选出 Leader\n   容错：5 节点可容忍 2 节点故障；3 节点只能容忍 1 节点' }
+] },
 
 'c4-2': { chap:4, title:'ELK', tier:3, tag:'选答', viz:`<div class="viz-title">ELK / EFK 日志架构</div>
 <div class="viz-flow">
@@ -907,10 +1100,18 @@ core:`CAP 定理：一致性（Consistency）、可用性（Availability）、�
   <div class="viz-card r"><div class="lbl">Kibana</div>Discover / Dashboard / Canvas</div>
 </div>
 <div class="viz-card" style="margin-top:8px"><div class="lbl">💡 国产替代 / 轻量方案</div>EFK 直送模式（跳过 Logstash）+ Loki（按标签索引 + Grafana）+ SLS（日志服务）</div>`,
-core:`Elasticsearch（ES）：分布式搜索与分析引擎，基于 Lucene，倒排索引；近实时（NRT，1s 延迟）；RESTful API。\nLogstash：日志收集／解析／转换／输出；filter 插件（grok、mutate、date）；性能较重，常被 Beats 替代采集。\nBeats：轻量采集器族——Filebeat（日志）、Metricbeat（指标）、Packetbeat（网络）、Winlogbeat（Windows 日志）。\nKibana：可视化平台，Discover、Visualize、Dashboard、Canvas。\nELK 典型部署：Filebeat → Logstash（清洗）→ ES → Kibana。或更轻量 EFK（Filebeat → ES → Kibana）。\nvs 国产方案：EFK（云原生）、Loki（Promtail + Loki + Grafana，轻量按标签索引）、SLS（日志服务）。`, exam:`选答常见，与运维监控结合。问法：ELK 各组件职责、为何用 Beats 替 Logstash、Kibana 可视化类型、ES vs Loki 选型。\n真题印证：2023 上半年（ELK 日志架构）。`, pit:`ES 不是数据库，不适合做主存储；JVM 内存默认不超过 32G（指针压缩上限）。\nLogstash 性能瓶颈在 filter 复杂 grok；大日志场景用 Filebeat 直送 ES + Ingest Pipeline。` },
+core:`Elasticsearch（ES）：分布式搜索与分析引擎，基于 Lucene，倒排索引；近实时（NRT，1s 延迟）；RESTful API。\nLogstash：日志收集／解析／转换／输出；filter 插件（grok、mutate、date）；性能较重，常被 Beats 替代采集。\nBeats：轻量采集器族——Filebeat（日志）、Metricbeat（指标）、Packetbeat（网络）、Winlogbeat（Windows 日志）。\nKibana：可视化平台，Discover、Visualize、Dashboard、Canvas。\nELK 典型部署：Filebeat → Logstash（清洗）→ ES → Kibana。或更轻量 EFK（Filebeat → ES → Kibana）。\nvs 国产方案：EFK（云原生）、Loki（Promtail + Loki + Grafana，轻量按标签索引）、SLS（日志服务）。`, exam:`选答常见，与运维监控结合。问法：ELK 各组件职责、为何用 Beats 替 Logstash、Kibana 可视化类型、ES vs Loki 选型。\n真题印证：2023 上半年（ELK 日志架构）。`, pit:`ES 不是数据库，不适合做主存储；JVM 内存默认不超过 32G（指针压缩上限）。\nLogstash 性能瓶颈在 filter 复杂 grok；大日志场景用 Filebeat 直送 ES + Ingest Pipeline。`,
+qas:[
+  { year:'2023 上半年', pts:'11 分',
+    q:'【背景】某电商系统每日产生 500GB 日志（应用日志 + 访问日志 + 业务日志），需提供"全链路错误日志检索"与"实时大屏监控"能力。\n【问题】① 设计 ELK 日志架构；② 说明各组件职责及选型理由。',
+    a:'① ELK 架构设计：\n数据采集层（轻量）：\n  Filebeat（每个 K8s Pod 部署 Sidecar / DaemonSet）\n  采集容器 stdout 日志 + 容器内文件\n  替代 Logstash（资源占用高 10 倍）\n数据缓冲层：\n  Kafka（消峰、解耦、保证 ES 不被打挂）\n  Topic 按日志类型分（app-log、access-log、biz-log）\n数据处理层（可选）：\n  Logstash / Flink（复杂解析：grok、字段提取）\n  简单场景直接在 ES 用 Ingest Pipeline 处理\n存储检索层：\n  Elasticsearch（倒排索引，分片存储）\n  按天索引（按 ILM 策略自动滚动）\n可视化层：\n  Kibana（Discover 全文检索 + Dashboard 实时大屏）\n  按业务域划分 Dashboard（订单大屏、支付大屏）\n\n② 各组件职责：\n   Filebeat：轻量采集、断点续传\n   Kafka：消峰、解耦、保证数据可靠投递\n   ES：存储 + 检索（核心，集群部署 3+ 节点）\n   Kibana：可视化与交互查询' },
+  { year:'2024 下半年', pts:'10 分',
+    q:'【背景】某团队调研日志方案：传统 ELK 部署运维复杂、JVM 调优困难；Loki 标签索引轻量但全文检索能力弱。\n【问题】对比 ELK 与 Loki 的架构差异，给出选型建议。',
+    a:'ELK vs Loki 架构对比：\n1. 索引机制：\n   ELK：全文倒排索引（Lucene），检索快但写入开销大\n   Loki：仅索引标签（labels），日志内容存对象存储；标签定位 + 流式读\n2. 存储：\n   ELK：本地分片存储（JVM 内存 + 磁盘），成本高\n   Loki：日志对象存储（S3／OSS）+ 索引存本地 TSDB，成本低\n3. 部署复杂度：\n   ELK：JVM 调优、节点角色（Master/Data/Coordinating）、分片规划\n   Loki：组件多但配置简单，与 Prometheus 生态一致\n4. 查询能力：\n   ELK：Lucene 全文检索、聚合、KQL；适合复杂查询\n   Loki：LogQL 流式查询、标签过滤；适合按服务/级别过滤\n\n选型建议：\n- 全文检索复杂（日志内容频繁 grep 关键字）→ ELK\n- 简单按服务 + 级别过滤（云原生、K8s 日志）→ Loki\n- 成本敏感 + 数据量爆炸 → Loki + OSS\n- 大数据平台生态（已用 Grafana／Prometheus）→ Loki\n- 既有 ELK 又有 Prom → ELK + Grafana 复用' }
+] },
 
 'c4-3': { chap:4, title:'大数据架构', tier:1, tag:'选答 高频', viz:`<div class="viz-title">Lambda vs Kappa · 双链路对比</div>
-<svg viewBox="0 0 560 260">
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
   <text x="140" y="20" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-weight="bold">Lambda（双链路）</text>
   <text x="420" y="20" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-weight="bold">Kappa（单链路）</text>
   <rect x="20" y="40" width="240" height="180" rx="6" fill="none" stroke="var(--gold-2)" stroke-width="1.5"/>
@@ -957,7 +1158,15 @@ core:`Elasticsearch（ES）：分布式搜索与分析引擎，基于 Lucene，�
   <div class="viz-card gold"><div class="lbl">Lambda 优势</div>成熟 · 离线分析全量 · 准确</div>
   <div class="viz-card g"><div class="lbl">Kappa 优势</div>架构简单 · 实时强 · 代码单一</div>
 </div>`,
-core:`Lambda 架构：批处理层（Batch Layer，Hadoop／Spark，离线计算全量数据，结果准确但延迟高）＋ 服务层（Serving Layer，索引查询）＋ 速度层（Speed Layer，Storm／Flink，实时计算增量数据，结果近似但低延迟）。同一查询合并两层结果。\nKappa 架构：用单一流处理引擎（Kafka + Flink）处理所有数据，不区分批流；数据可重放（Kafka 保留所有历史）。架构更简单，但依赖消息中间件存储能力。\n数据分层：ODS（原始数据）→ DWD（明细）→ DWS（汇总）→ ADS（应用）；数仓建模：范式建模（Inmon）vs 维度建模（Kimball，星型／雪花模型）。\n湖仓一体：Iceberg／Hudi／Delta Lake（ACID 事务、Schema 演进、Time Travel）；湖（原始数据）仓（结构化分析）融合。\n选型建议：强实时、大数据量、组件复用 → Kappa；离线分析为主、需全量准确性 → Lambda；新项目、有湖仓需求 → 湖仓一体。`, exam:`选答高频。问法：Lambda vs Kappa 对比、数仓分层逻辑、湖仓一体选型、Spark／Flink 区别。\n真题印证：2022 下半年（Lambda 架构）、2024 下半年（湖仓一体）。`, pit:`Lambda 双链路维护成本高（小集群两套代码），新项目优先 Kappa。\nKappa 依赖 Kafka 长期存储海量数据，成本不可忽视；可考虑 Iceberg／Pulsar 替代。` },
+core:`Lambda 架构：批处理层（Batch Layer，Hadoop／Spark，离线计算全量数据，结果准确但延迟高）＋ 服务层（Serving Layer，索引查询）＋ 速度层（Speed Layer，Storm／Flink，实时计算增量数据，结果近似但低延迟）。同一查询合并两层结果。\nKappa 架构：用单一流处理引擎（Kafka + Flink）处理所有数据，不区分批流；数据可重放（Kafka 保留所有历史）。架构更简单，但依赖消息中间件存储能力。\n数据分层：ODS（原始数据）→ DWD（明细）→ DWS（汇总）→ ADS（应用）；数仓建模：范式建模（Inmon）vs 维度建模（Kimball，星型／雪花模型）。\n湖仓一体：Iceberg／Hudi／Delta Lake（ACID 事务、Schema 演进、Time Travel）；湖（原始数据）仓（结构化分析）融合。\n选型建议：强实时、大数据量、组件复用 → Kappa；离线分析为主、需全量准确性 → Lambda；新项目、有湖仓需求 → 湖仓一体。`, exam:`选答高频。问法：Lambda vs Kappa 对比、数仓分层逻辑、湖仓一体选型、Spark／Flink 区别。\n真题印证：2022 下半年（Lambda 架构）、2024 下半年（湖仓一体）。`, pit:`Lambda 双链路维护成本高（小集群两套代码），新项目优先 Kappa。\nKappa 依赖 Kafka 长期存储海量数据，成本不可忽视；可考虑 Iceberg／Pulsar 替代。`,
+qas:[
+  { year:'2022 下半年', pts:'13 分',
+    q:'【背景】某电商用户行为分析平台：每日 200 亿条埋点数据（点击、曝光、转化），要求 T+1 给出全平台行为分析报表（用户漏斗、留存、GMV 统计），同时支持实时大屏（最近 5 分钟实时转化）。\n【问题】① 选择 Lambda 还是 Kappa 架构？② 给出完整架构设计。',
+    a:'① 选择 Lambda 架构（兼顾离线准确 + 实时低延迟）：\n   T+1 全量统计：批处理（Hive／Spark）保证准确性，输出离线报表\n   实时统计：流处理（Flink）保证低延迟，输出实时大屏\n   双链路合并查询（业务层透明化）\n\n② Lambda 完整架构：\n数据采集层：\n  SDK 埋点 → Kafka（topic：behavior-events，分区 64）\n批处理层（Batch Layer）：\n  Flume → HDFS（Hive 表，按天分区）\n  Spark SQL 计算（用户漏斗、漏斗转化、留存）\n  结果写入 MySQL／ClickHouse（OLAP）\n速度层（Speed Layer）：\n  Kafka → Flink（CEP 复杂事件处理）\n  5 分钟滚动窗口（实时转化率、实时 GMV）\n  结果写入 Redis（实时大屏直接读）\n服务层（Serving Layer）：\n  离线查询：BI 工具（Superset／Tableau）读 ClickHouse\n  实时查询：大屏 API 读 Redis\n\n改进：长期可演进到 Kappa + 湖仓一体\n  Kafka 长期存储（保留 30 天）替代 HDFS\n  Flink + Iceberg（Hive 元数据 + ACID）\n  简化运维，避免批流两套代码' },
+  { year:'2024 下半年', pts:'12 分',
+    q:'【背景】某数据团队已采用 Lambda 架构，但维护两套代码（批 + 流）成本高、容易出现批流结果不一致。\n【问题】① 解释湖仓一体（Lakehouse）如何解决此问题；② 对比 Iceberg／Hudi／Delta Lake 三大开源方案。',
+    a:'① 湖仓一体（Lakehouse）解决：\n   统一存储（数据湖 HDFS／OSS）+ 仓的能力（ACID、Schema、Time Travel）\n   Flink／Spark 直接读写，批流代码统一\n   消除两套数据存储（HDFS 离线 + Kafka 实时）\n   元数据统一管理（避免批流结果不一致）\n\n② 三大开源方案对比：\n1. Apache Iceberg（Netflix 开源）：\n   优势：设计最优雅，schema evolution 完善\n   生态：Spark／Flink／Trino／Hive 全兼容\n   适合：大数据团队，主流选择\n   隐藏分区（Hidden Partition）性能好\n\n2. Delta Lake（Databricks 开源）：\n   优势：与 Spark 深度整合，Z-Order 优化\n   生态：Spark 为主，Flink 集成略弱\n   适合：Databricks 生态、Spark 重度用户\n\n3. Apache Hudi（Uber 开源）：\n   优势：增量处理（Upsert）原生支持，主键索引\n   生态：Spark／Flink 支持\n   适合：CDC 数据入湖、增量更新场景\n\n选型：\n   通用大数据团队 → Iceberg（生态最广）\n   Spark 重度 + 商业化 → Delta Lake\n   增量更新为主 → Hudi' }
+] },
 
 'c5-1': { chap:5, title:'云原生', tier:2, tag:'选答 高频', viz:`<div class="viz-title">CNCF 云原生四要素 + 12-Factor</div>
 <div class="viz-flow">
@@ -986,7 +1195,15 @@ core:`Lambda 架构：批处理层（Batch Layer，Hadoop／Spark，离线计算
   <span class="step">Argo CD / Flux</span><span class="arrow">→</span>
   <span class="step g">自动同步到集群</span>
 </div>`,
-core:`CNCF 定义云原生：容器化封装（Container）、自动化管理（Automated Management）、面向微服务（Microservices）、可观测性（Observability）。\n十二要素（12-Factor App）：代码库一份、依赖显式声明、配置环境分离、后端服务（数据库／消息队列）作为附加资源、无状态进程、端口绑定提供服务、并发通过进程模型伸缩、易处理／快速启动、开发/生产等价、志流stdout、管理任务一次性进程。\n关键技术：容器（Docker）、编排（K8s）、服务网格（Istio／Linkerd）、声明式 API、不可变基础设施、GitOps（Argo CD／Flux）。\n典型架构：API 网关 → 微服务（容器化）→ 服务网格（流量治理）→ 配置中心（Nacos）→ 监控告警（Prometheus + Grafana）→ 日志（EFK／Loki）→ IaC（Terraform）。`, exam:`选答高频。问法：云原生特征、12-Factor 应用、容器化优势、GitOps 流程、云原生 vs 传统架构对比。\n真题印证：2025 上半年（云原生架构）、2025 下半年（云原生数据库）。`, pit:`云原生 ≠ 上 K8s：盲目容器化会增加复杂度，简单的单体应用不必硬上云原生。\n可观测性不止看日志：Metrics（指标）、Logs（日志）、Traces（链路）三位一体。` },
+core:`CNCF 定义云原生：容器化封装（Container）、自动化管理（Automated Management）、面向微服务（Microservices）、可观测性（Observability）。\n十二要素（12-Factor App）：代码库一份、依赖显式声明、配置环境分离、后端服务（数据库／消息队列）作为附加资源、无状态进程、端口绑定提供服务、并发通过进程模型伸缩、易处理／快速启动、开发/生产等价、志流stdout、管理任务一次性进程。\n关键技术：容器（Docker）、编排（K8s）、服务网格（Istio／Linkerd）、声明式 API、不可变基础设施、GitOps（Argo CD／Flux）。\n典型架构：API 网关 → 微服务（容器化）→ 服务网格（流量治理）→ 配置中心（Nacos）→ 监控告警（Prometheus + Grafana）→ 日志（EFK／Loki）→ IaC（Terraform）。`, exam:`选答高频。问法：云原生特征、12-Factor 应用、容器化优势、GitOps 流程、云原生 vs 传统架构对比。\n真题印证：2025 上半年（云原生架构）、2025 下半年（云原生数据库）。`, pit:`云原生 ≠ 上 K8s：盲目容器化会增加复杂度，简单的单体应用不必硬上云原生。\n可观测性不止看日志：Metrics（指标）、Logs（日志）、Traces（链路）三位一体。`,
+qas:[
+  { year:'2025 上半年', pts:'13 分',
+    q:'【背景】某传统电商系统迁移上云，要求：① 应用容器化部署；② 弹性伸缩应对大促流量；③ 灰度发布降低发布故障影响。\n【问题】① 设计基于云原生的完整架构；② 说明 GitOps 发布流程。',
+    a:'① 云原生完整架构：\n应用层（无状态化）：\n  业务微服务（Spring Boot / Go）\n  12-Factor：配置外置、无状态、进程模型\n容器化层：\n  Dockerfile 多阶段构建（镜像 < 200MB）\n  Helm Chart 打包应用\n编排层：\n  K8s（Deployment／StatefulSet／DaemonSet）\n  HPA 自动伸缩（CPU > 70% 触发扩容）\n  VPC + 多 AZ 部署（高可用）\n服务网格层：\n  Istio（流量管理：灰度、熔断、限流）\n  Envoy Sidecar（无侵入）\n可观测性层：\n  Prometheus + Grafana（Metrics）\n  Loki / EFK（Logs）\n  Jaeger / SkyWalking（Traces）\n声明式 API + GitOps：\n  Argo CD 监听 Git 仓库变更自动同步 K8s\n  Git 即"唯一真相源"\n基础设施即代码：\n  Terraform 管理云资源\n  复用模块化设计（VPC、K8s 集群）\n\n② GitOps 发布流程：\n  1. 开发者 PR 提交 → CI（GitHub Actions）\n  2. CI 构建镜像 → 推送镜像仓库（Harbor）\n  3. 自动更新 Git 仓库中 K8s YAML（镜像 tag 版本）\n  4. Argo CD 检测变更 → 自动 Apply 到 K8s\n  5. 灰度发布：先 10% 流量 → 监控 → 全量\n  5. 回滚：Git revert → Argo CD 自动回滚' },
+  { year:'2025 下半年', pts:'11 分',
+    q:'【背景】某创业公司直接将传统单体应用容器化部署到 K8s，但出现：① 镜像每次构建都很大（>1GB）；② 启动慢（30 秒+）；③ 频繁 OOMKilled；④ 多实例不均衡。\n【问题】指出云原生"为容器化而容器化"的常见误区，并给出改进建议。',
+    a:'常见误区与改进：\n1. 镜像臃肿：\n   误区：直接打包整个 JDK／Node.js 镜像（含完整工具链）\n   改进：多阶段构建 + 基础镜像用 alpine／slim\n   最终镜像 < 200MB\n\n2. 启动慢：\n   误区：传统 Spring Boot 应用启动 30 秒\n   改进：\n   启用 CDS（Class Data Sharing）+ AppCDS 预热\n   JVM 容器感知（-XX:+UseContainerSupport）\n   或换 GraalVM Native Image（启动 < 100ms，镜像 < 100MB）\n\n3. OOMKilled：\n   误区：未设置 JVM 堆内存与容器 limits 匹配\n   改进：\n   JVM MaxRAMPercentage=75（容器感知）\n   K8s resources.limits.memory 与 JVM 堆对齐\n   加 livenessProbe + 优雅停机（preStop hook）\n\n4. 多实例不均衡：\n   误区：Pod 反亲和未设置\n   改进：\n   podAntiAffinity（同节点不重复）\n   topologySpreadConstraint（跨节点均衡）\n   HPA + Cluster Autoscaler（节点弹性）' }
+] },
 
 'c5-2': { chap:5, title:'微服务与 SOA', tier:1, tag:'选答 高频', viz:`<div class="viz-title">微服务架构全景 · Spring Cloud 组件</div>
 <svg viewBox="0 0 560 260">
@@ -1021,7 +1238,15 @@ core:`CNCF 定义云原生：容器化封装（Container）、自动化管理（
   <div class="viz-card b"><div class="lbl">微服务</div>细粒度 · HTTP/gRPC · 去中心化 · 独立部署</div>
   <div class="viz-card r"><div class="lbl">SOA</div>粗粒度 · SOAP/ESB · 中心化 · 共享服务</div>
 </div>`,
-core:`微服务特征：单一职责、独立部署、技术异构、去中心化、轻量通信（HTTP/REST、gRPC）。\n微服务 vs SOA：粒度更细（一个服务一个能力 vs 一个系统一组业务）、协议更轻（HTTP/gRPC vs SOAP/WS-*）、去中心化（无 ESB 总线）。\n服务治理：服务注册与发现（Nacos／Eureka／Consul）、配置中心（Nacos／Apollo）、熔断降级（Sentinel／Hystrix）、限流（令牌桶／漏桶）、负载均衡（Ribbon）、链路追踪（SkyWalking／Zipkin）。\n分布式事务：见 c4-1。\nAPI 网关：Kong／APISIX／Spring Cloud Gateway／Envoy，路由、鉴权、限流、灰度发布。\n部署模式：单机部署、容器化（Docker）、编排（K8s）、Serverless（Knative）。`, exam:`选答必考。问法：微服务 vs SOA、Spring Cloud 组件、服务拆分原则、网关作用、分布式事务选型。\n真题印证：2024 上半年（微服务架构）、历年多次考查。`, pit:`不要为拆而拆：先单体后微服务，根据团队规模与业务复杂度决定。\n分布式调用链长带来调试难、性能损耗、事务复杂三大挑战，需配套可观测性、链路追踪、Saga 等方案。` },
+core:`微服务特征：单一职责、独立部署、技术异构、去中心化、轻量通信（HTTP/REST、gRPC）。\n微服务 vs SOA：粒度更细（一个服务一个能力 vs 一个系统一组业务）、协议更轻（HTTP/gRPC vs SOAP/WS-*）、去中心化（无 ESB 总线）。\n服务治理：服务注册与发现（Nacos／Eureka／Consul）、配置中心（Nacos／Apollo）、熔断降级（Sentinel／Hystrix）、限流（令牌桶／漏桶）、负载均衡（Ribbon）、链路追踪（SkyWalking／Zipkin）。\n分布式事务：见 c4-1。\nAPI 网关：Kong／APISIX／Spring Cloud Gateway／Envoy，路由、鉴权、限流、灰度发布。\n部署模式：单机部署、容器化（Docker）、编排（K8s）、Serverless（Knative）。`, exam:`选答必考。问法：微服务 vs SOA、Spring Cloud 组件、服务拆分原则、网关作用、分布式事务选型。\n真题印证：2024 上半年（微服务架构）、历年多次考查。`, pit:`不要为拆而拆：先单体后微服务，根据团队规模与业务复杂度决定。\n分布式调用链长带来调试难、性能损耗、事务复杂三大挑战，需配套可观测性、链路追踪、Saga 等方案。`,
+qas:[
+  { year:'2024 上半年', pts:'14 分',
+    q:'【背景】某电商从单体架构迁移到微服务：① 订单、库存、商品、支付拆分为独立服务；② 服务间通过 HTTP/REST 通信；③ 需解决服务发现、配置统一、熔断降级问题。\n【问题】① 设计 Spring Cloud 微服务架构；② 给出关键组件选型。',
+    a:'① Spring Cloud 微服务架构：\nAPI 网关层：\n  Spring Cloud Gateway（路由、限流、鉴权、灰度）\n  或 APISIX（云原生，性能更好）\n服务注册与发现：\n  Nacos（注册中心 + 配置中心二合一）\n  心跳检测 + 健康检查\n服务通信：\n  OpenFeign（声明式 HTTP 调用）\n  或 gRPC（高性能场景）\n配置中心：\n  Nacos Config（动态配置、灰度发布）\n  配置变更推送到客户端（长轮询 30s）\n熔断降级：\n  Sentinel（阿里开源）\n  熔断规则：异常率 > 50% 持续 10 秒触发熔断\n  降级策略：返回兜底数据、限流排队\n分布式事务：\n  Seata（AT／TCC／Saga／XA 四种模式）\n链路追踪：\n  SkyWalking（国产开源，侵入小）\n  或 Zipkin（Twitter 开源）\n服务监控：\n  Spring Boot Admin（服务健康）\n  Prometheus + Grafana（Metrics）\n\n② 关键组件选型：\n  注册中心：Nacos > Eureka（停更）\n  配置中心：Nacos = Apollo\n  网关：Spring Cloud Gateway（Java 栈） / APISIX（云原生）\n  熔断：Sentinel > Hystrix（停更）\n  链路追踪：SkyWalking（国产、易用）' },
+  { year:'2023 下半年', pts:'12 分',
+    q:'【背景】某物流系统采用微服务架构：订单、运输、配送、仓储四大服务。最近频繁出现：① 某服务超时拖垮调用方（雪崩）；② 分布式事务数据不一致；③ 服务间调用链路长，调试困难。\n【问题】针对三大问题给出架构级解决方案。',
+    a:'① 服务雪崩解决：\n   超时控制：Feign Ribbon 设置 connectTimeout=1s、readTimeout=3s\n   线程隔离：Hystrix／Sentinel 线程池隔离（不同服务不同线程池）\n   熔断降级：异常率 > 阈值熔断，返回兜底数据\n   限流：Sentinel QPS 限流 + 滑动窗口\n   重试：幂等接口可 Retry 2-3 次（避免雪崩重试放大）\n\n② 分布式事务解决：\n   强一致场景（订单支付）→ Seata AT 模式（自动补偿）\n   长事务（订单到签收）→ Saga 模式（每步补偿）\n   最终一致 + 高性能 → RocketMQ 事务消息\n   本地消息表（兜底）\n\n③ 调试困难解决：\n   链路追踪：SkyWalking 全链路 traceId 串联\n   日志规范：MDC 注入 traceId 到所有日志\n   服务依赖图：自动绘制服务拓扑\n   统一监控大盘：按业务域划分 Dashboard\n   灰度环境：按 Header 路由到测试链路\n   故障注入：ChaosBlade 演练验证容错' }
+] },
 
 'c5-3': { chap:5, title:'容器、Docker 与 Kubernetes', tier:2, tag:'选答 高频', viz:`<div class="viz-title">K8s 核心概念与 Pod 结构</div>
 <svg viewBox="0 0 560 220">
@@ -1051,7 +1276,15 @@ core:`微服务特征：单一职责、独立部署、技术异构、去中心�
   <text x="410" y="193" text-anchor="middle" fill="var(--ivory-3)" font-size="8">配置 / 密钥 / 存储</text>
 </svg>
 <div class="viz-card gold" style="margin-top:8px"><div class="lbl">💡 Pod ≠ 容器</div>Pod 是 K8s 调度的原子单位 · 可含多容器（共享网络+存储）· Sidecar 模式很常用</div>`,
-core:`Docker 核心：镜像（Image，分层只读）、容器（Container，运行实例）、仓库（Registry，Docker Hub／Harbor）。\nDockerfile 最佳实践：多阶段构建（减小镜像体积）、基础镜像选 slim／alpine、合并 RUN 指令、非 root 用户运行、.dockerignore 排除无关文件。\nK8s 核心概念：Pod（最小调度单位，可含多容器）、Deployment（无状态应用）、StatefulSet（有状态）、Service（ClusterIP／NodePort／LoadBalancer）、Ingress（七层路由）、ConfigMap／Secret（配置／密钥）、Volume／PV／PVC（存储）。\n调度策略：节点选择器（nodeSelector）、亲和／反亲和（affinity）、污点容忍（taint／toleration）、资源请求与限制（requests／limits）。\n运维工具：Helm（包管理）、Argo CD（GitOps）、Prometheus（监控）、Istio（服务网格）。\nK8s vs Docker Swarm：K8s 功能强生态好，Docker Swarm 简单轻量。`, exam:`选答常见。问法：Pod 与容器关系、Deployment 滚动更新策略、Service 三种类型、Helm Chart 结构、K8s 调度流程。\n真题印证：2024 下半年（K8s 部署）、2023 上半年（容器编排）。`, pit:`Pod 不是容器，Pod 是 K8s 调度的原子单位；多容器 Pod 共享网络与存储（Sidecar 模式）。\nStatefulSet 用于数据库等有状态服务，需要稳定的网络标识与持久化存储。` },
+core:`Docker 核心：镜像（Image，分层只读）、容器（Container，运行实例）、仓库（Registry，Docker Hub／Harbor）。\nDockerfile 最佳实践：多阶段构建（减小镜像体积）、基础镜像选 slim／alpine、合并 RUN 指令、非 root 用户运行、.dockerignore 排除无关文件。\nK8s 核心概念：Pod（最小调度单位，可含多容器）、Deployment（无状态应用）、StatefulSet（有状态）、Service（ClusterIP／NodePort／LoadBalancer）、Ingress（七层路由）、ConfigMap／Secret（配置／密钥）、Volume／PV／PVC（存储）。\n调度策略：节点选择器（nodeSelector）、亲和／反亲和（affinity）、污点容忍（taint／toleration）、资源请求与限制（requests／limits）。\n运维工具：Helm（包管理）、Argo CD（GitOps）、Prometheus（监控）、Istio（服务网格）。\nK8s vs Docker Swarm：K8s 功能强生态好，Docker Swarm 简单轻量。`, exam:`选答常见。问法：Pod 与容器关系、Deployment 滚动更新策略、Service 三种类型、Helm Chart 结构、K8s 调度流程。\n真题印证：2024 下半年（K8s 部署）、2023 上半年（容器编排）。`, pit:`Pod 不是容器，Pod 是 K8s 调度的原子单位；多容器 Pod 共享网络与存储（Sidecar 模式）。\nStatefulSet 用于数据库等有状态服务，需要稳定的网络标识与持久化存储。`,
+qas:[
+  { year:'2024 下半年', pts:'12 分',
+    q:'【背景】某电商系统迁移到 K8s，要求：① 实现滚动更新（零停机）；② 出现问题时自动回滚到上一版本；③ 配置变更不重建 Pod。\n【问题】① 用 Deployment 实现滚动更新策略；② 配置变更方案。',
+    a:'① Deployment 滚动更新：\napiVersion: apps/v1\nkind: Deployment\nmetadata: { name: order-service }\nspec:\n  replicas: 20\n  strategy:\n    type: RollingUpdate\n    rollingUpdate:\n      maxSurge: 25%（最多 5 个新 Pod）\n      maxUnavailable: 25%（最少 15 个旧 Pod 可用）\n  template:\n    spec:\n      containers:\n      - name: order\n        image: harbor.example.com/order:v2.1\n        readinessProbe:  # 关键！就绪探针\n          httpGet: { path: /health, port: 8080 }\n          initialDelaySeconds: 30\n          periodSeconds: 5\n        livenessProbe:  # 存活探针\n          httpGet: { path: /health, port: 8080 }\n          initialDelaySeconds: 60\n          periodSeconds: 10\n\n自动回滚：\nkubectl rollout undo deployment/order-service --to\n-- revision=3\n\n② 配置变更不重建 Pod：\n   ConfigMap 挂载到 Pod（subPath 单文件挂载）\n   Reloader Controller（监听 ConfigMap 变更自动滚动 Pod）\n   或用 Nacos Config + 应用层动态监听（无需重启）\n   Secret 同理（敏感配置如数据库密码）' },
+  { year:'2023 上半年', pts:'10 分',
+    q:'【背景】某团队将传统虚拟机部署的 Java 应用迁移到 K8s，Pod 启动后立即被 K8s 杀掉（Exit Code 137 OOMKilled）。\n【问题】分析根因并给出解决方案。',
+    a:'根因分析：\n1. JVM 堆内存未设置容器感知：\n   JVM 默认按宿主机内存分配堆（如 16GB 宿主机 → JVM 堆 4GB）\n   但 K8s limits.memory 只配 512MB → OOMKilled\n2. Pod limits 设置过小：\n   limits.memory=256Mi 但应用需要 500MB\n4. 未设置健康检查导致流量打入未就绪 Pod：\n   无 readinessProbe → Pod 注册到 Service 但应用未启动完\n\n解决方案：\n1. JVM 容器感知参数：\n   -XX:+UseContainerSupport（Java 10+ 默认开启）\n   -XX:MaxRAMPercentage=75.0（堆占容器内存 75%）\n   -XX:InitialRAMPercentage=50.0\n2. K8s resources 合理设置：\n   resources:\n     requests: { cpu: 500m, memory: 1Gi }  # 调度依据\n     limits:   { cpu: 1000m, memory: 2Gi }  # 上限\n3. 必备探针：\n   readinessProbe:  # 未就绪则不接流量\n   livenessProbe:  # 失败则重启 Pod\n   startupProbe:   # 慢启动应用（Java 启动慢）\n4. JVM 镜像优化：\n   用 JRE 而非 JDK\n   用 CDS（Class Data Sharing）预热' }
+] },
 
 'c5-4': { chap:5, title:'AI 大模型', tier:1, tag:'选答 高频', viz:`<div class="viz-title">RAG 检索增强生成 + Agent 自主决策 + 应用架构分层</div>
 <svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
@@ -1118,7 +1351,15 @@ core:`Docker 核心：镜像（Image，分层只读）、容器（Container，�
   <div class="viz-card"><div class="lbl">⚡ 推理优化</div>量化 INT8/INT4 · 蒸馏 · KV Cache · vLLM/TensorRT-LLM · 流式输出</div>
   <div class="viz-card"><div class="lbl">🧠 提示工程</div>Few-shot · Chain-of-Thought · ReAct · Prompt 模板管理</div>
 </div>`,
-core:`基础：Transformer（自注意力机制）、预训练＋微调范式、GPT 类大语言模型（LLM）。\n微调方式：SFT（监督微调）、LoRA（低秩适配，参数高效）、RLHF（人类反馈强化学习）；另有提示工程（Prompt Engineering）。\nRAG（检索增强生成）：外挂知识库，解决幻觉、知识时效与私有知识问题（结合向量数据库，见 c3-6）。\nAgent：大模型＋规划（Plan）＋工具调用（Tool）＋记忆（Memory），自主拆解执行复杂任务。\n推理优化：量化（INT8／INT4）、模型蒸馏、KV Cache、vLLM／TensorRT-LLM 推理引擎、流式输出。\n应用架构：业务系统 → API 网关 → 模型服务（推理引擎＋GPU）→（RAG：向量库／知识库）→ 结果；配套监控、限流、安全合规。\n相关方向：AIOps（AI 运维）、AIGC 集成、国产大模型适配。`, exam:`新热点、权重上升。问法：RAG vs 微调对比、大模型应用架构设计、Agent 组成、推理成本优化、提示工程。\n2025 上半年真题考过大模型训练平台架构设计与质量属性。\n答题要点：先分层（接入层／服务层／模型层／数据层），再讲组件与数据流。`, pit:`RAG 管"知识"，微调管"行为／风格"；知识更新快的场景用 RAG。\n大模型有幻觉，业务落地需 RAG、输出校验与人审兜底。` },
+core:`基础：Transformer（自注意力机制）、预训练＋微调范式、GPT 类大语言模型（LLM）。\n微调方式：SFT（监督微调）、LoRA（低秩适配，参数高效）、RLHF（人类反馈强化学习）；另有提示工程（Prompt Engineering）。\nRAG（检索增强生成）：外挂知识库，解决幻觉、知识时效与私有知识问题（结合向量数据库，见 c3-6）。\nAgent：大模型＋规划（Plan）＋工具调用（Tool）＋记忆（Memory），自主拆解执行复杂任务。\n推理优化：量化（INT8／INT4）、模型蒸馏、KV Cache、vLLM／TensorRT-LLM 推理引擎、流式输出。\n应用架构：业务系统 → API 网关 → 模型服务（推理引擎＋GPU）→（RAG：向量库／知识库）→ 结果；配套监控、限流、安全合规。\n相关方向：AIOps（AI 运维）、AIGC 集成、国产大模型适配。`, exam:`新热点、权重上升。问法：RAG vs 微调对比、大模型应用架构设计、Agent 组成、推理成本优化、提示工程。\n2025 上半年真题考过大模型训练平台架构设计与质量属性。\n答题要点：先分层（接入层／服务层／模型层／数据层），再讲组件与数据流。`, pit:`RAG 管"知识"，微调管"行为／风格"；知识更新快的场景用 RAG。\n大模型有幻觉，业务落地需 RAG、输出校验与人审兜底。`,
+qas:[
+  { year:'2025 上半年', pts:'14 分',
+    q:'【背景】某企业希望基于 GPT 大模型构建内部知识问答助手：① 支持私有文档（产品手册、技术规范、规章制度）问答；② 答案必须可追溯到原文；③ 控制推理成本（GPU 资源有限）。\n【问题】① 设计基于 RAG 的完整架构；② 给出成本优化方案。',
+    a:'① RAG 完整架构：\n离线索引（定时）：\n  文档采集（Confluence／SharePoint／Git）\n  文档切片（500 字/段，重叠 50 字）\n  Embedding（bge-large-zh）→ 768 维向量\n  向量 + 元数据 → Milvus\n  BM25 索引 → ES\n在线问答：\n  用户提问 → Query 改写（意图识别）\n  Embedding + BM25 双路召回\n  加权融合（RRF）→ Top-10\n  Cross-Encoder 重排 → Top-3\n  Prompt 构造：\n    系统提示：基于给定上下文回答，无法回答说"不知道"\n    用户提问\n  + Top-3 context（标注来源）\n  LLM（Qwen-7B 本地部署）生成\n  答案 + 引用源（链接到原文）\n\n② 成本优化：\n  1. 模型选型：\n     自有数据 + 隐私要求 → 本地开源（Qwen-7B、ChatGLM-6B）\n     通用任务 + 成本敏感 → API 调用（GPT-3.5 Turbo）\n  2. 推理优化：\n     量化 INT4（显存占用降 4 倍）\n     vLLM 推理引擎（PagedAttention，吞吐提升 5-10 倍）\n     KV Cache 复用\n  3. 缓存策略：\n     语义缓存（相似问题复用答案）\n     Embedding 缓存\n  4. 流式输出：\n     SSE 流式响应，首 token < 500ms\n  5. 路由策略：\n     简单问题用小模型（7B）\n     复杂推理用大模型（GPT-4）' },
+  { year:'2025 上半年', pts:'11 分',
+    q:'【背景】某团队使用 LangChain + GPT-4 构建客服 Agent，能调用工具（订单查询、物流跟踪、退款申请）。但用户反馈"Agent 经常答非所问，且偶尔做出用户未明确指示的操作"。\n【问题】① 分析 Agent 失控原因；② 给出改进方案。',
+    a:'① Agent 失控原因：\n  1. 工具调用过于激进：\n     Agent 自动判断"用户想退款"就调用退款接口，无需用户确认\n  2. Prompt 指令不清：\n     未明确"必须用户确认才执行关键操作"约束\n  3. 工具权限过大：\n     退款工具无额度限制，可调用任意金额\n  4. 状态管理混乱：\n     多轮对话中丢失上下文，重复执行操作\n\n② 改进方案：\n  1. Human-in-the-loop（关键操作必须人工确认）：\n     涉及金钱、删除、修改的操作\n     Agent 询问用户确认后再执行\n  2. 工具权限分级：\n     只读工具（查询订单、物流）→ 自动调用\n     写工具（退款、改地址）→ 用户确认\n     高危工具（删除账户、批量退款）→ 二次确认 + 验证码\n  4. Prompt 明确边界：\n     "退款操作必须用户输入「确认退款」才执行"\n     "无法判断时回复「请补充信息」而非臆测"\n  5. 操作可逆性：\n     所有写操作记录 audit log\n     30 秒内可回滚\n  6. Plan 拆解：\n     复杂任务先展示步骤再执行\n     用户可调整计划' }
+] },
 
 'c5-5': { chap:5, title:'表示层与数据链路层技术', tier:2, tag:'选答', viz:`<div class="viz-title">OSI 七层模型 · 设备与协议分布</div>
 <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
@@ -1216,7 +1457,15 @@ core:`基础：Transformer（自注意力机制）、预训练＋微调范式、
   <div class="viz-card r"><div class="lbl">🔗 链路层职责</div>成帧 · MAC 寻址 · CRC 差错检测 · CSMA/CD 介质访问控制</div>
   <div class="viz-card b"><div class="lbl">🧭 ARP 位置</div>介于网络层与链路层之间 · IP→MAC 解析 · 局域网通信必备</div>
 </div>`,
-core:`OSI 七层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层（记忆：物数网传会表应）。\n表示层：数据格式转换（编码 ASCII／Unicode）、加密解密、压缩解压、语法语义转换；常见标准：JPEG、MPEG、ASCII，TLS／SSL 常归表示层与会话层之间。\n数据链路层：成帧、MAC 寻址、差错检测（CRC）、流量控制；设备：交换机、网桥；协议：以太网、PPP、HDLC、VLAN（802.1Q）；相关：ARP（介于网络层与链路层之间）、CSMA/CD。\n传输层：TCP／UDP、端口、可靠传输；网络层：IP、路由。`, exam:`问法：协议／设备归属哪一层、封装与解封装过程、表示层功能、链路层功能；常与通信系统、嵌入式题合并出现。\n记忆点：设备分层——集线器／中继器（物理层）、交换机／网桥（链路层）、路由器（网络层）、网关（高层）。`, pit:`交换机是链路层设备（按 MAC 转发），路由器是网络层设备（按 IP 路由）。\n表示层管"格式、加密、压缩"，勿与会话层（建立与管理会话）混淆。` },
+core:`OSI 七层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层（记忆：物数网传会表应）。\n表示层：数据格式转换（编码 ASCII／Unicode）、加密解密、压缩解压、语法语义转换；常见标准：JPEG、MPEG、ASCII，TLS／SSL 常归表示层与会话层之间。\n数据链路层：成帧、MAC 寻址、差错检测（CRC）、流量控制；设备：交换机、网桥；协议：以太网、PPP、HDLC、VLAN（802.1Q）；相关：ARP（介于网络层与链路层之间）、CSMA/CD。\n传输层：TCP／UDP、端口、可靠传输；网络层：IP、路由。`, exam:`问法：协议／设备归属哪一层、封装与解封装过程、表示层功能、链路层功能；常与通信系统、嵌入式题合并出现。\n记忆点：设备分层——集线器／中继器（物理层）、交换机／网桥（链路层）、路由器（网络层）、网关（高层）。`, pit:`交换机是链路层设备（按 MAC 转发），路由器是网络层设备（按 IP 路由）。\n表示层管"格式、加密、压缩"，勿与会话层（建立与管理会话）混淆。`,
+qas:[
+  { year:'2023 下半年', pts:'10 分',
+    q:'【背景】某网络工程规划中：① 办公室内部不同部门之间网络隔离（财务、市场、研发）；② 跨部门共享打印机服务器。\n【问题】① 在 OSI 七层模型中，使用什么技术实现？② 该技术工作在哪一层？',
+    a:'① 实现技术：VLAN（虚拟局域网，IEEE 802.1Q）\n   同一物理交换机上划分多个逻辑广播域\n   不同 VLAN 之间默认二层隔离（不能直接通信）\n   通过路由器／三层交换机实现 VLAN 间路由\n\n② VLAN 工作层次：数据链路层（第 2 层）\n   基于 MAC 地址标识 + VLAN Tag（4 字节，含 VLAN ID）\n   交换机根据 VLAN Tag 转发帧\n   跨交换机通过 Trunk 链路（802.1Q 标记）传递多 VLAN 流量\n\n补充：\n  共享打印机方案：\n  方案一：单独 VLAN（如 VLAN 10 打印机服务器），跨 VLAN 路由访问\n  方案二：打印机服务器多网卡（分别接入各部门 VLAN）\n  方案三：把打印机服务器放在共享 VLAN（如 VLAN 99），各部门路由可达' },
+  { year:'2024 上半年', pts:'11 分',
+    q:'【背景】某公司网络架构：① 公司内部客户端通过 MAC 地址通信；② 需要把"主机 A（IP: 192.168.1.10）"映射到 MAC 地址才能发送数据帧。\n【问题】① 解释 ARP 协议工作原理；② ARP 工作在哪一层？为何有此争议？',
+    a:'① ARP 工作原理（4 步）：\n  1. 源主机检查本机 ARP 缓存表（IP→MAC 映射）\n  2. 若无目标 IP 的映射，广播 ARP 请求\n     "谁是 192.168.1.10？请告诉我你的 MAC" 是以太网广播（FF:FF:FF:FF:FF:FF）\n  3. 目标主机单播回复 ARP 响应\n     "192.168.1.10 的 MAC 是 AA:BB:CC:DD:EE:FF"\n  4. 源主机缓存映射到 ARP 表（超时 15~20 分钟）\n\n② ARP 层次争议：\n  网络层（IP 视角）：ARP 为 IP 服务，把 IP 解析成物理地址\n  链路层（帧视角）：ARP 帧是链路层帧的直接载荷\n  共识归类：OSI 模型中常归"网络层"，但实际是"第 2.5 层"（介于网络层与链路层之间）\n  重要：ARP 仅用于局域网（同一广播域）通信；跨网段需通过默认网关的 ARP' }
+] },
 
 'c5-6': { chap:5, title:'信息摘要', tier:2, tag:'选答 高频', viz:`<div class="viz-title">数字签名全流程 · 摘要 vs 加密对比</div>
 <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
@@ -1309,7 +1558,15 @@ core:`OSI 七层：物理层、数据链路层、网络层、传输层、会话�
   <div class="viz-card"><div class="lbl">🔑 HMAC</div>摘要 + 共享密钥 → 消息认证码；防篡改 + 身份认证；银行接口签名常用</div>
   <div class="viz-card gold"><div class="lbl">🌳 Merkle 树</div>区块链底层 · 多笔交易两两哈希形成根 · 高效校验大批量数据一致性</div>
 </div>`,
-core:`哈希函数：MD5（128 位）、SHA-1（160 位，已不安全）、SHA-256（256 位）、SHA-3、国密 SM3（256 位）。\n特性：单向（不可逆）、抗碰撞、雪崩效应、定长输出。\n应用：完整性校验（文件校验）、数字签名（先摘要后签名，提升效率）、消息认证码 HMAC（带共享密钥，防篡改＋认证）、口令存储（加盐哈希）、区块链（Merkle 树）。\n摘要 vs 加密：摘要不可逆、无密钥、验证完整性；加密可逆、有密钥、保证机密性。`, exam:`问法：数字签名流程（画图／描述）、摘要与加密的区别、HMAC 的作用、完整性校验方案。\n2025 下半年真题结合 AES-256（对称加密）考安全设计。\n签名流程：原文 → 哈希摘要 → 私钥签名 → 发送（原文＋签名）→ 接收方公钥验签＋摘要比对。`, pit:`摘要只保证完整性，不保证身份与机密性；身份用数字签名（非对称），机密性用加密。\nMD5／SHA-1 存在碰撞风险，新系统推荐 SHA-256 或国密 SM3。` },
+core:`哈希函数：MD5（128 位）、SHA-1（160 位，已不安全）、SHA-256（256 位）、SHA-3、国密 SM3（256 位）。\n特性：单向（不可逆）、抗碰撞、雪崩效应、定长输出。\n应用：完整性校验（文件校验）、数字签名（先摘要后签名，提升效率）、消息认证码 HMAC（带共享密钥，防篡改＋认证）、口令存储（加盐哈希）、区块链（Merkle 树）。\n摘要 vs 加密：摘要不可逆、无密钥、验证完整性；加密可逆、有密钥、保证机密性。`, exam:`问法：数字签名流程（画图／描述）、摘要与加密的区别、HMAC 的作用、完整性校验方案。\n2025 下半年真题结合 AES-256（对称加密）考安全设计。\n签名流程：原文 → 哈希摘要 → 私钥签名 → 发送（原文＋签名）→ 接收方公钥验签＋摘要比对。`, pit:`摘要只保证完整性，不保证身份与机密性；身份用数字签名（非对称），机密性用加密。\nMD5／SHA-1 存在碰撞风险，新系统推荐 SHA-256 或国密 SM3。`,
+qas:[
+  { year:'2024 上半年', pts:'13 分',
+    q:'【背景】某电子合同签署系统：用户 A 与用户 B 在线签署合同，要求：① 合同内容不可篡改（完整性）；② 签署人不可否认（身份认证 + 抗否认）；③ 签署过程可审计。\n【问题】① 描述数字签名的完整流程；② 说明摘要 + 加密 + 签名三者区别。',
+    a:'① 数字签名完整流程：\n发送方（用户 A）：\n  1. 原文 M（合同）→ SHA-256 哈希 → 摘要 H(M)（256 位）\n  2. 用 A 的私钥对摘要加密 → 数字签名 S = Sign_A(H(M))\n  3. 发送（原文 M + 签名 S）\n\n接收方（用户 B）：\n  1. 收到 M + S\n  2. 用 A 的公钥解密签名 S → 得到摘要 H(M)1\n  3. 对原文 M 重新计算 SHA-256 → H(M)2\n  4. 比对 H(M)1 与 H(M)2\n     相等 → 完整性 OK + 确实是 A 签的（身份认证）\n     不等 → 内容被篡改或不是 A 签的\n\n② 三者区别：\n  信息摘要（哈希）：\n    单向不可逆、固定长度输出\n    验证完整性（是否被篡改）\n    无密钥、公开算法\n  加密（对称／非对称）：\n    可逆（有密钥才能解）\n    保证机密性（不被偷看）\n    对称：AES、SM4；非对称：RSA、SM2\n  数字签名（非对称加密 + 摘要）：\n    用私钥签名、公钥验签\n    验证完整性 + 身份认证 + 抗否认\n    完整方案 = 摘要算法 + 非对称算法' },
+  { year:'2025 下半年', pts:'11 分',
+    q:'【背景】某支付接口要求所有 API 请求必须加签：商户用约定密钥对"参数 + 时间戳 + 随机数"计算 HMAC，服务器端验证 HMAC 是否一致。\n【问题】① 解释 HMAC 原理；② HMAC 与数字签名的区别。',
+    a:'① HMAC（Hash-based Message Authentication Code）原理：\n  公式：HMAC = H((K ⊕ opad) || H((K ⊕ ipad) || Message))\n  K：共享密钥（双方都知道）\n  opad（外填充，0x5c）、ipad（内填充，0x36）：固定常量\n  H：哈希函数（SHA-256）\n  流程：\n    1. K 与 ipad 异或 → 内层密钥\n    2. 内层密钥 + Message 拼接 → H1 = SHA-256\n    3. K 与 opad 异或 → 外层密钥\n    4. 外层密钥 + H1 拼接 → H2 = SHA-256\n    5. H2 即为 HMAC 值\n  用途：消息认证码（验证来源 + 完整性）\n\n② HMAC vs 数字签名：\n  HMAC：\n    对称密钥（双方共享）\n    性能快（仅哈希运算）\n    不能抗否认（双方都能伪造）\n    适合：内部系统、API 鉴权签名\n  数字签名：\n    非对称密钥（私钥签名 + 公钥验签）\n    性能较慢（含 RSA／ECC 运算）\n    抗否认（仅私钥持有者可签）\n    适合：合同、证书、区块链' }
+] },
 };
 
 /* ============== State ============== */
@@ -1397,6 +1654,8 @@ function renderCard(id) {
     html += renderBlock('core','🎯 核心知识点','CORE', data.core);
     html += renderBlock('exam','📝 考点解析','EXAM', data.exam);
     html += renderBlock('pit','⚠️ 易错点','PIT', data.pit);
+    if (data.qas && data.qas.length) html += renderQasFull(data.qas);
+    else { const qas = parseQas(data.exam); if (qas.length) html += renderQas(qas); }
   }
   html += `</article>`;
   main.innerHTML = html;
@@ -1423,6 +1682,48 @@ function escapeHtml(s) {
 
 function toggleBlock(head) {
   head.parentElement.classList.toggle('is-collapsed');
+}
+
+/* ============== 真题解析 ============== */
+function parseQas(examText) {
+  if (!examText) return [];
+  const m = examText.match(/真题印证[：:]([^]*?)(?=\n|$)/);
+  if (!m) return [];
+  const text = m[1].replace(/\s+/g, ' ').trim();
+  const parts = text.split(/[、，,]/).map(s => s.trim()).filter(Boolean);
+  const items = [];
+  for (const p of parts) {
+    const y = p.match(/(\d{4})\s*(上|下)\s*半年?/);
+    if (y) items.push({ year: y[0].replace(/\s+/g, ''), content: p.slice(y[0].length).trim() });
+  }
+  return items;
+}
+
+function renderQas(items) {
+  let html = `<div class="qas-section"><div class="head">真题解析 · 真题印证</div><div class="qas-list">`;
+  for (const it of items) {
+    html += `<div class="qas-item"><span class="qas-year">${escapeHtml(it.year)}</span><span class="qas-content">${escapeHtml(it.content)}</span></div>`;
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+function renderQasFull(qasList) {
+  let html = `<div class="qas-section"><div class="head">真题解析 · 完整 Q&A</div>`;
+  for (const it of qasList) {
+    const pts = it.pts ? `<span class="qas-pts">${escapeHtml(it.pts)}</span>` : '';
+    const aLines = (it.a || '').split('\n').map(l => l.trim()).filter(Boolean)
+      .map(l => `<li>${escapeHtml(l)}</li>`).join('');
+    html += `<div class="qas-full-card">
+      <div class="qas-full-meta">
+        <span class="qas-year">${escapeHtml(it.year || '')}</span>${pts}
+      </div>
+      <div class="qas-full-q"><span class="lbl">题干</span>${escapeHtml(it.q || '')}</div>
+      <div class="qas-full-a"><span class="lbl">答案要点</span><ol>${aLines}</ol></div>
+    </div>`;
+  }
+  html += `</div>`;
+  return html;
 }
 
 /* ============== Card mode switcher ============== */
