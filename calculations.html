@@ -3578,8 +3578,74 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <tr><td><code>LRU</code></td><td>过去最久不用</td><td>最优近似，开销大</td></tr>
           <tr><td><code>LFU</code></td><td>访问次数最少</td><td>历史影响大</td></tr>
           <tr><td><code>CLOCK</code></td><td>环形访问位</td><td>LRU 近似</td></tr>
+          <tr><td><code>改进型 CLOCK / NRU</code></td><td>访问位 + 修改位 4 类别</td><td>优先淘汰 (0,0)，减少磁盘写</td></tr>
         </tbody>
       </table>
+
+      <span class="formula-label">改进型 Clock（NRU）· 4 类别优先级</span>
+      <div class="formula" style="font-size:.92rem">
+        同时使用 <b>访问位</b>(R) 与 <b>修改位</b>(M)，把内存页分 4 类，按下表优先级淘汰：
+      </div>
+      <table>
+        <thead>
+          <tr><th>优先级</th><th>访问位 R</th><th>修改位 M</th><th>含义</th><th>淘汰代价</th></tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(200,85,61,.08)">
+            <td><b style="color:var(--crimson)">① 最先淘汰</b></td>
+            <td>0</td><td>0</td><td>未访问、未修改（干净）</td>
+            <td>直接丢弃，无须写回磁盘</td>
+          </tr>
+          <tr>
+            <td><b style="color:var(--amber-deep)">② 次先淘汰</b></td>
+            <td>0</td><td>1</td><td>未访问、已修改（脏）</td>
+            <td>需先写回再淘汰</td>
+          </tr>
+          <tr>
+            <td><b>③ 较次</b></td>
+            <td>1</td><td>0</td><td>已访问、未修改</td>
+            <td>最近用过，直接丢弃</td>
+          </tr>
+          <tr style="background:rgba(93,138,111,.10)">
+            <td><b style="color:var(--emerald)">④ 最后淘汰</b></td>
+            <td>1</td><td>1</td><td>已访问、已修改</td>
+            <td>既常用又脏，代价最高</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="example">
+        <div class="example-label">▸ 典型题 · 改进型 Clock 淘汰判断</div>
+        内存中 4 个页面的访问位 / 修改位如下：
+        <table style="margin:8px 0">
+          <thead>
+            <tr><th>页面号</th><th>访问位</th><th>修改位</th><th>类别</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>1</td><td>1</td><td>④ 已访问 + 已修改</td></tr>
+            <tr><td>2</td><td>1</td><td>0</td><td>③ 已访问 + 未修改</td></tr>
+            <tr><td>3</td><td>0</td><td>1</td><td>② 未访问 + 已修改</td></tr>
+            <tr style="background:rgba(200,85,61,.10)">
+              <td><b style="color:var(--crimson)">4</b></td><td><b style="color:var(--crimson)">0</b></td><td><b style="color:var(--crimson)">0</b></td>
+              <td><b style="color:var(--crimson)">① 未访问 + 未修改</b></td>
+            </tr>
+          </tbody>
+        </table>
+        <b>答案：淘汰页面 4</b>。理由：① 类（访问位 0、修改位 0）代价最小，
+        既不常用又是干净页，直接丢弃即可，省一次磁盘写回。
+      </div>
+
+      <span class="formula-label">为什么修改位很重要</span>
+      <div class="formula" style="font-size:.92rem">
+        淘汰 <b style="color:var(--emerald)">未修改</b> 页：直接丢弃，<b>0 次</b>磁盘写<br>
+        淘汰 <b style="color:var(--crimson)">已修改</b> 页（脏页）：必须先写回，<b>1 次</b>磁盘写<br>
+        改进型 Clock 的核心思想 = <b>尽量淘汰干净页，减少磁盘 I/O</b>
+      </div>
+
+      <div class="tip">
+        <b>缺页中断处理</b>：访问页 → 查页表 → 状态位 0 → 缺页中断 →
+        内存有空闲？有则直接调入；无则按置换算法淘汰一页 → 调入新页 → 改页表 → 重执指令。
+      </div>
 
       <span class="formula-label">缺页率</span>
       <div class="formula">f = 缺页次数 / 总页面引用次数</div>
