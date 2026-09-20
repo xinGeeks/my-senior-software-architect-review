@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>软考架构师 · 案例分析知识点 · 可视化讲义</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============== Theme tokens ============== */
+:root {
+  --ink-0:#06091a; --ink-1:#0d1228; --ink-2:#161c38; --ink-3:#1f2548; --ink-4:#2a3056;
+  --gold-1:#e8c384; --gold-2:#d4a85f; --gold-3:#b89053; --gold-4:#8b6f3e;
+  --ivory-0:#faf6e8; --ivory-1:#f0ead6; --ivory-2:#d8d2bc; --ivory-3:#8e8a7a;
+  --crimson:#c8553d; --emerald:#5d8a6f; --azure:#4a6fa5; --violet:#6f5d8a;
+  --font-display:'Cinzel',serif; --font-body:'Inter','Noto Serif SC',sans-serif;
+  --font-cn:'Noto Serif SC',serif; --font-mono:'JetBrains Mono',monospace;
+  --glow-gold:0 0 24px rgba(232,195,132,.18);
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 4px 12px rgba(0,0,0,.5);
+  --shadow-3:0 8px 28px rgba(0,0,0,.6);
+  --ease-out:cubic-bezier(.16,1,.3,1); --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --radius-sm:2px; --radius-md:4px;
+}
+[data-theme="light"] {
+  --ink-0:#faf6e8; --ink-1:#f0ead6; --ink-2:#e8e0c4; --ink-3:#d8d2bc; --ink-4:#b8b098;
+  --ivory-0:#06091a; --ivory-1:#0d1228; --ivory-2:#161c38; --ivory-3:#4a5066;
+  --gold-1:#8b6f3e; --gold-2:#a07a3e; --gold-3:#8a6534; --gold-4:#5d4a26;
+  --crimson:#a04430; --emerald:#3f6a52; --azure:#2f4f7a; --violet:#524566;
+}
+/* ============== Base ============== */
+*,*::before,*::after { box-sizing:border-box; }
+html,body { height:100%; overflow:hidden; }
+body {
+  margin:0; font-family:var(--font-body); color:var(--ivory-1);
+  background:var(--ink-0);
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(232,195,132,.06) 0%, transparent 40%),
+    radial-gradient(circle at 80% 100%, rgba(74,111,165,.08) 0%, transparent 50%);
+  background-attachment:fixed;
+  display:flex; flex-direction:column;
+}
+body::before {
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(232,195,132,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,195,132,.04) 1px, transparent 1px);
+  background-size:32px 32px;
+}
+button { font-family:inherit; cursor:pointer; }
+mark { background:rgba(232,195,132,.4); color:var(--ivory-0); padding:0 2px; border-radius:2px; }
+[data-theme="light"] mark { background:rgba(232,195,132,.55); color:var(--ink-0); }
+
+/* ============== App shell ============== */
+.app-shell { display:flex; flex-direction:column; flex:1; min-height:0; max-width:1600px; width:100%; margin:0 auto; position:relative; z-index:1; }
+.app-header {
+  display:flex; align-items:center; gap:16px; padding:14px 24px;
+  background:var(--ink-1); border-bottom:1px solid var(--ink-3);
+  position:sticky; top:0; z-index:50;
+}
+.app-header .title {
+  font-family:var(--font-display); font-size:1.05rem; font-weight:700;
+  color:var(--gold-2); letter-spacing:.06em;
+  text-shadow:var(--glow-gold); white-space:nowrap;
+}
+.app-header .title span { color:var(--ivory-3); margin:0 6px; font-weight:normal; }
+.app-header .title small { font-family:var(--font-cn); font-size:.78rem; color:var(--ivory-2); letter-spacing:.18em; margin-left:10px; font-weight:normal; }
+.search { flex:1; max-width:520px; position:relative; }
+.search input {
+  width:100%; padding:8px 14px; background:var(--ink-2);
+  border:1px solid var(--ink-3); border-radius:var(--radius-sm);
+  color:var(--ivory-0); font-family:var(--font-cn); font-size:.92rem;
+  transition:border-color .15s;
+}
+.search input:focus { outline:none; border-color:var(--gold-2); }
+.search input::placeholder { color:var(--ivory-3); }
+.progress {
+  font-family:var(--font-mono); font-size:.82rem; color:var(--gold-1);
+  padding:6px 14px; background:var(--ink-2); border:1px solid var(--ink-3);
+  border-radius:var(--radius-sm); white-space:nowrap;
+}
+.progress b { color:var(--ivory-0); font-weight:600; }
+.theme-toggle {
+  background:var(--ink-2); border:1px solid var(--ink-3); color:var(--gold-1);
+  width:36px; height:36px; border-radius:50%; font-size:1rem;
+  display:flex; align-items:center; justify-content:center;
+}
+.theme-toggle:hover { border-color:var(--gold-2); }
+
+.app-body { display:grid; grid-template-columns:300px 1fr; gap:0; flex:1; min-height:0; }
+
+/* ============== Sidebar ============== */
+.app-sidebar {
+  background:var(--ink-1); border-right:1px solid var(--ink-3);
+  overflow-y:auto; padding:14px 0;
+}
+[data-theme="light"] .app-sidebar { background:var(--ink-1); border-right-color:var(--ink-3); }
+.sidebar-section { padding:0 14px 8px; }
+.sidebar-section .section-head {
+  display:flex; align-items:center; gap:6px; padding:8px 6px;
+  font-family:var(--font-cn); font-size:.74rem; font-weight:600;
+  letter-spacing:.16em; color:var(--gold-2);
+  text-transform:uppercase; cursor:pointer; user-select:none;
+  border-bottom:1px solid var(--ink-3); margin-bottom:6px;
+}
+.sidebar-section .section-head .arrow { transition:transform .2s; font-size:.7rem; }
+.sidebar-section.collapsed .section-head .arrow { transform:rotate(-90deg); }
+.sidebar-section.collapsed .section-list { display:none; }
+.sidebar-section .section-head .count { margin-left:auto; color:var(--ivory-3); font-family:var(--font-mono); font-weight:normal; letter-spacing:0; }
+.sidebar-item {
+  display:flex; align-items:center; gap:8px; padding:7px 8px;
+  font-family:var(--font-cn); font-size:.88rem; color:var(--ivory-1);
+  cursor:pointer; border-radius:var(--radius-sm);
+  transition:background .15s, color .15s;
+}
+.sidebar-item:hover { background:var(--ink-2); color:var(--ivory-0); }
+.sidebar-item.is-active { background:rgba(212,168,95,.18); color:var(--gold-1); border-left:2px solid var(--gold-2); padding-left:6px; }
+.sidebar-item .check {
+  width:14px; height:14px; flex-shrink:0; border:1.5px solid var(--ivory-3);
+  border-radius:2px; display:flex; align-items:center; justify-content:center;
+  font-size:.7rem; color:transparent; transition:all .15s;
+}
+.sidebar-item.mastered .check { background:var(--emerald); border-color:var(--emerald); color:#fff; }
+.sidebar-item.mastered .item-title { text-decoration:line-through; color:var(--ivory-3); }
+.sidebar-item .item-id { font-family:var(--font-mono); font-size:.72rem; color:var(--ivory-3); margin-left:auto; }
+.sidebar-item.is-active .item-id { color:var(--gold-2); }
+.sidebar-item.dimmed { display:none; }
+
+/* ============== Main ============== */
+.app-main { padding:24px 32px 64px; min-width:0; min-height:0; overflow-y:auto; }
+[data-theme="light"] .app-main { background:var(--ink-0); }
+.card {
+  display:none; animation:fadeIn .25s var(--ease-out);
+}
+.card.is-active { display:block; }
+@keyframes fadeIn { from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
+
+.card-head {
+  display:flex; align-items:flex-start; gap:14px; margin-bottom:18px;
+  padding-bottom:14px; border-bottom:1px solid var(--ink-3);
+}
+.card-head .id-tag {
+  font-family:var(--font-mono); font-size:.7rem; color:var(--ivory-3);
+  padding:3px 8px; background:var(--ink-2); border:1px solid var(--ink-3);
+  border-radius:var(--radius-sm); white-space:nowrap; letter-spacing:.1em;
+}
+.card-head h2 {
+  margin:0; font-family:var(--font-cn); font-size:1.5rem; font-weight:700;
+  color:var(--gold-1); letter-spacing:.02em; line-height:1.3;
+}
+.card-head .badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+.badge {
+  font-family:var(--font-cn); font-size:.68rem; padding:2px 8px;
+  border-radius:var(--radius-sm); letter-spacing:.1em;
+  border:1px solid var(--ink-3); color:var(--ivory-2);
+}
+.badge.tier-1 { background:rgba(200,85,61,.15); border-color:var(--crimson); color:var(--crimson); }
+.badge.tier-2 { background:rgba(93,138,111,.15); border-color:var(--emerald); color:var(--emerald); }
+.badge.tier-3 { background:rgba(74,111,165,.15); border-color:var(--azure); color:var(--azure); }
+.card-head .actions { margin-left:auto; display:flex; gap:6px; }
+.card-head .actions button {
+  background:var(--ink-2); border:1px solid var(--ink-3); color:var(--ivory-2);
+  padding:6px 10px; border-radius:var(--radius-sm); font-family:var(--font-cn);
+  font-size:.78rem;
+}
+.card-head .actions button:hover { border-color:var(--gold-2); color:var(--gold-1); }
+.card-head .actions .master-btn.is-mastered { color:var(--emerald); border-color:var(--emerald); }
+
+.block {
+  margin-bottom:14px; border:1px solid var(--ink-3); border-radius:var(--radius-md);
+  overflow:hidden; background:var(--ink-1);
+}
+.block-head {
+  display:flex; align-items:center; gap:10px; padding:10px 16px;
+  background:var(--ink-2); border-bottom:1px solid var(--ink-3);
+  cursor:pointer; user-select:none;
+}
+.block-head .label {
+  font-family:var(--font-cn); font-weight:700; font-size:.92rem;
+  color:var(--gold-1); letter-spacing:.06em;
+}
+.block-head .label .tag { font-family:var(--font-mono); font-size:.7rem; color:var(--ivory-3); margin-left:8px; letter-spacing:.1em; font-weight:normal; }
+.block-head .arrow { margin-left:auto; color:var(--ivory-3); transition:transform .2s; font-size:.8rem; }
+.block.is-collapsed .block-head .arrow { transform:rotate(-90deg); }
+.block.is-collapsed .block-body { display:none; }
+.block-body { padding:14px 18px; }
+.block-body p { margin:0 0 10px; line-height:1.75; color:var(--ivory-1); font-family:var(--font-cn); font-size:.94rem; }
+.block-body p:last-child { margin-bottom:0; }
+.block-body strong { color:var(--gold-2); }
+[data-theme="light"] .block-body strong { color:#6a4a14; }
+
+.block.core { border-color:rgba(212,168,95,.4); }
+.block.core .block-head { background:linear-gradient(90deg, rgba(212,168,95,.12), transparent); }
+.block.exam { border-color:rgba(74,111,165,.4); }
+.block.exam .block-head { background:linear-gradient(90deg, rgba(74,111,165,.12), transparent); }
+.block.pit { border-color:rgba(200,85,61,.4); }
+.block.pit .block-head { background:linear-gradient(90deg, rgba(200,85,61,.12), transparent); }
+
+.extra-card .block-body { padding:16px 20px; }
+.extra-card .block-body h3 {
+  font-family:var(--font-cn); font-size:1.02rem; color:var(--gold-1);
+  margin:18px 0 8px; padding-bottom:6px; border-bottom:1px dashed var(--ink-3);
+}
+.extra-card .block-body h3:first-child { margin-top:0; }
+.extra-card .block-body p { margin-bottom:10px; }
+.extra-card table {
+  width:100%; border-collapse:collapse; margin:10px 0;
+  font-family:var(--font-cn); font-size:.85rem;
+}
+.extra-card th, .extra-card td { padding:8px 10px; border:1px solid var(--ink-3); text-align:left; }
+.extra-card th { background:var(--ink-2); color:var(--gold-1); font-weight:600; }
+.extra-card tr:hover td { background:var(--ink-2); }
+
+.empty-state {
+  text-align:center; padding:60px 20px; color:var(--ivory-3);
+  font-family:var(--font-cn); font-size:1rem;
+}
+.empty-state .icon { font-size:2rem; margin-bottom:10px; opacity:.5; }
+
+/* ============== Visualization ============== */
+.viz {
+  margin-bottom:14px; padding:18px 20px;
+  background:var(--ink-1); border:1px solid var(--ink-3);
+  border-radius:var(--radius-md);
+}
+.viz-title {
+  font-family:var(--font-cn); font-size:.78rem; color:var(--gold-1);
+  letter-spacing:.16em; margin-bottom:12px;
+  display:flex; align-items:center; gap:6px;
+}
+.viz-title::before {
+  content:""; width:4px; height:14px; background:var(--gold-2);
+  border-radius:2px;
+}
+.viz svg { display:block; margin:0 auto; max-width:480px; height:auto; }
+.viz svg.tri { max-width:280px; }
+.viz-table { width:100%; border-collapse:collapse; font-family:var(--font-cn); font-size:.86rem; margin:8px 0; }
+.viz-table th, .viz-table td { padding:8px 10px; border:1px solid var(--ink-3); text-align:left; }
+.viz-table th { background:var(--ink-2); color:var(--gold-1); font-weight:600; }
+.viz-table td.h { color:var(--gold-1); font-weight:600; background:rgba(212,168,95,.06); }
+.viz-table tr:hover td { background:var(--ink-2); }
+[data-theme="light"] .viz-table tr:hover td { background:var(--ink-2); }
+.viz-grid { display:grid; gap:10px; }
+.viz-grid.c2 { grid-template-columns:repeat(2,1fr); }
+.viz-grid.c3 { grid-template-columns:repeat(3,1fr); }
+.viz-grid.c4 { grid-template-columns:repeat(4,1fr); }
+.viz-card {
+  padding:10px 12px; background:var(--ink-2); border:1px solid var(--ink-3);
+  border-radius:var(--radius-sm); font-family:var(--font-cn); font-size:.84rem;
+  color:var(--ivory-1); line-height:1.55;
+}
+.viz-card .lbl { font-size:.7rem; color:var(--gold-1); font-weight:700; letter-spacing:.1em; margin-bottom:4px; }
+.viz-card.b { border-color:rgba(74,111,165,.4); background:rgba(74,111,165,.08); }
+.viz-card.g { border-color:rgba(93,138,111,.4); background:rgba(93,138,111,.08); }
+.viz-card.r { border-color:rgba(200,85,61,.4); background:rgba(200,85,61,.08); }
+.viz-card.gold { border-color:rgba(212,168,95,.4); background:rgba(212,168,95,.08); }
+.viz-flow { display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:center; padding:6px 0; }
+.viz-flow .step {
+  padding:8px 14px; background:var(--ink-2); border:1.5px solid var(--ink-3);
+  border-radius:18px; font-family:var(--font-cn); font-size:.84rem; color:var(--ivory-1);
+  white-space:nowrap;
+}
+.viz-flow .arrow { color:var(--gold-2); font-size:1rem; }
+.viz-flow .step.b { border-color:var(--azure); color:var(--azure); background:rgba(74,111,165,.08); }
+.viz-flow .step.g { border-color:var(--emerald); color:var(--emerald); background:rgba(93,138,111,.08); }
+.viz-flow .step.r { border-color:var(--crimson); color:var(--crimson); background:rgba(200,85,61,.08); }
+.viz-flow .step.gold { border-color:var(--gold-2); color:var(--gold-1); background:rgba(212,168,95,.1); }
+.viz-stack { display:flex; flex-direction:column; gap:4px; max-width:480px; margin:0 auto; }
+.viz-stack .layer {
+  padding:8px 14px; background:var(--ink-2); border:1px solid var(--ink-3);
+  border-radius:var(--radius-sm); font-family:var(--font-cn); font-size:.86rem;
+  color:var(--ivory-1); display:flex; justify-content:space-between; align-items:center;
+}
+.viz-stack .layer .n { color:var(--gold-2); font-weight:700; font-family:var(--font-mono); font-size:.78rem; }
+.viz-pyramid { display:flex; flex-direction:column; align-items:center; }
+.viz-pyramid .row { display:flex; justify-content:center; gap:6px; margin-bottom:4px; }
+.viz-pyramid .cell {
+  padding:6px 12px; background:var(--ink-2); border:1px solid var(--ink-3);
+  border-radius:var(--radius-sm); font-family:var(--font-cn); font-size:.84rem;
+  min-width:90px; text-align:center; color:var(--ivory-1);
+}
+.viz-pyramid .row.apex .cell { background:rgba(212,168,95,.18); border-color:var(--gold-2); color:var(--gold-1); font-weight:700; min-width:120px; }
+[data-theme="light"] .viz-card,
+[data-theme="light"] .viz-flow .step,
+[data-theme="light"] .viz-stack .layer,
+[data-theme="light"] .viz-pyramid .cell { background:var(--ink-2); color:var(--ivory-1); }
+
+/* ============== Mode switcher ============== */
+.mode-switch {
+  display:inline-flex; gap:2px; padding:3px;
+  background:var(--ink-1); border:1px solid var(--ink-3); border-radius:var(--radius-sm);
+  margin:0 0 14px;
+}
+.mode-btn {
+  padding:6px 14px; background:transparent; border:none;
+  color:var(--ivory-2); font-family:var(--font-cn); font-size:.84rem;
+  border-radius:3px; transition:background .15s, color .15s;
+}
+.mode-btn:hover { background:var(--ink-2); color:var(--ivory-1); }
+.mode-btn.is-active {
+  background:var(--gold-2); color:var(--ink-0); font-weight:600;
+  box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+[data-theme="light"] .mode-btn { color:var(--ivory-1); }
+[data-theme="light"] .mode-btn.is-active { background:var(--gold-2); color:#fff; }
+
+/* keyword highlight inside block-body */
+mark.kw {
+  background:rgba(212,168,95,.22); color:var(--gold-1);
+  padding:1px 4px; border-radius:3px; font-weight:600;
+  border:1px solid rgba(212,168,95,.25);
+}
+[data-theme="light"] mark.kw { background:rgba(212,168,95,.32); color:#7a5a26; border-color:rgba(160,122,62,.4); }
+
+/* ============== Hotspot SVG ============== */
+.hs-target { cursor:pointer; transition:filter .2s, transform .2s; }
+.hs-target:hover { filter:drop-shadow(0 0 6px var(--gold-2)); }
+.hs-target.is-active { filter:drop-shadow(0 0 8px var(--gold-2)); }
+.hs-tip {
+  position:fixed; z-index:200; max-width:280px; padding:10px 14px;
+  background:var(--ink-1); border:1px solid var(--gold-2); border-radius:var(--radius-sm);
+  color:var(--ivory-1); font-family:var(--font-cn); font-size:.86rem; line-height:1.55;
+  box-shadow:var(--shadow-3); pointer-events:none; opacity:0; transform:translateY(4px);
+  transition:opacity .18s, transform .18s;
+}
+.hs-tip.is-show { opacity:1; transform:translateY(0); }
+.hs-tip .t { display:block; color:var(--gold-1); font-weight:700; margin-bottom:4px; font-size:.9rem; }
+.hs-tip .d { color:var(--ivory-2); }
+[data-theme="light"] .hs-tip { background:var(--ink-1); border-color:var(--gold-2); }
+[data-theme="light"] .hs-tip .d { color:var(--ivory-2); }
+
+/* recall-mode visual cue */
+.card[data-mode="recall"] .block-body::before {
+  content:"📝 点击块标题逐条回忆";
+  display:block; padding:14px 18px; color:var(--ivory-3);
+  font-family:var(--font-cn); font-size:.84rem; text-align:center;
+  border-bottom:1px dashed var(--ink-3); margin-bottom:8px;
+}
+
+/* ============== Mobile ============== */
+@media (max-width:900px) {
+  .app-body { grid-template-columns:1fr; }
+  .app-sidebar { display:none; }
+  .app-main { padding:16px; }
+  .app-header { padding:10px 14px; flex-wrap:wrap; }
+  .search { order:3; flex-basis:100%; }
+}
+
+/* ============== Print ============== */
+@media print {
+  .app-header, .app-sidebar, footer, .theme-toggle { display:none !important; }
+  .app-main { background:white !important; padding:0 !important; overflow:visible !important; }
+  .app-body { display:block !important; height:auto !important; overflow:visible !important; }
+  .card { display:block !important; page-break-after:always; }
+  .block.is-collapsed .block-body { display:block !important; }
+  .block-head .arrow { display:none; }
+}
+
+/* Scrollbar */
+.app-sidebar::-webkit-scrollbar, .app-main::-webkit-scrollbar { width:6px; }
+.app-sidebar::-webkit-scrollbar-thumb, .app-main::-webkit-scrollbar-thumb {
+  background:var(--ink-3); border-radius:3px;
+}
+.app-sidebar::-webkit-scrollbar-thumb:hover, .app-main::-webkit-scrollbar-thumb:hover {
+  background:var(--ink-4);
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+<header class="app-header">
+  <div class="title">软考架构师 <span>·</span> 案例分析 <small>案例分析知识点 + 考点解析</small></div>
+  <div class="search">
+    <input id="sidebar-search" placeholder="搜索知识点 · 例：Redis / 缓存 / ATAM / 大模型" autocomplete="off">
+  </div>
+  <div class="progress" id="progress">已掌握 <b id="prog-n">0</b> / <b id="prog-t">24</b></div>
+  <button class="theme-toggle" onclick="toggleTheme()" title="切换主题 (T)">◐</button>
+</header>
+
+<div class="app-body">
+  <nav class="app-sidebar" id="sidebar"></nav>
+  <main class="app-main" id="main"></main>
+</div>
+
+</div>
+
+<script>
+/* ============== Data ============== */
+/* chapter 1 (1.1, 1.2, 1.3) is meta/strategy — shown as extra-card */
+const EXTRA = {
+  '1-1': { title:'1.1 考试形式与评分规则', chap:1, body:`
+<p>软考系统架构设计师（软考高级）共考三科，须在同一次考试中三科全部达到合格线（满分 75 分、45 分及格）才算通过，任何一科未过，当次成绩全部清零、不保留。</p>
+<table><thead><tr><th>科目</th><th>题型</th><th>时长</th><th>满分/合格线</th></tr></thead><tbody>
+<tr><td>综合知识</td><td>75 道单选题（覆盖 13 个知识领域）</td><td>150 分钟</td><td>75 分 / 45 分</td></tr>
+<tr><td>案例分析</td><td>5 道大题，第 1 题必做，其余 4 题选 2 题（个别批次略有调整，以当年试卷为准）</td><td>90 分钟</td><td>75 分 / 45 分</td></tr>
+<tr><td>论文</td><td>4 题选 1 题，约 2200—3000 字</td><td>120 分钟</td><td>75 分 / 45 分</td></tr>
+</tbody></table>
+<p>每年上下半年各一次（上半年约 5 月、下半年约 11 月）；2023 年下半年起全面改为机考，案例分析需键盘输入作答。教材以 2022 年 12 月出版的第二版《系统架构设计师教程》为准，备考资料尽量选择 2023 年以后更新的版本。</p>` },
+  '1-2': { title:'1.2 案例分析出题规律与选题策略', chap:1, body:`
+<p>案例分析 5 道大题中，第 1 题必做，其余 4 题选 2 题作答。第 1 题偏理论与架构基础，选做题偏技术与选型。</p>
+<p><strong>必答题有迹可循：</strong>质量属性（含质量属性场景、效用树）、架构风格识别、风险点／敏感点／权衡点等概念辨析，属于"背了就能得分"的题，应尽量拿满。</p>
+<p><strong>选做题贴近实战：</strong>Redis／缓存、数据库（分片／高可用／NewSQL）、微服务与分布式、大数据架构、云原生／AI 等，考察技术选型与方案设计能力，需要按专题积累。</p>
+<p><strong>九大常考方向：</strong>层次式架构、云原生架构、面向服务架构（SOA）、大数据架构、安全架构、信息系统架构（TOGAF）、系统计划、嵌入式、通信系统。其中嵌入式与通信系统性价比低，无积累可果断放弃。</p>
+<p><strong>选题策略：</strong>拿到试卷先花 5 分钟通读全部题目，按"有把握程度"排序再决定选哪 2 道选做题，不要按顺序硬做；优先选题干信息完整、考点熟悉、能分条列点的题。</p>
+<p><strong>时间分配：</strong>每题控制在 25—30 分钟，先易后难，保证 3 道题都答完，避免在一道题上耗时过多。</p>` },
+  '1-3': { title:'1.3 答题技巧与备考建议', chap:1, body:`
+<p>分条列点作答（①②③），关键词优先，覆盖得分点比写成长段落更有效。</p>
+<p>题目中附带的架构图、表格不要跳过，答案线索常藏在图里。</p>
+<p>问"方案／措施"：先给思路框架，再逐条给具体做法，最后点明优缺点与适用场景。</p>
+<p>问"对比"：先列对比维度（一致性、性能、复杂度、适用场景等），再逐维度作答。</p>
+<p>备考以近 5 年真题为主：必答题背概念与术语，选做题按技术专题整理答题关键词库；机考环境下平时就用电脑打字练习，适应输入节奏。</p>` },
+  '6-1': { title:'6.1 必答题常见问法与答题框架', chap:6, body:`
+<p><strong>质量属性识别：</strong>先区分"功能性 vs 质量属性"，再按六大属性对号入座，用题干原词支撑判断。</p>
+<p><strong>质量属性场景六要素：</strong>刺激源、刺激、环境、制品、响应、响应度量。</p>
+<p><strong>效用树：</strong>质量属性 → 场景，按"重要性＋实现难度"打分排序。</p>
+<p><strong>架构评估：</strong>ATAM 步骤与输出（敏感点、权衡点、风险点、非风险点）。</p>
+<p><strong>架构风格识别：</strong>说出风格名称＋理由（结构特征＋适用场景）。</p>` },
+  '6-2': { title:'6.2 选答题常见问法与答题框架', chap:6, body:`
+<p><strong>方案设计（缓存／高可用／分片／事务）：</strong>需求 → 选型 → 架构图／链路 → 关键机制 → 优缺点 → 监控运维。</p>
+<p><strong>对比分析（一致性哈希 vs 取模、SOA vs 微服务、Lambda vs Kappa、RAG vs 微调）：</strong>定义 → 对比维度（一致性、性能、复杂度、适用场景）→ 逐维度对比 → 结论。</p>
+<p><strong>问题诊断（慢 SQL、缓存失效、故障）：</strong>现象 → 定位（日志／监控／EXPLAIN）→ 根因 → 解决方案 → 验证。</p>` },
+  '6-3': { title:'6.3 高频考点与近年真题分布', chap:6, body:`
+<table><thead><tr><th>考点</th><th>出现情况</th><th>题型定位</th></tr></thead><tbody>
+<tr><td>质量属性（场景、效用树、ATAM）</td><td>2009—2025 几乎每年必考</td><td>第 1 题必答</td></tr>
+<tr><td>架构风格与架构评估</td><td>高频</td><td>必答／选答</td></tr>
+<tr><td>Redis 与缓存（穿透/击穿/雪崩、方案对比）</td><td>2020、2022、2024 下、2025 下等多次</td><td>选答 高频</td></tr>
+<tr><td>微服务与分布式事务</td><td>2024 上等多批次</td><td>选答 高频</td></tr>
+<tr><td>数据库（分片/高可用/NewSQL）</td><td>历年多次</td><td>选答 高频</td></tr>
+<tr><td>大数据架构（Lambda/Kappa）</td><td>历年多次</td><td>选答 高频</td></tr>
+<tr><td>云原生／AI 大模型</td><td>2025 上（大模型训练平台）、2025 下（云原生数据库），2026 权重上升</td><td>选答 新热点</td></tr>
+<tr><td>信息安全（信息摘要/加密）</td><td>2025 下（AES-256 安全设计）</td><td>选答</td></tr>
+<tr><td>UML／DFD／设计原则</td><td>历年穿插</td><td>必答／选答</td></tr>
+</tbody></table>` },
+  '6-4': { title:'6.4 备考优先级建议', chap:6, body:`
+<p><strong>第一梯队（必答拿分）：</strong>质量属性、架构风格、架构评估（ATAM）——背熟概念与术语。</p>
+<p><strong>第二梯队（选答主力）：</strong>Redis 缓存、微服务与分布式、数据库（分片／高可用）、大数据架构——每个专题准备一套"方案设计＋对比"答题框架。</p>
+<p><strong>第三梯队（新技术加分）：</strong>云原生、AI 大模型／RAG、向量数据库、NewSQL——掌握概念、流程与选型理由。</p>
+<p><strong>放弃项：</strong>嵌入式、通信系统等陌生方向（除非有从业背景），把时间留给有把握的题。</p>` },
+  'A': { title:'附录 A 主要参考来源', chap:7, body:`
+<ul style="line-height:1.9;color:var(--ivory-1);font-family:var(--font-cn);font-size:.92rem;padding-left:20px">
+<li>软考官方网站（报名、大纲）：<a href="https://www.ruankao.org.cn" style="color:var(--azure)">https://www.ruankao.org.cn</a></li>
+<li>案例分析考点情况与解题技巧（2009—2024 考点归纳）：<a href="https://blog.csdn.net/cui_yonghua/article/details/142924787" style="color:var(--azure)">csdn 链接</a></li>
+<li>2026 软考高级·系统架构设计师备考指南：<a href="https://jishuzhan.net/article/2044372206512308225" style="color:var(--azure)">jishuzhan 链接</a></li>
+<li>2025 下半年案例分析真题回顾（质量属性＋AES-256）：<a href="https://jishuzhan.net/article/2045659733189787650" style="color:var(--azure)">jishuzhan 链接</a></li>
+<li>2025 上半年真题（大模型训练平台架构与质量属性）：<a href="https://www.docin.com/touch_new/preview_new.do?id=4875388221" style="color:var(--azure)">docin 链接</a></li>
+<li>2024 年 11 月架构真题解析（质量属性、心跳策略）：<a href="https://jishuzhan.net/article/1988447950150893569" style="color:var(--azure)">jishuzhan 链接</a></li>
+</ul>
+<p style="margin-top:14px;color:var(--ivory-3);font-size:.84rem">本文档为备考学习资料，技术知识点按官方教程与通用技术资料整理；考试形式、教材版本、真题分布等信息来自上述公开来源，已联网核实。实际考试信息以软考官网及当年试卷为准。</p>` },
+};
+
+const CHAPTERS = [
+  { id:1, title:'备考策略', items:['1-1','1-2','1-3'] },
+  { id:2, title:'第 2 章 · 架构设计基础（必答高频区）', items:['c2-1','c2-2','c2-3','c2-4','c2-5','c2-6'] },
+  { id:3, title:'第 3 章 · 数据存储与缓存', items:['c3-1','c3-2','c3-3','c3-4','c3-5','c3-6','c3-7','c3-8','c3-9'] },
+  { id:4, title:'第 4 章 · 分布式系统与中间件', items:['c4-1','c4-2','c4-3'] },
+  { id:5, title:'第 5 章 · 架构风格与新技术', items:['c5-1','c5-2','c5-3','c5-4','c5-5','c5-6'] },
+  { id:6, title:'第 6 章 · 高频考点速查', items:['6-1','6-2','6-3','6-4'] },
+  { id:7, title:'附录', items:['A'] },
+];
+
+const TOPICS = {
+'c2-1': { chap:2, title:'质量属性', tier:1, tag:'必答拿分', viz:`<div class="viz-title">六大质量属性 + QAS 六要素</div>
+<svg viewBox="0 0 560 280">
+  <defs><marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--gold-2)"/></marker></defs>
+  <rect x="10" y="120" width="80" height="36" rx="4" fill="rgba(232,195,132,.15)" stroke="var(--gold-2)"/>
+  <text x="50" y="143" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">系统需求</text>
+  <line x1="90" y1="138" x2="160" y2="50" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="138" x2="160" y2="100" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="138" x2="160" y2="150" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="138" x2="160" y2="200" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="138" x2="160" y2="250" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <g font-family="Noto Serif SC" font-size="12" fill="var(--ivory-1)">
+  <rect x="160" y="32" width="100" height="36" rx="4" fill="rgba(74,111,165,.18)" stroke="var(--azure)"/><text x="210" y="55" text-anchor="middle">性能</text>
+  <rect x="160" y="82" width="100" height="36" rx="4" fill="rgba(93,138,111,.18)" stroke="var(--emerald)"/><text x="210" y="105" text-anchor="middle">可用性</text>
+  <rect x="160" y="132" width="100" height="36" rx="4" fill="rgba(200,85,61,.18)" stroke="var(--crimson)"/><text x="210" y="155" text-anchor="middle">安全性</text>
+  <rect x="160" y="182" width="100" height="36" rx="4" fill="rgba(111,93,138,.18)" stroke="var(--violet)"/><text x="210" y="205" text-anchor="middle">可修改性</text>
+  <rect x="160" y="232" width="100" height="36" rx="4" fill="rgba(212,168,95,.18)" stroke="var(--gold-2)"/><text x="210" y="255" text-anchor="middle">易用性</text>
+  </g>
+  <line x1="260" y1="50" x2="380" y2="50" stroke="var(--azure)"/>
+  <line x1="260" y1="105" x2="380" y2="105" stroke="var(--emerald)"/>
+  <line x1="260" y1="155" x2="380" y2="155" stroke="var(--crimson)"/>
+  <line x1="260" y1="205" x2="380" y2="205" stroke="var(--violet)"/>
+  <line x1="260" y1="255" x2="380" y2="255" stroke="var(--gold-2)"/>
+  <g font-family="JetBrains Mono" font-size="11" fill="var(--ivory-3)">
+  <rect x="380" y="32" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="48">响应时间 / 吞吐量</text><text x="390" y="62" fill="var(--ivory-3)">≤ 1s / 1000 TPS</text>
+  <rect x="380" y="82" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="98">故障检测 / 恢复</text><text x="390" y="112" fill="var(--ivory-3)">MTBF / MTTR</text>
+  <rect x="380" y="132" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="148">认证 / 授权 / 加密</text><text x="390" y="162" fill="var(--ivory-3)">防篡改 / 审计</text>
+  <rect x="380" y="182" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="198">新增 / 修改成本</text><text x="390" y="212" fill="var(--ivory-3)">影响范围</text>
+  <rect x="380" y="232" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="248">易学习 / 易操作</text><text x="390" y="262" fill="var(--ivory-3)">用户体验</text>
+  </g>
+</svg>
+<div class="viz-flow" style="margin-top:14px">
+  <span class="step gold">QAS 六要素</span>
+  <span class="step">刺激源</span><span class="arrow">→</span>
+  <span class="step">刺激</span><span class="arrow">→</span>
+  <span class="step">环境</span><span class="arrow">→</span>
+  <span class="step">制品</span><span class="arrow">→</span>
+  <span class="step">响应</span><span class="arrow">→</span>
+  <span class="step">响应度量</span>
+</div>`,
+core:`常用质量属性：性能、可用性、安全性、可修改性（可维护性）、可测试性、易用性；功能性、可靠性（容错、健壮性）常作为区分项出现。\n质量属性场景（QAS）六要素：刺激源、刺激、环境、制品、响应、响应度量。\n质量属性效用树：树根为"效用"，一级节点为质量属性（性能、可用性、安全性、可修改性等），逐级细化到叶子——可度量的质量属性场景；评估时按"重要性"和"实现难度"打分排序，决定架构优先级。\n架构评估方法：SAAM（场景架构分析法，基于场景评估可修改性等）；ATAM（架构权衡分析法，引入权衡，识别敏感点、权衡点、风险点、非风险点，分 4 个活动领域、9 个步骤）；CBAM（成本效益分析法，从经济角度评估架构决策）。\n关键术语：敏感点——影响某一质量属性的构件特性；权衡点——同时影响多个质量属性的敏感点；风险点——可能导致问题的架构决策；非风险点——不会导致问题的架构决策。`, exam:`质量属性几乎是案例分析第 1 题的固定考点。典型问法：给一段系统需求（场景 a～n），逐一判断属于功能性还是哪个质量属性，用"功能性／性能／可用性／安全性／可修改性"等标准词作答。\n质量属性场景六要素填空：刺激源、刺激、环境、制品、响应、响应度量。\n给出效用树补全节点，或说明优先级排序依据；结合 ATAM 识别敏感点、权衡点、风险点。\n真题印证：2024 下半年（质量属性填空＋心跳策略故障检测）、2025 上半年大模型训练平台（性能：1 分钟内完成资源分配；可用性：20 分钟内切换备用库）、2025 下半年电动车充电管理系统（3 秒内响应、加密传输等场景）。`, pit:`功能性≠质量属性：功能性描述"系统能做什么"（如"支持用户登录"），质量属性描述"做得怎么样"（如"登录响应小于 1 秒"）。\n性能 vs 可用性：性能关注响应时间、吞吐量、并发数；可用性关注故障检测与恢复（MTBF／MTTR、切换时间）。\n安全性：认证、授权、数据加密、防篡改、审计；可修改性：新增／修改功能的成本与影响范围。\nATAM 输出术语必须准确：敏感点、权衡点、风险点、非风险点，答题时一一对应。` },
+
+'c2-2': { chap:2, title:'系统架构图', tier:1, tag:'必答', viz:`<div class="viz-title">4+1 视图金字塔（Kruchten）</div>
+<div class="viz-pyramid">
+  <div class="row apex"><div class="cell">📋 场景（用例 Scenarios）</div></div>
+  <div class="row"><div class="cell" style="background:rgba(74,111,165,.12);border-color:var(--azure)">🧠 逻辑视图</div><div class="cell" style="background:rgba(93,138,111,.12);border-color:var(--emerald)">📦 开发视图</div></div>
+  <div class="row"><div class="cell" style="background:rgba(200,85,61,.12);border-color:var(--crimson)">⚙️ 进程视图</div><div class="cell" style="background:rgba(212,168,95,.12);border-color:var(--gold-2)">🖥️ 物理视图</div></div>
+</div>
+<div class="viz-flow" style="margin-top:14px">
+  <span class="step">C4 模型: 自顶向下四层</span>
+  <span class="step gold">Context</span><span class="arrow">→</span>
+  <span class="step">Container</span><span class="arrow">→</span>
+  <span class="step">Component</span><span class="arrow">→</span>
+  <span class="step">Code</span>
+</div>
+<div class="viz-grid c3" style="margin-top:12px">
+  <div class="viz-card b"><div class="lbl">数据流风格</div>批处理、管道-过滤器</div>
+  <div class="viz-card g"><div class="lbl">调用-返回</div>主程序-子程序、OO、层次</div>
+  <div class="viz-card r"><div class="lbl">独立构件</div>事件驱动、发布-订阅</div>
+  <div class="viz-card gold"><div class="lbl">虚拟机</div>解释器、规则系统</div>
+  <div class="viz-card"><div class="lbl">仓库风格</div>数据库、黑板、知识库</div>
+  <div class="viz-card"><div class="lbl">典型分层</div>接入→应用→数据→存储</div>
+</div>`,
+core:`4+1 视图模型（Kruchten）：逻辑视图（功能、类与对象）、开发视图（模块组织）、进程视图（并发、同步、性能）、物理视图（部署、硬件），场景（用例）贯穿四视图。\nC4 模型：Context（系统上下文）→ Container（容器／应用）→ Component（组件）→ Code（代码），逐层细化。\n常见架构风格：数据流风格（批处理、管道-过滤器）；调用／返回风格（主程序-子程序、面向对象、层次结构）；独立构件风格（进程通信、事件驱动／隐式调用、发布-订阅）；虚拟机风格（解释器、规则系统）；仓库风格（数据库、黑板系统、知识库）。\n典型分层架构要素：客户端／接入层 → 网关 → 应用服务层 → 数据访问层 → 数据存储层（数据库／缓存），横向贯穿监控、日志、安全。`, exam:`必答与选答均可能出现。问法：识别题中架构属于哪种风格并说明理由；补全架构图缺失组件；根据需求描述画分层架构图或部署架构图。\n画图时要素完整、标注清晰；文字说明按"分层职责＋数据流向＋关键组件选型"展开。`, pit:`架构风格与架构模式（如 MVC）区分：模式是风格内的具体做法，风格更宏观。\n画图时勿漏横向支撑（监控、日志、安全、配置中心），阅卷老师看这些扣分项。` },
+
+'c2-3': { chap:2, title:'面向对象设计原则', tier:2, tag:'必答', viz:`<div class="viz-title">SOLID + LD · 七大原则速记</div>
+<div class="viz-grid c3">
+  <div class="viz-card gold"><div class="lbl">S · SRP</div>单一职责 — 一个类只一个变化理由</div>
+  <div class="viz-card gold"><div class="lbl">O · OCP</div>开闭原则 — 对扩展开放、对修改关闭</div>
+  <div class="viz-card gold"><div class="lbl">L · LSP</div>里氏替换 — 子类可替换父类</div>
+  <div class="viz-card gold"><div class="lbl">I · ISP</div>接口隔离 — 接口单一、不被迫依赖</div>
+  <div class="viz-card gold"><div class="lbl">D · DIP</div>依赖倒置 — 面向接口编程</div>
+  <div class="viz-card b"><div class="lbl">LoD</div>迪米特 — 最少知识、只与朋友通信</div>
+  <div class="viz-card g"><div class="lbl">CARP</div>合成复用 — 优先组合而非继承</div>
+</div>
+<div class="viz-flow" style="margin-top:14px">
+  <span class="step">记忆口诀</span>
+  <span class="step gold">S</span><span class="step gold">O</span><span class="step gold">L</span><span class="step gold">I</span><span class="step gold">D</span>
+  <span class="step">+</span>
+  <span class="step">最少朋友 LoD</span>
+  <span class="step">+</span>
+  <span class="step">组合替代继承 CARP</span>
+</div>`,
+core:`单一职责原则（SRP）：一个类只负责一个职责，变化原因只有一个。\n开闭原则（OCP）：对扩展开放、对修改关闭，通过抽象和多态应对需求变更。\n里氏替换原则（LSP）：子类可替换父类且不破坏程序正确性；重写方法不能改变父类行为契约。\n依赖倒置原则（DIP）：高层模块不依赖低层模块，二者都依赖抽象；面向接口编程而非实现。\n接口隔离原则（ISP）：接口功能单一，客户端不应被迫依赖不需要的方法。\n迪米特法则（LoD／最少知识原则）：一个对象应对其他对象保持最少的了解，只与直接朋友通信。\n合成复用原则（CARP）：优先使用对象组合而非继承达到复用目的。`, exam:`常与设计模式一起考查。问法：识别违反的原则；针对违反的原则给出重构方案；判断某段代码是否满足某原则。\n真题印证：2021 下半年（设计原则辨析）、2023 上半年（设计模式与原则结合）。`, pit:`SRP 的"职责"粒度需结合业务场景，勿过度拆分；OCP 的关键是预判变化点，预先抽象。\n继承 vs 组合：组合更灵活、耦合低，但继承能简化代码；优先组合，必要时才用继承。` },
+
+'c2-4': { chap:2, title:'UML', tier:2, tag:'必答', viz:`<div class="viz-title">UML 图分类 + 关系强度</div>
+<div class="viz-grid c2">
+  <div class="viz-card b"><div class="lbl">结构图（静态）</div>类图 · 对象图 · 组件图 · 部署图 · 制品图 · 包图</div>
+  <div class="viz-card g"><div class="lbl">行为图（动态）</div>用例图 · 活动图 · 状态机图</div>
+  <div class="viz-card r"><div class="lbl">交互图（消息）</div>序列图 · 通信图 · 交互概览图 · 时序图</div>
+  <div class="viz-card gold"><div class="lbl">扩展机制</div>构造型《》 · 标记值 · 约束 {}</div>
+</div>
+<div class="viz-flow" style="margin-top:14px">
+  <span class="step">关系强度从强到弱</span>
+  <span class="step r">泛化 = 实现</span><span class="arrow">></span>
+  <span class="step gold">组合</span><span class="arrow">></span>
+  <span class="step gold">聚合</span><span class="arrow">></span>
+  <span class="step">关联</span><span class="arrow">></span>
+  <span class="step">依赖</span>
+</div>`,
+core:`结构图：类图（类、接口、关联／依赖／泛化／实现）、对象图、组件图、部署图、制品图、包图。\n行为图：用例图（参与者、用例、系统边界）、活动图（流程、并行、分支）、状态机图（状态、事件、迁移）。\n交互图：序列图（时间顺序的消息）、通信图（对象间的关联与消息）、交互概览图、时序图。\n图的关系强度：泛化 = 实现 > 组合 > 聚合 > 关联 > 依赖。\nUML 扩展机制：构造型（Stereotype，《》）、标记值（Tagged Value）、约束（Constraint，{}）。`, exam:`必答常见。问法：根据描述画类图或序列图；识别图中的关系类型；区分用例图与活动图、序列图与通信图。\n画图要点：类图三栏（类名、属性、方法），关系连线带基数，泛化用空心三角箭头；序列图消息带序号。`, pit:`组合（实心菱形，整体-部分强生命周期）vs 聚合（空心菱形，整体-部分弱生命周期）易混。\n用例图不要画系统内部细节，只描述参与者与用例的交互关系；类图不要画方法实现细节。` },
+
+'c2-5': { chap:2, title:'数据流图', tier:2, tag:'必答', viz:`<div class="viz-title">DFD 四元素 + 分层示意</div>
+<svg viewBox="0 0 560 160">
+  <rect x="20" y="50" width="80" height="60" fill="var(--ink-2)" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <text x="60" y="78" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">外部实体</text>
+  <text x="60" y="96" text-anchor="middle" fill="var(--ivory-3)" font-size="10">E · 方框</text>
+  <rect x="160" y="50" width="80" height="60" rx="12" fill="var(--ink-2)" stroke="var(--azure)" stroke-width="1.5"/>
+  <text x="200" y="78" text-anchor="middle" fill="var(--azure)" font-size="13" font-family="Noto Serif SC">加工</text>
+  <text x="200" y="96" text-anchor="middle" fill="var(--ivory-3)" font-size="10">P · 圆角矩形</text>
+  <rect x="300" y="50" width="80" height="60" fill="none" stroke="var(--emerald)" stroke-width="1.5"/>
+  <line x1="300" y1="68" x2="380" y2="68" stroke="var(--emerald)" stroke-width="1.5"/>
+  <text x="340" y="86" text-anchor="middle" fill="var(--emerald)" font-size="13" font-family="Noto Serif SC">数据存储</text>
+  <text x="340" y="104" text-anchor="middle" fill="var(--ivory-3)" font-size="10">D · 开口矩形</text>
+  <line x1="100" y1="80" x2="160" y2="80" stroke="var(--gold-2)" stroke-width="1.5" marker-end="url(#arr1)"/>
+  <line x1="240" y1="80" x2="300" y2="80" stroke="var(--gold-2)" stroke-width="1.5" marker-end="url(#arr1)"/>
+  <text x="130" y="72" text-anchor="middle" fill="var(--ivory-3)" font-size="10">数据流</text>
+  <text x="270" y="72" text-anchor="middle" fill="var(--ivory-3)" font-size="10">数据流</text>
+</svg>
+<div class="viz-flow" style="margin-top:10px">
+  <span class="step gold">顶层</span><span class="arrow">→</span>
+  <span class="step gold">0 层</span><span class="arrow">→</span>
+  <span class="step gold">1 层</span><span class="arrow">→</span>
+  <span class="step gold">2 层</span>
+</div>
+<div class="viz-grid c3" style="margin-top:10px">
+  <div class="viz-card r"><div class="lbl">🔴 黑洞</div>有输入无输出 — 加工不做任何处理</div>
+  <div class="viz-card gold"><div class="lbl">🟡 奇迹</div>有输出无输入 — 无中生有</div>
+  <div class="viz-card"><div class="lbl">⚪ 灰洞</div>输入不足以产生输出</div>
+</div>`,
+core:`DFD 元素：外部实体（E，方框）、加工（P，圆角矩形）、数据存储（D，开口矩形／两条横线）、数据流（箭头，标注数据内容）。\nDFD 分层：顶层（Context Diagram，系统与外部实体交互）→ 0 层（主要加工）→ 1 层、2 层……逐步细化；父图与子图平衡（输入输出数据流一致）。\n分层原则：加工编号（P1、P1.1、P1.1.1）；每个加工至少有 1 个输入流和 1 个输出流（黑洞奇迹）；父图输入输出流在子图中必须保持平衡。`, exam:`必答常见，结合需求分析考查。问法：根据描述画 DFD；补全缺失的加工或数据流；判断分层是否平衡；指出图中错误（黑洞、奇迹、灰洞）。\n真题印证：历年多次考查 DFD 绘制与平衡性检查。`, pit:`黑洞（只有输入无输出）、奇迹（只有输出无输入）、灰洞（输入不足以产生输出）是 DFD 的三类错误，阅卷常见扣分点。\nDFD 关注数据流动，不反映控制流与时间顺序；这是与程序流程图的关键区别。` },
+
+'c2-6': { chap:2, title:'领域驱动设计', tier:3, tag:'选答 加分', viz:`<div class="viz-title">DDD 战略 vs 战术 · 分层架构</div>
+<div class="viz-grid c2">
+  <div class="viz-card gold"><div class="lbl">战略设计（Why / Where）</div>限界上下文 BC · 上下文映射 CM · 通用语言 UL</div>
+  <div class="viz-card b"><div class="lbl">战术设计（What / How）</div>实体 · 值对象 · 聚合根 · 领域服务 · 领域事件</div>
+</div>
+<div class="viz-stack" style="margin-top:12px">
+  <div class="layer" style="border-color:var(--azure)"><span>用户接口层</span><span class="n">UI</span></div>
+  <div class="layer" style="border-color:var(--emerald)"><span>应用层</span><span class="n">App</span></div>
+  <div class="layer" style="background:rgba(212,168,95,.12);border-color:var(--gold-2)"><span><b>领域层</b>（核心，不依赖外层）span><span class="n">Domain</span></div>
+  <div class="layer" style="border-color:var(--ivory-3)"><span>基础设施层</span><span class="n">Infra</span></div>
+</div>
+<div class="viz-flow" style="margin-top:10px">
+  <span class="step gold">防腐层 ACL</span>
+  <span class="step">隔离外部系统变化</span>
+  <span class="arrow">→</span>
+  <span class="step">内部模型保持稳定</span>
+</div>`,
+core:`战略设计：限界上下文（Bounded Context）、上下文映射（Context Map：共享内核、防腐层、开放主机、遵奉者等）；通用语言（Ubiquitous Language）是核心。\n战术设计：实体（Entity，唯一标识）、值对象（Value Object，无标识、按值相等）、聚合（Aggregate，一致性边界与根实体）、领域服务（Domain Service）、领域事件（Domain Event）。\n分层架构（DDD 视角）：用户接口层 → 应用层 → 领域层 → 基础设施层；领域层是核心，不依赖外层。\n设计要素：聚合根管理生命周期与一致性边界；领域事件用于跨聚合通信；防腐层（ACL）隔离外部系统变化。`, exam:`新热点，与微服务结合考查。问法：识别限界上下文边界；给出聚合根设计；解释防腐层作用；对比 DDD 与传统三层架构。\n答题要点：业务复杂时优先 DDD；战术模式服务于战略模式，避免为模式而模式。`, pit:`不要把 DDD 套到简单 CRUD 系统，会增加复杂度反而降低效率。\n聚合边界要小，过大聚合导致并发冲突；不要跨聚合直接引用，通过 ID 关联。` },
+
+'c3-1': { chap:3, title:'Redis', tier:1, tag:'选答 高频', viz:`<div class="viz-title">9 种数据类型 + 三大缓存问题</div>
+<div class="viz-grid c3">
+  <div class="viz-card"><div class="lbl">String</div>缓存 · 计数器 · 分布式锁</div>
+  <div class="viz-card"><div class="lbl">Hash</div>对象 · 购物车</div>
+  <div class="viz-card"><div class="lbl">List</div>消息队列 · 时间线</div>
+  <div class="viz-card"><div class="lbl">Set</div>去重 · 共同好友</div>
+  <div class="viz-card"><div class="lbl">ZSet</div>排行榜 · 延时队列</div>
+  <div class="viz-card"><div class="lbl">Bitmap</div>签到统计</div>
+  <div class="viz-card"><div class="lbl">HyperLogLog</div>UV 统计</div>
+  <div class="viz-card"><div class="lbl">Geo</div>地理位置</div>
+  <div class="viz-card gold"><div class="lbl">Stream</div>消息队列</div>
+</div>
+<div class="viz-flow" style="margin-top:12px">
+  <span class="step">Cache Aside</span>
+  <span class="step">先更新 DB</span><span class="arrow">→</span>
+  <span class="step">再删缓存</span>
+</div>
+<div class="viz-grid c3" style="margin-top:10px">
+  <div class="viz-card r"><div class="lbl">🔴 穿透</div>查不存在的数据 · 布隆过滤器 / 缓存空值</div>
+  <div class="viz-card gold"><div class="lbl">🟡 击穿</div>热点 key 过期 · 互斥锁 / 逻辑过期</div>
+  <div class="viz-card b"><div class="lbl">🔵 雪崩</div>大批 key 同时失效 · 随机过期 / 多级缓存</div>
+</div>`,
+core:`数据类型与场景：String（缓存、计数器、分布式锁）、Hash（对象、购物车）、List（消息队列、时间线）、Set（去重、共同好友）、ZSet（排行榜、延时队列）、Bitmap（签到统计）、HyperLogLog（UV 统计）、Geo（地理位置）、Stream（消息队列）。\n持久化：RDB（快照，fork 子进程，文件小恢复快，可能丢最近一次快照后数据）；AOF（追加日志，可配置每秒／每次写 fsync，数据更完整，文件较大）；混合持久化（RDB＋AOF）。\n过期与淘汰：惰性删除＋定期删除；内存淘汰策略：noeviction、allkeys-lru、volatile-lru、allkeys-lfu、volatile-lfu、allkeys-random、volatile-random、volatile-ttl。\n缓存三大问题：穿透（查询不存在的数据→布隆过滤器、缓存空值、参数校验）；击穿（热点 key 过期瞬间大量请求打库→互斥锁保证一致可能阻塞、逻辑过期返回旧数据＋后台更新牺牲一致）；雪崩（大量 key 同时过期或实例宕机→过期时间加随机值、多级缓存、集群高可用、限流降级）。\n一致性：Cache Aside（先更新 DB 再删缓存）、Read／Write Through、Write Behind（异步写，可能丢数据）。\n高可用：主从复制（异步）、哨兵 Sentinel（监控＋自动故障转移）、Cluster 集群（16384 个哈希槽，去中心化）。\nvs Memcached：Redis 支持丰富数据类型、持久化、主从／集群、Lua 脚本；Memcached 纯内存 KV、多线程、简单、不支持持久化。`, exam:`选做题高频，每年切入角度不同。已考角度：与 Memcached 对比、Redis 数据结构选型、缓存击穿方案对比。\n2025 下半年真题：缓存击穿——王工互斥锁方案（一致性高、可能阻塞）vs 李工逻辑过期方案（性能好、数据可能短暂过期），要求对比并给出建议（按业务一致性要求选择，或两者结合：加锁但设置超时）。\n答题要点：问题定义 → 解决方案 → 优缺点 → 适用场景。`, pit:`穿透／击穿／雪崩三者勿混：穿透=查不存在的数据；击穿=单个热点 key 过期；雪崩=大批 key 同时失效。\n分布式锁释放要用 Lua 脚本保证"判断持有者＋删除"原子性。` },
+
+'c3-2': { chap:3, title:'各种锁', tier:1, tag:'选答 高频', viz:`<div class="viz-title">锁分类全景</div>
+<div class="viz-grid c3">
+  <div class="viz-card b"><div class="lbl">按策略</div>悲观锁 vs 乐观锁</div>
+  <div class="viz-card g"><div class="lbl">按公平</div>公平锁 vs 非公平锁</div>
+  <div class="viz-card r"><div class="lbl">按重入</div>可重入锁（同一线程可重复）</div>
+  <div class="viz-card gold"><div class="lbl">按共享</div>独享锁 vs 共享锁（读写）</div>
+  <div class="viz-card"><div class="lbl">按粒度</div>分段锁（ConcurrentHashMap）</div>
+  <div class="viz-card gold"><div class="lbl">按范围</div>分布式锁（多 JVM）</div>
+</div>
+<div class="viz-title" style="margin-top:14px">分布式锁三要素 + 三大实现对比</div>
+<div class="viz-flow">
+  <span class="step r">互斥性</span>
+  <span class="step gold">安全性</span>
+  <span class="step g">可用性</span>
+</div>
+<table class="viz-table">
+<tr><th class="h">方案</th><th>一致性</th><th>性能</th><th>复杂度</th><th>适用场景</th></tr>
+<tr><td class="h">Redis SETNX + Lua</td><td>中（RedLock 可达强一致）</td><td>高</td><td>低</td><td>中等一致要求、高性能</td></tr>
+<tr><td class="h">ZooKeeper</td><td>强</td><td>中</td><td>中</td><td>强一致、运维熟悉 ZK</td></tr>
+<tr><td class="h">etcd</td><td>强</td><td>中</td><td>中</td><td>K8s 生态、云原生</td></tr>
+</table>`,
+core:`悲观锁 vs 乐观锁：悲观锁（synchronized、ReentrantLock，假设并发冲突，先加锁再操作）；乐观锁（CAS、版本号，假设冲突少，更新前检查版本）。\n公平锁 vs 非公平锁：公平锁按等待顺序获取锁（FIFO），吞吐低；非公平锁允许插队，吞吐高，可能饥饿。\n可重入锁：同一线程可多次获取同一把锁（synchronized、ReentrantLock 都是）；避免死锁。\n独享锁 vs 共享锁：独享锁（写锁，互斥）；共享锁（读锁，多个读可并行）。\n分布式锁：Redis（SETNX ＋ Lua 释放）、ZooKeeper（临时顺序节点）、etcd（租约）。三要素：互斥性、安全性（超时防死锁）、可用性（集群容错）。\n分段锁（ConcurrentHashMap 思想）：降低锁粒度，提升并发。`, exam:`选答常见。问法：对比悲观／乐观锁、对比 Redis／ZooKeeper 分布式锁、解释分布式锁三要素、解决超卖问题方案设计。\n答题要点：场景特征 → 锁的选型 → 实现细节 → 风险与规避。`, pit:`分布式锁不是万能的，单机 Redis 的 SETNX 有丢失风险，生产用 RedLock 或 ZK；锁粒度不宜过粗或过细。\n乐观锁适合读多写少、冲突少；悲观锁适合写多或强一致。盲目混用会导致性能或正确性问题。` },
+
+'c3-3': { chap:3, title:'哈希与一致性哈希', tier:2, tag:'选答', viz:`<div class="viz-title">取模 vs 一致性哈希 — 扩容迁移对比</div>
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
+  <defs>
+    <marker id="ar33c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--crimson)"/>
+    </marker>
+    <marker id="ar33d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ivory-3)"/>
+    </marker>
+  </defs>
+
+  <!-- LEFT: 普通取模 -->
+  <text x="140" y="20" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">普通取模 N=3</text>
+  <g font-family="JetBrains Mono" font-size="11" fill="var(--ivory-3)">
+    <rect x="20" y="40" width="240" height="60" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="30" y="58" fill="var(--crimson)">key % 3</text>
+    <text x="30" y="78">N=3 → N=4 时</text>
+    <text x="30" y="94" fill="var(--crimson)">≈ 75% 数据需迁移</text>
+    <rect x="20" y="110" width="240" height="120" rx="4" fill="var(--ink-2)" stroke="var(--crimson)"/>
+    <text x="30" y="128">key = hash() % N</text>
+    <text x="30" y="148" fill="var(--ivory-1)">• 简单直接</text>
+    <text x="30" y="166" fill="var(--ivory-1)">• 扩容几乎全迁移</text>
+    <text x="30" y="184" fill="var(--ivory-1)">• 数据易倾斜</text>
+    <text x="30" y="210" fill="var(--emerald)">✓ 适合固定节点数</text>
+  </g>
+
+  <!-- RIGHT: 一致性哈希环 -->
+  <text x="420" y="20" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">一致性哈希环</text>
+
+  <!-- Ring (center 420,150, r=80) -->
+  <circle cx="420" cy="150" r="80" fill="none" stroke="var(--azure)" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- Clockwise direction indicator (top arc, going right) -->
+  <path d="M 395 75 A 70 70 0 0 1 445 75" fill="none" stroke="var(--ivory-3)" stroke-width="1" marker-end="url(#ar33d)"/>
+  <text x="420" y="240" text-anchor="middle" fill="var(--ivory-3)" font-size="9">↑ 起点 0 · 顺时针找下一节点</text>
+
+  <!-- 3 physical nodes on ring -->
+  <!-- A at 12 o'clock: (420, 70) -->
+  <circle cx="420" cy="70" r="7" fill="var(--gold-2)" stroke="var(--ink-0)" stroke-width="1.5"/>
+  <text x="420" y="56" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-weight="700" font-family="Noto Serif SC">A</text>
+
+  <!-- B at 4 o'clock (θ=120): x=420+80·sin120=489, y=150-80·cos120=190 -->
+  <circle cx="489" cy="190" r="7" fill="var(--azure)" stroke="var(--ink-0)" stroke-width="1.5"/>
+  <text x="504" y="195" fill="var(--azure)" font-size="13" font-weight="700" font-family="Noto Serif SC">B</text>
+
+  <!-- C at 8 o'clock (θ=240): x=351, y=190 -->
+  <circle cx="351" cy="190" r="7" fill="var(--emerald)" stroke="var(--ink-0)" stroke-width="1.5"/>
+  <text x="336" y="195" text-anchor="end" fill="var(--emerald)" font-size="13" font-weight="700" font-family="Noto Serif SC">C</text>
+
+  <!-- 3 keys on ring, each maps to its next clockwise node -->
+  <!-- key1 at 2 o'clock (θ=60): x=489, y=110 → next CW = B -->
+  <circle cx="489" cy="110" r="4" fill="var(--crimson)"/>
+  <text x="503" y="107" fill="var(--crimson)" font-size="10" font-family="JetBrains Mono">key1</text>
+  <path d="M 489 110 A 80 80 0 0 1 489 190" fill="none" stroke="var(--crimson)" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#ar33c)"/>
+
+  <!-- key2 at 6 o'clock (θ=180): x=420, y=230 → next CW = C -->
+  <circle cx="420" cy="230" r="4" fill="var(--crimson)"/>
+  <text x="430" y="234" fill="var(--crimson)" font-size="10" font-family="JetBrains Mono">key2</text>
+  <path d="M 420 230 A 80 80 0 0 1 351 190" fill="none" stroke="var(--crimson)" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#ar33c)"/>
+
+  <!-- key3 at 10 o'clock (θ=300): x=351, y=110 → next CW = A -->
+  <circle cx="351" cy="110" r="4" fill="var(--crimson)"/>
+  <text x="337" y="107" text-anchor="end" fill="var(--crimson)" font-size="10" font-family="JetBrains Mono">key3</text>
+  <path d="M 351 110 A 80 80 0 0 1 420 70" fill="none" stroke="var(--crimson)" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#ar33c)"/>
+</svg>
+<div class="viz-grid c2" style="margin-top:8px">
+  <div class="viz-card r"><div class="lbl">扩容迁移</div>≈ 75%（基本全迁）</div>
+  <div class="viz-card g"><div class="lbl">扩容迁移</div>≈ 1/N（仅相邻节点）</div>
+</div>
+<div class="viz-card gold" style="margin-top:8px"><div class="lbl">💡 虚拟节点</div>每个物理节点映射 100~200 虚拟节点到环上 — 数据均匀分布</div>`,
+core:`普通哈希取模：hash(key) % N，N 为节点数。简单但扩容／缩容时几乎所有 key 都要重新映射（数据大规模迁移）。\n一致性哈希：将哈希空间组织成 0~2^32 的环形，每个节点映射到环上一个位置，每个 key 顺时针找到最近的节点存储。\n一致性哈希特性：增删节点只影响相邻节点区间内的 key，迁移量小（1/N）；数据分布可能不均——通过虚拟节点（每个物理节点映射若干虚拟节点到环上）解决均匀性问题。\n适用场景：分布式缓存（Memcached／Redis Cluster）、分布式存储（Cassandra／DynamoDB）、CDN 节点选路。`, exam:`选答常见，常与 Redis Cluster／分布式存储结合考查。问法：解释一致性哈希原理；对比取模方案；说明虚拟节点的作用；扩容后数据迁移情况分析。\n真题印证：2024 上半年（分布式缓存一致性哈希）、2023 上半年（Redis Cluster 哈希槽）。`, pit:`一致性哈希并不保证强一致性，只是降低了扩容／缩容时的迁移量。\n虚拟节点数越多分布越均匀，但元数据开销也越大，一般取 100~200 即可。` },
+
+'c3-4': { chap:3, title:'数据库性能提升', tier:1, tag:'选答 高频', viz:`<div class="viz-title">EXPLAIN type 性能阶梯（从最优到最差）</div>
+<div class="viz-stack">
+  <div class="layer" style="background:rgba(93,138,111,.15);border-color:var(--emerald)"><span><b>system</b></span><span class="n" style="color:var(--emerald)">⭐ 单行系统表</span></div>
+  <div class="layer" style="background:rgba(93,138,111,.15);border-color:var(--emerald)"><span><b>const</b></span><span class="n" style="color:var(--emerald)">主键/唯一索引</span></div>
+  <div class="layer" style="background:rgba(93,138,111,.15);border-color:var(--emerald)"><span><b>eq_ref</b></span><span class="n" style="color:var(--emerald)">JOIN 主键/唯一</span></div>
+  <div class="layer" style="background:rgba(212,168,95,.1);border-color:var(--gold-2)"><span><b>ref</b></span><span class="n" style="color:var(--gold-1)">非唯一索引</span></div>
+  <div class="layer" style="background:rgba(212,168,95,.1);border-color:var(--gold-2)"><span><b>range</b></span><span class="n" style="color:var(--gold-1)">范围扫描</span></div>
+  <div class="layer" style="background:rgba(200,85,61,.1);border-color:var(--crimson)"><span><b>index</b></span><span class="n" style="color:var(--crimson)">全索引扫描</span></div>
+  <div class="layer" style="background:rgba(200,85,61,.15);border-color:var(--crimson)"><span><b>ALL</b></span><span class="n" style="color:var(--crimson)">⚠️ 全表扫描</span></div>
+</div>
+<div class="viz-title" style="margin-top:14px">优化手段速记</div>
+<div class="viz-grid c3">
+  <div class="viz-card b"><div class="lbl">索引</div>B+树 · 覆盖 · 联合索引最左前缀</div>
+  <div class="viz-card g"><div class="lbl">SQL</div>避免 SELECT * / 函数 / 深分页</div>
+  <div class="viz-card gold"><div class="lbl">架构</div>读写分离 · 分库分表 · 连接池</div>
+</div>`,
+core:`索引：B+树索引；覆盖索引（不回表）；联合索引最左前缀原则；唯一索引、普通索引、前缀索引。\n慢 SQL 优化：EXPLAIN 分析执行计划，关注 type（system > const > eq_ref > ref > index > ALL）、key、rows、Extra（Using filesort／Using temporary）。\n常见手段：避免 SELECT *、避免在 WHERE 子句函数运算、合理分页（深分页用延迟关联）、避免不必要的 DISTINCT／ORDER BY。\n读写分离：一主多从，主写从读写副优化查询；分库分表（垂直／水平）应对大数据量。\n连接池：HikariCP／Druid 控制连接数与超时；批处理减少连接次数。\n事务隔离级别：READ UNCOMMITTED < READ COMMITTED < REPEATABLE READ < SERIALIZABLE；MySQL InnoDB 默认 REPEATABLE READ（间隙锁防幻读）。`, exam:`选答常见，常与分库分表结合考查。问法：慢 SQL 优化步骤、EXPLAIN 字段解读、读写分离实现、深分页问题。\n真题印证：2024 上半年（SQL 优化）、历年多次考查分库分表。`, pit:`索引不是越多越好：占用空间、降低写入速度、维护成本。\n深分页（OFFSET 大）会让 MySQL 扫描大量无用行；用延迟关联（先查 ID 再 JOIN）或游标分页（基于上次结果）。` },
+
+'c3-5': { chap:3, title:'各种 NoSQL', tier:2, tag:'选答', viz:`<div class="viz-title">NoSQL 五大家族 + CAP 三角定位</div>
+<svg viewBox="0 0 200 200" class="tri">
+  <polygon points="100,15 175,160 25,160" fill="none" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="4" fill="var(--gold-2)"/>
+  <text x="100" y="12" text-anchor="middle" fill="var(--ivory-3)" font-size="11">P (必选)</text>
+  <text x="105" y="100" fill="var(--crimson)" font-size="13" font-weight="bold">C</text>
+  <text x="100" y="175" text-anchor="middle" fill="var(--emerald)" font-size="13" font-weight="bold">A</text>
+  <circle cx="40" cy="155" r="3" fill="var(--crimson)"/><text x="48" y="152" fill="var(--ivory-3)" font-size="9">CP</text>
+  <circle cx="160" cy="155" r="3" fill="var(--emerald)"/><text x="140" y="152" fill="var(--ivory-3)" font-size="9">AP</text>
+</svg>
+<table class="viz-table" style="margin-top:8px">
+<tr><th class="h">类型</th><th>代表产品</th><th>数据模型</th><th>典型场景</th></tr>
+<tr><td class="h">键值 KV</td><td>Redis / Memcached</td><td>hash 表</td><td>缓存 / 计数器 / 分布式锁</td></tr>
+<tr><td class="h">文档</td><td>MongoDB / CouchDB</td><td>JSON / BSON</td><td>内容管理 / IoT / 半结构化</td></tr>
+<tr><td class="h">列族</td><td>HBase / Cassandra</td><td>Wide Column</td><td>时序 / 海量稀疏 / LSM-Tree</td></tr>
+<tr><td class="h">图</td><td>Neo4j / JanusGraph</td><td>节点+边</td><td>社交网络 / 知识图谱 / 推荐</td></tr>
+<tr><td class="h">时序</td><td>InfluxDB / TDengine</td><td>时间戳 + 指标</td><td>监控 / IoT / 金融行情</td></tr>
+<tr><td class="h">搜索</td><td>Elasticsearch</td><td>倒排索引</td><td>全文检索 / 聚合 / 向量 KNN</td></tr>
+</table>`,
+core:`键值（KV）：Redis、Memcached、DynamoDB。适合缓存、计数器、分布式锁。\n文档：MongoDB、CouchDB。Schema-free，存 JSON／BSON；适合内容管理、IoT、半结构化数据。\n列族（Wide Column）：HBase、Cassandra。按列族存储，适合海量稀疏数据、时序数据；LSM-Tree 写入快。\n图：Neo4j、JanusGraph。关系遍历快（避免 JOIN 爆炸），适合社交网络、知识图谱、推荐系统。\n时序：InfluxDB、TimescaleDB、TDengine。高写入压缩、按时间窗口聚合，适合监控、IoT、金融行情。\n搜索：Elasticsearch（ES，倒排索引）。全文检索、聚合分析、向量检索（KNN）。\nCAP 三角：一致性（Consistency）、可用性（Availability）、分区容错（Partition tolerance）。P 必选，CA／CP／AP 三选二。`, exam:`选答常见，与 CAP 定理结合。问法：根据场景选 NoSQL 类型；解释 CAP／BASE；对比关系型数据库与 NoSQL；说明 ES 倒排索引。\n答题要点：场景特征 → 数据模型 → 一致性／扩展性／查询能力 → 选型理由。`, pit:`NoSQL 不是替代关系型，而是补充。事务强一致、复杂 JOIN、报表统计仍以 RDBMS 为主。\nES 不是数据库，不适合作为唯一存储，需配合主库（MySQL／Postgres）做数据源。` },
+
+'c3-6': { chap:3, title:'向量数据库', tier:3, tag:'选答 加分', viz:`<div class="viz-title">RAG 检索增强生成 · 完整流程</div>
+<div class="viz-flow">
+  <span class="step">用户 Query</span><span class="arrow">→</span>
+  <span class="step b">Embedding 模型</span><span class="arrow">→</span>
+  <span class="step gold">Query 向量</span><span class="arrow">→</span>
+  <span class="step b">向量库 ANN</span><span class="arrow">→</span>
+  <span class="step">Top-K 召回</span><span class="arrow">→</span>
+  <span class="step">Rerank 重排</span><span class="arrow">→</span>
+  <span class="step g">LLM 生成</span><span class="arrow">→</span>
+  <span class="step">最终回答</span>
+</div>
+<div class="viz-grid c2" style="margin-top:12px">
+  <div class="viz-card b"><div class="lbl">ANN 索引算法</div>HNSW（图·快内存高） · IVF（倒排·聚类） · PQ（量化·压缩）</div>
+  <div class="viz-card gold"><div class="lbl">代表产品</div>Milvus · Qdrant · Weaviate · Chroma · pgvector</div>
+</div>
+<div class="viz-card r" style="margin-top:8px"><div class="lbl">⚠️ 纯向量检索的局限</div>混合检索（BM25 + 向量）效果更稳 — 关键词命中 + 语义匹配双保险</div>`,
+core:`Embedding：把文本、图片等映射为高维向量（512~4096 维），语义相近的内容在向量空间中距离近。常见模型：OpenAI text-embedding-3、bge-large-zh（中文）、m3e。\n向量检索：KNN（精确，最近邻，慢）、ANN（近似最近邻，快）。ANN 算法：HNSW（图索引，查询快内存高）、IVF（倒排，聚类）、PQ（乘积量化，压缩）。\n向量数据库：Milvus、Qdrant、Weaviate、Chroma、pgvector（PostgreSQL 扩展）。\n典型流程：Query → Embedding 模型 → 向量 → ANN 检索 → Top-K 结果 → 重排（Cross-Encoder）→ 回答。\nRAG 关键组件：向量库管"知识"，LLM 管"生成"；结合实现知识问答、私域知识助手。`, exam:`新热点，与 AI 大模型结合考查。问法：解释 Embedding 原理、RAG 流程、向量库选型、向量检索 vs 全文检索对比。\n真题印证：2025 上半年（结合大模型考 RAG）、2025 下半年（向量检索应用）。`, pit:`向量检索 ≠ 语义检索：纯向量可能错过关键词命中；混合检索（BM25 + 向量）效果更稳。\nEmbedding 模型选型决定检索质量，bge-large-zh 在中文场景优于通用英文模型。` },
+
+'c3-7': { chap:3, title:'NewSQL', tier:2, tag:'选答 加分', viz:`<div class="viz-title">NewSQL 三角定位：SQL + ACID + 水平扩展</div>
+<svg viewBox="0 0 360 240" class="tri">
+  <polygon points="180,30 320,200 40,200" fill="rgba(212,168,95,.06)" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <text x="180" y="25" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-weight="bold">水平扩展</text>
+  <text x="50" y="220" fill="var(--azure)" font-size="13" font-weight="bold">SQL 接口</text>
+  <text x="270" y="220" fill="var(--emerald)" font-size="13" font-weight="bold">ACID 事务</text>
+  <circle cx="180" cy="140" r="50" fill="var(--ink-1)" stroke="var(--gold-2)" stroke-width="2"/>
+  <text x="180" y="138" text-anchor="middle" fill="var(--gold-1)" font-size="15" font-weight="bold">NewSQL</text>
+  <text x="180" y="156" text-anchor="middle" fill="var(--ivory-3)" font-size="10">三者兼得</text>
+</svg>
+<div class="viz-grid c3" style="margin-top:10px">
+  <div class="viz-card gold"><div class="lbl">TiDB</div>兼容 MySQL · Raft 共识 · HTAP</div>
+  <div class="viz-card gold"><div class="lbl">OceanBase</div>兼容 MySQL/Oracle · Paxos · 金融级</div>
+  <div class="viz-card gold"><div class="lbl">PolarDB / CockroachDB</div>存储分离 / 全球分布</div>
+</div>`,
+core:`定义：同时具备关系型 SQL 接口、ACID 事务与水平扩展能力的新型数据库。\n代表产品：TiDB（兼容 MySQL 协议，Raft 共识，HTAP 行列混合）、OceanBase（兼容 MySQL／Oracle，自研 Paxos，金融级高可用）、PolarDB（阿里云，存储计算分离）、CockroachDB（兼容 PostgreSQL，全球分布）。\n核心能力：分布式事务（Percolator／2PC）、水平扩展（自动 sharding）、强一致（Raft／Paxos 多副本）、HTAP（混合事务与分析处理）。\n适用场景：金融核心、互联网高并发、海量数据 OLTP、对一致性要求高的分布式系统。\nvs 传统分库分表（MySQL Sharding）：NewSQL 自动分片无需改应用；vs NoSQL：保留 SQL 与事务。`, exam:`选答加分配。问法：NewSQL vs 传统分库分表、TiDB／OceanBase 架构、HTAP 场景、分布式事务实现。\n真题印证：2024 上半年（NewSQL 数据库选型）、2025 下半年（云原生数据库）。`, pit:`NewSQL 性能不是线性扩展：跨节点 JOIN、分布式事务开销随节点数上升；单表热点仍是瓶颈。\n不要为了"分布式"盲目上 NewSQL，单库能撑住时不要过度设计。` },
+
+'c3-8': { chap:3, title:'数据库高可用', tier:1, tag:'选答 高频', viz:`<div class="viz-title">主从复制 + 自动故障转移</div>
+<svg viewBox="0 0 560 200">
+  <defs><marker id="arr8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--gold-2)"/></marker></defs>
+  <rect x="40" y="60" width="80" height="50" rx="4" fill="rgba(212,168,95,.18)" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <text x="80" y="85" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">Master</text>
+  <text x="80" y="102" text-anchor="middle" fill="var(--ivory-3)" font-size="10">主 · 写</text>
+  <rect x="280" y="30" width="80" height="50" rx="4" fill="rgba(74,111,165,.15)" stroke="var(--azure)"/>
+  <text x="320" y="55" text-anchor="middle" fill="var(--azure)" font-size="12">Slave-1</text>
+  <text x="320" y="72" text-anchor="middle" fill="var(--ivory-3)" font-size="10">从 · 读</text>
+  <rect x="280" y="100" width="80" height="50" rx="4" fill="rgba(74,111,165,.15)" stroke="var(--azure)"/>
+  <text x="320" y="125" text-anchor="middle" fill="var(--azure)" font-size="12">Slave-2</text>
+  <text x="320" y="142" text-anchor="middle" fill="var(--ivory-3)" font-size="10">从 · 读</text>
+  <rect x="280" y="170" width="80" height="50" rx="4" fill="rgba(74,111,165,.15)" stroke="var(--azure)" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <text x="320" y="195" text-anchor="middle" fill="var(--azure)" font-size="12">Slave-3</text>
+  <text x="320" y="212" text-anchor="middle" fill="var(--ivory-3)" font-size="10">候选 · 待晋升</text>
+  <line x1="120" y1="85" x2="280" y2="55" stroke="var(--gold-2)" marker-end="url(#arr8)"/>
+  <line x1="120" y1="85" x2="280" y2="125" stroke="var(--gold-2)" marker-end="url(#arr8)"/>
+  <line x1="120" y1="85" x2="280" y2="195" stroke="var(--gold-2)" marker-end="url(#arr8)" stroke-dasharray="3 3"/>
+  <text x="200" y="45" text-anchor="middle" fill="var(--gold-2)" font-size="10">复制</text>
+  <text x="200" y="115" text-anchor="middle" fill="var(--gold-2)" font-size="10">复制</text>
+  <rect x="430" y="100" width="100" height="50" rx="4" fill="rgba(93,138,111,.12)" stroke="var(--emerald)" stroke-width="1.5"/>
+  <text x="480" y="125" text-anchor="middle" fill="var(--emerald)" font-size="12">Sentinel</text>
+  <text x="480" y="142" text-anchor="middle" fill="var(--ivory-3)" font-size="10">监控 + 自动切换</text>
+  <line x1="360" y1="125" x2="430" y2="125" stroke="var(--emerald)" stroke-dasharray="2 2" marker-end="url(#arr8)"/>
+</svg>
+<div class="viz-grid c3" style="margin-top:10px">
+  <div class="viz-card r"><div class="lbl">异步复制</div>性能高 · 可能丢数据</div>
+  <div class="viz-card gold"><div class="lbl">半同步</div>至少一从确认 · 平衡</div>
+  <div class="viz-card g"><div class="lbl">同步 / Raft</div>强一致 · 性能低</div>
+</div>`,
+core:`主从复制：异步（默认，性能好可能丢数据）、半同步（至少一从确认）、同步（强一致性能差）。\n故障切换：VIP 漂移 + Keepalived、Orchestrator、MHA（MySQL 高可用）、MGR（MySQL Group Replication，多主／单主，强一致）。\n读写分离代理：MyCat、ShardingSphere-Proxy、MaxScale、ProxySQL。\n双主／多主：Galera Cluster（同步多主，并发写冲突）、基于 Raft 的分布式数据库（TiDB／OceanBase）。\n备份与恢复：全量＋binlog 增量；PITR（Point-In-Time Recovery）；定期演练恢复流程。\n监控指标：连接数、QPS／TPS、慢查询、主从延迟、磁盘 IO、锁等待。`, exam:`选答常见。问法：主从切换过程、半同步 vs 异步对比、双主架构冲突处理、备份恢复方案。\n答题要点：架构图 + 故障检测 + 切换流程 + 数据保护 + 监控告警。`, pit:`半同步不能完全保证不丢数据，只有"至少一从收到"而非"已应用"；强一致场景用同步复制或共识协议。\n主从切换后应用要重连或重试，连接池需支持重连；VIP 漂移有脑裂风险，需双 VIP 互备。` },
+
+'c3-9': { chap:3, title:'数据分片', tier:1, tag:'选答 高频', viz:`<div class="viz-title">垂直分片 vs 水平分片 + 三大策略</div>
+<div class="viz-grid c2">
+  <div class="viz-card b"><div class="lbl">垂直分片（按业务）</div>用户库 · 订单库 · 商品库 — 降低单库压力 · 跨库 JOIN 难</div>
+  <div class="viz-card g"><div class="lbl">水平分片（按行）</div>按 user_id 取模 / 时间 / 地域 — 适合数据爆炸增长</div>
+</div>
+<table class="viz-table" style="margin-top:10px">
+<tr><th class="h">分片策略</th><th>分布均匀</th><th>扩容迁移</th><th>范围查询</th><th>典型场景</th></tr>
+<tr><td class="h">Hash 取模</td><td>⭐⭐⭐</td><td>几乎全迁</td><td>❌</td><td>固定节点 · 高均匀</td></tr>
+<tr><td class="h">Range 范围</td><td>可能热点</td><td>只迁新区间</td><td>⭐⭐⭐</td><td>时序 · 范围查询</td></tr>
+<tr><td class="h">一致性哈希</td><td>⭐⭐ (虚拟节点⭐⭐⭐)</td><td>仅相邻 ≈ 1/N</td><td>❌</td><td>分布式缓存 · 弹性伸缩</td></tr>
+</table>
+<div class="viz-flow" style="margin-top:10px">
+  <span class="step gold">分片键选择</span>
+  <span class="step b">高区分度</span>
+  <span class="step g">稳定不频繁变</span>
+  <span class="step">常用查询字段</span>
+</div>`,
+core:`垂直分片（按业务拆分）：用户库、订单库、商品库。降低单库压力，跨库 JOIN 难。\n水平分片（按行拆分）：按用户 ID 取模、按时间、按地域。适合数据量爆炸式增长的单业务。\n分片键（Sharding Key）选择：高区分度（避免数据倾斜）、稳定（避免迁移）、常用查询字段。\n分片策略：Hash 取模（均匀但扩容难）、Range 范围（范围查询友好但可能热点）、一致性哈希（扩容迁移少）。\n中间件：ShardingSphere-JDBC（客户端）、ShardingSphere-Proxy（服务端代理）、MyCat（独立服务）。\n跨分片查询：广播表（冗余）、ER 表（按主外键绑定）、异构索引（宽表冗余）、分布式事务（Seata）。`, exam:`选答高频。问法：分片键选型、水平 vs 垂直、ShardingSphere 实现原理、跨分片 JOIN 方案、扩容迁移方案。\n真题印证：2023 下半年（数据分片方案设计）、2024 上半年（分库分表）。`, pit:`分片键一旦选定很难改；分片数预留富余（2 的幂次）方便扩容。\n跨片 JOIN、跨片事务、跨片 ORDER BY 性能差，能避免就避免，必要时用宽表／冗余。` },
+
+'c4-1': { chap:4, title:'分布式系统', tier:1, tag:'选答 高频', viz:`<div class="viz-title">CAP 三角 + BASE + 共识算法</div>
+<svg viewBox="0 0 320 260" class="tri">
+  <polygon points="160,20 290,210 30,210" fill="none" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <text x="160" y="14" text-anchor="middle" fill="var(--ivory-3)" font-size="11">P 必选 (网络分区容错)</text>
+  <circle cx="160" cy="140" r="5" fill="var(--gold-2)"/>
+  <text x="170" y="130" fill="var(--crimson)" font-size="16" font-weight="bold">C</text>
+  <text x="170" y="148" fill="var(--ivory-3)" font-size="9">Consistency</text>
+  <text x="100" y="225" fill="var(--azure)" font-size="16" font-weight="bold">A</text>
+  <text x="100" y="240" text-anchor="middle" fill="var(--ivory-3)" font-size="9">Availability</text>
+  <text x="220" y="225" fill="var(--emerald)" font-size="16" font-weight="bold">P</text>
+  <text x="220" y="240" text-anchor="middle" fill="var(--ivory-3)" font-size="9">Partition tol.</text>
+  <text x="60" y="200" fill="var(--crimson)" font-size="10">CA · 单机 RDBMS</text>
+  <text x="220" y="200" fill="var(--emerald)" font-size="10">AP · Eureka/Cassandra</text>
+  <text x="140" y="200" fill="var(--azure)" font-size="10">CP · HBase/etcd</text>
+</svg>
+<div class="viz-title" style="margin-top:10px">BASE = 放弃强一致的 AP 设计哲学</div>
+<div class="viz-flow">
+  <span class="step b">B</span><span class="step">Basically Available 基本可用</span>
+  <span class="step g">S</span><span class="step">Soft state 软状态</span>
+  <span class="step gold">E</span><span class="step">Eventually consistent 最终一致</span>
+</div>
+<div class="viz-grid c2" style="margin-top:10px">
+  <div class="viz-card gold"><div class="lbl">Raft 三角色</div>Leader（主） · Follower（从） · Candidate（候选）</div>
+  <div class="viz-card b"><div class="lbl">Snowflake 64 位</div>1 符号 + 41 时间戳 + 10 机器 + 12 序列</div>
+</div>`,
+core:`CAP 定理：一致性（Consistency）、可用性（Availability）、分区容错（Partition tolerance）三者不可兼得，必须选 P。CA（传统 RDBMS）、CP（HBase、Redis Cluster 强一致模式）、AP（Eureka、Cassandra）。\nBASE 理论：Basically Available（基本可用）、Soft state（软状态）、Eventually consistent（最终一致）。是 AP 系统的设计哲学。\n分布式事务：2PC（两阶段提交，强一致但协调者单点）、3PC（加预提交阶段，降低阻塞但实现复杂）、TCC（Try-Confirm-Cancel，业务侵入强）、Saga（长事务拆分＋补偿）、本地消息表（最终一致）、RocketMQ 事务消息。\n共识算法：Paxos（理论奠基，难实现）、Raft（易理解，etcd／TiDB 使用）：Leader 选举＋日志复制＋安全性。\n分布式 ID：雪花算法 Snowflake（64 位：时间戳＋机器 ID＋序列号）、UUID（无序索引差）、Leaf（美团，号段模式）、Redis INCR。\n负载均衡：轮询、加权轮询、最少连接、一致性哈希；硬件（F5）／软件（Nginx、LVS、HAProxy）。`, exam:`选答高频，分布式事务是必考点。问法：CAP 三选二的取舍、2PC 流程与缺陷、Raft 选举、Saga 补偿、雪花算法组成。\n真题印证：2024 上半年（分布式事务方案）、历年多次考查共识算法。`, pit:`分布式事务没"银弹"：2PC 阻塞、3PC 实现难、TCC 侵入、Saga 补偿链长——按场景选方案。\n雪花算法时钟回拨会重复 ID；用美团 Leaf / 百度 UidGenerator 等成熟方案规避。` },
+
+'c4-2': { chap:4, title:'ELK', tier:3, tag:'选答', viz:`<div class="viz-title">ELK / EFK 日志架构</div>
+<div class="viz-flow">
+  <span class="step">应用 / 容器</span><span class="arrow">→</span>
+  <span class="step b">Filebeat 采集</span><span class="arrow">→</span>
+  <span class="step g">Logstash 清洗</span><span class="arrow">→</span>
+  <span class="step gold">ES 存储</span><span class="arrow">→</span>
+  <span class="step r">Kibana 可视化</span>
+</div>
+<div class="viz-grid c2" style="margin-top:12px">
+  <div class="viz-card b"><div class="lbl">Filebeat</div>轻量日志采集 · 占资源少</div>
+  <div class="viz-card g"><div class="lbl">Logstash</div>filter 解析（grok / mutate）</div>
+  <div class="viz-card gold"><div class="lbl">Elasticsearch</div>倒排索引 · 近实时 NRT</div>
+  <div class="viz-card r"><div class="lbl">Kibana</div>Discover / Dashboard / Canvas</div>
+</div>
+<div class="viz-card" style="margin-top:8px"><div class="lbl">💡 国产替代 / 轻量方案</div>EFK 直送模式（跳过 Logstash）+ Loki（按标签索引 + Grafana）+ SLS（日志服务）</div>`,
+core:`Elasticsearch（ES）：分布式搜索与分析引擎，基于 Lucene，倒排索引；近实时（NRT，1s 延迟）；RESTful API。\nLogstash：日志收集／解析／转换／输出；filter 插件（grok、mutate、date）；性能较重，常被 Beats 替代采集。\nBeats：轻量采集器族——Filebeat（日志）、Metricbeat（指标）、Packetbeat（网络）、Winlogbeat（Windows 日志）。\nKibana：可视化平台，Discover、Visualize、Dashboard、Canvas。\nELK 典型部署：Filebeat → Logstash（清洗）→ ES → Kibana。或更轻量 EFK（Filebeat → ES → Kibana）。\nvs 国产方案：EFK（云原生）、Loki（Promtail + Loki + Grafana，轻量按标签索引）、SLS（日志服务）。`, exam:`选答常见，与运维监控结合。问法：ELK 各组件职责、为何用 Beats 替 Logstash、Kibana 可视化类型、ES vs Loki 选型。\n真题印证：2023 上半年（ELK 日志架构）。`, pit:`ES 不是数据库，不适合做主存储；JVM 内存默认不超过 32G（指针压缩上限）。\nLogstash 性能瓶颈在 filter 复杂 grok；大日志场景用 Filebeat 直送 ES + Ingest Pipeline。` },
+
+'c4-3': { chap:4, title:'大数据架构', tier:1, tag:'选答 高频', viz:`<div class="viz-title">Lambda vs Kappa · 双链路对比</div>
+<svg viewBox="0 0 560 260">
+  <text x="140" y="20" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-weight="bold">Lambda（双链路）</text>
+  <text x="420" y="20" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-weight="bold">Kappa（单链路）</text>
+  <rect x="20" y="40" width="240" height="180" rx="6" fill="none" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <rect x="420" y="40" width="140" height="180" rx="6" fill="none" stroke="var(--emerald)" stroke-width="1.5"/>
+  <g class="hs-target" data-hs-title="数据源 → Kafka" data-hs-desc="两条架构共用的入口。所有原始事件进入 Kafka，作为可重放的事件日志（Kappa 的核心：长期保留历史）。">
+    <rect x="50" y="60" width="180" height="30" rx="3" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="140" y="80" text-anchor="middle" fill="var(--ivory-1)" font-size="11">数据源 → Kafka</text>
+  </g>
+  <line x1="140" y1="90" x2="80" y2="120" stroke="var(--crimson)" marker-end="url(#arr8)"/>
+  <line x1="140" y1="90" x2="200" y2="120" stroke="var(--gold-2)" marker-end="url(#arr8)"/>
+  <g class="hs-target" data-hs-title="速度层 (Lambda)" data-hs-desc="处理近期增量数据，结果近似。Flink/Storm 等流处理引擎。补强 Lambda 实时性的关键层。">
+    <rect x="50" y="120" width="60" height="40" rx="3" fill="rgba(93,138,111,.15)" stroke="var(--emerald)"/>
+    <text x="80" y="138" text-anchor="middle" fill="var(--emerald)" font-size="10">速度层</text>
+    <text x="80" y="152" text-anchor="middle" fill="var(--ivory-3)" font-size="9">Flink/Storm</text>
+  </g>
+  <g class="hs-target" data-hs-title="批处理层 (Lambda)" data-hs-desc="离线计算全量历史数据，结果准确但延迟高（小时级）。Spark/Hadoop/Hive。承担 Lambda 的准确性职责。">
+    <rect x="170" y="120" width="60" height="40" rx="3" fill="rgba(74,111,165,.15)" stroke="var(--azure)"/>
+    <text x="200" y="138" text-anchor="middle" fill="var(--azure)" font-size="10">批处理层</text>
+    <text x="200" y="152" text-anchor="middle" fill="var(--ivory-3)" font-size="9">Spark/Hadoop</text>
+  </g>
+  <line x1="80" y1="160" x2="140" y2="195" stroke="var(--emerald)" marker-end="url(#arr8)"/>
+  <line x1="200" y1="160" x2="140" y2="195" stroke="var(--azure)" marker-end="url(#arr8)"/>
+  <g class="hs-target" data-hs-title="合并查询 (Lambda)" data-hs-desc="对外查询合并批处理 + 速度层结果：实时数据走速度层补全，历史准确数据走批处理层。Lambda 标志。">
+    <rect x="100" y="195" width="80" height="20" rx="3" fill="var(--gold-2)"/>
+    <text x="140" y="209" text-anchor="middle" fill="var(--ink-0)" font-size="10" font-weight="bold">合并查询</text>
+  </g>
+  <g class="hs-target" data-hs-title="Kafka 长期保留 (Kappa)" data-hs-desc="Kappa 的关键：Kafka 不再做短期缓冲，而是长期保留所有历史事件（按存储周期）。重放 = 重新计算。">
+    <rect x="450" y="60" width="80" height="30" rx="3" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="490" y="80" text-anchor="middle" fill="var(--ivory-1)" font-size="10">Kafka 长期保留</text>
+  </g>
+  <line x1="490" y1="90" x2="490" y2="120" stroke="var(--emerald)" marker-end="url(#arr8)"/>
+  <g class="hs-target" data-hs-title="Flink 统一流批 (Kappa)" data-hs-desc="单一 Flink 引擎处理所有数据（实时 + 通过重放历史替代批处理）。一套代码处理所有场景。">
+    <rect x="450" y="120" width="80" height="40" rx="3" fill="rgba(93,138,111,.15)" stroke="var(--emerald)"/>
+    <text x="490" y="138" text-anchor="middle" fill="var(--emerald)" font-size="10">Flink</text>
+    <text x="490" y="152" text-anchor="middle" fill="var(--ivory-3)" font-size="9">统一流批</text>
+  </g>
+  <line x1="490" y1="160" x2="490" y2="195" stroke="var(--emerald)" marker-end="url(#arr8)"/>
+  <g class="hs-target" data-hs-title="查询 (Kappa)" data-hs-desc="所有查询直接走 Flink 处理结果，无须合并双链路。架构简洁，运维成本低。">
+    <rect x="450" y="195" width="80" height="20" rx="3" fill="var(--emerald)"/>
+    <text x="490" y="209" text-anchor="middle" fill="var(--ink-0)" font-size="10" font-weight="bold">查询</text>
+  </g>
+</svg>
+<div class="viz-grid c2" style="margin-top:10px">
+  <div class="viz-card gold"><div class="lbl">Lambda 优势</div>成熟 · 离线分析全量 · 准确</div>
+  <div class="viz-card g"><div class="lbl">Kappa 优势</div>架构简单 · 实时强 · 代码单一</div>
+</div>`,
+core:`Lambda 架构：批处理层（Batch Layer，Hadoop／Spark，离线计算全量数据，结果准确但延迟高）＋ 服务层（Serving Layer，索引查询）＋ 速度层（Speed Layer，Storm／Flink，实时计算增量数据，结果近似但低延迟）。同一查询合并两层结果。\nKappa 架构：用单一流处理引擎（Kafka + Flink）处理所有数据，不区分批流；数据可重放（Kafka 保留所有历史）。架构更简单，但依赖消息中间件存储能力。\n数据分层：ODS（原始数据）→ DWD（明细）→ DWS（汇总）→ ADS（应用）；数仓建模：范式建模（Inmon）vs 维度建模（Kimball，星型／雪花模型）。\n湖仓一体：Iceberg／Hudi／Delta Lake（ACID 事务、Schema 演进、Time Travel）；湖（原始数据）仓（结构化分析）融合。\n选型建议：强实时、大数据量、组件复用 → Kappa；离线分析为主、需全量准确性 → Lambda；新项目、有湖仓需求 → 湖仓一体。`, exam:`选答高频。问法：Lambda vs Kappa 对比、数仓分层逻辑、湖仓一体选型、Spark／Flink 区别。\n真题印证：2022 下半年（Lambda 架构）、2024 下半年（湖仓一体）。`, pit:`Lambda 双链路维护成本高（小集群两套代码），新项目优先 Kappa。\nKappa 依赖 Kafka 长期存储海量数据，成本不可忽视；可考虑 Iceberg／Pulsar 替代。` },
+
+'c5-1': { chap:5, title:'云原生', tier:2, tag:'选答 高频', viz:`<div class="viz-title">CNCF 云原生四要素 + 12-Factor</div>
+<div class="viz-flow">
+  <span class="step gold">📦 容器化</span>
+  <span class="step b">🤖 自动化管理</span>
+  <span class="step g">🧩 微服务</span>
+  <span class="step r">👁️ 可观测性</span>
+</div>
+<div class="viz-grid c3" style="margin-top:12px">
+  <div class="viz-card gold"><div class="lbl">① 代码库</div>一份代码库，多环境部署</div>
+  <div class="viz-card gold"><div class="lbl">② 依赖</div>显式声明 · 隔离</div>
+  <div class="viz-card gold"><div class="lbl">③ 配置</div>环境变量分离</div>
+  <div class="viz-card gold"><div class="lbl">④ 后端服务</div>DB / MQ 作为附加资源</div>
+  <div class="viz-card gold"><div class="lbl">⑤ 构建发布运行</div>严格分离 · 可回滚</div>
+  <div class="viz-card gold"><div class="lbl">⑥ 无状态进程</div>不存本地会话</div>
+  <div class="viz-card gold"><div class="lbl">⑦ 端口绑定</div>HTTP 端口暴露服务</div>
+  <div class="viz-card gold"><div class="lbl">⑧ 并发</div>通过进程模型横向扩</div>
+  <div class="viz-card gold"><div class="lbl">⑨ 易处理</div>快速启动 · 优雅终止</div>
+  <div class="viz-card gold"><div class="lbl">⑩ 环境等价</div>dev/stage/prod 一致</div>
+  <div class="viz-card gold"><div class="lbl">⑪ 日志</div>stdout 流式收集</div>
+  <div class="viz-card gold"><div class="lbl">⑫ 管理任务</div>一次性脚本 / 迁移</div>
+</div>
+<div class="viz-flow" style="margin-top:12px">
+  <span class="step gold">GitOps</span>
+  <span class="step">Git = 唯一真相</span><span class="arrow">→</span>
+  <span class="step">Argo CD / Flux</span><span class="arrow">→</span>
+  <span class="step g">自动同步到集群</span>
+</div>`,
+core:`CNCF 定义云原生：容器化封装（Container）、自动化管理（Automated Management）、面向微服务（Microservices）、可观测性（Observability）。\n十二要素（12-Factor App）：代码库一份、依赖显式声明、配置环境分离、后端服务（数据库／消息队列）作为附加资源、无状态进程、端口绑定提供服务、并发通过进程模型伸缩、易处理／快速启动、开发/生产等价、志流stdout、管理任务一次性进程。\n关键技术：容器（Docker）、编排（K8s）、服务网格（Istio／Linkerd）、声明式 API、不可变基础设施、GitOps（Argo CD／Flux）。\n典型架构：API 网关 → 微服务（容器化）→ 服务网格（流量治理）→ 配置中心（Nacos）→ 监控告警（Prometheus + Grafana）→ 日志（EFK／Loki）→ IaC（Terraform）。`, exam:`选答高频。问法：云原生特征、12-Factor 应用、容器化优势、GitOps 流程、云原生 vs 传统架构对比。\n真题印证：2025 上半年（云原生架构）、2025 下半年（云原生数据库）。`, pit:`云原生 ≠ 上 K8s：盲目容器化会增加复杂度，简单的单体应用不必硬上云原生。\n可观测性不止看日志：Metrics（指标）、Logs（日志）、Traces（链路）三位一体。` },
+
+'c5-2': { chap:5, title:'微服务与 SOA', tier:1, tag:'选答 高频', viz:`<div class="viz-title">微服务架构全景 · Spring Cloud 组件</div>
+<svg viewBox="0 0 560 260">
+  <rect x="220" y="20" width="120" height="40" rx="4" fill="rgba(212,168,95,.18)" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <text x="280" y="45" text-anchor="middle" fill="var(--gold-1)" font-size="12" font-weight="bold">API 网关</text>
+  <line x1="280" y1="60" x2="120" y2="100" stroke="var(--azure)" stroke-dasharray="2 2" marker-end="url(#arr8)"/>
+  <line x1="280" y1="60" x2="280" y2="100" stroke="var(--emerald)" marker-end="url(#arr8)"/>
+  <line x1="280" y1="60" x2="440" y2="100" stroke="var(--violet)" stroke-dasharray="2 2" marker-end="url(#arr8)"/>
+  <rect x="60" y="100" width="120" height="40" rx="4" fill="rgba(74,111,165,.18)" stroke="var(--azure)"/>
+  <text x="120" y="125" text-anchor="middle" fill="var(--azure)" font-size="11">用户 / 鉴权</text>
+  <rect x="220" y="100" width="120" height="40" rx="4" fill="rgba(93,138,111,.18)" stroke="var(--emerald)"/>
+  <text x="280" y="125" text-anchor="middle" fill="var(--emerald)" font-size="11">订单 / 交易</text>
+  <rect x="380" y="100" width="120" height="40" rx="4" fill="rgba(111,93,138,.18)" stroke="var(--violet)"/>
+  <text x="440" y="125" text-anchor="middle" fill="var(--violet)" font-size="11">商品 / 推荐</text>
+  <line x1="120" y1="140" x2="160" y2="180" stroke="var(--azure)" stroke-dasharray="2 2" marker-end="url(#arr8)"/>
+  <line x1="280" y1="140" x2="320" y2="180" stroke="var(--emerald)" marker-end="url(#arr8)"/>
+  <line x1="440" y1="140" x2="400" y2="180" stroke="var(--violet)" stroke-dasharray="2 2" marker-end="url(#arr8)"/>
+  <rect x="100" y="180" width="80" height="40" rx="4" fill="var(--ink-2)" stroke="var(--gold-2)"/>
+  <text x="140" y="200" text-anchor="middle" fill="var(--gold-1)" font-size="10">Nacos</text>
+  <text x="140" y="213" text-anchor="middle" fill="var(--ivory-3)" font-size="8">注册/配置</text>
+  <rect x="200" y="180" width="80" height="40" rx="4" fill="var(--ink-2)" stroke="var(--crimson)"/>
+  <text x="240" y="200" text-anchor="middle" fill="var(--crimson)" font-size="10">Sentinel</text>
+  <text x="240" y="213" text-anchor="middle" fill="var(--ivory-3)" font-size="8">熔断/限流</text>
+  <rect x="300" y="180" width="80" height="40" rx="4" fill="var(--ink-2)" stroke="var(--azure)"/>
+  <text x="340" y="200" text-anchor="middle" fill="var(--azure)" font-size="10">SkyWalking</text>
+  <text x="340" y="213" text-anchor="middle" fill="var(--ivory-3)" font-size="8">链路追踪</text>
+  <rect x="400" y="180" width="80" height="40" rx="4" fill="var(--ink-2)" stroke="var(--emerald)"/>
+  <text x="440" y="200" text-anchor="middle" fill="var(--emerald)" font-size="10">Seata</text>
+  <text x="440" y="213" text-anchor="middle" fill="var(--ivory-3)" font-size="8">分布式事务</text>
+</svg>
+<div class="viz-grid c2" style="margin-top:10px">
+  <div class="viz-card b"><div class="lbl">微服务</div>细粒度 · HTTP/gRPC · 去中心化 · 独立部署</div>
+  <div class="viz-card r"><div class="lbl">SOA</div>粗粒度 · SOAP/ESB · 中心化 · 共享服务</div>
+</div>`,
+core:`微服务特征：单一职责、独立部署、技术异构、去中心化、轻量通信（HTTP/REST、gRPC）。\n微服务 vs SOA：粒度更细（一个服务一个能力 vs 一个系统一组业务）、协议更轻（HTTP/gRPC vs SOAP/WS-*）、去中心化（无 ESB 总线）。\n服务治理：服务注册与发现（Nacos／Eureka／Consul）、配置中心（Nacos／Apollo）、熔断降级（Sentinel／Hystrix）、限流（令牌桶／漏桶）、负载均衡（Ribbon）、链路追踪（SkyWalking／Zipkin）。\n分布式事务：见 c4-1。\nAPI 网关：Kong／APISIX／Spring Cloud Gateway／Envoy，路由、鉴权、限流、灰度发布。\n部署模式：单机部署、容器化（Docker）、编排（K8s）、Serverless（Knative）。`, exam:`选答必考。问法：微服务 vs SOA、Spring Cloud 组件、服务拆分原则、网关作用、分布式事务选型。\n真题印证：2024 上半年（微服务架构）、历年多次考查。`, pit:`不要为拆而拆：先单体后微服务，根据团队规模与业务复杂度决定。\n分布式调用链长带来调试难、性能损耗、事务复杂三大挑战，需配套可观测性、链路追踪、Saga 等方案。` },
+
+'c5-3': { chap:5, title:'容器、Docker 与 Kubernetes', tier:2, tag:'选答 高频', viz:`<div class="viz-title">K8s 核心概念与 Pod 结构</div>
+<svg viewBox="0 0 560 220">
+  <rect x="40" y="40" width="200" height="140" rx="6" fill="none" stroke="var(--gold-2)" stroke-width="2"/>
+  <text x="140" y="30" text-anchor="middle" fill="var(--gold-1)" font-size="12" font-weight="bold">Pod（最小调度单位）</text>
+  <rect x="60" y="60" width="70" height="100" rx="4" fill="rgba(74,111,165,.18)" stroke="var(--azure)"/>
+  <text x="95" y="105" text-anchor="middle" fill="var(--azure)" font-size="11">业务容器</text>
+  <text x="95" y="120" text-anchor="middle" fill="var(--ivory-3)" font-size="9">app:1.0</text>
+  <rect x="150" y="60" width="70" height="100" rx="4" fill="rgba(93,138,111,.18)" stroke="var(--emerald)" stroke-dasharray="3 3"/>
+  <text x="185" y="105" text-anchor="middle" fill="var(--emerald)" font-size="11">Sidecar</text>
+  <text x="185" y="120" text-anchor="middle" fill="var(--ivory-3)" font-size="9">日志/代理</text>
+  <text x="140" y="180" text-anchor="middle" fill="var(--ivory-3)" font-size="9">共享网络/Volume</text>
+  <rect x="280" y="40" width="120" height="40" rx="4" fill="var(--ink-2)" stroke="var(--azure)"/>
+  <text x="340" y="65" text-anchor="middle" fill="var(--azure)" font-size="11">Deployment</text>
+  <text x="340" y="78" text-anchor="middle" fill="var(--ivory-3)" font-size="8">无状态应用</text>
+  <rect x="420" y="40" width="120" height="40" rx="4" fill="var(--ink-2)" stroke="var(--crimson)"/>
+  <text x="480" y="65" text-anchor="middle" fill="var(--crimson)" font-size="11">StatefulSet</text>
+  <text x="480" y="78" text-anchor="middle" fill="var(--ivory-3)" font-size="8">有状态服务</text>
+  <rect x="280" y="100" width="120" height="40" rx="4" fill="var(--ink-2)" stroke="var(--emerald)"/>
+  <text x="340" y="125" text-anchor="middle" fill="var(--emerald)" font-size="11">Service</text>
+  <text x="340" y="138" text-anchor="middle" fill="var(--ivory-3)" font-size="8">ClusterIP/NodePort/LB</text>
+  <rect x="420" y="100" width="120" height="40" rx="4" fill="var(--ink-2)" stroke="var(--violet)"/>
+  <text x="480" y="125" text-anchor="middle" fill="var(--violet)" font-size="11">Ingress</text>
+  <text x="480" y="138" text-anchor="middle" fill="var(--ivory-3)" font-size="8">七层路由</text>
+  <rect x="280" y="160" width="260" height="40" rx="4" fill="var(--ink-2)" stroke="var(--gold-2)"/>
+  <text x="410" y="180" text-anchor="middle" fill="var(--gold-1)" font-size="11">ConfigMap / Secret / PV / PVC</text>
+  <text x="410" y="193" text-anchor="middle" fill="var(--ivory-3)" font-size="8">配置 / 密钥 / 存储</text>
+</svg>
+<div class="viz-card gold" style="margin-top:8px"><div class="lbl">💡 Pod ≠ 容器</div>Pod 是 K8s 调度的原子单位 · 可含多容器（共享网络+存储）· Sidecar 模式很常用</div>`,
+core:`Docker 核心：镜像（Image，分层只读）、容器（Container，运行实例）、仓库（Registry，Docker Hub／Harbor）。\nDockerfile 最佳实践：多阶段构建（减小镜像体积）、基础镜像选 slim／alpine、合并 RUN 指令、非 root 用户运行、.dockerignore 排除无关文件。\nK8s 核心概念：Pod（最小调度单位，可含多容器）、Deployment（无状态应用）、StatefulSet（有状态）、Service（ClusterIP／NodePort／LoadBalancer）、Ingress（七层路由）、ConfigMap／Secret（配置／密钥）、Volume／PV／PVC（存储）。\n调度策略：节点选择器（nodeSelector）、亲和／反亲和（affinity）、污点容忍（taint／toleration）、资源请求与限制（requests／limits）。\n运维工具：Helm（包管理）、Argo CD（GitOps）、Prometheus（监控）、Istio（服务网格）。\nK8s vs Docker Swarm：K8s 功能强生态好，Docker Swarm 简单轻量。`, exam:`选答常见。问法：Pod 与容器关系、Deployment 滚动更新策略、Service 三种类型、Helm Chart 结构、K8s 调度流程。\n真题印证：2024 下半年（K8s 部署）、2023 上半年（容器编排）。`, pit:`Pod 不是容器，Pod 是 K8s 调度的原子单位；多容器 Pod 共享网络与存储（Sidecar 模式）。\nStatefulSet 用于数据库等有状态服务，需要稳定的网络标识与持久化存储。` },
+
+'c5-4': { chap:5, title:'AI 大模型', tier:1, tag:'选答 高频', viz:`<div class="viz-title">RAG 检索增强生成 + Agent 自主决策 + 应用架构分层</div>
+<svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
+  <defs>
+    <marker id="ar54b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold-2)"/></marker>
+    <marker id="ar54g" viewBox="0 0 10 10" refX="0" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--emerald)"/></marker>
+  </defs>
+  <rect x="20" y="20" width="560" height="40" rx="6" fill="var(--ink-2)" stroke="var(--azure)" stroke-width="1.5"/>
+  <text x="300" y="38" text-anchor="middle" fill="var(--azure)" font-size="12" font-weight="700">RAG 检索增强生成流程</text>
+  <text x="300" y="52" text-anchor="middle" fill="var(--ivory-3)" font-size="9">解决幻觉 + 知识时效 + 私有知识</text>
+  <g font-family="var(--font-cn)" font-size="10">
+    <rect x="20" y="78" width="80" height="32" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="60" y="92" text-anchor="middle" fill="var(--ivory-1)">用户提问</text>
+    <text x="60" y="104" text-anchor="middle" fill="var(--ivory-3)" font-size="8">Query</text>
+    <line x1="100" y1="94" x2="125" y2="94" stroke="var(--gold-2)" stroke-width="1.2" marker-end="url(#ar54b)"/>
+    <rect x="125" y="78" width="90" height="32" rx="4" fill="var(--ink-2)" stroke="var(--crimson)"/>
+    <text x="170" y="92" text-anchor="middle" fill="var(--crimson)">嵌入模型</text>
+    <text x="170" y="104" text-anchor="middle" fill="var(--ivory-3)" font-size="8">Embedding</text>
+    <line x1="215" y1="94" x2="240" y2="94" stroke="var(--gold-2)" stroke-width="1.2" marker-end="url(#ar54b)"/>
+    <rect x="240" y="78" width="90" height="32" rx="4" fill="var(--ink-2)" stroke="var(--gold-2)"/>
+    <text x="285" y="92" text-anchor="middle" fill="var(--gold-1)">向量检索</text>
+    <text x="285" y="104" text-anchor="middle" fill="var(--ivory-3)" font-size="8">ANN / TopK</text>
+    <line x1="330" y1="94" x2="355" y2="94" stroke="var(--gold-2)" stroke-width="1.2" marker-end="url(#ar54b)"/>
+    <rect x="355" y="78" width="90" height="32" rx="4" fill="var(--ink-2)" stroke="var(--azure)"/>
+    <text x="400" y="92" text-anchor="middle" fill="var(--azure)">知识上下文</text>
+    <text x="400" y="104" text-anchor="middle" fill="var(--ivory-3)" font-size="8">Context</text>
+    <line x1="445" y1="94" x2="470" y2="94" stroke="var(--gold-2)" stroke-width="1.2" marker-end="url(#ar54b)"/>
+    <rect x="470" y="78" width="110" height="32" rx="4" fill="var(--ink-2)" stroke="var(--emerald)"/>
+    <text x="525" y="92" text-anchor="middle" fill="var(--emerald)">LLM 生成</text>
+    <text x="525" y="104" text-anchor="middle" fill="var(--ivory-3)" font-size="8">Prompt + 上下文</text>
+    <text x="285" y="74" text-anchor="middle" fill="var(--ivory-3)" font-size="8">↑ 检索向量库</text>
+  </g>
+  <rect x="20" y="128" width="270" height="90" rx="6" fill="var(--ink-2)" stroke="var(--emerald)" stroke-width="1.5"/>
+  <text x="155" y="144" text-anchor="middle" fill="var(--emerald)" font-size="11" font-weight="700">Agent 自主决策 (四要素)</text>
+  <g font-family="var(--font-cn)" font-size="10">
+    <rect x="32" y="156" width="115" height="24" rx="4" fill="rgba(93,138,111,.12)" stroke="var(--emerald)"/>
+    <text x="89" y="172" text-anchor="middle" fill="var(--ivory-1)">Plan 规划拆解</text>
+    <rect x="155" y="156" width="125" height="24" rx="4" fill="rgba(74,111,165,.12)" stroke="var(--azure)"/>
+    <text x="217" y="172" text-anchor="middle" fill="var(--ivory-1)">Tool 工具调用</text>
+    <rect x="32" y="186" width="115" height="24" rx="4" fill="rgba(212,168,95,.12)" stroke="var(--gold-2)"/>
+    <text x="89" y="202" text-anchor="middle" fill="var(--ivory-1)">Memory 记忆</text>
+    <rect x="155" y="186" width="125" height="24" rx="4" fill="rgba(200,85,61,.12)" stroke="var(--crimson)"/>
+    <text x="217" y="202" text-anchor="middle" fill="var(--ivory-1)">Action 执行反馈</text>
+  </g>
+  <rect x="310" y="128" width="270" height="90" rx="6" fill="var(--ink-2)" stroke="var(--azure)" stroke-width="1.5"/>
+  <text x="445" y="144" text-anchor="middle" fill="var(--azure)" font-size="11" font-weight="700">大模型应用架构分层</text>
+  <g font-family="var(--font-cn)" font-size="9">
+    <rect x="320" y="152" width="250" height="14" rx="3" fill="var(--ink-1)" stroke="var(--ivory-3)"/>
+    <text x="330" y="162" fill="var(--ivory-1)">接入层</text>
+    <text x="565" y="162" text-anchor="end" fill="var(--ivory-3)">API 网关 / 限流 / 鉴权</text>
+    <rect x="320" y="168" width="250" height="14" rx="3" fill="var(--ink-1)" stroke="var(--ivory-3)"/>
+    <text x="330" y="178" fill="var(--ivory-1)">服务层</text>
+    <text x="565" y="178" text-anchor="end" fill="var(--ivory-3)">业务编排 / Prompt 管理</text>
+    <rect x="320" y="184" width="250" height="14" rx="3" fill="rgba(74,111,165,.15)" stroke="var(--azure)"/>
+    <text x="330" y="194" fill="var(--azure)" font-weight="600">模型层</text>
+    <text x="565" y="194" text-anchor="end" fill="var(--ivory-3)">推理引擎 (vLLM/TensorRT-LLM) + GPU</text>
+    <rect x="320" y="200" width="250" height="14" rx="3" fill="rgba(212,168,95,.15)" stroke="var(--gold-2)"/>
+    <text x="330" y="210" fill="var(--gold-1)" font-weight="600">数据层</text>
+    <text x="565" y="210" text-anchor="end" fill="var(--ivory-3)">向量库 / 知识库 / 训练数据</text>
+  </g>
+</svg>
+<div class="viz-grid c3" style="margin-top:8px">
+  <div class="viz-card"><div class="lbl">🎓 微调方式</div>SFT 全参微调 · LoRA 低秩适配（参数高效）· RLHF 人类反馈强化</div>
+  <div class="viz-card"><div class="lbl">⚡ 推理优化</div>量化 INT8/INT4 · 蒸馏 · KV Cache · vLLM/TensorRT-LLM · 流式输出</div>
+  <div class="viz-card"><div class="lbl">🧠 提示工程</div>Few-shot · Chain-of-Thought · ReAct · Prompt 模板管理</div>
+</div>`,
+core:`基础：Transformer（自注意力机制）、预训练＋微调范式、GPT 类大语言模型（LLM）。\n微调方式：SFT（监督微调）、LoRA（低秩适配，参数高效）、RLHF（人类反馈强化学习）；另有提示工程（Prompt Engineering）。\nRAG（检索增强生成）：外挂知识库，解决幻觉、知识时效与私有知识问题（结合向量数据库，见 c3-6）。\nAgent：大模型＋规划（Plan）＋工具调用（Tool）＋记忆（Memory），自主拆解执行复杂任务。\n推理优化：量化（INT8／INT4）、模型蒸馏、KV Cache、vLLM／TensorRT-LLM 推理引擎、流式输出。\n应用架构：业务系统 → API 网关 → 模型服务（推理引擎＋GPU）→（RAG：向量库／知识库）→ 结果；配套监控、限流、安全合规。\n相关方向：AIOps（AI 运维）、AIGC 集成、国产大模型适配。`, exam:`新热点、权重上升。问法：RAG vs 微调对比、大模型应用架构设计、Agent 组成、推理成本优化、提示工程。\n2025 上半年真题考过大模型训练平台架构设计与质量属性。\n答题要点：先分层（接入层／服务层／模型层／数据层），再讲组件与数据流。`, pit:`RAG 管"知识"，微调管"行为／风格"；知识更新快的场景用 RAG。\n大模型有幻觉，业务落地需 RAG、输出校验与人审兜底。` },
+
+'c5-5': { chap:5, title:'表示层与数据链路层技术', tier:2, tag:'选答', viz:`<div class="viz-title">OSI 七层模型 · 设备与协议分布</div>
+<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
+  <defs>
+    <marker id="ar55" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gold-2)"/></marker>
+  </defs>
+  <g font-family="var(--font-cn)" font-size="11">
+    <g class="hs-target" data-hs-title="应用层" data-hs-desc="OSI 第 7 层（最顶层）。直接面向用户：HTTP/FTP/SMTP/DNS 等协议。设备无网关代理，指 API 网关、负载均衡等高层组件。">
+      <rect x="20" y="20" width="120" height="34" rx="5" fill="rgba(212,168,95,.12)" stroke="var(--gold-2)" stroke-width="1.5"/>
+      <text x="80" y="35" text-anchor="middle" fill="var(--gold-1)" font-weight="700">应用层</text>
+      <text x="80" y="48" text-anchor="middle" fill="var(--ivory-3)" font-size="8">HTTP/FTP/SMTP</text>
+    </g>
+    <g class="hs-target" data-hs-title="表示层 ★" data-hs-desc="OSI 第 6 层。本卡重点之一！三件套：① 数据格式转换（ASCII/Unicode/JPEG）② 加密解密（TLS/SSL）③ 压缩解压。TLS 跨表示与会话两层。">
+      <rect x="20" y="58" width="120" height="34" rx="5" fill="rgba(74,111,165,.12)" stroke="var(--azure)"/>
+      <text x="80" y="73" text-anchor="middle" fill="var(--azure)" font-weight="700">表示层 ★</text>
+      <text x="80" y="86" text-anchor="middle" fill="var(--ivory-3)" font-size="8">格式/加密/压缩</text>
+    </g>
+    <g class="hs-target" data-hs-title="会话层" data-hs-desc="OSI 第 5 层。负责建立、管理、终止会话。RPC、NetBIOS。会话与表示易混，看成「对话控制」vs「数据呈现」。">
+      <rect x="20" y="96" width="120" height="34" rx="5" fill="rgba(74,111,165,.08)" stroke="var(--azure)"/>
+      <text x="80" y="111" text-anchor="middle" fill="var(--azure)">会话层</text>
+      <text x="80" y="124" text-anchor="middle" fill="var(--ivory-3)" font-size="8">TLS/SSL/RPC</text>
+    </g>
+    <g class="hs-target" data-hs-title="传输层" data-hs-desc="OSI 第 4 层。核心协议：TCP（可靠，三次握手/四次挥手）、UDP（无连接）。端口寻址（80/443/22）。端到端可靠传输保障。">
+      <rect x="20" y="134" width="120" height="34" rx="5" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+      <text x="80" y="149" text-anchor="middle" fill="var(--ivory-1)">传输层</text>
+      <text x="80" y="162" text-anchor="middle" fill="var(--ivory-3)" font-size="8">TCP/UDP 端口</text>
+    </g>
+    <g class="hs-target" data-hs-title="网络层" data-hs-desc="OSI 第 3 层。IP 寻址 + 路由转发。设备：路由器（按 IP 选路）。协议：IP/ICMP/OSPF/BGP。ARP 在网络与链路层之间。">
+      <rect x="20" y="172" width="120" height="34" rx="5" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+      <text x="80" y="187" text-anchor="middle" fill="var(--ivory-1)">网络层</text>
+      <text x="80" y="200" text-anchor="middle" fill="var(--ivory-3)" font-size="8">IP / 路由</text>
+    </g>
+    <g class="hs-target" data-hs-title="数据链路层 ★" data-hs-desc="OSI 第 2 层。本卡重点之二！三件套：① 成帧 ② MAC 寻址 ③ CRC 差错检测。设备：交换机、网桥。协议：以太网、VLAN、PPP、HDLC。CSMA/CD 介质访问控制。">
+      <rect x="20" y="210" width="120" height="34" rx="5" fill="rgba(200,85,61,.12)" stroke="var(--crimson)"/>
+      <text x="80" y="225" text-anchor="middle" fill="var(--crimson)" font-weight="700">数据链路层 ★</text>
+      <text x="80" y="238" text-anchor="middle" fill="var(--ivory-3)" font-size="8">MAC / 帧 / CRC</text>
+    </g>
+    <g class="hs-target" data-hs-title="物理层" data-hs-desc="OSI 第 1 层（最底层）。比特流传输：电/光/射频信号。设备：集线器、中继器（仅放大信号）。规定机械、电气、规程。">
+      <rect x="20" y="248" width="120" height="34" rx="5" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+      <text x="80" y="263" text-anchor="middle" fill="var(--ivory-1)">物理层</text>
+      <text x="80" y="276" text-anchor="middle" fill="var(--ivory-3)" font-size="8">比特 / 信号 / 集线器</text>
+    </g>
+  </g>
+  <line x1="155" y1="37" x2="200" y2="37" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <line x1="155" y1="75" x2="200" y2="75" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <line x1="155" y1="113" x2="200" y2="113" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <line x1="155" y1="151" x2="200" y2="151" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <line x1="155" y1="189" x2="200" y2="189" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <line x1="155" y1="227" x2="200" y2="227" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <line x1="155" y1="265" x2="200" y2="265" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar55)"/>
+  <g font-family="var(--font-cn)" font-size="9">
+    <rect x="200" y="22" width="180" height="28" rx="4" fill="var(--ink-2)" stroke="var(--gold-2)"/>
+    <text x="290" y="34" text-anchor="middle" fill="var(--gold-1)" font-weight="600">网关 (高层)</text>
+    <text x="290" y="46" text-anchor="middle" fill="var(--ivory-3)" font-size="8">协议转换</text>
+    <rect x="200" y="54" width="180" height="28" rx="4" fill="rgba(74,111,165,.12)" stroke="var(--azure)"/>
+    <text x="290" y="66" text-anchor="middle" fill="var(--azure)" font-weight="600">表示层功能</text>
+    <text x="290" y="78" text-anchor="middle" fill="var(--ivory-3)" font-size="8">编码/加密/压缩/JPEG/MPEG</text>
+    <rect x="200" y="86" width="180" height="28" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="290" y="98" text-anchor="middle" fill="var(--ivory-1)">会话管理</text>
+    <text x="290" y="110" text-anchor="middle" fill="var(--ivory-3)" font-size="8">建立/管理/终止会话</text>
+    <rect x="200" y="118" width="180" height="28" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="290" y="130" text-anchor="middle" fill="var(--ivory-1)">TCP 端口</text>
+    <text x="290" y="142" text-anchor="middle" fill="var(--ivory-3)" font-size="8">80/443/22 三次握手</text>
+    <rect x="200" y="150" width="180" height="28" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="290" y="162" text-anchor="middle" fill="var(--ivory-1)">路由器 IP</text>
+    <text x="290" y="174" text-anchor="middle" fill="var(--ivory-3)" font-size="8">路由转发 / OSPF / BGP</text>
+    <rect x="200" y="182" width="180" height="28" rx="4" fill="rgba(200,85,61,.12)" stroke="var(--crimson)"/>
+    <text x="290" y="194" text-anchor="middle" fill="var(--crimson)" font-weight="600">交换机 / 网桥</text>
+    <text x="290" y="206" text-anchor="middle" fill="var(--ivory-3)" font-size="8">以太网/VLAN/PPP/HDLC</text>
+    <rect x="200" y="214" width="180" height="28" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="290" y="226" text-anchor="middle" fill="var(--ivory-1)">链路层功能</text>
+    <text x="290" y="238" text-anchor="middle" fill="var(--ivory-3)" font-size="8">成帧/CRC/ARP/CSMA-CD</text>
+    <rect x="200" y="246" width="180" height="28" rx="4" fill="var(--ink-2)" stroke="var(--ivory-3)"/>
+    <text x="290" y="258" text-anchor="middle" fill="var(--ivory-1)">集线器 / 中继器</text>
+    <text x="290" y="270" text-anchor="middle" fill="var(--ivory-3)" font-size="8">信号放大 / 比特传输</text>
+  </g>
+  <rect x="400" y="20" width="180" height="270" rx="6" fill="var(--ink-1)" stroke="var(--ink-3)"/>
+  <text x="490" y="38" text-anchor="middle" fill="var(--gold-1)" font-size="10" font-weight="700">记忆口诀</text>
+  <text x="490" y="56" text-anchor="middle" fill="var(--azure)" font-size="11" font-weight="600">物数网传会表应</text>
+  <text x="490" y="74" text-anchor="middle" fill="var(--ivory-3)" font-size="8">自下而上</text>
+  <text x="490" y="100" text-anchor="middle" fill="var(--gold-2)" font-size="10" font-weight="700">设备分层</text>
+  <text x="490" y="116" text-anchor="middle" fill="var(--ivory-1)" font-size="9">集线器 → 物理</text>
+  <text x="490" y="130" text-anchor="middle" fill="var(--crimson)" font-size="9">交换机 → 链路 ★</text>
+  <text x="490" y="144" text-anchor="middle" fill="var(--ivory-1)" font-size="9">路由器 → 网络</text>
+  <text x="490" y="158" text-anchor="middle" fill="var(--ivory-1)" font-size="9">网关 → 高层</text>
+  <text x="490" y="186" text-anchor="middle" fill="var(--gold-2)" font-size="10" font-weight="700">表示层三件套</text>
+  <text x="490" y="202" text-anchor="middle" fill="var(--ivory-1)" font-size="9">① 格式转换 (ASCII)</text>
+  <text x="490" y="216" text-anchor="middle" fill="var(--ivory-1)" font-size="9">② 加密解密 (TLS)</text>
+  <text x="490" y="230" text-anchor="middle" fill="var(--ivory-1)" font-size="9">③ 压缩解压 (JPEG)</text>
+  <text x="490" y="258" text-anchor="middle" fill="var(--crimson)" font-size="10" font-weight="700">链路层三件套</text>
+  <text x="490" y="274" text-anchor="middle" fill="var(--ivory-1)" font-size="9">① 成帧 ② MAC ③ CRC</text>
+</svg>
+<div class="viz-grid c3" style="margin-top:8px">
+  <div class="viz-card"><div class="lbl">🔐 表示层职责</div>数据格式 · 加密解密 · 语法语义转换；TLS/SSL 横跨表示与会话</div>
+  <div class="viz-card r"><div class="lbl">🔗 链路层职责</div>成帧 · MAC 寻址 · CRC 差错检测 · CSMA/CD 介质访问控制</div>
+  <div class="viz-card b"><div class="lbl">🧭 ARP 位置</div>介于网络层与链路层之间 · IP→MAC 解析 · 局域网通信必备</div>
+</div>`,
+core:`OSI 七层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层（记忆：物数网传会表应）。\n表示层：数据格式转换（编码 ASCII／Unicode）、加密解密、压缩解压、语法语义转换；常见标准：JPEG、MPEG、ASCII，TLS／SSL 常归表示层与会话层之间。\n数据链路层：成帧、MAC 寻址、差错检测（CRC）、流量控制；设备：交换机、网桥；协议：以太网、PPP、HDLC、VLAN（802.1Q）；相关：ARP（介于网络层与链路层之间）、CSMA/CD。\n传输层：TCP／UDP、端口、可靠传输；网络层：IP、路由。`, exam:`问法：协议／设备归属哪一层、封装与解封装过程、表示层功能、链路层功能；常与通信系统、嵌入式题合并出现。\n记忆点：设备分层——集线器／中继器（物理层）、交换机／网桥（链路层）、路由器（网络层）、网关（高层）。`, pit:`交换机是链路层设备（按 MAC 转发），路由器是网络层设备（按 IP 路由）。\n表示层管"格式、加密、压缩"，勿与会话层（建立与管理会话）混淆。` },
+
+'c5-6': { chap:5, title:'信息摘要', tier:2, tag:'选答 高频', viz:`<div class="viz-title">数字签名全流程 · 摘要 vs 加密对比</div>
+<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" style="max-width:600px">
+  <defs>
+    <marker id="ar56g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--emerald)"/></marker>
+    <marker id="ar56b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--azure)"/></marker>
+  </defs>
+  <rect x="20" y="20" width="560" height="40" rx="6" fill="var(--ink-2)" stroke="var(--gold-2)" stroke-width="1.5"/>
+  <text x="300" y="38" text-anchor="middle" fill="var(--gold-1)" font-size="12" font-weight="700">数字签名流程</text>
+  <text x="300" y="52" text-anchor="middle" fill="var(--ivory-3)" font-size="9">完整性 + 身份认证 + 抗否认</text>
+  <rect x="20" y="80" width="240" height="180" rx="6" fill="rgba(93,138,111,.06)" stroke="var(--emerald)" stroke-width="1.2"/>
+  <text x="140" y="96" text-anchor="middle" fill="var(--emerald)" font-size="10" font-weight="700">发送方</text>
+  <g font-family="var(--font-cn)" font-size="9">
+    <rect x="32" y="106" width="100" height="26" rx="4" fill="var(--ink-1)" stroke="var(--ivory-3)"/>
+    <text x="82" y="118" text-anchor="middle" fill="var(--ivory-1)">原文 M</text>
+    <text x="82" y="128" text-anchor="middle" fill="var(--ivory-3)" font-size="8">任意内容</text>
+    <line x1="135" y1="119" x2="160" y2="119" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar56g)"/>
+    <rect x="160" y="106" width="90" height="26" rx="4" fill="var(--ink-1)" stroke="var(--gold-2)"/>
+    <text x="205" y="118" text-anchor="middle" fill="var(--gold-1)">SHA-256</text>
+    <text x="205" y="128" text-anchor="middle" fill="var(--ivory-3)" font-size="8">H(M) 摘要</text>
+    <rect x="160" y="142" width="90" height="26" rx="4" fill="var(--ink-1)" stroke="var(--crimson)"/>
+    <text x="205" y="154" text-anchor="middle" fill="var(--crimson)">私钥签名</text>
+    <text x="205" y="164" text-anchor="middle" fill="var(--ivory-3)" font-size="8">Sign(H(M))</text>
+    <line x1="135" y1="155" x2="160" y2="155" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar56g)"/>
+    <line x1="82" y1="132" x2="82" y2="156" stroke="var(--ivory-3)" stroke-width="1" stroke-dasharray="2 2"/>
+    <text x="115" y="148" fill="var(--ivory-3)" font-size="8">与原文合并</text>
+    <line x1="250" y1="119" x2="280" y2="119" stroke="var(--gold-2)" stroke-width="1" marker-end="url(#ar56g)"/>
+    <rect x="280" y="106" width="90" height="26" rx="4" fill="rgba(212,168,95,.15)" stroke="var(--gold-2)"/>
+    <text x="325" y="118" text-anchor="middle" fill="var(--gold-1)">H(M) 1</text>
+    <text x="325" y="128" text-anchor="middle" fill="var(--ivory-3)" font-size="8">本地哈希</text>
+    <rect x="32" y="180" width="218" height="60" rx="4" fill="var(--ink-1)" stroke="var(--emerald)" stroke-dasharray="3 2"/>
+    <text x="140" y="196" text-anchor="middle" fill="var(--emerald)" font-size="10" font-weight="600">发送：M + Sign(H(M))</text>
+    <text x="140" y="212" text-anchor="middle" fill="var(--ivory-3)" font-size="8">经信道传输</text>
+    <text x="140" y="226" text-anchor="middle" fill="var(--ivory-3)" font-size="8">可能被窃听但不能篡改</text>
+  </g>
+  <rect x="340" y="80" width="240" height="180" rx="6" fill="rgba(74,111,165,.06)" stroke="var(--azure)" stroke-width="1.2"/>
+  <text x="460" y="96" text-anchor="middle" fill="var(--azure)" font-size="10" font-weight="700">接收方</text>
+  <g font-family="var(--font-cn)" font-size="9">
+    <rect x="460" y="106" width="100" height="26" rx="4" fill="var(--ink-1)" stroke="var(--ivory-3)"/>
+    <text x="510" y="118" text-anchor="middle" fill="var(--ivory-1)">原文 M</text>
+    <text x="510" y="128" text-anchor="middle" fill="var(--ivory-3)" font-size="8">取出</text>
+    <rect x="460" y="142" width="100" height="26" rx="4" fill="var(--ink-1)" stroke="var(--gold-2)"/>
+    <text x="510" y="154" text-anchor="middle" fill="var(--gold-1)">SHA-256</text>
+    <text x="510" y="164" text-anchor="middle" fill="var(--ivory-3)" font-size="8">H(M) 2 重算</text>
+    <rect x="460" y="178" width="100" height="26" rx="4" fill="var(--ink-1)" stroke="var(--crimson)"/>
+    <text x="510" y="190" text-anchor="middle" fill="var(--crimson)">公钥验签</text>
+    <text x="510" y="200" text-anchor="middle" fill="var(--ivory-3)" font-size="8">Verify 签名</text>
+    <rect x="380" y="216" width="180" height="32" rx="4" fill="var(--ink-1)" stroke="var(--emerald)" stroke-dasharray="3 2"/>
+    <text x="470" y="230" text-anchor="middle" fill="var(--emerald)" font-size="9" font-weight="600">H(M)1 == H(M)2 ?</text>
+    <text x="470" y="242" text-anchor="middle" fill="var(--ivory-3)" font-size="8">相等 → 完整 + 合法 → 假</text>
+  </g>
+  <line x1="250" y1="200" x2="380" y2="200" stroke="var(--gold-2)" stroke-width="1" stroke-dasharray="2 2" marker-end="url(#ar56b)"/>
+  <text x="315" y="194" text-anchor="middle" fill="var(--gold-2)" font-size="8">传输</text>
+</svg>
+<div class="viz-table" style="margin-top:8px">
+<table style="width:100%">
+<tr style="background:var(--ink-2)">
+  <th style="text-align:left;padding:8px;color:var(--gold-1)">特性</th>
+  <th style="padding:8px;color:var(--gold-1)">信息摘要</th>
+  <th style="padding:8px;color:var(--gold-1)">加密</th>
+</tr>
+<tr>
+  <td style="padding:8px;color:var(--gold-1)">可逆</td>
+  <td style="padding:8px">不可逆（单向）</td>
+  <td style="padding:8px">可逆（有密钥）</td>
+</tr>
+<tr>
+  <td style="padding:8px;color:var(--gold-1)">密钥</td>
+  <td style="padding:8px">无密钥</td>
+  <td style="padding:8px">有密钥（对称/非对称）</td>
+</tr>
+<tr>
+  <td style="padding:8px;color:var(--gold-1)">目标</td>
+  <td style="padding:8px;color:var(--emerald)">完整性</td>
+  <td style="padding:8px;color:var(--azure)">机密性</td>
+</tr>
+<tr>
+  <td style="padding:8px;color:var(--gold-1)">输出</td>
+  <td style="padding:8px">定长摘要</td>
+  <td style="padding:8px">密文（等长或更长）</td>
+</tr>
+<tr>
+  <td style="padding:8px;color:var(--gold-1)">代表</td>
+  <td style="padding:8px">MD5 / SHA-256 / SM3</td>
+  <td style="padding:8px">AES / RSA / 国密 SM4</td>
+</tr>
+</table>
+</div>
+<div class="viz-grid c2" style="margin-top:8px">
+  <div class="viz-card"><div class="lbl">🔑 HMAC</div>摘要 + 共享密钥 → 消息认证码；防篡改 + 身份认证；银行接口签名常用</div>
+  <div class="viz-card gold"><div class="lbl">🌳 Merkle 树</div>区块链底层 · 多笔交易两两哈希形成根 · 高效校验大批量数据一致性</div>
+</div>`,
+core:`哈希函数：MD5（128 位）、SHA-1（160 位，已不安全）、SHA-256（256 位）、SHA-3、国密 SM3（256 位）。\n特性：单向（不可逆）、抗碰撞、雪崩效应、定长输出。\n应用：完整性校验（文件校验）、数字签名（先摘要后签名，提升效率）、消息认证码 HMAC（带共享密钥，防篡改＋认证）、口令存储（加盐哈希）、区块链（Merkle 树）。\n摘要 vs 加密：摘要不可逆、无密钥、验证完整性；加密可逆、有密钥、保证机密性。`, exam:`问法：数字签名流程（画图／描述）、摘要与加密的区别、HMAC 的作用、完整性校验方案。\n2025 下半年真题结合 AES-256（对称加密）考安全设计。\n签名流程：原文 → 哈希摘要 → 私钥签名 → 发送（原文＋签名）→ 接收方公钥验签＋摘要比对。`, pit:`摘要只保证完整性，不保证身份与机密性；身份用数字签名（非对称），机密性用加密。\nMD5／SHA-1 存在碰撞风险，新系统推荐 SHA-256 或国密 SM3。` },
+};
+
+/* ============== State ============== */
+const STORAGE_KEY = 'case-mastered-v1';
+const MODE_KEY = 'case-mode-v1';
+let mastered = {};
+try { mastered = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { mastered = {}; }
+let cardMode = {};
+try { cardMode = JSON.parse(localStorage.getItem(MODE_KEY) || '{}'); } catch (e) { cardMode = {}; }
+let activeId = null;
+let searchQ = '';
+
+/* ============== Sidebar ============== */
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  let html = '';
+  CHAPTERS.forEach(chap => {
+    const items = chap.items;
+    const counts = items.filter(id => id.startsWith('c') && mastered[id]).length;
+    const total = items.filter(id => id.startsWith('c')).length;
+    html += `<div class="sidebar-section" data-chap="${chap.id}">
+      <div class="section-head" onclick="toggleChapter(${chap.id})">
+        <span class="arrow">▼</span>
+        <span>${chap.title}</span>
+        <span class="count">${total > 0 ? counts + '/' + total : items.length}</span>
+      </div>
+      <div class="section-list">`;
+    items.forEach(id => {
+      const isExtra = !id.startsWith('c');
+      const data = isExtra ? EXTRA[id] : TOPICS[id];
+      const isMastered = mastered[id];
+      html += `<div class="sidebar-item${isMastered ? ' mastered' : ''}" data-id="${id}" onclick="showCard('${id}')">
+        <span class="check" onclick="event.stopPropagation();toggleMaster('${id}')">${isMastered ? '✓' : ''}</span>
+        <span class="item-title">${data.title}</span>
+        <span class="item-id">${id.replace('c','').replace(/-/,'·')}</span>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  sb.innerHTML = html;
+}
+
+function toggleChapter(id) {
+  const el = document.querySelector(`.sidebar-section[data-chap="${id}"]`);
+  if (el) el.classList.toggle('collapsed');
+}
+
+/* ============== Card render ============== */
+function renderCard(id) {
+  const main = document.getElementById('main');
+  if (!id) { main.innerHTML = '<div class="empty-state"><div class="icon">📖</div>从左侧选择一个知识点开始</div>'; return; }
+  const isExtra = !id.startsWith('c');
+  const data = isExtra ? EXTRA[id] : TOPICS[id];
+  if (!data) return;
+
+  let html = `<article class="card is-active" data-id="${id}">`;
+  html += `<div class="card-head">
+    <span class="id-tag">#${id}</span>
+    <div style="flex:1">
+      <h2>${data.title}</h2>`;
+  if (!isExtra) {
+    html += `<div class="badges">
+      <span class="badge tier-${data.tier}">${data.tag}</span>
+      <span class="badge">第 ${data.chap} 章</span>
+    </div>`;
+  }
+  html += `</div>
+    <div class="actions">
+      <button class="master-btn${mastered[id] ? ' is-mastered' : ''}" onclick="toggleMaster('${id}')">${mastered[id] ? '✓ 已掌握' : '☐ 标记掌握'}</button>
+    </div>
+  </div>`;
+
+  if (isExtra) {
+    html += `<div class="block exam extra-card" data-id="${id}">
+      <div class="block-head"><span class="label">📋 详细内容</span></div>
+      <div class="block-body">${data.body}</div>
+    </div>`;
+  } else {
+    if (data.viz) html += `<div class="viz" data-viz="1">${data.viz}</div>`;
+    html += `<div class="mode-switch" data-card="${id}">
+      <button class="mode-btn is-active" data-mode="full">📖 完整</button>
+      <button class="mode-btn" data-mode="recall">🎯 速记</button>
+      <button class="mode-btn" data-mode="keyword">🔑 关键词</button>
+    </div>`;
+    html += renderBlock('core','🎯 核心知识点','CORE', data.core);
+    html += renderBlock('exam','📝 考点解析','EXAM', data.exam);
+    html += renderBlock('pit','⚠️ 易错点','PIT', data.pit);
+  }
+  html += `</article>`;
+  main.innerHTML = html;
+  applyHighlight(main);
+  bindModeSwitch(id);
+  bindHotspots();
+  applyCardMode(id, cardMode[id] || 'full');
+}
+
+function renderBlock(type, label, tag, text) {
+  const paragraphs = text.split('\n').filter(p => p.trim()).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  return `<div class="block ${type}" data-block="${type}">
+    <div class="block-head" onclick="toggleBlock(this)">
+      <span class="label">${label} <span class="tag">[${tag}]</span></span>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="block-body">${paragraphs}</div>
+  </div>`;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function toggleBlock(head) {
+  head.parentElement.classList.toggle('is-collapsed');
+}
+
+/* ============== Card mode switcher ============== */
+function bindModeSwitch(id) {
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  if (!card) return;
+  card.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.onclick = e => { e.stopPropagation(); setCardMode(id, btn.dataset.mode); };
+  });
+}
+
+function setCardMode(id, mode) {
+  cardMode[id] = mode;
+  try { localStorage.setItem(MODE_KEY, JSON.stringify(cardMode)); } catch(e) {}
+  applyCardMode(id, mode);
+}
+
+function applyCardMode(id, mode) {
+  const card = document.querySelector(`.card[data-id="${id}"]`);
+  if (!card) return;
+  card.dataset.mode = mode;
+  card.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
+
+  // collapse/expand blocks
+  const blocks = card.querySelectorAll('.block');
+  blocks.forEach(b => {
+    if (mode === 'recall') b.classList.add('is-collapsed');
+    else b.classList.remove('is-collapsed');
+  });
+
+  // keyword highlight on block-body
+  card.querySelectorAll('.block-body').forEach(body => {
+    if (!body.dataset.raw) body.dataset.raw = body.innerHTML;
+    if (mode === 'keyword') body.innerHTML = highlightKeywords(body.dataset.raw);
+    else body.innerHTML = body.dataset.raw;
+  });
+  // re-apply search marks
+  applyHighlight(card);
+}
+
+function highlightKeywords(html) {
+  // Heuristic: wrap English terms / acronyms / 《》 in <mark class="kw">
+  // Avoid wrapping inside already-existing <mark> tags
+  if (!html) return html;
+  // tokenize by tags to avoid mucking up nested markup
+  return html.replace(/>([^<]+)</g, (m, txt) => {
+    let t = txt;
+    // 1) all-caps + digits (CAP, BASE, TCP, SHA256, AES256)
+    t = t.replace(/\b[A-Z]{2,}\d*\b/g, '<mark class="kw">$&</mark>');
+    // 2) PascalCase / CamelCase (NewSQL, Snowflake, Transformer, Docker)
+    t = t.replace(/\b[A-Z][a-zA-Z]+(?:[A-Z][a-zA-Z]+)+\b/g, '<mark class="kw">$&</mark>');
+    // 3) Single-cap English terms 3+ chars (Redis, Kafka, Docker)
+    t = t.replace(/(?<![A-Za-z0-9])[A-Z][a-z]{2,}(?![A-Za-z])/g, '<mark class="kw">$&</mark>');
+    // 4) 《bracketed》
+    t = t.replace(/《[^》]+》/g, '<mark class="kw">$&</mark>');
+    // 5) Dotted name + version (TLS/SSL, X.509, IPv6)
+    // (already covered by [A-Z]{2,})
+    return '>' + t + '<';
+  });
+}
+
+/* ============== SVG hotspot ============== */
+let hsTipEl = null;
+function ensureHsTip() {
+  if (hsTipEl) return hsTipEl;
+  hsTipEl = document.createElement('div');
+  hsTipEl.className = 'hs-tip';
+  document.body.appendChild(hsTipEl);
+  return hsTipEl;
+}
+function showHsTip(target) {
+  const t = ensureHsTip();
+  const title = target.getAttribute('data-hs-title') || target.getAttribute('data-hs');
+  const desc = target.getAttribute('data-hs-desc') || '';
+  t.innerHTML = `<span class="t">${escapeHtml(title)}</span>${desc ? `<span class="d">${escapeHtml(desc)}</span>` : ''}`;
+  t.classList.add('is-show');
+  const r = target.getBoundingClientRect();
+  const tw = t.offsetWidth, th = t.offsetHeight;
+  let x = r.left + r.width/2 - tw/2;
+  let y = r.top - th - 10;
+  if (y < 8) y = r.bottom + 10;
+  if (x < 8) x = 8;
+  if (x + tw > window.innerWidth - 8) x = window.innerWidth - tw - 8;
+  t.style.left = x + 'px';
+  t.style.top = y + 'px';
+  document.querySelectorAll('.hs-target.is-active').forEach(el => el.classList.remove('is-active'));
+  target.classList.add('is-active');
+}
+function hideHsTip() {
+  if (hsTipEl) hsTipEl.classList.remove('is-show');
+  document.querySelectorAll('.hs-target.is-active').forEach(el => el.classList.remove('is-active'));
+}
+function bindHotspots() {
+  // Delegated click
+  if (window.__hsBound) return;
+  window.__hsBound = true;
+  document.addEventListener('click', e => {
+    const t = e.target.closest('.hs-target');
+    if (t) { e.stopPropagation(); showHsTip(t); return; }
+    if (!e.target.closest('.hs-tip')) hideHsTip();
+  });
+}
+
+function showCard(id) {
+  activeId = id;
+  if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.toggle('is-active', el.dataset.id === id));
+  renderCard(id);
+}
+
+function handleHash() {
+  const id = (location.hash || '').replace('#', '');
+  const knownIds = [...Object.keys(TOPICS), ...Object.keys(EXTRA)];
+  if (knownIds.includes(id)) showCard(id);
+  else if (!activeId) {
+    // default to first topic
+    const first = Object.keys(TOPICS)[0];
+    showCard(first);
+  }
+  // Apply URL ?mode= override (for testing/demo)
+  const m = new URLSearchParams(location.search).get('mode');
+  if (m && ['full','recall','keyword'].includes(m) && activeId) {
+    setCardMode(activeId, m);
+  }
+}
+
+/* ============== Mastered ============== */
+function toggleMaster(id) {
+  mastered[id] = !mastered[id];
+  if (!mastered[id]) delete mastered[id];
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(mastered)); } catch(e) {}
+  updateProgress();
+  // refresh sidebar item
+  const item = document.querySelector(`.sidebar-item[data-id="${id}"]`);
+  if (item) {
+    item.classList.toggle('mastered', !!mastered[id]);
+    item.querySelector('.check').textContent = mastered[id] ? '✓' : '';
+  }
+  // refresh master button in active card
+  if (activeId === id) {
+    const btn = document.querySelector('.master-btn');
+    if (btn) {
+      btn.classList.toggle('is-mastered', !!mastered[id]);
+      btn.textContent = mastered[id] ? '✓ 已掌握' : '☐ 标记掌握';
+    }
+  }
+  // refresh chapter counts
+  CHAPTERS.forEach(chap => {
+    const total = chap.items.filter(i => i.startsWith('c')).length;
+    const counts = chap.items.filter(i => i.startsWith('c') && mastered[i]).length;
+    const el = document.querySelector(`.sidebar-section[data-chap="${chap.id}"] .count`);
+    if (el) el.textContent = total > 0 ? counts + '/' + total : chap.items.length;
+  });
+}
+
+function updateProgress() {
+  const total = Object.keys(TOPICS).length;
+  const done = Object.keys(mastered).filter(id => id.startsWith('c')).length;
+  document.getElementById('prog-n').textContent = done;
+  document.getElementById('prog-t').textContent = total;
+}
+
+/* ============== Search ============== */
+let searchTimer = null;
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('sidebar-search').addEventListener('input', e => {
+    clearTimeout(searchTimer);
+    const q = e.target.value.trim().toLowerCase();
+    searchTimer = setTimeout(() => doSearch(q), 120);
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      document.getElementById('sidebar-search').focus();
+    } else if (e.key === 't' && document.activeElement.tagName !== 'INPUT') {
+      toggleTheme();
+    } else if (e.key === 'Escape' && document.activeElement.id === 'sidebar-search') {
+      document.getElementById('sidebar-search').value = '';
+      doSearch('');
+      document.activeElement.blur();
+    }
+  });
+  window.addEventListener('hashchange', handleHash);
+});
+
+function doSearch(q) {
+  searchQ = q;
+  document.querySelectorAll('.sidebar-item').forEach(el => {
+    const t = el.querySelector('.item-title').textContent.toLowerCase();
+    const match = !q || t.includes(q);
+    el.classList.toggle('dimmed', !match);
+    if (match && q) el.classList.add('search-hit'); else el.classList.remove('search-hit');
+  });
+  // highlight all sections
+  document.querySelectorAll('.block-body p').forEach(p => restoreText(p));
+  if (q) {
+    document.querySelectorAll('.card .block-body p').forEach(p => {
+      const txt = p.textContent;
+      const idx = txt.toLowerCase().indexOf(q);
+      if (idx >= 0) {
+        p.innerHTML = txt.substring(0, idx) + '<mark>' + txt.substring(idx, idx+q.length) + '</mark>' + txt.substring(idx+q.length);
+      }
+    });
+  }
+}
+
+function restoreText(el) {
+  if (el.dataset.raw) el.innerHTML = el.dataset.raw;
+}
+function applyHighlight(scope) {
+  if (!searchQ) return;
+  scope.querySelectorAll('.block-body p').forEach(p => {
+    const txt = p.textContent;
+    const idx = txt.toLowerCase().indexOf(searchQ);
+    if (idx >= 0) {
+      p.innerHTML = txt.substring(0, idx) + '<mark>' + txt.substring(idx, idx+searchQ.length) + '</mark>' + txt.substring(idx+searchQ.length);
+    }
+  });
+}
+
+/* ============== Theme ============== */
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('calc-theme', next); } catch(e) {}
+}
+try {
+  const saved = localStorage.getItem('calc-theme');
+  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+} catch(e) {}
+
+/* ============== Init ============== */
+renderSidebar();
+updateProgress();
+handleHash();
+</script>
+
+</body>
+</html>
