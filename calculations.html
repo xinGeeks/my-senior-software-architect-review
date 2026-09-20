@@ -2141,6 +2141,152 @@ body::before {
 [data-theme="light"] .rg-label-edge { fill: #6a5d3e; }
 [data-theme="light"] .rg-summary { background: #f4eedc; }
 
+/* ========== PV Operations (1.15) ========== */
+.pv-tabs {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 0 0 12px;
+}
+.pv-tab {
+  background: var(--ink-2); color: var(--ivory-1);
+  border: 1px solid var(--ink-4); border-radius: 6px;
+  padding: 6px 14px; font-family: var(--font-cn); font-size: 0.86rem;
+  cursor: pointer; transition: all .2s;
+}
+.pv-tab:hover { background: var(--ink-3); color: var(--gold-1); border-color: var(--gold-2); }
+.pv-tab.is-active {
+  background: var(--gold-2); color: var(--ink-0);
+  border-color: var(--gold-2); font-weight: 600;
+}
+.pv-grid {
+  display: grid; grid-template-columns: minmax(280px,1fr) minmax(320px,1.4fr);
+  gap: 14px; margin-top: 12px;
+}
+@media (max-width: 720px) { .pv-grid { grid-template-columns: 1fr; } }
+.pv-code-panel {
+  background: var(--ink-0); border: 1px solid var(--ink-4); border-radius: 8px;
+  padding: 12px 14px;
+  font-family: var(--font-mono); font-size: 0.84rem;
+  line-height: 1.65; color: var(--ivory-1);
+  overflow-x: auto;
+}
+.pv-code-line {
+  display: block; padding: 1px 6px; border-radius: 3px;
+  transition: background .25s;
+}
+.pv-code-line.is-active {
+  background: rgba(212, 175, 55, 0.18);
+  border-left: 3px solid var(--gold-2);
+  padding-left: 4px;
+}
+.pv-code-line.is-done {
+  color: var(--ivory-3);
+}
+.pv-code-line .ln {
+  display: inline-block; width: 22px; color: var(--ivory-3); text-align: right; margin-right: 10px;
+}
+.pv-canvas-wrap {
+  background: var(--ink-0); border: 1px solid var(--ink-4); border-radius: 8px;
+  padding: 12px; min-height: 340px;
+}
+.pv-canvas-wrap svg { display: block; margin: 0 auto; width: 100%; max-width: 540px; height: auto; }
+.pv-pill {
+  display: inline-block; padding: 4px 12px; border-radius: 14px;
+  font-family: var(--font-cn); font-size: 0.82rem; font-weight: 600;
+  margin: 2px 4px 2px 0; transition: all .25s;
+}
+.pv-pill.s-就绪 { background: rgba(180, 180, 200, 0.15); color: var(--ivory-1); border: 1px solid var(--ink-3); }
+.pv-pill.s-执行 { background: rgba(80, 200, 120, 0.22); color: var(--emerald); border: 1px solid var(--emerald); animation: pvPulse 1.2s ease-in-out infinite; }
+.pv-pill.s-阻塞 { background: rgba(200, 85, 61, 0.22); color: var(--crimson); border: 1px solid var(--crimson); }
+.pv-pill.s-临界区 { background: rgba(100, 180, 230, 0.22); color: var(--azure); border: 1px solid var(--azure); }
+@keyframes pvPulse { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
+.pv-chip {
+  display: inline-block; padding: 4px 10px; border-radius: 12px;
+  background: var(--ink-1); color: var(--ivory-1);
+  font-family: var(--font-mono); font-size: 0.84rem;
+  border: 1px solid var(--ink-3); margin: 3px 4px 3px 0;
+  transition: all .25s;
+}
+.pv-chip.is-flash { background: var(--gold-2); color: var(--ink-0); border-color: var(--gold-1); animation: pvFlash 0.6s ease-out; }
+.pv-chip .v { color: var(--gold-1); font-weight: 700; margin-left: 4px; }
+@keyframes pvFlash { 0% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.pv-buffer-slot {
+  fill: var(--ink-1); stroke: var(--ivory-3); stroke-width: 1.5; stroke-dasharray: 4 3;
+  transition: all .3s;
+}
+.pv-buffer-slot.is-filled { fill: rgba(80, 200, 120, 0.25); stroke: var(--emerald); stroke-dasharray: none; }
+.pv-data-box { fill: rgba(100, 180, 230, 0.18); stroke: var(--azure); stroke-width: 2; }
+.pv-data-box.is-write { fill: rgba(200, 85, 61, 0.25); stroke: var(--crimson); animation: pvPulse 1s ease-in-out infinite; }
+.pv-sems-row {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  margin: 10px 0 0; padding: 8px 10px;
+  background: var(--ink-0); border: 1px solid var(--ink-4); border-radius: 8px;
+  font-family: var(--font-cn);
+}
+.pv-sems-row .pv-sems-label {
+  font-size: 0.78rem; color: var(--ivory-3);
+  font-family: var(--font-mono); margin-right: 4px;
+  letter-spacing: 0.04em;
+}
+.pv-sems-row .pv-chip { margin: 0; }
+.pv-dp-legend {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  margin-top: 8px; font-size: 0.78rem; color: var(--ivory-3);
+  font-family: var(--font-cn);
+}
+.pv-dp-legend-item { display: inline-flex; align-items: center; gap: 5px; }
+.pv-dp-legend-dot {
+  display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid var(--gold-3); background: var(--ink-2);
+}
+.pv-dp-legend-dot.eating { background: var(--emerald); border-color: var(--emerald); }
+.pv-dp-legend-dot.blocked { background: var(--crimson); border-color: var(--crimson); }
+.pv-chopstick-rect {
+  fill: var(--gold-4); stroke: var(--gold-3); stroke-width: 1;
+  transition: all .3s;
+}
+.pv-chopstick-rect.is-held { fill: var(--emerald); stroke: var(--emerald); }
+.pv-chopstick-icon { font-size: 14px; }
+.pv-table-outer { fill: none; stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.pv-table-inner { fill: var(--ink-1); stroke: var(--gold-3); stroke-width: 1.5; opacity: 0.4; }
+.pv-table-center { font-family: var(--font-display); font-size: 11px; fill: var(--gold-2); letter-spacing: 0.16em; }
+.pv-phil { fill: var(--ink-2); stroke: var(--gold-3); stroke-width: 2; transition: all .3s; }
+.pv-phil.is-eating { fill: var(--emerald); stroke: var(--emerald); filter: drop-shadow(0 0 4px rgba(80, 200, 120, 0.6)); }
+.pv-phil.is-blocked { fill: var(--crimson); stroke: var(--crimson); filter: drop-shadow(0 0 4px rgba(200, 85, 61, 0.6)); }
+.pv-phil-name {
+  font-family: ui-monospace; font-size: 11px; font-weight: 700;
+  fill: var(--gold-1); text-anchor: middle;
+}
+.pv-phil-name.is-eating { fill: var(--ink-0); }
+.pv-phil-state {
+  font-family: var(--font-cn); font-size: 10px; text-anchor: middle;
+  fill: var(--ivory-3);
+}
+.pv-phil-state.is-eating { fill: var(--emerald); font-weight: 700; }
+.pv-phil-state.is-blocked { fill: var(--crimson); font-weight: 700; }
+.pv-hold-line {
+  stroke: var(--emerald); stroke-width: 2; stroke-dasharray: 4 2;
+  fill: none; opacity: 0.7;
+}
+.pv-hold-arrow {
+  fill: var(--emerald); stroke: none;
+}
+.pv-hold-label {
+  font-family: var(--font-mono); font-size: 9px;
+  fill: var(--emerald); text-anchor: middle;
+}
+[data-theme="light"] .pv-tab { background: #f4eedc; color: #2a2618; border-color: #d4c89a; }
+[data-theme="light"] .pv-tab.is-active { background: var(--gold-2); color: #fff; }
+[data-theme="light"] .pv-code-panel { background: #fdf9ec; border-color: #d4c89a; color: #2a2618; }
+[data-theme="light"] .pv-canvas-wrap { background: #fdf9ec; border-color: #d4c89a; }
+[data-theme="light"] .pv-chip { background: #f4eedc; color: #2a2618; border-color: #d4c89a; }
+[data-theme="light"] .pv-pill.s-就绪 { background: #e8e2d0; color: #2a2618; border-color: #b8a878; }
+[data-theme="light"] .pv-buffer-slot { fill: #f4eedc; }
+[data-theme="light"] .pv-buffer-slot.is-filled { fill: rgba(80, 200, 120, 0.35); }
+[data-theme="light"] .pv-sems-row { background: #fdf9ec; border-color: #d4c89a; }
+[data-theme="light"] .pv-table-inner { fill: #f4eedc; stroke: #c0a878; opacity: 0.5; }
+[data-theme="light"] .pv-phil-name { fill: #6a5d3e; }
+[data-theme="light"] .pv-phil-state { fill: #6a5d3e; }
+
 /* ========== Coupling/Cohesion (2.4) ========== */
 .cc-row {
   display: grid;
@@ -2918,7 +3064,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 <div class="app-body">
 <nav class="app-sidebar" id="sidebar">
   <div class="sidebar-section" data-section="sec1">
-    <div class="sidebar-section-title">📚 计算机系统+OS <span class="sidebar-section-count">14</span></div>
+    <div class="sidebar-section-title">📚 计算机系统+OS <span class="sidebar-section-count">15</span></div>
     <div class="sidebar-items" id="items-sec1"></div>
   </div>
   <div class="sidebar-section" data-section="sec2">
@@ -3842,6 +3988,72 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
       <div class="trap">
         <b>陷阱</b>:多实例 ≠ 安全。例如 3P×3R 各 1 实例成环必死锁;若其中一个资源实例数 ≥ 2,环外的进程能先执行完释放实例,环内进程拿到实例也能完成 → 不死锁。
+      </div>
+
+</article>
+
+
+    <article class="card-detail tier-1" data-id="c15a" data-section="sec1">
+
+      <span class="tier-label">⭐⭐⭐ 高频</span>
+      <div class="card-title">1.15 PV 操作控制</div>
+      <div class="exam-flag"><span class="freq">×5</span><span>真题考过</span><span class="years">2018上·2019上·2021上·2023下·2025上</span></div>
+      <div class="card-sub">Semaphore Operations · Process Synchronization</div>
+
+      <div class="calc">
+        <div class="calc-title">交互器 · 经典同步问题 → 代码步进 + 信号量动效</div>
+        <div class="pv-tabs" id="pv-tabs">
+          <button class="pv-tab is-active" data-pv="mutex">🔒 互斥</button>
+          <button class="pv-tab" data-pv="pc">📦 生产者-消费者</button>
+          <button class="pv-tab" data-pv="rw">📖 读者-写者</button>
+          <button class="pv-tab" data-pv="dp">🍜 哲学家就餐</button>
+        </div>
+        <div class="pr-controls">
+          <select class="pv-select" id="pv-preset"></select>
+          <button class="pr-play-btn" onclick="pvStep()">⏯ 单步</button>
+          <button class="pr-reset-btn" onclick="pvRun()">▶ 连续</button>
+          <button class="pr-reset-btn" onclick="pvPause()">⏸ 暂停</button>
+          <button class="pr-reset-btn" onclick="pvReset()">⟲ 重置</button>
+          <select class="pv-select" id="pv-speed" onchange="pvSetSpeed(+this.value)">
+            <option value="1500">慢</option>
+            <option value="800" selected>中</option>
+            <option value="400">快</option>
+          </select>
+        </div>
+
+        <div class="pv-grid">
+          <div class="pv-code-panel" id="pv-code"></div>
+          <div class="pv-canvas-wrap" id="pv-canvas"></div>
+        </div>
+
+        <div class="pv-sems-row" id="pv-sems">
+          <span class="pv-sems-label">信号量：</span>
+        </div>
+
+        <div id="pv-summary" class="rg-summary">选问题 → 「单步」逐行执行 P(S)/V(S) → 观察信号量与进程状态变化</div>
+        <div id="pv-log" class="banker-log" style="display:block"></div>
+
+        <div class="formula">
+          <span class="formula-label">信号量三要素</span>
+          <b>P(S)</b>:申请资源,S = S - 1;若 S < 0 则进程阻塞等待。<br>
+          <b>V(S)</b>:释放资源,S = S + 1;若 S ≤ 0 则唤醒一个等待者。<br>
+          <b>二元信号量</b>(mutex,初值=1)实现互斥;<b>多元信号量</b>(empty=N,full=0)实现同步。
+        </div>
+
+        <div class="example">
+          <b>常考题型</b>:
+          ① <b>填空</b>:写出 P/V 操作完整序列(2~3 分);
+          ② <b>判断</b>:信号量初值给错(空=0 满=N 是常见错误);
+          ③ <b>分析</b>:哲学家就餐死锁原因 + 3 种解决方案(最多允许 4 人 / 奇偶拿筷顺序 / AND 信号量)。
+        </div>
+
+        <div class="trap">
+          <b>陷阱</b>:① P/V 顺序不能反,先 V 后 P 会破坏互斥;
+          ② 生产者-消费者 empty/full 不可混淆(empty 初值=N 描述剩余空位,full 初值=0 描述已占用);
+          ③ 读者-写者 read_count 必须在 mutex 保护下修改,否则 read_count++ 不原子;
+          ④ 哲学家就餐若所有 Pi 同时拿左筷 → 5 个全阻塞 → 死锁(本工具 dp.deadlock 预设演示此场景)。
+        </div>
+
       </div>
 
 </article>
@@ -6408,6 +6620,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('pr-refstr')) prReset();
   if (document.getElementById('bk-n')) bkBuild();
   if (document.getElementById('rg-canvas')) rgInit();
+  if (document.getElementById('pv-canvas')) pvInit();
   if (document.getElementById('cc-coupling')) ccInit();
   if (document.getElementById('ut-tree')) utInit();
   if (document.getElementById('co-kloc')) drawCOCOMO();
@@ -7980,6 +8193,670 @@ function rgShowSummary(cycles, deadlocked) {
     sum.className = 'rg-summary';
     sum.innerHTML = `<span class="rg-pill warn">异常</span>存在环但环内无进程节点，请检查图。`;
   }
+}
+
+/* ================== 1.15 PV Operations ================== */
+const PV_PROBLEMS = {
+  mutex: {
+    title: '互斥 (mutex)',
+    desc: '两个进程争用同一临界资源,二元信号量 mutex 初值=1 实现互斥',
+    presets: {
+      classic: {
+        code: [
+          '// 临界资源 R, mutex 初值 = 1',
+          'cobegin',
+          '  P1: P(mutex);      // mutex=1→0',
+          '  P1: <临界区 R>;',
+          '  P1: V(mutex);      // mutex=0→1',
+          '  P2: P(mutex);      // mutex=1→0',
+          '  P2: <临界区 R>;',
+          '  P2: V(mutex);',
+          'coend'
+        ],
+        initial: {
+          procs: [{ id: 'P1', state: '就绪' }, { id: 'P2', state: '就绪' }],
+          sems: [{ id: 'mutex', val: 1, max: 1 }],
+          buffer: null, readers: null, hold: null
+        },
+        steps: [
+          { proc: 'P1', codeLine: 2, semAfter: { mutex: 0 }, states: { P1: '执行', P2: '就绪' }, log: 'P1 P(mutex) → mutex=0,P1 进入临界区' },
+          { proc: 'P1', codeLine: 3, states: { P1: '临界区', P2: '就绪' }, log: 'P1 临界区执行中(mutex=0)' },
+          { proc: 'P1', codeLine: 4, semAfter: { mutex: 1 }, states: { P1: '执行', P2: '就绪' }, log: 'P1 V(mutex) → mutex=1,离开临界区' },
+          { proc: 'P2', codeLine: 5, semAfter: { mutex: 0 }, states: { P1: '就绪', P2: '执行' }, log: 'P2 P(mutex) → mutex=0,P2 进入临界区' },
+          { proc: 'P2', codeLine: 6, states: { P1: '就绪', P2: '临界区' }, log: 'P2 临界区执行中(mutex=0)' },
+          { proc: 'P2', codeLine: 7, semAfter: { mutex: 1 }, states: { P1: '就绪', P2: '执行' }, log: 'P2 V(mutex) → mutex=1,执行完毕' }
+        ]
+      },
+      two_iter: {
+        code: [
+          '// 两轮循环,看 P/V 周期',
+          'for k = 1 to 2:',
+          '  P1: P(mutex); <临界区>; V(mutex);',
+          '  P2: P(mutex); <临界区>; V(mutex);',
+          'end'
+        ],
+        initial: {
+          procs: [{ id: 'P1', state: '就绪' }, { id: 'P2', state: '就绪' }],
+          sems: [{ id: 'mutex', val: 1, max: 1 }],
+          buffer: null, readers: null, hold: null
+        },
+        steps: [
+          { proc: 'P1', codeLine: 1, semAfter: { mutex: 0 }, states: { P1: '临界区', P2: '就绪' }, log: '轮1 P1 进入临界区(mutex=0)' },
+          { proc: 'P1', codeLine: 1, semAfter: { mutex: 1 }, states: { P1: '执行', P2: '就绪' }, log: '轮1 P1 V(mutex) → 1' },
+          { proc: 'P2', codeLine: 2, semAfter: { mutex: 0 }, states: { P1: '就绪', P2: '临界区' }, log: '轮1 P2 进入临界区(mutex=0)' },
+          { proc: 'P2', codeLine: 2, semAfter: { mutex: 1 }, states: { P1: '就绪', P2: '执行' }, log: '轮1 P2 V(mutex) → 1' },
+          { proc: 'P1', codeLine: 1, semAfter: { mutex: 0 }, states: { P1: '临界区', P2: '就绪' }, log: '轮2 P1 进入临界区' },
+          { proc: 'P1', codeLine: 1, semAfter: { mutex: 1 }, states: { P1: '执行', P2: '就绪' }, log: '轮2 P1 V(mutex) → 1' },
+          { proc: 'P2', codeLine: 2, semAfter: { mutex: 0 }, states: { P1: '就绪', P2: '临界区' }, log: '轮2 P2 进入临界区' },
+          { proc: 'P2', codeLine: 2, semAfter: { mutex: 1 }, states: { P1: '就绪', P2: '执行' }, log: '轮2 P2 V(mutex) → 1,所有轮次执行完毕' }
+        ]
+      }
+    }
+  },
+  pc: {
+    title: '生产者-消费者 (Producer-Consumer)',
+    desc: '共享缓冲区 size=N,信号量 empty=N(空位)/ full=0(已占用)/ mutex=1(互斥)',
+    presets: {
+      classic_n3: {
+        code: [
+          '// 缓冲区 buf[3], 初值 empty=3, full=0, mutex=1',
+          'Producer:',
+          '  P(empty); P(mutex);',
+          '  produce → buf[next_p];',
+          '  V(mutex); V(full);',
+          'Consumer:',
+          '  P(full); P(mutex);',
+          '  consume ← buf[next_c];',
+          '  V(mutex); V(empty);'
+        ],
+        initial: {
+          procs: [{ id: 'Producer', state: '就绪' }, { id: 'Consumer', state: '就绪' }],
+          sems: [
+            { id: 'empty', val: 3, max: 3 },
+            { id: 'full', val: 0, max: 3 },
+            { id: 'mutex', val: 1, max: 1 }
+          ],
+          buffer: ['', '', ''], readers: null, hold: null
+        },
+        steps: [
+          { proc: 'Producer', codeLine: 2, semAfter: { empty: 2 }, log: 'P(empty) → empty=2,确认有空位' },
+          { proc: 'Producer', codeLine: 2, semAfter: { mutex: 0 }, states: { Producer: '执行', Consumer: '就绪' }, log: 'P(mutex) → 0,独占缓冲区' },
+          { proc: 'Producer', codeLine: 3, buffer: ['item', '', ''], log: 'produce → buf[0]' },
+          { proc: 'Producer', codeLine: 4, semAfter: { mutex: 1 }, log: 'V(mutex) → 1' },
+          { proc: 'Producer', codeLine: 4, semAfter: { full: 1 }, states: { Producer: '就绪', Consumer: '就绪' }, log: 'V(full) → 1,通知消费者' },
+          { proc: 'Consumer', codeLine: 6, semAfter: { full: 0 }, states: { Consumer: '执行' }, log: 'C P(full) → 0' },
+          { proc: 'Consumer', codeLine: 6, semAfter: { mutex: 0 }, log: 'C P(mutex) → 0' },
+          { proc: 'Consumer', codeLine: 7, buffer: ['', '', ''], log: 'consume ← buf[0]' },
+          { proc: 'Consumer', codeLine: 8, semAfter: { mutex: 1 }, log: 'C V(mutex) → 1' },
+          { proc: 'Consumer', codeLine: 8, semAfter: { empty: 3 }, states: { Consumer: '就绪' }, log: 'C V(empty) → 3,通知生产者' }
+        ]
+      },
+      burst_5: {
+        code: [
+          '// 3 次连续生产 → 3 次消费',
+          'repeat 3 times:',
+          '  P: P(empty); P(mutex); produce→buf; V(mutex); V(full);',
+          '  C: P(full);  P(mutex); consume←buf; V(mutex); V(empty);'
+        ],
+        initial: {
+          procs: [{ id: 'P', state: '就绪' }, { id: 'C', state: '就绪' }],
+          sems: [
+            { id: 'empty', val: 3, max: 3 },
+            { id: 'full', val: 0, max: 3 },
+            { id: 'mutex', val: 1, max: 1 }
+          ],
+          buffer: ['', '', ''], readers: null, hold: null
+        },
+        steps: [
+          { proc: 'P', codeLine: 1, semAfter: { empty: 2 }, log: '① P(empty)→2' },
+          { proc: 'P', codeLine: 1, semAfter: { mutex: 0 }, states: { P: '执行' }, log: '① P(mutex)→0' },
+          { proc: 'P', codeLine: 1, buffer: ['i', '', ''], log: 'produce→buf[0]' },
+          { proc: 'P', codeLine: 1, semAfter: { mutex: 1 }, log: '① V(mutex)→1' },
+          { proc: 'P', codeLine: 1, semAfter: { full: 1 }, states: { P: '就绪' }, log: '① V(full)→1' },
+          { proc: 'P', codeLine: 1, semAfter: { empty: 1 }, states: { P: '执行' }, log: '② P(empty)→1' },
+          { proc: 'P', codeLine: 1, semAfter: { mutex: 0 }, log: '② P(mutex)→0' },
+          { proc: 'P', codeLine: 1, buffer: ['i', 'i', ''], log: 'produce→buf[1]' },
+          { proc: 'P', codeLine: 1, semAfter: { mutex: 1 }, log: '② V(mutex)→1' },
+          { proc: 'P', codeLine: 1, semAfter: { full: 2 }, states: { P: '就绪' }, log: '② V(full)→2' },
+          { proc: 'P', codeLine: 1, semAfter: { empty: 0 }, states: { P: '执行' }, log: '③ P(empty)→0,缓冲将满' },
+          { proc: 'P', codeLine: 1, semAfter: { mutex: 0 }, log: '③ P(mutex)→0' },
+          { proc: 'P', codeLine: 1, buffer: ['i', 'i', 'i'], log: 'produce→buf[2] (已满)' },
+          { proc: 'P', codeLine: 1, semAfter: { mutex: 1 }, log: '③ V(mutex)→1' },
+          { proc: 'P', codeLine: 1, semAfter: { full: 3 }, states: { P: '就绪', C: '执行' }, log: '③ V(full)→3,通知消费者' },
+          { proc: 'C', codeLine: 2, semAfter: { full: 2 }, log: '① C P(full)→2' },
+          { proc: 'C', codeLine: 2, semAfter: { mutex: 0 }, log: '① C P(mutex)→0' },
+          { proc: 'C', codeLine: 2, buffer: ['', 'i', 'i'], log: 'consume←buf[0]' },
+          { proc: 'C', codeLine: 2, semAfter: { mutex: 1 }, log: '① C V(mutex)→1' },
+          { proc: 'C', codeLine: 2, semAfter: { empty: 1 }, states: { C: '就绪' }, log: '① C V(empty)→1' }
+        ]
+      }
+    }
+  },
+  rw: {
+    title: '读者-写者 (Readers-Writers)',
+    desc: '共享数据,读者可并发,写者互斥;rw_mutex 保护读/写切换,mutex 保护 read_count',
+    presets: {
+      readers_first: {
+        code: [
+          '// read_count 初值=0,rw_mutex=1,mutex=1',
+          'Reader:',
+          '  P(mutex); read_count++;',
+          '  if (read_count == 1) P(rw_mutex);',
+          '  V(mutex);',
+          '  <读数据>;',
+          '  P(mutex); read_count--;',
+          '  if (read_count == 0) V(rw_mutex);',
+          '  V(mutex);',
+          'Writer:',
+          '  P(rw_mutex); <写数据>; V(rw_mutex);'
+        ],
+        initial: {
+          procs: [
+            { id: 'R1', state: '就绪' },
+            { id: 'R2', state: '就绪' },
+            { id: 'W1', state: '就绪' }
+          ],
+          sems: [
+            { id: 'rw_mutex', val: 1, max: 1 },
+            { id: 'mutex', val: 1, max: 1 }
+          ],
+          buffer: null, readers: 0, hold: null
+        },
+        steps: [
+          { proc: 'R1', codeLine: 1, semAfter: { mutex: 0 }, states: { R1: '执行' }, log: 'R1 P(mutex) → 0' },
+          { proc: 'R1', codeLine: 1, readers: 1, log: 'R1 read_count++ → 1' },
+          { proc: 'R1', codeLine: 2, semAfter: { rw_mutex: 0 }, log: 'read_count==1 → R1 P(rw_mutex) → 0' },
+          { proc: 'R1', codeLine: 3, semAfter: { mutex: 1 }, log: 'R1 V(mutex) → 1,释放读者互斥' },
+          { proc: 'R1', codeLine: 4, states: { R1: '临界区' }, log: 'R1 <读数据> 中(rw_mutex=0)' },
+          { proc: 'R2', codeLine: 1, semAfter: { mutex: 0 }, states: { R2: '执行' }, log: 'R2 P(mutex) → 0' },
+          { proc: 'R2', codeLine: 1, readers: 2, log: 'R2 read_count++ → 2' },
+          { proc: 'R2', codeLine: 2, log: 'read_count==2 不再 P(rw_mutex)' },
+          { proc: 'R2', codeLine: 3, semAfter: { mutex: 1 }, states: { R2: '临界区' }, log: 'R2 V(mutex) → 1,R2 进入读' },
+          { proc: 'W1', codeLine: 9, states: { W1: '阻塞' }, log: 'W1 P(rw_mutex) → 阻塞(rw_mutex=0,有人在读)' },
+          { proc: 'R1', codeLine: 5, semAfter: { mutex: 0 }, states: { R1: '执行' }, log: 'R1 P(mutex) → 0' },
+          { proc: 'R1', codeLine: 5, readers: 1, log: 'R1 read_count-- → 1' },
+          { proc: 'R1', codeLine: 6, log: 'read_count==1 不再 V(rw_mutex)' },
+          { proc: 'R1', codeLine: 7, semAfter: { mutex: 1 }, log: 'R1 V(mutex) → 1' },
+          { proc: 'R2', codeLine: 5, semAfter: { mutex: 0 }, states: { R2: '执行' }, log: 'R2 P(mutex) → 0' },
+          { proc: 'R2', codeLine: 5, readers: 0, log: 'R2 read_count-- → 0' },
+          { proc: 'R2', codeLine: 6, semAfter: { rw_mutex: 1 }, log: 'read_count==0 → R2 V(rw_mutex) → 1' },
+          { proc: 'R2', codeLine: 7, semAfter: { mutex: 1 }, states: { R2: '就绪' }, log: 'R2 V(mutex) → 1' },
+          { proc: 'W1', codeLine: 9, states: { W1: '临界区' }, log: 'W1 唤醒 → P(rw_mutex) → 0,<写数据>' },
+          { proc: 'W1', codeLine: 9, semAfter: { rw_mutex: 1 }, states: { W1: '就绪' }, log: 'W1 V(rw_mutex) → 1,执行完毕' }
+        ]
+      },
+      writers_first: {
+        code: [
+          '// 写优先:增加 queue=1 信号量排队',
+          'queue=1, rw_mutex=1, mutex=1, read_count=0',
+          'Reader: P(queue); P(mutex); ... if (rc==1) P(rw_mutex); V(mutex); V(queue); <读>',
+          'Writer: P(queue); P(rw_mutex); V(queue); <写>; V(rw_mutex);'
+        ],
+        initial: {
+          procs: [
+            { id: 'R1', state: '就绪' },
+            { id: 'W1', state: '就绪' }
+          ],
+          sems: [
+            { id: 'queue', val: 1, max: 1 },
+            { id: 'rw_mutex', val: 1, max: 1 },
+            { id: 'mutex', val: 1, max: 1 }
+          ],
+          buffer: null, readers: 0, hold: null
+        },
+        steps: [
+          { proc: 'W1', codeLine: 2, semAfter: { queue: 0 }, states: { W1: '执行' }, log: 'W1 P(queue) → 0,优先排队' },
+          { proc: 'W1', codeLine: 2, semAfter: { rw_mutex: 0 }, log: 'W1 P(rw_mutex) → 0' },
+          { proc: 'W1', codeLine: 2, semAfter: { queue: 1 }, log: 'W1 V(queue) → 1,让下一个排队' },
+          { proc: 'R1', codeLine: 1, semAfter: { queue: 0 }, states: { R1: '执行' }, log: 'R1 P(queue) → 0(在 W1 之后排队)' },
+          { proc: 'R1', codeLine: 1, semAfter: { mutex: 0 }, log: 'R1 P(mutex) → 0' },
+          { proc: 'R1', codeLine: 1, readers: 1, log: 'R1 read_count → 1' },
+          { proc: 'R1', codeLine: 1, states: { R1: '阻塞' }, log: 'R1 试图 P(rw_mutex) → 阻塞(W1 在写)' },
+          { proc: 'W1', codeLine: 2, states: { W1: '临界区' }, log: 'W1 <写数据> 中' },
+          { proc: 'W1', codeLine: 2, semAfter: { rw_mutex: 1 }, states: { W1: '就绪' }, log: 'W1 V(rw_mutex) → 1,写完' },
+          { proc: 'W1', codeLine: 2, log: 'W1 V(queue) → (隐含下一步)' },
+          { proc: 'R1', codeLine: 1, semAfter: { rw_mutex: 0 }, states: { R1: '执行' }, log: 'R1 唤醒 → P(rw_mutex) → 0' },
+          { proc: 'R1', codeLine: 1, semAfter: { mutex: 1 }, semAfter2: null, states: { R1: '临界区' }, log: 'R1 V(mutex) → 1,进入读' }
+        ]
+      }
+    }
+  },
+  dp: {
+    title: '哲学家就餐 (Dining Philosophers)',
+    desc: '5 个哲学家围坐,每两人之间 1 根筷子,吃时需拿左右两根;经典死锁:5 人同时拿左筷',
+    presets: {
+      deadlock: {
+        code: [
+          '// 5 哲学家, chopstick[0..4] 初值=1',
+          'Pi (i=0..4):',
+          '  think();',
+          '  P(chopstick[i]);        // 先拿左筷',
+          '  P(chopstick[(i+1)%5]); // 再拿右筷',
+          '  eat();',
+          '  V(chopstick[i]);        // 放左筷',
+          '  V(chopstick[(i+1)%5]); // 放右筷'
+        ],
+        initial: {
+          procs: [
+            { id: 'P0', state: '就绪' }, { id: 'P1', state: '就绪' },
+            { id: 'P2', state: '就绪' }, { id: 'P3', state: '就绪' },
+            { id: 'P4', state: '就绪' }
+          ],
+          sems: [
+            { id: 'c0', val: 1, max: 1 }, { id: 'c1', val: 1, max: 1 },
+            { id: 'c2', val: 1, max: 1 }, { id: 'c3', val: 1, max: 1 },
+            { id: 'c4', val: 1, max: 1 }
+          ],
+          buffer: null, readers: null, hold: []
+        },
+        steps: [
+          { proc: 'P0', codeLine: 2, semAfter: { c0: 0 }, hold: [['P0', 0]], states: { P0: '执行' }, log: 'P0 拿左筷 c0 → c0=0' },
+          { proc: 'P1', codeLine: 2, semAfter: { c1: 0 }, hold: [['P0', 0], ['P1', 1]], states: { P1: '执行' }, log: 'P1 拿左筷 c1 → c1=0' },
+          { proc: 'P2', codeLine: 2, semAfter: { c2: 0 }, hold: [['P0', 0], ['P1', 1], ['P2', 2]], states: { P2: '执行' }, log: 'P2 拿左筷 c2 → c2=0' },
+          { proc: 'P3', codeLine: 2, semAfter: { c3: 0 }, hold: [['P0', 0], ['P1', 1], ['P2', 2], ['P3', 3]], states: { P3: '执行' }, log: 'P3 拿左筷 c3 → c3=0' },
+          { proc: 'P4', codeLine: 2, semAfter: { c4: 0 }, hold: [['P0', 0], ['P1', 1], ['P2', 2], ['P3', 3], ['P4', 4]], states: { P4: '执行' }, log: 'P4 拿左筷 c4 → c4=0,所有左筷都拿了' },
+          { proc: 'P0', codeLine: 3, states: { P0: '阻塞' }, log: 'P0 试图拿右筷 c1 → 阻塞(P1 持有)' },
+          { proc: 'P1', codeLine: 3, states: { P1: '阻塞' }, log: 'P1 试图拿右筷 c2 → 阻塞(P2 持有)' },
+          { proc: 'P2', codeLine: 3, states: { P2: '阻塞' }, log: 'P2 试图拿右筷 c3 → 阻塞(P3 持有)' },
+          { proc: 'P3', codeLine: 3, states: { P3: '阻塞' }, log: 'P3 试图拿右筷 c4 → 阻塞(P4 持有)' },
+          { proc: 'P4', codeLine: 3, states: { P4: '阻塞' }, log: 'P4 试图拿右筷 c0 → 阻塞(P0 持有) — ⚠ 循环等待 = 死锁' }
+        ]
+      },
+      ordered: {
+        code: [
+          '// 解决方案:奇数号哲学家先右后左,偶数号先左后右',
+          'Pi (奇数, i%2==1): P(c[(i+1)%5]); P(c[i]); <吃>; V(c[i]); V(c[(i+1)%5]);',
+          'Pi (偶数, i%2==0): P(c[i]); P(c[(i+1)%5]); <吃>; V(c[(i+1)%5]); V(c[i]);'
+        ],
+        initial: {
+          procs: [
+            { id: 'P0', state: '就绪' }, { id: 'P1', state: '就绪' },
+            { id: 'P2', state: '就绪' }, { id: 'P3', state: '就绪' },
+            { id: 'P4', state: '就绪' }
+          ],
+          sems: [
+            { id: 'c0', val: 1, max: 1 }, { id: 'c1', val: 1, max: 1 },
+            { id: 'c2', val: 1, max: 1 }, { id: 'c3', val: 1, max: 1 },
+            { id: 'c4', val: 1, max: 1 }
+          ],
+          buffer: null, readers: null, hold: []
+        },
+        steps: [
+          { proc: 'P0', codeLine: 1, semAfter: { c0: 0 }, hold: [['P0', 0]], states: { P0: '执行' }, log: 'P0(偶) 先左 c0 → c0=0' },
+          { proc: 'P0', codeLine: 1, semAfter: { c1: 0 }, hold: [['P0', 0], ['P0', 1]], states: { P0: '执行' }, log: 'P0(偶) 再右 c1 → c1=0,两根都有' },
+          { proc: 'P0', codeLine: 1, hold: [['P0', 0], ['P0', 1]], states: { P0: '临界区' }, log: 'P0 <吃>' },
+          { proc: 'P0', codeLine: 1, semAfter: { c1: 1 }, hold: [['P0', 0]], states: { P0: '执行' }, log: 'P0 放右 c1 → c1=1' },
+          { proc: 'P0', codeLine: 1, semAfter: { c0: 1 }, hold: [], states: { P0: '就绪' }, log: 'P0 放左 c0 → c0=1,P0 完成' },
+          { proc: 'P1', codeLine: 0, semAfter: { c2: 0 }, hold: [['P1', 2]], states: { P1: '执行' }, log: 'P1(奇) 先右 c2 → c2=0' },
+          { proc: 'P1', codeLine: 0, semAfter: { c1: 0 }, hold: [['P1', 2], ['P1', 1]], states: { P1: '执行' }, log: 'P1(奇) 再左 c1 → c1=0,两根都有' },
+          { proc: 'P1', codeLine: 0, hold: [['P1', 2], ['P1', 1]], states: { P1: '临界区' }, log: 'P1 <吃>' },
+          { proc: 'P1', codeLine: 0, semAfter: { c1: 1 }, hold: [['P1', 2]], states: { P1: '执行' }, log: 'P1 放左 c1 → 1' },
+          { proc: 'P1', codeLine: 0, semAfter: { c2: 1 }, hold: [], states: { P1: '就绪' }, log: 'P1 放右 c2 → 1,P1 完成' }
+        ]
+      }
+    }
+  }
+};
+
+let pvState = null;
+
+function pvInit() {
+  // Wire tab buttons
+  document.querySelectorAll('.pv-tab').forEach(btn => {
+    btn.addEventListener('click', () => pvLoadProblem(btn.dataset.pv));
+  });
+  pvLoadProblem('mutex');
+}
+
+function pvLoadProblem(key) {
+  if (!PV_PROBLEMS[key]) return;
+  document.querySelectorAll('.pv-tab').forEach(b => b.classList.toggle('is-active', b.dataset.pv === key));
+  const problem = PV_PROBLEMS[key];
+  const sel = document.getElementById('pv-preset');
+  sel.innerHTML = '';
+  Object.keys(problem.presets).forEach(pk => {
+    const opt = document.createElement('option');
+    opt.value = pk; opt.textContent = pk;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => pvLoadPreset(sel.value);
+  pvLoadPreset(Object.keys(problem.presets)[0]);
+}
+
+function pvLoadPreset(key, fromReset) {
+  if (pvState && pvState.playing) pvPause();
+  const problemKey = document.querySelector('.pv-tab.is-active').dataset.pv;
+  const problem = PV_PROBLEMS[problemKey];
+  const preset = problem.presets[key];
+  pvState = {
+    problemKey,
+    presetKey: key,
+    title: problem.title,
+    desc: problem.desc,
+    code: preset.code,
+    procs: JSON.parse(JSON.stringify(preset.initial.procs)),
+    sems: JSON.parse(JSON.stringify(preset.initial.sems)),
+    buffer: preset.initial.buffer ? JSON.parse(JSON.stringify(preset.initial.buffer)) : null,
+    readers: preset.initial.readers !== null ? preset.initial.readers : null,
+    hold: preset.initial.hold ? JSON.parse(JSON.stringify(preset.initial.hold)) : null,
+    steps: preset.steps,
+    stepIdx: 0,
+    playing: false,
+    timer: null,
+    speed: +document.getElementById('pv-speed').value || 800,
+    lastChanged: new Set()  // signal which sem/procs changed on last tick (for flash)
+  };
+  pvRender(true);
+  pvShowInitialLog();
+}
+
+function pvReset() {
+  pvLoadPreset(pvState.presetKey);
+}
+
+function pvSetSpeed(ms) {
+  pvState.speed = ms;
+  if (pvState.playing) {
+    clearInterval(pvState.timer);
+    pvState.timer = setInterval(pvTick, pvState.speed);
+  }
+}
+
+function pvStep() {
+  if (!pvState) return;
+  if (pvState.stepIdx >= pvState.steps.length) {
+    pvShowSummary('done');
+    return;
+  }
+  const step = pvState.steps[pvState.stepIdx++];
+  pvState.lastChanged = new Set();
+  // Apply semAfter
+  for (const k in (step.semAfter || {})) {
+    const sem = pvState.sems.find(s => s.id === k);
+    if (sem && sem.val !== step.semAfter[k]) {
+      sem.val = step.semAfter[k];
+      pvState.lastChanged.add('sem:' + k);
+    }
+  }
+  if (step.buffer) { pvState.buffer = JSON.parse(JSON.stringify(step.buffer)); pvState.lastChanged.add('buffer'); }
+  if (step.readers !== undefined && step.readers !== pvState.readers) { pvState.readers = step.readers; pvState.lastChanged.add('readers'); }
+  if (step.hold) { pvState.hold = JSON.parse(JSON.stringify(step.hold)); pvState.lastChanged.add('hold'); }
+  for (const k in (step.states || {})) {
+    const p = pvState.procs.find(x => x.id === k);
+    if (p) p.state = step.states[k];
+  }
+  pvAppendLog(step);
+  pvRender(false);
+  if (pvState.stepIdx >= pvState.steps.length) {
+    pvShowSummary(step.hold && step.hold.length ? 'deadlock' : 'done');
+    if (pvState.playing) pvPause();
+  }
+}
+
+function pvRun() {
+  if (!pvState || pvState.playing) return;
+  pvState.playing = true;
+  pvState.timer = setInterval(pvTick, pvState.speed);
+}
+
+function pvTick() {
+  if (!pvState) return;
+  pvStep();
+  if (pvState.stepIdx >= pvState.steps.length) pvPause();
+}
+
+function pvPause() {
+  if (!pvState) return;
+  pvState.playing = false;
+  if (pvState.timer) { clearInterval(pvState.timer); pvState.timer = null; }
+}
+
+function pvRender(isInit) {
+  pvRenderCode();
+  pvRenderCanvas();
+  pvRenderSemsHtml();
+  pvRenderSummary(isInit ? 'init' : null);
+}
+
+function pvRenderCode() {
+  const wrap = document.getElementById('pv-code');
+  const curLine = pvState.stepIdx > 0 ? pvState.steps[pvState.stepIdx - 1].codeLine : -1;
+  let html = '';
+  pvState.code.forEach((line, i) => {
+    const cls = (i === curLine) ? 'pv-code-line is-active'
+              : (i < curLine ? 'pv-code-line is-done' : 'pv-code-line');
+    html += `<span class="${cls}"><span class="ln">${String(i + 1).padStart(2, '0')}</span>${escapeHtml(line)}</span>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function pvRenderCanvas() {
+  const wrap = document.getElementById('pv-canvas');
+  if (!wrap) return;
+  let html = '';
+  const W = 520, H = 280;
+  html += `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  // DP 自己画哲学家,跳过顶部 procs 行
+  if (pvState.problemKey !== 'dp') {
+    html += pvRenderProcs(W);
+  }
+  // 信号量已迁出 SVG,改在下方 HTML 行显示
+  // 资源区 (根据 problem 类型不同)
+  html += pvRenderResource(W, H);
+  html += '</svg>';
+  // DP 状态图例
+  if (pvState.problemKey === 'dp') {
+    html += `<div class="pv-dp-legend">
+      <span class="pv-dp-legend-item"><span class="pv-dp-legend-dot"></span> 就绪 (想筷子)</span>
+      <span class="pv-dp-legend-item"><span class="pv-dp-legend-dot eating"></span> 临界区 (吃)</span>
+      <span class="pv-dp-legend-item"><span class="pv-dp-legend-dot blocked"></span> 阻塞 (等筷子)</span>
+      <span class="pv-dp-legend-item">🍴 筷子 / 虚线=被持有</span>
+    </div>`;
+  }
+  wrap.innerHTML = html;
+}
+
+function pvRenderProcs(W) {
+  let html = '';
+  const n = pvState.procs.length;
+  const procY = 50;
+  const startX = 50;
+  const gap = (W - 100) / Math.max(n - 1, 1);
+  pvState.procs.forEach((p, i) => {
+    const x = startX + i * gap;
+    const flash = pvState.lastChanged && pvState.lastChanged.has('proc:' + p.id);
+    html += `<g class="pv-proc" data-id="${p.id}">
+      <rect x="${x - 40}" y="${procY - 22}" width="80" height="44" rx="8"
+        fill="${procColor(p.state).bg}" stroke="${procColor(p.state).fg}" stroke-width="2"
+        class="${flash ? 'pv-flash' : ''}" />
+      <text x="${x}" y="${procY + 5}" text-anchor="middle"
+        font-family="system-ui" font-size="14" font-weight="700"
+        fill="${procColor(p.state).fg}">${p.id}</text>
+      <text x="${x}" y="${procY + 38}" text-anchor="middle"
+        font-family="system-ui" font-size="11"
+        fill="${procColor(p.state).fg}">${p.state}</text>
+    </g>`;
+  });
+  return html;
+}
+
+function procColor(state) {
+  if (state === '执行') return { bg: 'rgba(80, 200, 120, 0.18)', fg: '#50c878' };
+  if (state === '阻塞') return { bg: 'rgba(200, 85, 61, 0.22)', fg: '#c8553d' };
+  if (state === '临界区') return { bg: 'rgba(100, 180, 230, 0.20)', fg: '#64b4e6' };
+  return { bg: 'rgba(180, 180, 200, 0.10)', fg: '#b4b4c8' };
+}
+
+function pvRenderSemsHtml() {
+  const row = document.getElementById('pv-sems');
+  if (!row) return;
+  let html = '<span class="pv-sems-label">信号量：</span>';
+  pvState.sems.forEach(s => {
+    const flash = pvState.lastChanged && pvState.lastChanged.has('sem:' + s.id);
+    const lowColor = s.val === 0 ? 'var(--crimson)' : (s.val === s.max ? 'var(--emerald)' : 'var(--gold-1)');
+    html += `<span class="pv-chip ${flash ? 'is-flash' : ''}" data-id="${s.id}">${s.id}=<span class="v" style="color:${lowColor}">${s.val}</span>/${s.max}</span>`;
+  });
+  // 保留第一个 label span
+  row.innerHTML = html;
+}
+
+function pvRenderResource(W, H) {
+  const problemKey = pvState.problemKey;
+  if (problemKey === 'pc') return pvRenderBuffer(W, H);
+  if (problemKey === 'rw') return pvRenderRW(W, H);
+  if (problemKey === 'dp') return pvRenderDP(W, H);
+  return '';
+}
+
+function pvRenderBuffer(W, H) {
+  let html = '';
+  const slots = pvState.buffer || [];
+  const slotW = 60, slotH = 50, gap = 12;
+  const totalW = slots.length * slotW + (slots.length - 1) * gap;
+  const startX = (W - totalW) / 2;
+  const slotY = 150;
+  html += `<text x="${W / 2}" y="135" text-anchor="middle" font-family="system-ui" font-size="12" fill="#b4b4c8">缓冲区 buf[${slots.length}]</text>`;
+  slots.forEach((v, i) => {
+    const x = startX + i * (slotW + gap);
+    const filled = v !== '';
+    const flash = pvState.lastChanged && pvState.lastChanged.has('buffer');
+    html += `<rect x="${x}" y="${slotY}" width="${slotW}" height="${slotH}" rx="6"
+      class="pv-buffer-slot ${filled ? 'is-filled' : ''} ${flash ? 'pv-flash' : ''}" />
+      ${filled ? `<text x="${x + slotW / 2}" y="${slotY + slotH / 2 + 6}" text-anchor="middle" font-size="22">📦</text>` : ''}
+      <text x="${x + slotW / 2}" y="${slotY + slotH + 16}" text-anchor="middle" font-family="ui-monospace" font-size="11" fill="#b4b4c8">[${i}]</text>`;
+  });
+  return html;
+}
+
+function pvRenderRW(W, H) {
+  let html = '';
+  const boxY = 150;
+  html += `<rect x="${W / 2 - 70}" y="${boxY}" width="140" height="60" rx="8"
+    class="pv-data-box" />`;
+  html += `<text x="${W / 2}" y="${boxY + 28}" text-anchor="middle" font-family="system-ui" font-size="14" font-weight="700" fill="#64b4e6">shared data</text>`;
+  html += `<text x="${W / 2}" y="${boxY + 48}" text-anchor="middle" font-family="system-ui" font-size="12" fill="#d4af37">readers = ${pvState.readers || 0}</text>`;
+  return html;
+}
+
+function pvRenderDP(W, H) {
+  let html = '';
+  const cx = W / 2, cy = 150;
+  const R_table_out = 110, R_table_in = 65;
+  const R_phil = 125, R_chop = 80;
+  // 餐桌 (外虚线 + 内填色)
+  html += `<circle cx="${cx}" cy="${cy}" r="${R_table_out}" class="pv-table-outer" />`;
+  html += `<circle cx="${cx}" cy="${cy}" r="${R_table_in}" class="pv-table-inner" />`;
+  html += `<text x="${cx}" y="${cy + 4}" text-anchor="middle" class="pv-table-center">餐桌</text>`;
+  // 预计算位置
+  const positions = [];
+  for (let i = 0; i < 5; i++) {
+    const aPhil = (-90 + i * 72) * Math.PI / 180;
+    const aChop = (-126 + i * 72) * Math.PI / 180;
+    positions.push({
+      i,
+      px: cx + R_phil * Math.cos(aPhil), py: cy + R_phil * Math.sin(aPhil),
+      philAngle: aPhil,
+      chopX: cx + R_chop * Math.cos(aChop), chopY: cy + R_chop * Math.sin(aChop),
+      chopAngle: aChop,
+    });
+  }
+  // 第一遍:筷子 (render)
+  for (const p of positions) {
+    const held = pvState.hold && pvState.hold.some(h => h[1] === p.i);
+    // 筷子矩形 (沿切线方向旋转)
+    const w = 22, h_ = 6;
+    const angDeg = (-126 + p.i * 72);
+    html += `<g transform="translate(${p.chopX},${p.chopY}) rotate(${angDeg})">
+      <rect x="${-w/2}" y="${-h_/2}" width="${w}" height="${h_}" rx="2"
+        class="pv-chopstick-rect ${held ? 'is-held' : ''}" />
+      <text x="0" y="${-h_/2 - 3}" text-anchor="middle" class="pv-chopstick-icon"
+        style="font-size:9px;fill:var(--ink-3)">${held ? '🔒' : '🍴'}</text>
+    </g>`;
+  }
+  // 第二遍:持有连线 (chopstick → philosopher)
+  for (const [procId, chopIdx] of (pvState.hold || [])) {
+    const p = positions[chopIdx];
+    const phil = positions.find(x => 'P' + x.i === procId);
+    if (!phil) continue;
+    const mx = (p.chopX + phil.px) / 2;
+    const my = (p.chopY + phil.py) / 2;
+    html += `<line x1="${p.chopX}" y1="${p.chopY}" x2="${phil.px}" y2="${phil.py}"
+      class="pv-hold-line" />`;
+    html += `<circle cx="${p.chopX}" cy="${p.chopY}" r="3" class="pv-hold-arrow" />`;
+  }
+  // 第三遍:哲学家 + 状态文字
+  for (const p of positions) {
+    const proc = pvState.procs.find(x => x.id === 'P' + p.i);
+    if (!proc) continue;
+    const eating = proc.state === '临界区';
+    const blocked = proc.state === '阻塞';
+    const stateLabel = eating ? '吃' : (blocked ? '阻塞' : '就绪');
+    const stateClass = eating ? 'is-eating' : (blocked ? 'is-blocked' : '');
+    html += `<g class="pv-phil-group">
+      <circle cx="${p.px}" cy="${p.py}" r="20"
+        class="pv-phil ${eating ? 'is-eating' : ''} ${blocked ? 'is-blocked' : ''}" />
+      <text x="${p.px}" y="${p.py + 4}" class="pv-phil-name ${stateClass}">P${p.i}</text>
+      <text x="${p.px}" y="${p.py + 36}" class="pv-phil-state ${stateClass}">${stateLabel}</text>
+    </g>`;
+  }
+  return html;
+}
+
+function pvShowInitialLog() {
+  const log = document.getElementById('pv-log');
+  const semsStr = pvState.sems.map(s => `${s.id}=${s.val}`).join(', ');
+  let html = `<div class="step ok">▶ 初始化：信号量 {${semsStr}}`;
+  if (pvState.buffer) html += `,缓冲区 buf[${pvState.buffer.length}] 空`;
+  if (pvState.readers !== null) html += `,readers=${pvState.readers}`;
+  html += `</div>`;
+  html += `<div class="step ok">▶ 进程 {${pvState.procs.map(p => p.id).join(', ')}} 状态：${pvState.procs.map(p => p.state).join(' / ')}</div>`;
+  html += `<div class="step ok">▶ 「⏯ 单步」逐行执行 P(S)/V(S) · 「▶ 连续」自动播放</div>`;
+  log.innerHTML = html;
+}
+
+function pvAppendLog(step) {
+  const log = document.getElementById('pv-log');
+  const isDead = step.states && Object.values(step.states).some(s => s === '阻塞');
+  const cls = isDead ? 'dead' : 'ok';
+  const entry = document.createElement('div');
+  entry.className = 'step ' + cls;
+  entry.innerHTML = `▶ [${pvState.stepIdx}/${pvState.steps.length}] ${step.proc ? '<b>' + step.proc + '</b> ' : ''}${step.log || ''}`;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
+
+function pvRenderSummary(mode) {
+  const sum = document.getElementById('pv-summary');
+  if (mode === 'init') {
+    sum.className = 'rg-summary';
+    sum.innerHTML = `<span class="rg-pill warn">就绪</span>${pvState.procs.length} 进程 / ${pvState.sems.length} 信号量 · 「单步」逐行执行 P(S)/V(S) → 观察信号量与进程状态变化`;
+    return;
+  }
+  if (mode === 'done') {
+    sum.className = 'rg-summary is-ok';
+    const anyBlock = pvState.procs.some(p => p.state === '阻塞');
+    if (anyBlock) {
+      sum.className = 'rg-summary';
+      sum.innerHTML = `<span class="rg-pill warn">部分阻塞</span>有进程未完成,请检查信号量设置`;
+    } else {
+      sum.innerHTML = `<span class="rg-pill ok">执行完毕</span>${pvState.procs.map(p => p.id).join(', ')} 均成功完成`;
+    }
+    return;
+  }
+  if (mode === 'deadlock') {
+    sum.className = 'rg-summary is-dead';
+    sum.innerHTML = `<span class="rg-pill dead">⚠ 死锁</span>所有哲学家各持左筷,形成循环等待 → 无人能拿到右筷进餐。解决方案:奇偶号拿筷顺序相反 / 最多允许 4 人同时进餐 / AND 信号量一次性申请两筷`;
+    return;
+  }
+  // 普通 tick 后的 snapshot
+  const semStr = pvState.sems.map(s => `${s.id}=${s.val}`).join(' ');
+  const procStr = pvState.procs.map(p => `${p.id}:${p.state}`).join(' ');
+  sum.className = 'rg-summary';
+  sum.innerHTML = `<span class="rg-pill warn">步骤 ${pvState.stepIdx}/${pvState.steps.length}</span>信号量 {${semStr}} · 进程 [${procStr}]`;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /* ================== 2.4 Coupling / Cohesion ================== */
