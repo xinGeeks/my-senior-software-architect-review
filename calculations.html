@@ -563,19 +563,47 @@ body::before {
 }
 .calc-result {
   margin-top: 12px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   background: var(--ink-2);
   border-left: 3px solid var(--gold-2);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: var(--ivory-0);
-  line-height: 1.7;
+  line-height: 1.85;
 }
 .calc-result .key { color: var(--gold-3); }
-.calc-result .val { color: var(--gold-1); font-weight: 600; }
-.calc-result .delta-up { color: var(--crimson); }
-.calc-result .delta-down { color: var(--emerald); }
+.calc-result .val { color: var(--gold-1); font-weight: 700; font-size: 1.18rem; }
+.calc-result .unit { color: var(--ivory-2); font-size: 0.86rem; margin-left: 2px; }
+.calc-result .delta-up { color: var(--crimson); font-weight: 600; }
+.calc-result .delta-down { color: var(--emerald); font-weight: 600; }
+.calc-result .formula-line { display: block; padding: 4px 0; border-top: 1px dashed rgba(212, 168, 95, 0.18); }
+.calc-result .formula-line:first-child { border-top: none; padding-top: 0; }
+.calc-result b { color: var(--gold-1); font-weight: 700; font-size: 1.05em; }
+/* 数字变化时的脉冲动画 */
+.calc-result .val { transition: color 0.18s var(--ease-out); }
+.calc-result.flash .val { animation: heroPulse 0.45s var(--ease-out); }
+@keyframes heroPulse {
+  0%   { transform: scale(1);    color: var(--gold-1); }
+  40%  { transform: scale(1.18); color: var(--gold-3); text-shadow: 0 0 12px rgba(212, 168, 95, 0.6); }
+  100% { transform: scale(1);    color: var(--gold-1); }
+}
+
+/* 统一的"🎲 随机"按钮（替代各卡片内联样式） */
+.btn-rand {
+  background: var(--ink-3);
+  border: 1px solid var(--gold-4);
+  color: var(--gold-2);
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  cursor: pointer;
+  align-self: end;
+  transition: all 0.18s var(--ease-out);
+}
+.btn-rand:hover { background: var(--gold-4); color: var(--ink-0); transform: translateY(-1px); }
+.btn-rand:active { transform: translateY(0); }
 
 /* CPM canvas */
 .cpm-canvas {
@@ -3399,7 +3427,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             <label>磁道范围</label>
             <input id="dk-max" type="number" value="199" min="20" max="500" oninput="raf('drawDisk')">
           </div>
-          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randDisk()">🎲 随机序列</button>
+          <button class="btn-rand" onclick="randDisk()">🎲 随机序列</button>
         </div>
         <div class="nad-tab" id="dk-alg-tab">
           <button class="is-active" data-alg="FCFS" onclick="dkSetAlg('FCFS')">FCFS</button>
@@ -3408,7 +3436,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button data-alg="CSCAN" onclick="dkSetAlg('CSCAN')">C-SCAN</button>
         </div>
         <div class="disk-canvas-wrap">
-          <svg id="dk-svg" viewBox="0 0 480 320" preserveAspectRatio="none"></svg>
+          <svg id="dk-svg" viewBox="0 0 480 320" preserveAspectRatio="none" role="img" aria-label="磁盘磁头轨迹动画"></svg>
         </div>
         <div class="disk-stats" id="dk-stats"></div>
       </div>
@@ -3561,7 +3589,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             <label>示例 IP</label>
             <input id="sn-ip" type="text" value="192.168.10.0" oninput="raf('drawSubnet')">
           </div>
-          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randSubnet()">🎲 随机出题</button>
+          <button class="btn-rand" onclick="randSubnet()">🎲 随机出题</button>
         </div>
         <div class="subnet-canvas-wrap" id="sn-canvas-wrap"></div>
         <div id="sn-summary" class="calc-result"></div>
@@ -3769,7 +3797,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>字号 b</label><input id="bm-b" type="number" value="2" min="0" oninput="raf('drawBitmap')"></div>
           <div class="calc-field"><label>位号 j</label><input id="bm-j" type="number" value="5" min="0" oninput="raf('drawBitmap')"></div>
           <div class="calc-field" style="justify-content:flex-end">
-            <button id="bm-rand" type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto" onclick="randBitmap()">🎲 随机分配</button>
+            <button id="bm-rand" class="btn-rand" style="margin-top:auto;align-self:auto" onclick="randBitmap()">🎲 随机分配</button>
           </div>
         </div>
         <div class="bitmap-wrap">
@@ -4088,15 +4116,15 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="calc">
         <div class="calc-title">交互动画 · 三算法并排逐步演示</div>
         <div class="pr-controls">
-          <div><label>引用串</label><input id="pr-refstr" type="text" value="1,2,3,4,1,2,5,1,2,3,4,5" style="width:200px"></div>
-          <div><label>页框数</label><input id="pr-frames" type="number" value="3" min="1" max="8" style="width:60px"></div>
+          <div><label>引用串</label><input id="pr-refstr" type="text" value="1,2,3,4,1,2,5,1,2,3,4,5" style="width:200px" oninput="raf('prReset')"></div>
+          <div><label>页框数</label><input id="pr-frames" type="number" value="3" min="1" max="8" style="width:60px" oninput="raf('prReset')"></div>
           <button class="pr-play-btn" onclick="prStep()">▶ 单步</button>
           <button class="pr-play-btn" onclick="prAuto()" id="pr-auto-btn">⏵ 自动</button>
           <button class="pr-reset-btn" onclick="prReset()">⟲ 重置</button>
           <button class="pr-reset-btn" onclick="prLoadExample()">载入真题</button>
-          <button class="pr-reset-btn" onclick="randPR()">🎲 随机</button>
+          <button class="pr-reset-btn btn-rand" onclick="randPR()">🎲 随机</button>
         </div>
-        <div id="pr-pointer" class="pr-pointer">输入引用串后点 ▶ 开始</div>
+        <div id="pr-pointer" class="pr-pointer">改输入即自动刷新，▶ 单步逐步演示</div>
         <div class="pr-refstring" id="pr-refbar"></div>
         <div class="pr-grid">
           <div class="pr-alg">
@@ -4268,7 +4296,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button class="pr-play-btn" onclick="bkRun()">🔍 试求安全序列</button>
           <button class="pr-reset-btn" onclick="bkReset()">清空</button>
           <button class="pr-reset-btn" onclick="bkLoadExample()">载入真题</button>
-          <button class="pr-reset-btn" onclick="randBanker()">🎲 随机</button>
+          <button class="pr-reset-btn btn-rand" onclick="randBanker()">🎲 随机</button>
         </div>
         <div id="bk-mat-wrap"></div>
         <div id="bk-log" class="banker-log" style="display:none"></div>
@@ -4377,7 +4405,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button class="pr-reset-btn" onclick="rgLoadExample('deadlock_single')">📥 必死锁例</button>
           <button class="pr-reset-btn" onclick="rgLoadExample('no_deadlock_multi')">📥 不死锁例</button>
           <button class="pr-reset-btn" onclick="rgLoadExample('safe')">📥 无环例</button>
-          <button class="pr-reset-btn" onclick="rgRandom()">🎲 随机</button>
+          <button class="pr-reset-btn btn-rand" onclick="rgRandom()">🎲 随机</button>
           <button class="pr-reset-btn" onclick="rgClear()">清空</button>
         </div>
 
@@ -4671,7 +4699,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>边数 m</label><input id="mc-edges" type="number" value="12" min="0" oninput="raf('calcMcCabe')"></div>
           <div class="calc-field"><label>节点数 n</label><input id="mc-nodes" type="number" value="10" min="0" oninput="raf('calcMcCabe')"></div>
           <div class="calc-field"><label>判定节点数</label><input id="mc-dec" type="number" value="3" min="0" oninput="raf('calcMcCabe')"></div>
-          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randMcCabe()">🎲 随机</button>
+          <button class="btn-rand" onclick="randMcCabe()">🎲 随机</button>
         </div>
         <div id="mc-out" class="calc-result"></div>
         <div class="mc-toolbar">
@@ -4854,7 +4882,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div class="cocomo-svg-wrap">
-          <svg id="co-svg" viewBox="0 0 480 320" preserveAspectRatio="none"></svg>
+          <svg id="co-svg" viewBox="0 0 480 320" preserveAspectRatio="none" role="img" aria-label="COCOMO 工作量曲线"></svg>
         </div>
         <div id="co-out" class="calc-result"></div>
         <div style="margin-top:8px;color:var(--ivory-3);font-size:0.8rem">
@@ -5208,22 +5236,22 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>属性集 U（逗号分隔）</label>
-            <input id="fd-attrs" type="text" value="A,B,C,D,E" oninput="raf('fdInit')">
+            <input id="fd-attrs" type="text" value="A,B,C,D,E" oninput="raf('fdUpdate')">
           </div>
           <div class="calc-field" style="flex:3">
             <label>函数依赖 F（每条 FD 用分号分隔，如 A->B,C）</label>
-            <input id="fd-list" type="text" value="A->B;B->C;C->D;D->E" oninput="raf('fdInit')">
+            <input id="fd-list" type="text" value="A->B;B->C;C->D;D->E" oninput="raf('fdUpdate')">
           </div>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
             <label>起始属性 X（求 X⁺）</label>
-            <input id="fd-start" type="text" value="A" oninput="raf('fdInit')">
+            <input id="fd-start" type="text" value="A" oninput="raf('fdUpdate')">
           </div>
           <div class="calc-field" style="justify-content:flex-end">
-            <button type="button" style="background:var(--emerald);border:1px solid var(--emerald);color:var(--ivory-0);padding:6px 14px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto" onclick="fdFindKeys()">🔍 自动求所有候选码</button>
+            <button type="button" style="background:var(--ink-3);border:1px solid var(--emerald);color:var(--emerald);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto" onclick="fdFindKeys()" title="输入变化已自动求候选码，此按钮为手动刷新">🔍 重求候选码</button>
             <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto;margin-left:6px" onclick="fdLoadExample()">载入真题</button>
-            <button type="button" style="background:var(--ink-3);border:1px solid var(--violet);color:var(--violet);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;margin-top:auto;margin-left:6px" onclick="fdRandom()">🎲 随机出题</button>
+            <button class="btn-rand" style="margin-left:6px" onclick="fdRandom()">🎲 随机出题</button>
           </div>
         </div>
 
@@ -5366,18 +5394,18 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>R₁ 属性（逗号分隔）</label>
-            <input id="dc-r1" type="text" value="A,B,C">
+            <input id="dc-r1" type="text" value="A,B,C" oninput="raf('decideDecomp')">
           </div>
           <div class="calc-field" style="flex:2">
             <label>R₂ 属性（逗号分隔）</label>
-            <input id="dc-r2" type="text" value="B,D">
+            <input id="dc-r2" type="text" value="B,D" oninput="raf('decideDecomp')">
           </div>
           <div class="calc-field" style="flex:3">
             <label>FD 集（每条 A->B 用分号分隔）</label>
-            <input id="dc-fd" type="text" value="A->B;C->B;B->D">
+            <input id="dc-fd" type="text" value="A->B;C->B;B->D" oninput="raf('decideDecomp')">
           </div>
         </div>
-        <button class="pr-play-btn" onclick="decideDecomp()">🔍 判定</button>
+        <button class="pr-play-btn" onclick="decideDecomp()">🔍 手动重判</button>
         <button class="pr-reset-btn" onclick="dcLoadExample()">载入真题</button>
         <div class="decomp-flow" id="dc-flow"></div>
         <div class="decomp-verdict" id="dc-verdict"></div>
@@ -5477,7 +5505,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>B 工期</label><input id="cpm-b" type="number" value="4" min="1" oninput="raf('calcCPM')"></div>
           <div class="calc-field"><label>D 工期</label><input id="cpm-d" type="number" value="6" min="1" oninput="raf('calcCPM')"></div>
           <div class="calc-field"><label>C 工期</label><input id="cpm-c" type="number" value="3" min="1" oninput="raf('calcCPM')"></div>
-          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randCPM()">🎲 随机</button>
+          <button class="btn-rand" onclick="randCPM()">🎲 随机</button>
         </div>
         <div id="cpm-out" class="calc-result"></div>
         <svg id="cpm-svg" class="cpm-canvas" width="100%" height="220"></svg>
@@ -5616,7 +5644,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div class="pert-svg-wrap">
-          <svg id="pt-svg" viewBox="0 0 480 220" preserveAspectRatio="none"></svg>
+          <svg id="pt-svg" viewBox="0 0 480 220" preserveAspectRatio="none" role="img" aria-label="PERT β 分布图"></svg>
         </div>
         <div class="pert-marks">
           <div class="pert-mark O"><div class="lbl">乐观 O</div><div class="val" id="pt-O-val">4</div></div>
@@ -5720,7 +5748,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field"><label>EV 挣值</label><input id="evm-ev" type="number" value="4" min="0" oninput="raf('calcEVM')"></div>
           <div class="calc-field"><label>AC 实际成本</label><input id="evm-ac" type="number" value="5.5" min="0" step="0.1" oninput="raf('calcEVM')"></div>
           <div class="calc-field"><label>BAC 完工预算</label><input id="evm-bac" type="number" value="10" min="0" oninput="raf('calcEVM')"></div>
-          <button type="button" style="background:var(--ink-3);border:1px solid var(--gold-4);color:var(--gold-2);padding:6px 12px;border-radius:2px;font-family:var(--font-mono);font-size:0.82rem;cursor:pointer;align-self:end" onclick="randEVM()">🎲 随机</button>
+          <button class="btn-rand" onclick="randEVM()">🎲 随机</button>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
@@ -5737,7 +5765,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div id="evm-out" class="calc-result"></div>
         <div class="evm-svg-wrap">
-          <svg id="evm-svg" viewBox="0 0 480 240" preserveAspectRatio="none"></svg>
+          <svg id="evm-svg" viewBox="0 0 480 240" preserveAspectRatio="none" role="img" aria-label="EVM PV/EV/AC 曲线对比"></svg>
         </div>
         <div class="evm-bars">
           <div>
@@ -6199,7 +6227,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div class="ccap-svg-wrap">
-          <svg id="ch-svg" viewBox="0 0 480 200" preserveAspectRatio="none"></svg>
+          <svg id="ch-svg" viewBox="0 0 480 200" preserveAspectRatio="none" role="img" aria-label="奈氏与香农信道容量对比"></svg>
         </div>
         <div style="margin-top:8px;color:var(--ivory-3);font-size:0.8rem">
           💡 <b style="color:var(--azure)">奈氏</b>是理论速率，<b style="color:var(--crimson)">香农</b>是噪声环境下的实际上限。
@@ -6358,9 +6386,9 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             </div>
           </div>
           <div class="calc-field" style="flex:2">
-            <label>压力曲线（24h 流量分布，可拖动峰值倍数）</label>
+            <label>压力曲线（24h 流量分布 · 调"峰值倍数"上方的滑块联动）</label>
             <div class="cap-stress-wrap">
-              <svg id="cap-stress" viewBox="0 0 480 180" preserveAspectRatio="none"></svg>
+              <svg id="cap-stress" viewBox="0 0 480 180" preserveAspectRatio="none" role="img" aria-label="24 小时流量压力曲线"></svg>
             </div>
           </div>
         </div>
@@ -6551,7 +6579,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="card-title">关键提醒</div>
       <div class="card-sub">Cross-cutting Concerns</div>
       <div class="score-pie-wrap">
-        <svg viewBox="0 0 200 200" id="c35-pie">
+        <svg viewBox="0 0 200 200" id="c35-pie" role="img" aria-label="案例评分分布饼图">
           <g transform="translate(100,100)">
             <circle r="80" fill="var(--ink-2)" stroke="var(--ink-4)" stroke-width="1"/>
           </g>
@@ -6714,7 +6742,7 @@ function drawMcGraph(type) {
       (lbl ? `<text x="${(x1+x2)/2 + 6}" y="${(y1+y2)/2}" fill="var(--ivory-2)" font-family="var(--font-cn)" font-size="10">${lbl}</text>` : '');
   };
 
-  svg += `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+  svg += `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">
     <defs><marker id="mcArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--gold-3)"/></marker></defs>`;
 
   if (type === 'simple') {
@@ -7283,7 +7311,7 @@ function fdRenderGraph(attrs, fds, highlightStart) {
       });
     });
   });
-  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">`;
   // 箭头标记
   svg += `<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#d4a574"/></marker></defs>`;
   // 画边
@@ -7320,6 +7348,12 @@ function fdRenderGraph(attrs, fds, highlightStart) {
   svg += `<text x="10" y="20" fill="#8e8a7a" font-family="JetBrains Mono" font-size="11">FD 有向图 · 起点高亮</text>`;
   svg += `</svg>`;
   wrap.innerHTML = svg;
+}
+let _fdUpdateTimer = null;
+function fdUpdate() {
+  fdInit();
+  clearTimeout(_fdUpdateTimer);
+  _fdUpdateTimer = setTimeout(fdFindKeys, 250);
 }
 function fdInit() {
   const { attrs, fds } = fdParse();
@@ -7613,7 +7647,7 @@ function drawFdMindmap() {
     [8, 7], [9, 7]
   ];
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">`;
   svg += `<defs><marker id="fdArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--gold-3)"/></marker></defs>`;
   svg += `<rect width="${W}" height="${H}" fill="transparent"/>`;
 
@@ -7816,7 +7850,7 @@ function nfPreset(kind) {
 
 /* ================== 附录：计时器/Checklist/饼图/风险矩阵 ================== */
 function makeTimer(clockId, fillId, btnId, totalSec, hintId) {
-  let timer = null, left = totalSec;
+  let timer = null, left = totalSec, wasRunning = false;
   const clock = document.getElementById(clockId);
   const fill = document.getElementById(fillId);
   const btn  = document.getElementById(btnId);
@@ -7831,30 +7865,63 @@ function makeTimer(clockId, fillId, btnId, totalSec, hintId) {
     clock.classList.toggle('done', s === 0);
   }
 
-  btn.addEventListener('click', () => {
-    if (timer) {
+  function tick() {
+    left--;
+    render();
+    if (left <= 0) {
       clearInterval(timer); timer = null;
-      btn.textContent = '▶ 继续';
+      btn.textContent = '⟲ 重置';
       btn.classList.remove('stop');
-    } else {
+      if (hintId) document.getElementById(hintId).innerHTML = '<b style="color:var(--emerald)">✓ 时间到 — 立即圈答案！</b>';
+    }
+  }
+  function start() {
+    if (timer || left <= 0) return;
+    btn.textContent = '⏸ 暂停';
+    btn.classList.add('stop');
+    timer = setInterval(tick, 1000);
+  }
+  function stop() {
+    if (!timer) return;
+    clearInterval(timer); timer = null;
+    btn.textContent = '▶ 继续';
+    btn.classList.remove('stop');
+  }
+
+  btn.addEventListener('click', () => {
+    if (timer) { stop(); }
+    else {
       if (left === 0) left = totalSec;
-      btn.textContent = '⏸ 暂停';
-      btn.classList.add('stop');
-      timer = setInterval(() => {
-        left--;
-        render();
-        if (left <= 0) {
-          clearInterval(timer); timer = null;
-          btn.textContent = '⟲ 重置';
-          btn.classList.remove('stop');
-          if (hintId) document.getElementById(hintId).innerHTML = '<b style="color:var(--emerald)">✓ 时间到 — 立即圈答案！</b>';
-        }
-      }, 1000);
+      start();
     }
   });
 
   render();
+
+  // 路由切换时自动暂停 / 恢复
+  return { start, stop, isRunning: () => !!timer, getLeft: () => left,
+           pauseForRoute: () => { wasRunning = !!timer; if (timer) stop(); },
+           resumeAfterRoute: () => { if (wasRunning && left > 0) start(); wasRunning = false; } };
 }
+
+// 全局计时器注册表，路由切换时统一暂停
+const _timerRegistry = [];
+window.addEventListener('hashchange', () => {
+  const id = (location.hash || '').replace('#', '');
+  _timerRegistry.forEach(t => {
+    if (t.pauseForRoute) {
+      if (id === 'c33' || id === 'c34') t.resumeAfterRoute();
+      else t.pauseForRoute();
+    }
+  });
+  // 同时暂停 c12 页面置换的自动播放
+  if (typeof prState !== 'undefined' && prState.autoTimer) {
+    clearInterval(prState.autoTimer);
+    prState.autoTimer = null;
+    const autoBtn = document.getElementById('pr-auto-btn');
+    if (autoBtn) { autoBtn.textContent = '⏵ 自动'; autoBtn.classList.remove('stop'); }
+  }
+});
 
 /* ================== 5.1 ATAM 时间轴 ================== */
 const ATAM_STEPS = [
@@ -7902,8 +7969,8 @@ function atamNext() { if (atamCur < 9) { atamCur++; atamRender(); } }
 function atamPrev() { if (atamCur > 1) { atamCur--; atamRender(); } }
 function atamReset() { atamCur = 1; atamRender(); }
 
-function c33Init() { makeTimer('c33-clock', 'c33-fill', 'c33-btn', 45, 'c33-hint'); }
-function c34Init() { makeTimer('c34-clock', 'c34-fill', 'c34-btn', 360, 'c34-hint'); clProgress(); }
+function c33Init() { _timerRegistry.push(makeTimer('c33-clock', 'c33-fill', 'c33-btn', 45, 'c33-hint')); }
+function c34Init() { _timerRegistry.push(makeTimer('c34-clock', 'c34-fill', 'c34-btn', 360, 'c34-hint')); clProgress(); }
 
 function clToggle(el) {
   el.classList.toggle('done');
@@ -7983,7 +8050,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('cap-dau')) calcCap();
   if (document.getElementById('mc-edges')) calcMcCabe();
   if (document.getElementById('bm-canvas')) drawBitmap();
-  if (document.getElementById('fd-attrs')) fdInit();
+  if (document.getElementById('fd-attrs')) fdUpdate();
   if (document.getElementById('sn-class')) drawSubnet();
   if (document.getElementById('ip-input')) ipConvert();
   if (document.getElementById('pg-abits')) drawPaging();
@@ -8015,6 +8082,16 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('c35-pie')) drawScorePie();
   if (document.getElementById('atam-timeline')) atamInit();
   if (document.getElementById('rm-detail')) rmDetail('减轻', 'threat');
+
+  // Hero 脉冲动画：所有 .calc-result / .rel-result 文本变化时闪烁
+  document.querySelectorAll('.calc-result, .rel-result').forEach(el => {
+    const obs = new MutationObserver(() => {
+      el.classList.remove('flash');
+      void el.offsetWidth; // 强制重排
+      el.classList.add('flash');
+    });
+    obs.observe(el, { childList: true, characterData: true, subtree: true });
+  });
 });
 </script>
 
@@ -8349,7 +8426,7 @@ function mmCalc() {
       const y = yMid + amp;
       path += `${i === 0 ? 'M' : 'L'} ${x} ${y} `;
     }
-    svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">
       <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#2a3056" stroke-width="1" stroke-dasharray="3 3"/>
       <path d="${path}" fill="none" stroke="#d4a574" stroke-width="1.5"/>
       <text x="10" y="18" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10">${(fs/1000).toFixed(1)} kHz × ${bit} bit × ${ch} ch</text>
@@ -8383,7 +8460,7 @@ function mmCalc() {
         grid += `<rect x="${x}" y="${y}" width="${(W-20)/cellsX-0.5}" height="${(H-20)/cellsY-0.5}" fill="${fill}"/>`;
       }
     }
-    svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${grid}
+    svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">${grid}
       <text x="10" y="${H-4}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10">${w} × ${h} px = ${pixels.toLocaleString()} 像素</text>
     </svg>`;
     result = `<span class="key">像素总数</span> <span class="val">${pixels.toLocaleString()}</span> &nbsp;|&nbsp;
@@ -8409,7 +8486,7 @@ function mmCalc() {
       const amp = 40 * Math.sin(i * 0.3);
       bars += `<rect x="${x}" y="${yMid - 30 + Math.abs(amp)}" width="${(W-20)/showFrames-1}" height="${60 - 2*Math.abs(amp)}" fill="rgba(212, 165, 116, 0.4)" stroke="#d4a574"/>`;
     }
-    svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">
       <line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="#2a3056" stroke-width="1" stroke-dasharray="3 3"/>
       ${bars}
       <text x="10" y="18" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10">${w}×${h} × ${fps}fps × ${t}s</text>
@@ -8470,7 +8547,7 @@ function drawHammingBits(m, k) {
   const W = 480, H = 100;
   const cellW = Math.min(36, (W - 16) / total);
   const startX = (W - cellW * total) / 2;
-  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">`;
   for (let i = 0; i < total; i++) {
     const pos = i + 1;  // 位置从 1 开始
     const isCheck = checkPositions.includes(pos);
@@ -9346,7 +9423,7 @@ function rgRender() {
   const procMap = {};  rgState.procs.forEach(p => procMap[p.id] = p);
   const resMap = {};   rgState.resources.forEach(r => resMap[r.id] = r);
 
-  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">
     <defs>
       <marker id="rg-arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--crimson)"/></marker>
       <marker id="rg-arr-grn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--emerald)"/></marker>
@@ -10005,7 +10082,7 @@ function pvRenderCanvas() {
   if (!wrap) return;
   let html = '';
   const W = 520, H = 280;
-  html += `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  html += `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="动态可视化图">`;
   // DP 自己画哲学家,跳过顶部 procs 行
   if (pvState.problemKey !== 'dp') {
     html += pvRenderProcs(W);
