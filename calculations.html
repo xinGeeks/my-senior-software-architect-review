@@ -358,6 +358,96 @@ body::before {
   opacity: 0.9;
 }
 
+/* ========== Exam Q&A (历年真题) ========== */
+.exam-qa {
+  margin: 14px 0;
+  padding: 14px 16px 10px;
+  background: linear-gradient(180deg, rgba(74, 111, 165, 0.10), rgba(74, 111, 165, 0.04));
+  border: 1px solid rgba(74, 111, 165, 0.35);
+  border-left: 3px solid var(--azure);
+  border-radius: var(--radius-md);
+}
+.exam-qa-head {
+  font-family: var(--font-cn);
+  font-size: 0.86rem;
+  color: var(--azure);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.exam-qa-head::before { content: "📝"; }
+.exam-qa-item {
+  padding: 10px 0;
+  border-top: 1px dashed rgba(74, 111, 165, 0.25);
+  font-family: var(--font-cn);
+  font-size: 0.86rem;
+  color: var(--ivory-1);
+  line-height: 1.6;
+}
+.exam-qa-item:first-of-type { border-top: none; padding-top: 4px; }
+.exam-qa-meta {
+  display: flex; gap: 8px; align-items: center; margin-bottom: 6px;
+  font-family: var(--font-mono); font-size: 0.74rem;
+}
+.exam-qa-year {
+  color: var(--ivory-0); font-weight: 700;
+  padding: 2px 8px; background: rgba(74, 111, 165, 0.22);
+  border: 1px solid rgba(74, 111, 165, 0.55);
+  border-radius: 3px; white-space: nowrap;
+}
+.exam-qa-pts {
+  color: var(--gold-1); font-weight: 700;
+  padding: 2px 8px; background: rgba(212, 168, 95, 0.12);
+  border: 1px solid rgba(212, 168, 95, 0.4);
+  border-radius: 3px;
+}
+.exam-qa-tag {
+  color: var(--ivory-3); font-size: 0.7rem;
+  padding: 1px 6px; border: 1px solid var(--ink-4);
+  border-radius: 3px;
+}
+.exam-qa-q, .exam-qa-a {
+  font-size: 0.86rem; color: var(--ivory-1);
+  margin-bottom: 6px;
+}
+.exam-qa-q .exam-qa-lbl,
+.exam-qa-a .exam-qa-lbl {
+  display: inline-block;
+  font-size: 0.7rem;
+  color: var(--gold-2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-right: 6px;
+  padding: 1px 6px;
+  background: rgba(212, 168, 95, 0.12);
+  border-radius: 2px;
+  vertical-align: 1px;
+}
+.exam-qa-a ol {
+  margin: 4px 0 4px 4px; padding-left: 22px;
+}
+.exam-qa-a li { margin-bottom: 3px; }
+.exam-qa-a li::marker { color: var(--gold-2); }
+.exam-qa-foot {
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px dashed rgba(74, 111, 165, 0.25);
+  font-size: 0.74rem; color: var(--ivory-3);
+  display: flex; align-items: center; gap: 6px;
+}
+.exam-qa-foot::before { content: "📎"; opacity: 0.6; }
+[data-theme="light"] .exam-qa {
+  background: linear-gradient(180deg, rgba(44, 77, 122, 0.06), rgba(44, 77, 122, 0.02));
+  border-color: rgba(44, 77, 122, 0.35);
+}
+[data-theme="light"] .exam-qa-year {
+  background: rgba(44, 77, 122, 0.12);
+  border-color: rgba(44, 77, 122, 0.4);
+}
+[data-theme="light"] .exam-qa-pts { background: rgba(160, 122, 62, 0.15); border-color: rgba(160, 122, 62, 0.4); }
+[data-theme="light"] .exam-qa-q .exam-qa-lbl,
+[data-theme="light"] .exam-qa-a .exam-qa-lbl { background: rgba(160, 122, 62, 0.12); }
+
 /* ========== Card tier colors (based on exam frequency) ========== */
 .card.tier-7 { border-left: 4px solid #ff7b54; }
 .card.tier-6 { border-left: 4px solid #e8a87c; }
@@ -3225,7 +3315,64 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="tip">
         <b>铁律</b>：串联降可靠，并联升可靠——多数题目要你识别结构（混合串并联要分层计算）。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">串/并联</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统由 4 个独立子系统组成，每个子系统可靠度均为 0.9。若采用"2 个串联为一组、2 组再并联"的冗余结构，系统的可靠度约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>单支路串联可靠度 = 0.9 × 0.9 = 0.81</li>
+              <li>两支路并联 R = 1 − (1 − 0.81)² = 1 − 0.0361 = <b style="color:var(--gold-1)">0.9639</b></li>
+              <li>对比 4 个全串联 0.9⁴ = 0.6561，并联冗余显著提升</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2022</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">可用性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统 MTBF = 2000 小时、MTTR = 2 小时，其可用性约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>A = MTBF / (MTBF + MTTR) = 2000 / 2002 ≈ 0.999</li>
+              <li>即 <b style="color:var(--gold-1)">99.9%（三个 9）</b></li>
+              <li>每年停机时间 ≈ 365×24×60×0.001 ≈ 8.76 小时</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">3 取 2 表决</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>3 个可靠度均为 0.9 的相同模块组成"3 取 2 表决系统"，系统可靠度为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>R = Σᵢ₌₂³ C(3,i)·0.9ⁱ·0.1⁽³⁻ⁱ⁾</li>
+              <li>= C(3,2)·0.81·0.1 + 0.729 = 0.243 + 0.729 = <b style="color:var(--gold-1)">0.972</b></li>
+              <li>介于纯并联 0.999 与单模块 0.9 之间，比单模块可靠、比纯并联严</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 涵盖串/并联、N 取 K、可用性三类常考计算</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -3281,7 +3428,64 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <tr><td><code>C-SCAN</code></td><td>单向扫描，回到 0 再来</td></tr>
         </tbody>
       </table>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">SSTF</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>假设磁盘移动臂位于 21 号柱面，磁道请求序列为 ④⑤②①⑥③⑧⑨⑦（柱面号），若采用最短移臂（SSTF）调度算法，系统的响应序列应为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>起点 21，每次选距当前位置最近的磁道</li>
+              <li>典型访问序列：21→④→⑤→②→①→⑥→③→⑧→⑨→⑦</li>
+              <li>关键点：每次从剩余请求中找与当前磁头差值最小的磁道</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2022</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">存取时间</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某磁盘转速 6000 RPM（转/分钟），平均寻道时间 8 ms，每扇区读 0.5 ms，则读取一个扇区的平均存取时间约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>旋转周期 = 60000 / 6000 = 10 ms，平均旋转等待 = 10/2 = 5 ms</li>
+              <li>T<sub>存取</sub> = T<sub>寻道</sub> + T<sub>旋转</sub> + T<sub>传输</sub> = 8 + 5 + 0.5 = <b style="color:var(--gold-1)">13.5 ms</b></li>
+              <li>传输时间常忽略（数量级远小于寻道/旋转）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2018下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">SCAN/C-SCAN</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列磁盘调度算法中，能保证每个磁道请求的等待时间相对最公平（即不会出现远端磁道长期得不到服务）的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>SSTF 存在"饿死"风险——远端请求可能一直等</li>
+              <li><b style="color:var(--gold-1)">SCAN / C-SCAN</b> 类似电梯算法，磁头往返或单向扫描，公平性最好</li>
+              <li>FCFS 绝对公平但效率最低；C-SCAN 比 SCAN 更均匀（无中间回扫的加速）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 涵盖 SSTF、SCAN、磁盘存取时间三类常考</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -3607,6 +3811,81 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <b>陷阱</b>：从 1 开始计数要记得 +1；公式里块号和位号差 1。
       </div>
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">位示图大小</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统对空闲存储空间管理采取位示图方式，每页（物理块）大小 4KB，总存储容量 16GB，则位示图大小为（）KB。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>物理块数 = 16GB / 4KB = 4M 块 = 2²² 块</li>
+              <li>位示图共需 4M bit = 4M / 8 字节 = <b style="color:var(--gold-1)">512 KB</b></li>
+              <li>常考坑：忘记把 bit 转成 byte（÷8）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2020</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">位示图字数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某计算机字长 32 位，文件系统采用位示图管理磁盘空间。磁盘容量 300GB，物理块大小 4MB，则位示图大小为（）字。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>物理块数 = 300GB / 4MB = 76800 块</li>
+              <li>位示图位数 = 76800，每字 32 位</li>
+              <li>位示图字数 = 76800 / 32 = <b style="color:var(--gold-1)">2400 字</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2018下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">多级索引</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>文件系统采用多级索引结构，块大小 4KB，块号占 4 字节。二级索引结构下文件最大占用（）物理块。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>每块可容纳的块号数 = 4KB / 4B = <b style="color:var(--gold-1)">1024 个</b></li>
+              <li>一级索引 = 1024 块</li>
+              <li>二级索引 = 1024 × 1024 = <b style="color:var(--gold-1)">1 048 576 块（≈1GB）</b></li>
+              <li>与位示图无关，本质是块号索引块的容量</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2026上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">字号位号</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某位示图共 8000 位，每字 32 位。求字号 100、位号 15 对应的物理块号：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>块号 = 字号 × 字长 + 位号 + 1（块号从 1 开始）</li>
+              <li>块号 = 100 × 32 + 15 + 1 = <b style="color:var(--gold-1)">3216</b></li>
+              <li>易错点：忘 +1、或字长单位错（16/32/64）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖"位示图大小"和"字号/位号→块号"两类高频考点</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐⭐ 高频</span>
@@ -3682,7 +3961,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：页大小是 2 的幂（如 4K/8K/16K），偏移位数才是 log₂；混淆位数会全错。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2019下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">页表映射</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>进程 P 有 8 个页面（0~7），页面大小 4KB，分配 4 个存储块。已知页表：1、2、5、7 号页在内存，对应页帧号 7、5、3、9。则逻辑地址 5148H 变换后的物理地址为（ ）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>5148H = 0x5148 = 20808；页大小 4KB = 2¹²，页号 = 20808 ÷ 4096 = 5（页号 5）</li>
+              <li>查表：5 号页对应页帧号 3；页内偏移 = 20808 − 5×4096 = 328</li>
+              <li>物理地址 = 3 × 4096 + 328 = 12288 + 328 = <b style="color:var(--gold-1)">12616 = 3148H</b></li>
+              <li>易错：直接 5148H 当十六进制页号（先转十进制再除页大小）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2021</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">地址变换</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>页面大小 4K，进程 P1 逻辑地址 1B1AH 经页表变换后对应的物理地址（十六进制）是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>1B1AH = 0x1B1A = 6938；页号 = 6938 ÷ 4096 = 1（页号 1），页内偏移 = 6938 − 4096 = 2842 = 0xB1A</li>
+              <li>查页表得 1 号页对应块号 F（由题给）</li>
+              <li>物理地址 = F × 4096 + 0xB1A</li>
+              <li>关键步骤：先把十六进制逻辑地址转十进制（或直接按位切），再查表</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">页表项数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统采用页式管理，逻辑地址 32 位、页大小 4KB、页表项占 4 字节，则该进程的页表占用字节数为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>页内偏移 12 位 → 页号位数 = 32 − 12 = 20 位</li>
+              <li>页表项数 = 2²⁰ = 1M</li>
+              <li>页表大小 = 1M × 4B = <b style="color:var(--gold-1)">4 MB</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖"逻辑地址→物理地址变换"与"页表容量计算"两类高频考点</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐⭐ 高频</span>
@@ -3868,7 +4206,49 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：首次加载每个新页都算缺页；OPT 要看"未来"，不是过去。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2019下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">FIFO 缺页</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某进程访问页面的序列为 4, 3, 2, 1, 4, 3, 5, 4, 3, 2, 1, 5，分配 3 个内存块。分别采用 FIFO 和 LRU 算法，缺页次数各为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>FIFO 模拟：依次入队淘汰最先入队者 → 缺页 <b style="color:var(--gold-1)">9 次</b></li>
+              <li>LRU 模拟：淘汰最久未使用页 → 缺页 <b style="color:var(--gold-1)">10 次</b>（此时 LRU 反而比 FIFO 多）</li>
+              <li>OPT（最优基准）：置换未来最久不用的页 → 7 次</li>
+              <li>易错点：不要把首次加载的缺页漏掉；LRU 看"过去"，OPT 看"未来"</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">Belady 异常</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于页面置换算法的描述中，只有（）不会出现 Belady 异常。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>Belady 异常 = 分配的页框数 ↑ 但缺页次数反而 ↑</li>
+              <li><b style="color:var(--gold-1)">FIFO 会出现 Belady 异常</b>（经典反例：引用串 1,2,3,4,1,2,5,1,2,3,4,5）</li>
+              <li>OPT / LRU / CLOCK 都属于"栈算法"，不会出现 Belady 异常</li>
+              <li>常考：FIFO ≠ 永远最好；LRU/OPT 满足栈性质</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖 FIFO/LRU 计算与 Belady 异常</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐ 低频</span>
@@ -3918,6 +4298,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="example-label">▸ 典型题</div>
         3 进程，每个最多需 5 个同类资源<br>
         不死锁最小资源数 = 3×(5−1)+1 = <b>13 个</b>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">安全序列</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>系统有 3 类资源 A/B/C 共 (3,2,2) 个，5 进程 P0~P4。已知 Allocation 与 Need 矩阵（详见题面）。当 P1 发出请求 (0,1,0) 时，按银行家算法应：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>试探分配：Available − (0,1,0) = (3,1,2)；P1' 的 Need 减去 (0,1,0)</li>
+              <li>用安全算法检查：能否找到一个序列让所有进程都完成</li>
+              <li>典型结果：只能先让 P3 运行（P3 Need ≤ Available），回收 P3 后再让 P0/P2/P1/P4 顺序完成</li>
+              <li>若存在安全序列 → 真正分配；否则撤销、让 P1 等待</li>
+              <li>口诀："<b style="color:var(--gold-1)">试探 → 安全检查 → 真分配 / 阻塞</b>"</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2021</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">最小资源数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>有 6 个进程共享同一资源，每个进程最多需要 4 个该类资源。保证系统一定不会发生死锁的最小资源数是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>公式：R<sub>min</sub> = N × (M − 1) + 1</li>
+              <li>= 6 × (4 − 1) + 1 = 6 × 3 + 1 = <b style="color:var(--gold-1)">19 个</b></li>
+              <li>原理：若只有 N×(M−1) 个，最坏情况每个进程都拿到 (M−1) 个都差 1 个——死锁</li>
+              <li>多 1 个即可让其中一个进程跑完、释放、打破死锁</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">死锁必要条件</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于死锁的描述中，破坏（）是最简单且常用的死锁预防策略。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>死锁四条件 = 互斥 + 占有且等待 + <b style="color:var(--gold-1)">不可抢占</b> + 循环等待</li>
+              <li>实战中最易破坏的是"循环等待"：按固定顺序申请资源（哲学家筷子按编号取）</li>
+              <li>银行家算法属于"避免"（动态检查安全序列），不是预防</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖"安全序列"与"最小资源数"两类常考</div>
       </div>
 
 </article>
@@ -3990,6 +4430,82 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <b>陷阱</b>:多实例 ≠ 安全。例如 3P×3R 各 1 实例成环必死锁;若其中一个资源实例数 ≥ 2,环外的进程能先执行完释放实例,环内进程拿到实例也能完成 → 不死锁。
       </div>
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">单实例死锁</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>三个进程 P1/P2/P3 共享三类资源 R1/R2/R3，每个资源实例数均为 1。已知 R1 被 P2 占有，P2 又申请 R2；R2 被 P3 占有，P3 又申请 R3；R3 被 P1 占有，P1 又申请 R1。下列说法正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>画出资源分配图：P1→R1→P2→R2→P3→R3→P1（成环）</li>
+              <li><b style="color:var(--gold-1)">三进程全部死锁</b>，单实例资源环 = 必死锁（无富余实例可释放）</li>
+              <li>判定要点：找环 → 每个资源实例数 = 1 → 环中所有进程必死锁</li>
+              <li>破环方法：剥夺其中一个进程的资源（如让 P1 回滚），打破循环等待</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">多实例不死锁</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>如图所示进程资源图：P1 占有 R1 一实例，R1 共有 2 实例；P1 又申请 R2，R2 被 P2 占有；P2 又申请 R1。下列关于死锁的判断，正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>虽然 P1→R2→P2→R1 形成环</li>
+              <li>但 R1 还有 1 个空闲实例 → P3 能先执行并释放资源 → 环内进程也可获得资源完成</li>
+              <li>结论：<b style="color:var(--gold-1)">不会死锁</b></li>
+              <li>口诀：<b>有环未必死，看实例余量</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">无环=安全</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某资源分配图中有 4 个进程 P1~P4 和 3 类资源 R1~R3，图中"无环"。下列说法正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>充分条件：<b style="color:var(--gold-1)">无环 → 一定无死锁</b></li>
+              <li>必要条件（反之不成立）：无死锁未必无环（多实例场景）</li>
+              <li>因此图中无环 = 一定不存在死锁</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">DFS 找环</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>使用深度优先搜索（DFS）算法判断资源分配图是否死锁，关键看：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>对每个未访问节点做 DFS，递归访问其申请/占有可达节点</li>
+              <li>若某节点的邻接节点已在递归栈中 → 找到<b style="color:var(--gold-1)">环</b>，死锁存在</li>
+              <li>注意区分"已访问完成"与"在栈中"——只有后者才算环</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖单/多实例死锁判定（×4 频次最高）</div>
+      </div>
+
 </article>
 
 
@@ -4056,6 +4572,86 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
       </div>
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">生产者-消费者</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>生产者-消费者问题：缓冲池容量 N=5，初始为空。生产者 P 写数据、消费者 C 取数据，正确的同步信号量初值是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>mutex = 1（互斥访问缓冲池）</li>
+              <li>empty = <b style="color:var(--gold-1)">5</b>（初始有 5 个空位）</li>
+              <li>full = <b style="color:var(--gold-1)">0</b>（初始已占用数 = 0）</li>
+              <li>生产者：P(empty) → P(mutex) → 写入 → V(mutex) → V(full)</li>
+              <li>消费者：P(full) → P(mutex) → 取出 → V(mutex) → V(empty)</li>
+              <li>易错：empty/full 颠倒（empty=N 是空位数，full=0 是已用数）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">读者-写者</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>读者-写者问题中，要保证"允许多读者并发、但写者独占"，关键的同步信号量及初值是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>rw_mutex = <b style="color:var(--gold-1)">1</b>（写者互斥，初值 1）</li>
+              <li>mutex = 1（保护 read_count 互斥修改）</li>
+              <li>read_count 初值 = 0</li>
+              <li>读者：P(mutex) → read_count++ → 若 read_count==1 则 P(rw_mutex) → V(mutex) → 读 → P(mutex) → read_count-- → 若 read_count==0 则 V(rw_mutex) → V(mutex)</li>
+              <li>易错：read_count++ 不加 mutex 保护会丢失更新</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2021上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">哲学家就餐</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>5 个哲学家围坐就餐，每人左右各 1 根筷子，共 5 根筷子。若每位哲学家都先拿左边的筷子再尝试拿右边的，则会发生死锁。下列方案能彻底避免死锁的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>方案 A：最多允许 4 位哲学家同时拿筷 → 必有一位能拿到两根 → <b style="color:var(--gold-1)">不会死锁</b></li>
+              <li>方案 B：奇号哲学家先拿左筷再右筷，偶号反过来 → 破坏循环等待 → <b style="color:var(--gold-1)">不会死锁</b></li>
+              <li>方案 C：使用 AND 信号量（一次性申请左右筷）→ <b style="color:var(--gold-1)">不会死锁</b></li>
+              <li>方案 D：每人加超时，超时释放筷 → 不会死锁但可能饥饿</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2019上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">P/V 顺序</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>进程 P1 与 P2 共享一个临界资源，下列互斥代码段中正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>正确写法：P(mutex) → 临界区 → V(mutex)</li>
+              <li>常见错：① 漏 P 或漏 V ② P/V 顺序反（先 V 后 P = 互斥失效） ③ 多重互斥（同一 mutex P 两次）</li>
+              <li>二元信号量 mutex 初值必须 = 1</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · PV ×5 频次最高，覆盖 4 类经典同步问题</div>
+      </div>
+
 </article>
 
 
@@ -4102,7 +4698,65 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </table>
 
       <div class="tip"><b>套路</b>：拿到流程图先数判定节点（菱形），再加 1。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">V(G) 计算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某函数控制流图：1 个 if-else、2 个 while、1 个 switch（5 个 case）。其 McCabe 圈复杂度 V(G) 为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>用判定节点法：if-else=1 判定、while 各 1 判定（共 2）、switch 5 case = 4 判定（n case → n−1 判定）</li>
+              <li>总判定数 = 1 + 2 + 4 = 7</li>
+              <li>V(G) = 7 + 1 = <b style="color:var(--gold-1)">8</b></li>
+              <li>对应所需测试用例数 ≥ 8</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2021</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">V(G) 公式</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某程序流图有 10 个节点、12 条边，则圈复杂度 V(G) = ( )。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>V(G) = m − n + 2 = 12 − 10 + 2 = <b style="color:var(--gold-1)">4</b></li>
+              <li>即独立路径数 = 4，所需测试用例数下限 = 4</li>
+              <li>易错：忘 +2、或把节点边数搞反</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">推荐阈值</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于 McCabe 圈复杂度的工程阈值，下列说法正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>V(G) ≤ 10 为可接受（推荐上限），> 10 应考虑拆分</li>
+              <li>SonarQube 等工具默认在 V(G) > 10 时告警</li>
+              <li>易错：误把上限记成 50（实际是测试性下限阈值）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖三种 V(G) 计算法 + 工程阈值</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -4228,7 +4882,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
       <span class="formula-label">COCOMO II 三种</span>
       <div class="formula">应用组合模型 / 早期设计模型 / 后体系结构模型</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">案例 T3/T4</span>
+            <span class="exam-qa-tag">有机型计算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某小型团队开发一个 MIS 系统，预计代码量 50 KLOC，使用 COCOMO 有机型（a=2.4, b=1.05）估算工作量。结果约为多少（人月）？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>PM = 2.4 × 50^1.05</li>
+              <li>50^1.05 ≈ 50 × 50^0.05 ≈ 50 × 1.215 ≈ 60.5</li>
+              <li>PM ≈ 2.4 × 60.5 ≈ <b style="color:var(--gold-1)">145 人月</b></li>
+              <li>工期 TDEV = 2.5 × PM^0.38 ≈ 2.5 × 145^0.38 ≈ 12 个月（常考配套公式）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2022</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">嵌入式模型</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某航空嵌入式系统预计 20 KLOC，采用 COCOMO 嵌入式模型（a=3.6, b=1.20）估算，PM 与推荐平均人力 N 约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>PM = 3.6 × 20^1.20 = 3.6 × 36.4 ≈ <b style="color:var(--gold-1)">131 人月</b></li>
+              <li>TDEV = 2.5 × 131^0.38 ≈ 12 个月</li>
+              <li>平均人力 N = PM / TDEV ≈ 131 / 12 ≈ <b style="color:var(--gold-1)">11 人</b></li>
+              <li>嵌入式模型斜率最陡 → 规模膨胀最严重</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">案例 T4</span>
+            <span class="exam-qa-tag">中期 COCOMO</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>中期 COCOMO 模型与基本 COCOMO 的核心区别是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>基本 COCOMO：PM = a × KLOC^b（只用规模 + 模式）</li>
+              <li><b style="color:var(--gold-1)">中期 COCOMO：PM = a × KLOC^b × Π(EMᵢ)</b>（再乘 15 个成本乘数 EM）</li>
+              <li>EMᵢ 调节因子覆盖：产品（可靠性、复杂度）、平台（VM 约束）、人员（能力、经验）、项目（工具、进度）等</li>
+              <li>详细 COCOMO 进一步分阶段（计划/详细设计/编码/集成）使用不同乘子</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：案例分析真题 · 案例题每年常考；综合知识 1 题打底</div>
+      </div>
+
 </article>
 
       <span class="tier-label">📘 案例必考</span>
@@ -4370,7 +5084,84 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <tr><td><code>4NF</code></td><td>BCNF + 消除多值依赖</td><td>独立多值属性分离</td></tr>
         </tbody>
       </table>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2026上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">范式判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关系模式 R(A, B, C)，若存在 A→B 和 B→C，则该关系模式最高达到：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>属性无重复 → 满足 1NF</li>
+              <li>候选码为 A（单属性，无部分依赖）→ 满足 2NF</li>
+              <li>但 A→B→C 形成<b style="color:var(--gold-1)">传递依赖</b>，违反 3NF</li>
+              <li>结论：最高为 <b style="color:var(--gold-1)">2NF</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">2NF 判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关系 SC(SNO, CNO, SN, CN, GRADE)，候选码 (SNO, CNO)，FD：SNO→SN、CNO→CN、(SNO,CNO)→GRADE。该关系属于：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>SN 依赖于 SNO（候选码真子集）→ <b style="color:var(--gold-1)">部分函数依赖</b></li>
+              <li>存在部分依赖 → 不满足 2NF</li>
+              <li>结论：属于 <b style="color:var(--gold-1)">1NF</b></li>
+              <li>修复：分解为 S(SNO, SN) + SC(SNO, CNO, GRADE)</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">2NF vs 3NF</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关系 R(A, B, C, D, E)，FD = {A→BC, B→D, D→E}，A 为唯一候选码。则 R 属于：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>A 是单属性候选码 → 无部分依赖 → <b style="color:var(--gold-1)">满足 2NF</b></li>
+              <li>存在传递依赖 A→B→D→E（B、D、E 都不直接依赖 A）→ 违反 3NF</li>
+              <li>结论：属于 <b style="color:var(--gold-1)">2NF 但不属于 3NF</b></li>
+              <li>修复：分解为 R1(A,B,C) + R2(B,D) + R3(D,E)，均为 3NF</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">BCNF</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于 BCNF 的描述，下列正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF</li>
+              <li>BCNF 要求每个非平凡 FD 的决定因素都是<b style="color:var(--gold-1)">超键</b></li>
+              <li>3NF 允许"主属性对候选码的部分/传递依赖"，BCNF 不允许</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 范式是每年必考的高频重灾区（6-8 题）</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -4467,6 +5258,98 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <b>陷阱</b>：L 类属性（只在左部）一定在候选码中；R 类（只在右部）一定不在。
       </div>
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">闭包法</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关系模式 R(a, b, c, d)，函数依赖 F = {a→cd, c→b}，则 R 的候选码是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>属性分类：L 类（只在左部）= {a, c}；R 类（只在右部）= {d, b}；N 类 = ∅</li>
+              <li>试探 a⁺：{a} → a→cd → {a,c,d}；加上 c→b → {a,b,c,d} = U</li>
+              <li><b style="color:var(--gold-1)">a 是唯一候选码</b></li>
+              <li>速算口诀：L 类必在候选码，先求 L⁺ 再扩 N 类</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">唯一候选码</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>R(A, B, C, D, E)，FD = {A→BC, B→D, D→E}，则：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>A⁺ = {A} + A→BC → {A,B,C} + B→D → {A,B,C,D} + D→E → <b style="color:var(--gold-1)">{A,B,C,D,E}</b> = U</li>
+              <li>A 是<b style="color:var(--gold-1)">唯一候选码</b>，R 属于 2NF 但不属于 3NF（A→B→D→E 传递依赖）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2026上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">L 类属性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>R(SNO, CNO, SN, CN, GRADE)，FD = {SNO→SN, CNO→CN, (SNO,CNO)→GRADE}，候选码为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>L 类 = {SNO, CNO}（只在左部）；R 类 = {SN, CN, GRADE}</li>
+              <li>(SNO,CNO)⁺ = 全部属性 → 候选码 = <b style="color:var(--gold-1)">(SNO, CNO)</b></li>
+              <li>注意：候选码可能是属性组合（多属性），不一定是单属性</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">最小依赖</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>R(A,B,C,D,E,F)，FD = {AB→C, C→D, D→E, E→F, F→A}，该关系共有多少个候选码？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>本题 FD 形成一个循环 AB→C→D→E→F→A（回到 AB 通过 F→A 和 AB→C）</li>
+              <li>所有属性相互依赖，因此单属性 B 无法决定全部，A 必须与其他属性组合</li>
+              <li>解法：枚举最小依赖集发现至少 <b style="color:var(--gold-1)">2 个候选码</b>（如 BE 和 BD）</li>
+              <li>实战：先 L/N/R 分类，再分别试探；不能漏 N 类的所有组合</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2019下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">最小函数依赖</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于最小函数依赖集（最小覆盖）的性质，下列说法正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>最小依赖集 F<sub>min</sub> 满足：① 每个 FD 右边单属性 ② 每个 FD 左边无多余属性 ③ 无多余 FD</li>
+              <li>最小依赖集 <b style="color:var(--gold-1)">不唯一</b>（可能多组等价最小集）</li>
+              <li>求法：① 拆右 ② 去左多余属性 ③ 去多余 FD（看是否被其他 FD 推出）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 候选码 ×6 是数据库每年必考最高频</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐⭐⭐ 必背</span>
@@ -4515,7 +5398,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </table>
 
       <div class="tip"><b>答题铁律</b>：分解到 3NF 要写"既保持依赖又无损"；BCNF 要写"无损但可能损失依赖"。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">无损判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>分解 ρ = {AB, BC}，F = {A→C, C→B, B→A}，下列关于分解性质的描述正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>R₁∩R₂ = {B}；B → R₂−B = {C}（因 C→B 等价 B→C）</li>
+              <li>满足 (R₁∩R₂) → (R₁−R₁∩R₂) 或 → (R₂−R₁∩R₂) → <b style="color:var(--gold-1)">无损连接 ✓</b></li>
+              <li>F 在 R₁, R₂ 上的投影 = {A→C, B→A} ∪ {C→B} = F → <b style="color:var(--gold-1)">保持依赖 ✓</b></li>
+              <li>结论：ρ 既有无损连接又保持依赖，是 R 的优秀分解</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">3NF 分解</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>R(A,B,C,D)，F = {A→B, B→C, C→D}，下列分解中属于 R 的 3NF 无损保持依赖分解的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>按 3NF 合成算法：每个 FD 一对一子模式 → R1(A,B), R2(B,C), R3(C,D)</li>
+              <li>A⁺ = {A,B,C,D} = U，A 是候选码 → 加 R4(A) 或合并到 R1</li>
+              <li><b style="color:var(--gold-1)">ρ = {R1(A,B), R2(B,C), R3(C,D)}</b>（候选码 A 已含在 R1）</li>
+              <li>验证无损：相邻交集传递，B→C, C→D, A→B 保持所有依赖 → ✓</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">BCNF 缺陷</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于 BCNF 分解与 3NF 分解的关系，下列说法正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>3NF 分解可同时保证<b style="color:var(--gold-1)">无损连接 + 保持依赖</b></li>
+              <li>BCNF 分解一定保证<b style="color:var(--gold-1)">无损连接</b>，但 <b style="color:var(--gold-1)">可能破坏依赖保持</b></li>
+              <li>实战策略：先 BCNF 分解（消除异常），若丢失依赖再加回"补救"子模式</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 分解原则是数据库设计必考点</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐ 低频</span>
@@ -4564,7 +5506,84 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <li>串联 TF=0 的活动 → 关键路径</li>
         </ol>
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">关键路径</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目网络图：A→B→G→H，B→H，C→H 等。若 B=5, G=6, H=4，A→B=3、B→G=2、B→H=4，求项目最短工期：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>路径 1：A→B→G→H = 3 + 5 + 2 + 4 = <b style="color:var(--gold-1)">14 天</b></li>
+              <li>路径 2：A→B→H = 3 + 5 + 4 = 12 天</li>
+              <li>关键路径 = 工期最长的路径（14 天）</li>
+              <li>常考套路：列所有路径 → 求各路径工期 → 取最大值</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">赶工压缩</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关键路径工期 11 天，项目经理希望压缩到 6 天。已知各工序赶工 1 天费用不同，下列压缩方式正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>工期压缩两种：赶工（加资源 → 加成本） / 快速跟进（串行改并行 → 加返工风险）</li>
+              <li>只能压缩<b style="color:var(--gold-1)">关键路径</b>上的活动</li>
+              <li>压非关键路径无效——即使它变短也不影响总工期</li>
+              <li>多关键路径时需要同步压缩各关键活动，否则新路径变成关键</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2019下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">时差计算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>网络图中某活动 TF=3 天，FF=1 天，下列推断正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>总时差 TF：不影响项目总工期的前提下可拖延的时间</li>
+              <li>自由时差 FF：不影响紧后活动最早开始的前提下可拖延</li>
+              <li>关系：<b style="color:var(--gold-1)">FF ≤ TF</b></li>
+              <li>结论：延迟 1 天不影响紧后；延迟 3 天以内不影响总工期；超过 3 天则拖期</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">关键路径 6 天</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目活动网络图（含 7 个节点、8 条有向边），求项目关键路径及工期。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>正向推算各节点 ES → 最长路径总长度 = 关键路径工期</li>
+              <li>答案示例：<b style="color:var(--gold-1)">关键路径 6 天</b></li>
+              <li>每年案例 T3/T4 必考 CPM，结合 EVM/PERT 一起出</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识 + 案例分析真题 · 关键路径 ×7 是项目管理每年最高频</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐⭐⭐ 必背</span>
@@ -4626,7 +5645,63 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="example-label">▸ 典型题</div>
         A=4, M=6, B=8 → E = (4+24+8)/6 = <b>6 天</b>，σ = (8−4)/6 = <b>0.67</b>
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2021下</span>
+            <span class="exam-qa-pts">综合·单选 70</span>
+            <span class="exam-qa-tag">PERT 三点估算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>项目 A~G 作业，活动 C 三点估算(O,M,P) = (5,14,17)，则 C（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>C 期望工期 te = (5 + 4×14 + 17) / 6 = (5+56+17)/6 = <b>13 天</b></li>
+              <li>查网络图得关键路径长度 = <b>27 天</b>（如 ABDEG）</li>
+              <li>活动 C 总时差 TF = LF−EF = 关键路径 − C期望 = 27 − 13 = <b>2 天</b></li>
+              <li>故 C <b>最多可拖 2 天</b> 不影响总工期 → 选 <b>D</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">期望工期 + 标准差</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某活动乐观 O=4、最可能 M=10、悲观 P=16，按 PERT 三点估算其期望工期和标准差分别为（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>te = (O + 4M + P)/6 = (4 + 40 + 16)/6 = 60/6 = <b>10 天</b></li>
+              <li>σ = (P − O)/6 = (16−4)/6 = <b>2 天</b>，σ² = 4</li>
+              <li>正态分布：te±σ = 8~12 天，概率 ≈ 68%；te±2σ = 6~14 天 ≈ 95%；te±3σ = 4~16 天 ≈ 99.7%</li>
+              <li>故选 <b>B. 10 天，2 天</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">综合·常考变形</span>
+            <span class="exam-qa-pts">Z 值完工概率</span>
+            <span class="exam-qa-tag">正态分布</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某关键路径由 3 个串行活动组成，三点估算后 σ² 各为 1/4/9，求关键路径总方差 σ<sub>total</sub>² 及"工期在 22 天内完成"的概率（已知期望工期 E=20 天）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>关键路径上的总方差 σ<sub>total</sub>² = Σσ<sub>i</sub>² = 1 + 4 + 9 = <b>14</b></li>
+              <li>σ<sub>total</sub> = √14 ≈ 3.74 天</li>
+              <li>Z = (T − E) / σ<sub>total</sub> = (22 − 20) / 3.74 ≈ <b>0.53</b></li>
+              <li>查标准正态表 Φ(0.53) ≈ 0.7019 → 完工概率约 <b>70%</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-foot">来源：综合真题 2021 下/2024 下；08-project-management.md §PERT；正态分布标准表</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -4707,7 +5782,65 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：题目常给"完成 50%"、"完成 100% 的 40%"，要先把 EV 算出来再用。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下·综合</span>
+            <span class="exam-qa-pts">经典变形</span>
+            <span class="exam-qa-tag">EVM 四指标计算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>项目计划工期 100 天、BAC=200 万。第 60 天检查：EV=100 万、AC=120 万、PV=110 万。下列指标计算**错误**的是（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>CV = EV − AC = 100 − 120 = <b>−20 万</b>（超支）✓</li>
+              <li>SV = EV − PV = 100 − 110 = <b>−10 万</b>（滞后）✓</li>
+              <li>CPI = EV/AC = 100/120 ≈ <b>0.83</b>（&lt;1 效率低）✓</li>
+              <li>EAC = BAC + AC = 320 万 ✗ 错误！<b>典型差异下 EAC = BAC/CPI</b> ≈ 200/0.83 ≈ 241 万</li>
+              <li>故选 <b>D</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">案例·常考</span>
+            <span class="exam-qa-pts">完工估算 EAC</span>
+            <span class="exam-qa-tag">EAC 公式选择</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目进行到第 8 个月，BAC=200 万，已完成 40% 工作量（EV=80 万），实际花费 AC=100 万，剩余工作将按当前效率完成，求 EAC 和 ETC。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>CPI = EV/AC = 80/100 = <b>0.8</b>（&lt;1，效率低）</li>
+              <li>典型差异下 EAC = BAC/CPI = 200/0.8 = <b>250 万</b></li>
+              <li>ETC = EAC − AC = 250 − 100 = <b>150 万</b></li>
+              <li>VAC = BAC − EAC = 200 − 250 = <b>−50 万</b>（最终超支 50 万）</li>
+              <li>关键提示：题目未注明"非典型差异"时一律用 <b>EAC=BAC/CPI</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2026上·综合</span>
+            <span class="exam-qa-pts">单选变形</span>
+            <span class="exam-qa-tag">绩效指数判读</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目当前 SPI=0.8、CPI=1.2，下列判断**正确**的是（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>SPI = EV/PV = 0.8 &lt; 1 → <b>进度落后</b>（实际完成工作量比计划少）</li>
+              <li>CPI = EV/AC = 1.2 &gt; 1 → <b>成本节约</b>（花得比预算少）</li>
+              <li>典型应对：进度落后时不可加资源赶工（已超支时），先<b>关注范围/需求优先级</b></li>
+              <li>故选 <b>"进度落后但成本节约"</b> 的描述项</li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-foot">来源：综合真题 2024 下 · 案例常考变形 · 08-project-management.md §EVM</div>
+      </div>
+
 </article>
 
       <span class="tier-label">📘 案例必考</span>
@@ -4805,7 +5938,96 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <li>分析评估结果</li>
         <li>呈现评估结果</li>
       </ol>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上·综合 26</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">ATAM 4 类质量属性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在 ATAM 评估方法设计之初，其主要关注的 4 种质量属性分别为（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>ATAM 之初 SEI 锁定的 4 个属性 = <b>性能 / 可测试性 / 安全性 / 可修改性</b></li>
+              <li>注：可用性虽常被讨论，但**不是 ATAM 初设 4 属性之一**</li>
+              <li>故选 <b>B. 性能、可测试性、安全性和可修改性</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下·综合 45</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">效用树 (H,L) 含义</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于 ATAM 效用树中优先级的说法**不正确**的是（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>效用树两个维度 = <b>重要性（对系统成功的意义）+ 实现难度</b></li>
+              <li>优先级三档 = 高 H / 中 M / 低 L，按场景分级</li>
+              <li>(H,L) = 重要性**高** + 难度**低** → 优先实现</li>
+              <li>选项 A "系统安全性场景都属于高优先级" 错误——优先级基于综合排名，非绝对</li>
+              <li>故选 <b>A</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下·综合 56</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">ATAM 头脑风暴场景</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在 ATAM 中，利益相关者需要头脑风暴的场景是（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>ATAM 头脑风暴三类场景：<b>用例场景 / 增长场景 / 探索场景</b></li>
+              <li>用例场景 = 利益相关者即最终用户；增长场景 = 架构演进方式；探索场景 = 极端增长</li>
+              <li>故选 <b>B. 用例场景、增长场景、探索场景</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下·综合 67</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">效用树 (H,H) 含义</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在 ATAM 效用树中，某质量属性场景被标记为 (H,H)，则表示该场景（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>(H,H) = <b>重要性高 + 实现难度高</b></li>
+              <li>这类场景是<b>架构风险最大</b>的区域——重要但难做</li>
+              <li>需重点分析是否有关键决策、风险点、权衡点</li>
+              <li>故选 <b>A</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2026上·案例</span>
+            <span class="exam-qa-pts">ATAM vs SAAM vs CBAM</span>
+            <span class="exam-qa-tag">评估方法对比</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>架构评估中，分析"性能 vs 安全性"取舍属于（　）；分析"投入产出比"属于（　）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>ATAM</b>（架构权衡分析法）= 分析<b>多质量属性之间的权衡</b>（如性能 ↔ 安全）</li>
+              <li><b>SAAM</b>（场景架构分析法）= 早期方法，<b>关注可修改性</b>单一属性</li>
+              <li><b>CBAM</b>（成本效益分析法）= 在 ATAM 基础上做<b>成本-效益</b>折中分析</li>
+              <li>故前者选 <b>ATAM</b>，后者选 <b>CBAM</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-foot">来源：综合真题 2024 上/下、2026 上；12-atam-evaluation.md；SURVIVAL_CARD.md §7.3</div>
+      </div>
+
 </article>
 
       <span class="tier-label">📘 案例必考</span>
@@ -4997,7 +6219,79 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="tip"><b>区分</b>：奈氏用于理想无噪声；香农用于有噪声上限；考试二者给单位（bit/s）。</div>
 
       <div class="trap"><b>陷阱</b>：S/N 给的是 dB 值时先换算：S/N（线性）= 10^(dB/10)。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上·综合 14</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">奈奎斯特定理</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>信道带宽 3000Hz，信号 32 种状态，无干扰条件下最大传输速率为（　）kbps</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>无噪声 → 用<b>奈奎斯特</b>：C = 2W · log₂(N)</li>
+              <li>C = 2 × 3000 × log₂(32) = 6000 × 5 = <b>30000 bps = 30 kbps</b></li>
+              <li>故选 <b>B. 30 kbps</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上·综合</span>
+            <span class="exam-qa-pts">经典计算</span>
+            <span class="exam-qa-tag">香农定理 + dB 换算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>带宽 W=3000Hz，信噪比 S/N = 30 dB，求信道最大传输速率。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>30 dB → 线性 S/N = 10^(30/10) = <b>1000 倍</b></li>
+              <li>有噪声 → 用<b>香农</b>：C = W · log₂(1 + S/N) = 3000 · log₂(1+1000)</li>
+              <li>log₂(1001) ≈ 9.97 → C ≈ 3000 × 9.97 ≈ <b>30 kbps</b></li>
+              <li>本题奈氏与香农结果相近 → 工程上常取两者<b>最小值</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下·综合 54</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">提升信道容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>信道容量是信道的最大传输速率，可以通过（　）提升信道容量。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>香农：C = W · log₂(1 + S/N) — 与 W、S/N 均正相关</li>
+              <li>加大带宽或提高信噪比都提升容量</li>
+              <li>W 增大的效果 &gt; S/N 降低的影响 → <b>选 A 或 C</b></li>
+              <li>原题答案指向 <b>C</b>（带宽增大足以补偿信噪比降低）</li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">常考辨析</span>
+            <span class="exam-qa-pts">公式选择</span>
+            <span class="exam-qa-tag">奈氏 vs 香农</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某信道带宽 4 kHz，信号 16 级，无噪声最大传输速率为（　）bps；引入 30 dB 信噪比噪声后，最大传输速率为（　）bps（取香农）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>无噪声（奈氏）：C = 2 × 4000 × log₂(16) = 8000 × 4 = <b>32000 bps</b></li>
+              <li>30 dB → 1000 → 香农 C = 4000 × log₂(1001) ≈ 4000 × 9.97 ≈ <b>39880 bps</b></li>
+              <li>两者<b>取小</b>作为工程可用带宽（约 32 kbps）</li>
+              <li>记忆口诀：<b>奈氏看级数，香农看噪声</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-foot">来源：综合真题 2025 上 #14、2024 上/下、SURVIVAL_CARD.md §1.5</div>
+      </div>
+
 </article>
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -5119,7 +6413,83 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：① 峰值倍数常被遗漏（秒杀 / 双 11）；② 写场景（订单）需 + 2-3 倍冗余；③ DB 与缓存单机 QPS 数量级差 10×。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">案例·经典变形</span>
+            <span class="exam-qa-pts">电商 PV → QPS → 机器数</span>
+            <span class="exam-qa-tag">读多写少</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某电商日活 100 万、每人每天访问 5 次、页面 200 KB、峰值倍数 10、单机 QPS 800。求 PV、平均 QPS、峰值 QPS、所需机器数及每日存储量。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>PV = 100 万 × 5 = <b>500 万 / 天</b></li>
+              <li>平均 QPS = PV / 86400 = 5 000 000 / 86 400 ≈ <b>57.9 QPS</b></li>
+              <li>峰值 QPS = 57.9 × 10 = <b>579 QPS</b></li>
+              <li>机器数 = ceil(579 / 800) = <b>1 台</b>（读多写少）</li>
+              <li>存储量/天 = (5 000 000 × 200 KB) / 1024² ≈ <b>954 GB</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2026上·案例</span>
+            <span class="exam-qa-pts">秒杀 / 双 11</span>
+            <span class="exam-qa-tag">峰值倍数 × 写多</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>秒杀场景：日活 200 万、每人每天访问 10 次、峰值倍数 20、单机 QPS 500（写多）。问所需机器数。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>PV = 200 万 × 10 = <b>2000 万 / 天</b></li>
+              <li>平均 QPS = 2000 万 / 86 400 ≈ <b>231 QPS</b></li>
+              <li>峰值 QPS = 231 × 20 = <b>4620 QPS</b>（秒杀场景，倍数 ≥ 10）</li>
+              <li>写多场景需 +2 倍冗余 → 4620 × 2 = 9240 QPS</li>
+              <li>机器数 = ceil(9240 / 500) ≈ <b>19 台</b>（写多）</li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">综合·常考</span>
+            <span class="exam-qa-pts">单机带宽</span>
+            <span class="exam-qa-tag">带宽估算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某 Web 页面平均 200 KB（含图），单机 QPS 800，求单机出口带宽（bps）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>单机带宽 = 页面大小 × 单机 QPS × 8</li>
+              <li>= 200 KB × 800 × 8 = 200 × 1024 × 8 × 800 = <b>1 310 720 000 bps ≈ 1.31 Gbps</b></li>
+              <li>说明：单位换算陷阱 — 200 KB 应按 200×1024 byte 而非 200 000 byte</li>
+              <li>实务：1 台 Web 服务器千兆网卡即可承受 → 但需预留 30%~50% 余量给突发</li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下·案例</span>
+            <span class="exam-qa-pts">缓存 + DB</span>
+            <span class="exam-qa-tag">读写分离</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某业务峰值读 QPS=50 000、写 QPS=500、Redis 单机 QPS 50 000、MySQL 单机 QPS 1 500。读走 Redis、写走 DB（主库）。问所需 Redis 与 DB 机器数。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>Redis 数 = ceil(50 000 / 50 000) = <b>1 台</b>（按单机极限，集群一般 3 台起步）</li>
+              <li>DB 数 = ceil(500 / 1 500) = <b>1 台</b>（写压力不大）</li>
+              <li>若读写分离：1 主 + 2 从读库，从库均摊读 QPS = 25 000 / 台</li>
+              <li>DB 数（读写分离）= ceil(500 / 1 500) = 1 主；读 QPS = 25 000 / 1 500 ≈ 17 → 需 <b>17 台</b>从库</li>
+              <li>记忆口诀：<b>读走缓存写走 DB、读多用 Redis、读多写少分离、写多采用分库分表</b></li>
+            </ol>
+          </div>
+        </div>
+        <div class="exam-qa-foot">来源：案例题常考变形（2024-2026）；SURVIVAL_CARD.md §8；经典题型 PV → QPS → 峰值 → 机器数</div>
+      </div>
+
 </article>
 
       <span class="tier-label">📘 案例必考</span>
