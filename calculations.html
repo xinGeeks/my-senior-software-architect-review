@@ -3172,7 +3172,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
     <input id="sidebar-search" placeholder="搜索知识点 · 例：CPM / EVM / 子网 / 按 / 聚焦" autocomplete="off">
   </div>
   <div class="stats-mini">
-    <span><b>36</b>卡片</span>
+    <span><b>37</b>卡片</span>
     <span><b>17</b>真题</span>
   </div>
   <button class="theme-toggle" id="theme-toggle" title="切换深/浅主题 (T)" onclick="toggleTheme()">☾</button>
@@ -3182,7 +3182,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 <div class="app-body">
 <nav class="app-sidebar" id="sidebar">
   <div class="sidebar-section" data-section="sec1">
-    <div class="sidebar-section-title">📚 计算机系统+OS <span class="sidebar-section-count">15</span></div>
+    <div class="sidebar-section-title">📚 计算机系统+OS <span class="sidebar-section-count">16</span></div>
     <div class="sidebar-items" id="items-sec1"></div>
   </div>
   <div class="sidebar-section" data-section="sec2">
@@ -3916,8 +3916,132 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
 </article>
 
+      <span class="tier-label">⭐⭐⭐ 中频</span>
+
+    <article class="card-detail tier-3" data-id="c09a" data-section="sec1">
+
+      <span class="tier-label">⭐⭐⭐ 中频</span>
+      <div class="card-title">1.9a 多级索引最大文件容量</div>
+      <div class="exam-flag"><span class="freq">×2</span><span>真题考过</span><span class="years">2018下·2024下</span></div>
+      <div class="card-sub">Multi-level Index · Inode Pointer Tree</div>
+
+      <div class="calc">
+        <div class="calc-title">交互可视化 · UNIX inode 树形结构 + 容量分级累加</div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>块大小 B</label>
+            <select id="idx-blk" onchange="raf('drawIndex')">
+              <option value="4096"  selected>4 KB</option>
+              <option value="2048">2 KB</option>
+              <option value="8192">8 KB</option>
+              <option value="1024">1 KB</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>块号字节数</label>
+            <select id="idx-ptr" onchange="raf('drawIndex')">
+              <option value="4"  selected>4 B（32 位）</option>
+              <option value="8">8 B（64 位）</option>
+              <option value="2">2 B</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label>直接块数 m</label>
+            <input id="idx-direct" type="number" value="10" min="0" max="40" oninput="raf('drawIndex')">
+          </div>
+          <div class="calc-field">
+            <label>间接级数 k</label>
+            <select id="idx-levels" onchange="raf('drawIndex')">
+              <option value="1">1 级（单间接）</option>
+              <option value="2">2 级（双间接）</option>
+              <option value="3" selected>3 级（三间接）</option>
+            </select>
+          </div>
+        </div>
+        <svg id="idx-svg" viewBox="0 0 600 380" role="img" aria-label="多级索引 inode 结构图"></svg>
+        <div id="idx-out" class="bitmap-highlight"></div>
+      </div>
+
+      <span class="formula-label">每块可放块号数</span>
+      <div class="formula">n = B / 块号字节数</div>
+      <div style="font-size:0.86rem;color:var(--ivory-2);margin-top:6px">例：4 KB / 4 B = <b>1024</b> 个块号</div>
+
+      <span class="formula-label">各级容量</span>
+      <div class="formula">
+        直接 = m 块<br>
+        单间接 = n 块<br>
+        二级 = n² 块<br>
+        三级 = n³ 块
+      </div>
+
+      <span class="formula-label">最大占用块数</span>
+      <div class="formula">N<sub>max</sub> = m + n + n² + n³ + … + n<sup>k</sup>（几何级数求和）</div>
+
+      <span class="formula-label">最大文件容量</span>
+      <div class="formula">S<sub>max</sub> = N<sub>max</sub> × B 字节</div>
+      <div style="font-size:0.86rem;color:var(--ivory-2);margin-top:6px">常用换算：1024³ ≈ 10⁹，1024⁴ ≈ 10¹²</div>
+
+      <div class="example">
+        <div class="example-label">▸ 典型题</div>
+        块大小 4 KB、块号 4 B → 每块容纳 <b>1024</b> 个块号<br>
+        inode：10 直接 + 1 单间接 + 1 双间接 + 1 三间接<br>
+        = 10 + 1024 + 1024² + 1024³ = <b>1 074 791 434 块</b><br>
+        最大文件 ≈ 1.07 × 10⁹ × 4 KB ≈ <b style="color:var(--gold-1)">4 TB</b>
+      </div>
+
+      <div class="trap">
+        <b>陷阱</b>：① 二级≠ 2×1024，而是 1024² = 1 048 576；
+        ② inode 自身占 1~2 个物理块，但不算在文件数据容量里；
+        ③ 块号地址宽度决定 n 上限（32 位地址最多 2³² 块）；
+        ④ 考"二级索引下文件最大占用多少块"= 1024²，不是 1024×2。
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">inode 容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>UNIX 文件系统 inode 含 12 个直接块指针，1 个一级间接、1 个二级间接、1 个三级间接指针。块大小 1 KB，块号占 4 字节。该文件系统允许的最大文件长度约为（　）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>每块容纳块号 = 1 KB / 4 B = <b style="color:var(--gold-1)">256 个</b></li>
+              <li>总块数 = 12 + 256 + 256² + 256³ = 12 + 256 + 65 536 + 16 777 216 ≈ <b style="color:var(--gold-1)">16 843 020 块</b></li>
+              <li>最大文件长度 ≈ 16 843 020 × 1 KB ≈ <b style="color:var(--gold-1)">16 GB</b></li>
+              <li>易错：把 2 级误算为 2×256=512（正确是 256² = 65 536）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2018下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">二级索引</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>文件系统采用多级索引结构，块大小 4 KB，块号占 4 字节。则二级索引结构下文件最大占用（　）物理块。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>n = 4 KB / 4 B = <b style="color:var(--gold-1)">1024</b></li>
+              <li>单级容量 = 1024；二级容量 = 1024² = <b style="color:var(--gold-1)">1 048 576 块（≈ 1 GB）</b></li>
+              <li>若 inode 还含 10 直接，则总容量 = 10 + 1024 + 1024² ≈ 1 049 610 块</li>
+              <li>本质是"块号索引块的容量"，与位示图无关</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 多级索引与 inode 是文件系统高频考点</div>
+      </div>
+
+</article>
+
       <span class="tier-label">⭐⭐⭐⭐ 高频</span>
-      
+
     <article class="card-detail tier-3" data-id="c10" data-section="sec1">
 
       <span class="tier-label">⭐⭐⭐⭐ 高频</span>
@@ -8069,6 +8193,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('dk-req')) drawDisk();
   if (document.getElementById('nad-tab')) nadInit();
   if (document.getElementById('sp-s')) drawSegPage();
+  if (document.getElementById('idx-blk')) drawIndex();
   if (document.getElementById('mm-tab')) mmInit();
   if (document.getElementById('ca-h')) calcCache();
   if (document.getElementById('pl-k')) plInit();
@@ -8697,6 +8822,201 @@ function dcLoadExample() {
   document.getElementById('dc-fd').value = 'A->C;C->B;B->A';
   decideDecomp();
 }
+
+/* ================== 1.9a Multi-level Index File Capacity ================== */
+function formatBlocks(n) {
+  if (n < 1e6)  return n.toLocaleString();
+  if (n < 1e9)  return (n/1e6).toFixed(3).replace(/\.?0+$/,'') + ' M';
+  if (n < 1e12) return (n/1e9).toFixed(3).replace(/\.?0+$/,'') + ' G';
+  return (n/1e12).toFixed(3).replace(/\.?0+$/,'') + ' T';
+}
+function formatSize(bytes) {
+  if (bytes < 1024)        return bytes + ' B';
+  if (bytes < 1024*1024)   return (bytes/1024).toFixed(2).replace(/\.?0+$/,'') + ' KB';
+  if (bytes < 1024**3)     return (bytes/1024/1024).toFixed(2).replace(/\.?0+$/,'') + ' MB';
+  if (bytes < 1024**4)     return (bytes/1024**3).toFixed(2).replace(/\.?0+$/,'') + ' GB';
+  return (bytes/1024**4).toFixed(2).replace(/\.?0+$/,'') + ' TB';
+}
+function drawIndex() {
+  const svg = document.getElementById('idx-svg');
+  if (!svg) return;
+  const B    = +document.getElementById('idx-blk').value;
+  const ptr  = +document.getElementById('idx-ptr').value;
+  const m    = Math.max(0, Math.min(40, +document.getElementById('idx-direct').value || 0));
+  const k    = +document.getElementById('idx-levels').value;
+  const n    = Math.floor(B / ptr);                    // 每块可装块号数
+  const levels = [];                                  // 每级容量
+  let total = 0;
+  for (let i = 0; i <= k; i++) {
+    const cap = Math.pow(n, i);
+    levels.push(cap);
+    total += cap;
+  }
+  // 加上直接块 m（覆盖 0 级）
+  const totalWithDirect = m + levels.slice(1).reduce((a,b)=>a+b,0);
+  const maxBytes = totalWithDirect * B;
+
+  // ---------- 渲染 SVG ----------
+  // 布局：左 inode + 右 k 条独立轨道，每条轨道独占一块水平带，
+  //       inode 内每个指针条与对应轨道严格对齐在同一条 y 中心。
+  const W = 600, H = 380;
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="多级索引结构图">`;
+  const palette = ['#e8c384','#d4a574','#4a6fa5','#6f5d8a','#5d8a6f'];
+
+  // 收集要画的"轨道"（= inode 指针条目）
+  const rows = [];
+  if (m > 0) rows.push({ label: m === 1 ? '1 直接' : `${m} 直接`, short: '直接', cap: m, color: palette[0] });
+  for (let i = 1; i <= k; i++) {
+    rows.push({
+      label: i === 1 ? '单间接' : (i === 2 ? '双间接' : '三间接'),
+      short: i === 1 ? '单' : (i === 2 ? '双' : '三'),
+      cap: levels[i],
+      color: palette[Math.min(i, palette.length - 1)]
+    });
+  }
+  const trackCount = rows.length;
+
+  // 画布分区
+  const headerY   = 18;
+  const header2Y  = 34;             // inode 顶部"inode"标签
+  const bodyY     = 44;
+  const bottomY   = H - 24;         // 底部"总容量"行
+  const bodyH     = bottomY - bodyY;
+
+  // inode 区域
+  const inodeX = 8, inodeW = 92, inodeY = bodyY, inodeH = bodyH;
+
+  // 右侧轨道起点
+  const trackAreaX = inodeX + inodeW + 28;
+  const trackAreaW = W - trackAreaX - 10;
+
+  // inode 单元高度（每个指针条）
+  const rowGap     = 6;
+  const inodeRowH  = (inodeH - rowGap * (trackCount - 1)) / trackCount;
+
+  // ============================
+  // 1) 标题
+  // ============================
+  s += `<text x="${W/2}" y="${headerY}" text-anchor="middle" fill="#e8c384" font-size="11" font-family="JetBrains Mono,monospace" letter-spacing="2">UNIX inode 多级索引树 · 每块指针 ${n} 个</text>`;
+
+  // ============================
+  // 2) inode 母块
+  // ============================
+  s += `<rect x="${inodeX}" y="${inodeY}" width="${inodeW}" height="${inodeH}" rx="6" fill="#1c2440" stroke="#e8c384" stroke-width="1.5"/>`;
+  s += `<text x="${inodeX + inodeW/2}" y="${header2Y}" text-anchor="middle" fill="#e8c384" font-size="12" font-family="JetBrains Mono,monospace" font-weight="700">inode</text>`;
+
+  // ============================
+  // 3) inode 内每个指针条 + 右侧对应一条轨道
+  //    先画 inode 内条（以便确定每条 y 中心），再画折线和轨道
+  // ============================
+  // 记录每条 inode 条的中心 y，供折线起点使用
+  const inodeCenters = [];
+  rows.forEach((r, i) => {
+    const y  = inodeY + i * (inodeRowH + rowGap);
+    const cy = y + inodeRowH / 2;
+    inodeCenters.push(cy);
+    // inode 内小块
+    s += `<rect x="${inodeX + 4}" y="${y}" width="${inodeW - 8}" height="${inodeRowH}" rx="3" fill="${r.color}" opacity="0.9"/>`;
+    s += `<text x="${inodeX + inodeW/2}" y="${cy + 4}" text-anchor="middle" fill="#06091a" font-size="9.5" font-weight="700" font-family="var(--font-cn),sans-serif">${r.label}</text>`;
+  });
+
+  // ============================
+  // 4) 每条轨道（折线 + 标签 + 数字 + 容量 + 块格子）
+  // ============================
+  rows.forEach((r, i) => {
+    const trackY  = inodeY + i * (inodeRowH + rowGap);
+    const trackCY = trackY + inodeRowH / 2;
+    const inodeEdgeY = inodeCenters[i];
+
+    // 折线：inode 出口右侧 → 略缩进 → 轨道左侧入口
+    s += `<path d="M ${inodeX + inodeW} ${inodeEdgeY} L ${trackAreaX - 10} ${inodeEdgeY} L ${trackAreaX - 4} ${trackCY}" fill="none" stroke="${r.color}" stroke-width="1.6" opacity="0.75"/>`;
+
+    // 标签段（左对齐）
+    const labelX = trackAreaX;
+    // 轨道背景带（淡）
+    s += `<rect x="${trackAreaX - 2}" y="${trackY + 2}" width="${trackAreaW + 4}" height="${inodeRowH - 4}" rx="4" fill="${r.color}" opacity="0.07"/>`;
+
+    // 标签（粗）+ 数字（等宽）+ 容量（淡灰）
+    // 顶部基线 = trackY + 16
+    s += `<text x="${labelX}" y="${trackY + 16}" fill="${r.color}" font-size="11.5" font-weight="700" font-family="var(--font-cn),sans-serif">${r.label}</text>`;
+
+    // 数字段（"= N 块"），固定到 labelX+62 留出 16px 间距避免与中文标签粘连
+    s += `<text x="${labelX + 62}" y="${trackY + 16}" fill="#c4bda7" font-size="10.5" font-family="JetBrains Mono,monospace">= ${formatBlocks(r.cap)} 块</text>`;
+
+    // 第二行：容量 + 字号说明
+    const capText = formatSize(r.cap * B);
+    s += `<text x="${labelX}" y="${trackY + 34}" fill="#8e8a7a" font-size="9.5" font-family="JetBrains Mono,monospace">${r.cap.toLocaleString()} × ${B.toLocaleString()} B  ≈  <tspan fill="#e8c384" font-weight="700">${capText}</tspan></text>`;
+
+    // 块格子（最右端）。网格尺寸：每行 cellSize 10，最多 perRow ~6 行内 ~24 格
+    const gridX = W - 150;           // 距右边 150px 留出余量
+    const gridY = trackY + 4;
+    const cellSize = 9;
+    const cellGap = 2;
+    const perRow = 8;
+    const maxShow = 24;
+    const drawn = Math.min(r.cap, maxShow);
+    for (let g = 0; g < drawn; g++) {
+      const rr = Math.floor(g / perRow);
+      const cc = g % perRow;
+      const x = gridX + cc * (cellSize + cellGap);
+      const y = gridY + rr * (cellSize + cellGap);
+      s += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="1.5" fill="${r.color}" opacity="0.85"/>`;
+    }
+    if (r.cap > drawn) {
+      const tailRow = Math.floor((drawn - 1) / perRow);
+      const tailCol = (drawn - 1) % perRow;
+      const tx = gridX + tailCol * (cellSize + cellGap) + cellSize + 6;
+      const ty = gridY + tailRow * (cellSize + cellGap) + cellSize;
+      s += `<text x="${tx}" y="${ty - 1}" font-size="11" fill="#e8c384" font-weight="700">… <tspan font-size="9" fill="#8e8a7a">+${(r.cap - drawn).toLocaleString()} 个</tspan></text>`;
+    } else if (r.cap < perRow) {
+      // 数据少时显示一个友好提示
+      s += `<text x="${gridX + drawn * (cellSize + cellGap) + 4}" y="${gridY + cellSize - 1}" font-size="9" fill="#8e8a7a">共 ${r.cap} 块</text>`;
+    }
+  });
+
+  // ============================
+  // 5) 底部总容量说明
+  // ============================
+  s += `<text x="${W/2}" y="${bottomY + 14}" text-anchor="middle" font-size="11" font-family="JetBrains Mono,monospace" fill="#e8c384">▸ 总块数  <tspan fill="#faf6e8" font-weight="700">${totalWithDirect.toLocaleString()}</tspan>  块  ≈  <tspan fill="#faf6e8" font-weight="700" font-size="13">${formatSize(maxBytes)}</tspan>  ◂</text>`;
+
+  s += `</svg>`;
+  svg.innerHTML = s;
+
+  // ---------- 文字输出 ----------
+  const breakdown = [];
+  if (m > 0) breakdown.push(`<b>${m.toLocaleString()}</b>`);
+  for (let i = 1; i <= k; i++) {
+    const sup = i === 1 ? '' : (i === 2 ? '²' : '³');
+    breakdown.push(`${n}<sup>${sup}</sup><span style="opacity:0.7"> = ${levels[i].toLocaleString()}</span>`);
+  }
+  const html = `
+    <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start">
+      <div style="flex:1;min-width:240px">
+        <div style="color:var(--gold-3);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase">▸ 计算参数</div>
+        <div style="font-family:JetBrains Mono,monospace;font-size:0.92rem;line-height:1.8;color:var(--ivory-0);margin-top:4px">
+          每块可放块号 n = <b style="color:var(--gold-1)">${n}</b><br>
+          n² = <b style="color:var(--gold-1)">${(n*n).toLocaleString()}</b>${k>=3 ? ` &nbsp; n³ = <b style="color:var(--gold-1)">${(n*n*n).toLocaleString()}</b>` : ''}
+        </div>
+      </div>
+      <div style="flex:1;min-width:260px">
+        <div style="color:var(--gold-3);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase">▸ inode 各项容量</div>
+        <div style="font-family:JetBrains Mono,monospace;font-size:0.92rem;line-height:1.8;color:var(--ivory-0);margin-top:4px">
+          ${rows.map(r => `${r.label} = <b style="color:${r.color}">${formatBlocks(r.cap)}</b> 块`).join('<br>')}
+        </div>
+      </div>
+      <div style="flex:1.4;min-width:280px;border-left:2px solid var(--gold-3);padding-left:14px">
+        <div style="color:var(--gold-3);font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase">▸ 最大文件容量</div>
+        <div style="font-family:JetBrains Mono,monospace;font-size:1rem;line-height:1.7;color:var(--ivory-0);margin-top:4px">
+          总块数 = ${breakdown.join(' + ')}<br>
+          = <b style="color:var(--gold-1)">${totalWithDirect.toLocaleString()}</b> 块<br>
+          最大文件 = ${totalWithDirect.toLocaleString()} × ${formatSize(B)}<br>
+          = <b style="color:var(--gold-1);font-size:1.1rem">${formatSize(maxBytes)}</b>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('idx-out').innerHTML = html;
+}
+window.drawIndex = drawIndex;
 
 /* ================== 6.1 Channel Capacity ================== */
 function chFromDb() {
