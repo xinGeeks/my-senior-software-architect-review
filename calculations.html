@@ -3328,6 +3328,28 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 [data-theme="light"] .iso-matrix tbody tr.iso-row-active { background: rgba(184, 134, 56, 0.12); }
 [data-theme="light"] .iso-matrix thead th.iso-col-active { background: rgba(184, 134, 56, 0.25); }
 [data-theme="light"] .iso-prob { background: #ebe1c0; border-color: #d4c89a; }
+
+.atam-stage-wrap {
+  background: var(--ink-0); border: 1px solid var(--ink-4); border-radius: 8px;
+  padding: 10px 12px; margin-top: 10px;
+}
+.atam-stage-title {
+  font-size: 0.92rem; color: var(--gold-1); font-weight: 600; margin-bottom: 6px;
+}
+.atam-svg { width: 100%; height: auto; display: block; }
+#atam-v1 { max-width: 560px; margin: 0 auto; }
+#atam-v2 { max-width: 980px; margin: 0 auto; }
+.atam-legend {
+  font-size: 0.82rem; color: var(--ivory-3); margin-top: 4px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.atam-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.atam-legend i { display: inline-block; width: 18px; height: 10px; border-radius: 2px; }
+
+[data-theme="light"] .atam-stage-wrap { background: #f4eedc; border-color: #d4c89a; }
+[data-theme="light"] .atam-stage-wrap svg circle[fill="var(--ink-1)"],
+[data-theme="light"] .atam-stage-wrap svg rect[fill="var(--ink-1)"] { fill: #ebe1c0 !important; }
+[data-theme="light"] .atam-stage-wrap svg rect[fill="var(--ink-0)"] { fill: #fdf8e8 !important; }
 </style>
 </head>
 <body>
@@ -6415,35 +6437,144 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 <article class="card-detail tier-n" data-id="c26" data-section="sec5">
 
       <span class="tier-label">📘 案例必考</span>
-      <div class="card-title">5.1 ATAM 9 步流程</div>
+      <div class="card-title">5.1 ATAM</div>
       <div class="exam-flag"><span class="freq">×N</span><span>真题考过</span><span class="years">案例 T1 必考</span></div>
       <div class="card-sub">Architecture Trade-off Analysis Method</div>
 
-      <div class="calc">
-        <div class="calc-title">交互式流程 · 9 步时间轴 + 当前步指示</div>
-        <div class="atam-controls">
-          <button onclick="atamPrev()">◀ 上一步</button>
-          <button onclick="atamNext()">下一步 ▶</button>
-          <button onclick="atamReset()">⟲ 重置</button>
-          <span style="margin-left:auto;color:var(--ivory-3);font-family:var(--font-mono);font-size:0.84rem">当前：<b id="atam-current" style="color:var(--gold-1)">第 1 步</b></span>
+      <div class="atam-stage-wrap">
+        <div class="atam-stage-title">▸ 4+1 视图架构总览（ATAM「描述架构」阶段核心工具）</div>
+        <svg class="atam-svg" id="atam-v1" viewBox="0 0 640 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="4+1 视图与读者映射图"></svg>
+        <div class="atam-legend">
+          <span><i style="background:var(--gold-2)"></i>视图卡片</span>
+          <span><i style="background:var(--azure)"></i>读者角色</span>
+          <span><i style="background:var(--emerald)"></i>+1 场景（粘合剂）</span>
         </div>
-        <div class="atam-timeline" id="atam-timeline"></div>
       </div>
 
-      <ol class="steps">
-        <li>描述 ATAM 方法</li>
-        <li>描述业务动机（业务目标 + 关键质量属性）</li>
-        <li>描述架构（视图 / 风格 / 模式）</li>
-        <li>确定质量属性效用树</li>
-        <li>分析架构方法（找决策 / 敏感点 / 权衡点）</li>
-        <li>生成质量属性效用树</li>
-        <li>讨论结果（头脑风暴场景）</li>
-        <li>分析评估结果</li>
-        <li>呈现评估结果</li>
-      </ol>
+      <div class="atam-stage-wrap">
+        <div class="atam-stage-title">▸ ATAM 4 阶段时间轴（不严格顺序，每阶段含 9 步中的关键步）</div>
+        <svg class="atam-svg" id="atam-v2" viewBox="0 0 720 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="ATAM 4 阶段与 9 步对应图"></svg>
+        <div class="atam-legend">
+          <span><i style="background:var(--gold-2)"></i>4 阶段</span>
+          <span><i style="background:var(--azure);opacity:.7"></i>9 步中关键步</span>
+        </div>
+      </div>
+
+      <span class="formula-label">▸ ATAM 4 阶段（不严格顺序，每阶段核心目标）</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:7px 10px;width:42%">阶段</th>
+              <th style="text-align:left;padding:7px 10px;width:22%">核心目标</th>
+              <th style="text-align:left;padding:7px 10px">关键动作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>① 场景与需求收集</b><br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3)">Presentation</span></td>
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">摸清业务诉求</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)">召集干系人,列出质量场景(如「下单 P99 < 200ms」)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>② 架构视图与场景分析</b><br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3)">Architect's Presentation</span></td>
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">让架构师讲架构</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)">用视图(4+1 / 模块 / 部署)描述架构;映射到场景</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>③ 质量属性效用树构建</b><br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3)">Analysis</span></td>
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">优先级排序</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)">把场景放到效用树上,标 (H/M/L, H/M/L) 两维度</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>④ 决策点 / 风险点 / 权衡点 / 敏感点识别</b><br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3)">Reporting</span></td>
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">出报告</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)">识别四类点 + 生成评估报告</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <span class="formula-label">▸ 4+1 视图（Kruchten 1995）· ATAM 描述架构阶段的核心工具</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:7px 10px;width:18%">视图</th>
+              <th style="text-align:left;padding:7px 10px;width:26%">关注点</th>
+              <th style="text-align:left;padding:7px 10px">读者 / 用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">① 逻辑视图<br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3);font-weight:400">Logical</span></td>
+              <td style="padding:7px 10px;color:var(--ivory-1)">面向对象的<b>类 / 包 / 接口</b>与职责划分</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)"><b>最终用户</b> · 关注<b>功能需求</b>(系统提供什么服务)</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">② 开发视图<br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3);font-weight:400">Development</span></td>
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>模块 / 组件 / 源码组织</b>、编译/链接关系</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)"><b>程序员</b> · 关注<b>可修改性 / 可重用</b>、编译管理</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">③ 进程视图<br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3);font-weight:400">Process</span></td>
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>进程 / 线程</b>、并发、调度、消息传递</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)"><b>系统集成人员</b> · 关注<b>性能 / 可用性 / 并发</b></td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">④ 物理视图<br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3);font-weight:400">Physical</span></td>
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>节点 / 网络 / 部署拓扑</b>,软件到硬件的映射</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)"><b>系统工程 / 运维</b> · 关注<b>可用性 / 性能 / 伸缩性 / 可靠性</b></td>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;color:var(--emerald);font-weight:700">⑤ +1 场景视图<br><span style="font-family:var(--font-mono);font-size:.74rem;color:var(--ivory-3);font-weight:400">Scenarios</span></td>
+              <td style="padding:7px 10px;color:var(--ivory-1)"><b>用例 / 场景</b>串联前 4 视图,验证架构是否能满足需求</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)"><b>所有干系人</b> · ATAM 用场景驱动效用树构建,串联 4 视图</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip">
+        <b>记忆口诀</b>:「<b>逻开物物</b>+1 场景」 — 逻辑 / 开发 / 进程 / 物理,前 4 个视图分别对应<b>用户 / 程序员 / 集成 / 运维</b>,+1 场景是粘合剂。<br>
+        <b>关联质量属性</b>:逻辑 ↔ 功能性;开发 ↔ 可修改性;进程 ↔ 性能/可用性;物理 ↔ 性能/可用性/可靠性。
+      </div>
+      <div class="trap">
+        <b>陷阱</b>:① 题目问"4+1 视图是谁提出的" → 答 <b>Kruchten</b>(不是 SEI),1995 年发表;② "+1" 是<b>场景视图</b>(scenarios / use cases),不是物理或开发;③ 描述"从程序员视角看系统"对应<b>开发视图</b>,描述"网络拓扑、服务器分布"对应<b>物理视图</b>,常混淆。
+      </div>
+
+      <span class="formula-label">▸ 效用树示例</span>
+      <div class="formula" style="padding:0;background:var(--ink-1)">
+<pre style="margin:0;padding:12px 16px;font-family:var(--font-mono);font-size:.86rem;color:var(--ivory-1);line-height:1.65;overflow-x:auto">
+质量属性 (H)
+└── <span style="color:var(--gold-1);font-weight:700">性能 (H)</span>
+    └── 下单 P99 < 200ms   <span style="color:var(--emerald)">(H, H)</span>   ← 业务重要 + 实现难
+    └── 列表查询 < 500ms   <span style="color:var(--ivory-3)">(M, L)</span>
+└── <span style="color:var(--gold-1);font-weight:700">可用性 (H)</span>
+    └── 全年宕机 < 52 分钟  <span style="color:var(--gold-2)">(H, M)</span>
+</pre>
+      </div>
 
       <div class="exam-qa">
         <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023上·综合</span>
+            <span class="exam-qa-pts">单选</span>
+            <span class="exam-qa-tag">4+1 视图对应</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在 Kruchten 提出的 4+1 视图中，从<b>系统集成人员</b>视角出发、描述进程/线程并发与调度的视图是（　）</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>4+1 = 逻辑 / 开发 / 进程 / 物理 + 场景</li>
+              <li>关注进程/线程、并发、消息传递 → <b>进程视图</b>(Process)</li>
+              <li>读者对应：用户 → 逻辑;程序员 → 开发;<b>系统集成人员 → 进程</b>;系统工程/运维 → 物理</li>
+              <li>故选 <b>进程视图</b></li>
+            </ol>
+          </div>
+        </div>
+
         <div class="exam-qa-item">
           <div class="exam-qa-meta">
             <span class="exam-qa-year">2024上·综合 26</span>
@@ -7221,49 +7352,87 @@ function drawMcGraph(type) {
     <defs><marker id="mcArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--gold-3)"/></marker></defs>`;
 
   if (type === 'simple') {
-    // V=2: entry → if → exit  (m=5, n=4, 1判定)
-    svg += node(60, H/2, 'S', 'entry');
+    // V=2: if-then-else  (m=5, n=5, 1判定 D)
+    //   S → D → A(Y) → E
+    //         └─ B(N) ──┘
+    svg += node(60,  H/2, 'S', 'entry');
     svg += node(180, H/2, 'D', 'dec');
-    svg += node(300, 90, 'A', 'proc');
-    svg += node(420, H/2, 'E', 'exit');
-    svg += node(300, 150, 'B', 'proc');
-    svg += edge(74, H/2, 158, H/2);
-    svg += edge(202, H/2, 286, 90, 'Y');
-    svg += edge(286, 150, 202, H/2, 'N');
-    svg += edge(322, 90, 398, H/2);
-    svg += edge(322, 150, 398, H/2);
+    svg += node(300, 70, 'A', 'proc');
+    svg += node(300, H-70, 'B', 'proc');
+    svg += node(440, H/2, 'E', 'exit');
+    svg += edge(78,  H/2, 158, H/2);
+    svg += edge(202, H/2, 278, 70,  'Y');
+    svg += edge(202, H/2, 278, H-70,'N');
+    svg += edge(322, 70,  418, H/2);
+    svg += edge(322, H-70,418, H/2);
   } else if (type === 'nested') {
-    // V=4: entry → if → for → if → exit  (m=8, n=6, 3判定)
-    svg += node(50, H/2, 'S', 'entry');
-    svg += node(150, H/2, 'D1', 'dec');
-    svg += node(250, H/2, 'D2', 'dec');
-    svg += node(350, H/2, 'D3', 'dec');
-    svg += node(430, H/2, 'E', 'exit');
-    svg += node(250, 100, 'A', 'proc');
-    svg += edge(64, H/2, 128, H/2);
-    svg += edge(172, H/2, 228, H/2);
-    svg += edge(228, H/2, 236, 100, 'Y');
-    svg += edge(264, 100, 272, H/2);
-    svg += edge(272, H/2, 328, H/2);
-    svg += edge(372, H/2, 408, H/2);
-    svg += edge(328, H/2, 250, H/2-6, 'N back-loop');
-    svg += edge(172, H/2+6, 408, H/2, 'N skip');
+    // V=4: 外层 if + 内层 for + 内层 if  (m=8, n=6, 3判定 D1/D2/D3)
+    //   S → D1 (外层 if)
+    //         ├─Y→ D2 (for 判定)
+    //         │      ├─Y→ D3 (内层 if)
+    //         │      │      ├─Y→ A (体)
+    //         │      │      │      └→ D3 (回 if 判)
+    //         │      │      └─N→ D2 (if 结束回 for 判)
+    //         │      └─N→ E
+    //         └─N→ E
+    svg += node(50,  H/2,  'S',  'entry');
+    svg += node(140, H/2,  'D1', 'dec');   // 外层 if
+    svg += node(240, 60,   'D2', 'dec');   // for 判定（上行）
+    svg += node(360, 60,   'D3', 'dec');   // 内层 if（上行）
+    svg += node(440, H/2,  'E',  'exit');
+    svg += node(360, 160,  'A',  'proc');  // 内层 if 体
+
+    // 主流：S → D1
+    svg += edge(68, H/2, 118, H/2);
+    // D1 分支：Y→D2（向上斜）, N→E（向下斜）
+    svg += edge(162, H/2, 218, 60,  'Y');
+    svg += edge(162, H/2, 418, H/2, 'N skip');
+    // D2 分支：Y→D3（同高度向右）, N→E（斜下）
+    svg += edge(262, 60, 338, 60,  'Y');
+    svg += edge(262, 60, 418, H/2, 'N skip');
+    // D3 分支：Y→A（斜下）, N→D2（用底部 path 回 for 判）
+    svg += edge(382, 60, 360, 138, 'Y');
+    // A → D3（A 体结束回 if 判）
+    svg += edge(382, 160, 360, 82, '');
+
+    // back-loop：D3(N) → D2（沿底部绕开 A）
+    svg += `<path d="M ${360-22} 78 L ${360-22} ${H-12} L ${240-22} ${H-12} L ${240-22} 78"
+      fill="none" stroke="var(--gold-3)" stroke-width="1.6" stroke-dasharray="4 3"
+      marker-end="url(#mcArrow)"/>`;
+    svg += `<text x="${(240+360)/2 - 20}" y="${H-16}" fill="var(--ivory-3)"
+      font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">N → 回 for 判</text>`;
   } else {
-    // V=5: entry → if(A) → loop → if(B) → exit  (m=9, n=6, 4判定)
-    svg += node(50, H/2, 'S', 'entry');
-    svg += node(140, 90, 'D1', 'dec');
-    svg += node(140, H-90, 'D2', 'dec');
-    svg += node(260, H/2, 'F', 'proc');
-    svg += node(360, H/2, 'D3', 'dec');
-    svg += node(430, H/2, 'E', 'exit');
-    svg += edge(64, H/2, 118, 90, 'Y');
-    svg += edge(64, H/2, 118, H-90, 'N');
-    svg += edge(162, 90, 246, H/2);
-    svg += edge(162, H-90, 246, H/2);
-    svg += edge(274, H/2, 338, H/2);
-    svg += edge(382, H/2, 408, H/2);
-    svg += edge(338, H/2, 360, H-50, 'N');
-    svg += edge(360, H-50, 246, H/2, 'back to F');
+    // V=5: if + while + switch(2 判定)  (m=10, n=7, 4判定 D1/D2/D3/D4)
+    //   S → D1 → D2 → A → D3 → D4 → E
+    //   ↑       └─(while-N skip)─┘   ↑
+    //   N(skip)                    N(back to D2)
+    svg += node(40,  H/2, 'S', 'entry');
+    svg += node(120, H/2, 'D1', 'dec');
+    svg += node(210, H/2, 'D2', 'dec');
+    svg += node(310, H/2, 'A', 'proc');
+    svg += node(370, H/2, 'D3', 'dec');
+    svg += node(440, H/2, 'D4', 'dec');
+    svg += node(430, H-50, 'E', 'exit');
+    svg += edge(58,  H/2, 98,  H/2);
+    svg += edge(142, H/2, 188, H/2, 'Y');
+    svg += edge(142, H/2, 408, H-50, 'N skip');
+    svg += edge(232, H/2, 288, H/2, 'Y');
+    svg += edge(232, H/2, 408, H-50, 'N skip');
+    svg += edge(332, H/2, 348, H/2);
+    svg += edge(392, H/2, 418, H/2, 'Y');
+    svg += edge(392, H/2, 408, H-50, 'N');
+    // back-loop：D4 → D2（沿底部绕开 A 与 D3）
+    svg += `<path d="M ${440+22} ${H/2+18} L ${440+22} ${H-12} L ${210-22} ${H-12} L ${210-22} ${H/2+18}"
+      fill="none" stroke="var(--gold-3)" stroke-width="1.6"
+      marker-end="url(#mcArrow)"/>`;
+    svg += `<text x="${(210+440)/2}" y="${H-18}" fill="var(--ivory-2)"
+      font-family="var(--font-cn)" font-size="10" text-anchor="middle">N back to D2</text>`;
+    // D3 → D2（switch 其他分支回到 while 头）
+    svg += `<path d="M ${370-22} ${H/2-18} L ${370-22} ${H-32} L ${210-22} ${H-32} L ${210-22} ${H/2-18}"
+      fill="none" stroke="var(--gold-3)" stroke-width="1.6" stroke-dasharray="4 3"
+      marker-end="url(#mcArrow)"/>`;
+    svg += `<text x="${(210+370)/2}" y="${H-38}" fill="var(--ivory-3)"
+      font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">default 分支回流</text>`;
   }
   svg += '</svg>';
   const target = document.getElementById('mc-graph');
@@ -8739,6 +8908,127 @@ function atamNext() { if (atamCur < 9) { atamCur++; atamRender(); } }
 function atamPrev() { if (atamCur > 1) { atamCur--; atamRender(); } }
 function atamReset() { atamCur = 1; atamRender(); }
 
+/* ================== 5.1 ATAM 可视化 SVG ================== */
+function drawAtamViews() {
+  const svg = document.getElementById('atam-v1');
+  if (!svg) return;
+  const W = 640, H = 420;
+  const cx = W / 2, cy = H / 2;
+  // 5 视图卡片位置（中心 + 4 个外围，正上方放 +1 场景）
+  const cards = [
+    { id: 'logic',  label: '逻辑视图', en: 'Logical',    reader: '用户',       x: cx,        y: 80,  color: 'var(--gold-2)' },
+    { id: 'dev',    label: '开发视图', en: 'Development',reader: '程序员',     x: 110,       y: 150, color: 'var(--gold-2)' },
+    { id: 'proc',   label: '进程视图', en: 'Process',    reader: '系统集成',   x: 530,       y: 150, color: 'var(--gold-2)' },
+    { id: 'phys',   label: '物理视图', en: 'Physical',   reader: '运维',       x: 110,       y: 320, color: 'var(--gold-2)' },
+    { id: 'scene',  label: '+1 场景',  en: 'Scenarios',  reader: '所有干系人', x: 530,       y: 320, color: 'var(--emerald)' }
+  ];
+
+  let s = '';
+  // 背景：四象限分隔虚线（柔和）
+  s += `<line x1="${cx}" y1="40" x2="${cx}" y2="${H-40}" stroke="var(--ink-3)" stroke-dasharray="3 5" stroke-width="0.6"/>`;
+  s += `<line x1="60" y1="${cy}" x2="${W-60}" y2="${cy}" stroke="var(--ink-3)" stroke-dasharray="3 5" stroke-width="0.6"/>`;
+
+  // 5 条放射线（中心 → 卡片）
+  cards.forEach(c => {
+    s += `<line x1="${cx}" y1="${cy}" x2="${c.x}" y2="${c.y}" stroke="${c.color}" stroke-width="1.2" opacity="0.55"/>`;
+  });
+
+  // 中心圆 + ATAM 标签
+  s += `<circle cx="${cx}" cy="${cy}" r="58" fill="var(--ink-1)" stroke="var(--gold-1)" stroke-width="2"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="64" fill="none" stroke="var(--gold-1)" stroke-width="0.6" stroke-dasharray="2 3" opacity="0.55"/>`;
+  s += `<text x="${cx}" y="${cy-8}" text-anchor="middle" fill="var(--gold-1)" font-size="20" font-weight="700" font-family="var(--font-cn)">ATAM</text>`;
+  s += `<text x="${cx}" y="${cy+10}" text-anchor="middle" fill="var(--ivory-2)" font-size="11" font-family="var(--font-cn)">架构权衡分析</text>`;
+  s += `<text x="${cx}" y="${cy+25}" text-anchor="middle" fill="var(--ivory-3)" font-size="9" font-family="var(--font-mono)">4+1 views</text>`;
+
+  // 5 张卡片
+  cards.forEach(c => {
+    const isScene = c.id === 'scene';
+    const r = isScene ? 38 : 34;
+    s += `<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="var(--ink-1)" stroke="${c.color}" stroke-width="${isScene ? 2 : 1.4}"/>`;
+    // 中文标签
+    s += `<text x="${c.x}" y="${c.y-2}" text-anchor="middle" fill="var(--gold-1)" font-size="14" font-weight="700" font-family="var(--font-cn)">${c.label}</text>`;
+    // 英文副标
+    s += `<text x="${c.x}" y="${c.y+13}" text-anchor="middle" fill="var(--ivory-3)" font-size="9" font-family="var(--font-mono)">${c.en}</text>`;
+    // 读者标签（卡片下方蓝色小条 + 文字）
+    s += `<rect x="${c.x-44}" y="${c.y+r+8}" width="88" height="20" rx="10" fill="var(--ink-0)" stroke="var(--azure)" stroke-width="1"/>`;
+    s += `<text x="${c.x}" y="${c.y+r+22}" text-anchor="middle" fill="var(--azure)" font-size="11" font-weight="600" font-family="var(--font-cn)">读者: ${c.reader}</text>`;
+  });
+
+  // 角标说明（中心圆周标注「服务于读者」）
+  s += `<text x="20" y="24" fill="var(--gold-3)" font-size="13" font-family="var(--font-mono)" opacity="0.8">▸ 4+1 视图 · Kruchten 1995</text>`;
+  s += `<text x="${W-20}" y="${H-12}" text-anchor="end" fill="var(--ivory-3)" font-size="13" font-family="var(--font-mono)" opacity="0.8">+1 场景 = 粘合剂，串联前 4 视图</text>`;
+
+  svg.innerHTML = s;
+}
+
+function drawAtamPhases() {
+  const svg = document.getElementById('atam-v2');
+  if (!svg) return;
+  const W = 720, H = 260;
+  const margin = { l: 36, r: 16, t: 30, b: 50 };
+  const innerW = W - margin.l - margin.r;
+  const innerH = H - margin.t - margin.b;
+
+  // 4 个阶段（不严格顺序，标题给出的是"逻辑主流程"）
+  const phases = [
+    { name: 'Presentation',           cn: '① 场景与需求收集', steps: '步 1·2', desc: '干系人召集 + 业务目标' },
+    { name: "Architect's Presentation", cn: '② 架构视图与场景分析', steps: '步 3',   desc: '架构师讲架构'        },
+    { name: 'Analysis',               cn: '③ 效用树构建与分析', steps: '步 4·5·6', desc: '优先级 + 风险/权衡点' },
+    { name: 'Reporting',              cn: '④ 报告与决策', steps: '步 7·8·9', desc: '头脑风暴 + 报告输出' }
+  ];
+  const colW = innerW / phases.length;
+  const phaseY = margin.t + 50; // 阶段标题条 Y
+  const phaseH = 36;
+  const stepY = phaseY + phaseH + 38; // 步骤块 Y
+  const stepH = 60;
+
+  let s = '';
+  // 顶部分隔虚线（不严格顺序提示）
+  s += `<line x1="${margin.l}" y1="${margin.t}" x2="${W-margin.r}" y2="${margin.t}" stroke="var(--ink-3)" stroke-dasharray="3 5" stroke-width="0.6"/>`;
+  s += `<text x="${W/2}" y="${margin.t-10}" text-anchor="middle" fill="var(--ivory-3)" font-size="11" font-family="var(--font-mono)">⤷ 不严格顺序，实践中迭代往复</text>`;
+
+  // 阶段背景条（柔和）
+  phases.forEach((p, i) => {
+    const x = margin.l + i * colW;
+    // 阶段大背景
+    s += `<rect x="${x+6}" y="${phaseY}" width="${colW-12}" height="${phaseH}" rx="6" fill="var(--ink-1)" stroke="var(--gold-2)" stroke-width="1.4"/>`;
+    // 编号气泡
+    s += `<circle cx="${x+22}" cy="${phaseY+phaseH/2}" r="11" fill="var(--gold-2)"/>`;
+    s += `<text x="${x+22}" y="${phaseY+phaseH/2+4}" text-anchor="middle" fill="#1a1a1a" font-size="13" font-weight="700" font-family="var(--font-cn)">${i+1}</text>`;
+    // 阶段中文标题
+    s += `<text x="${x+40}" y="${phaseY+15}" fill="var(--gold-1)" font-size="13" font-weight="700" font-family="var(--font-cn)">${p.cn}</text>`;
+    // 阶段英文
+    s += `<text x="${x+40}" y="${phaseY+30}" fill="var(--ivory-3)" font-size="10" font-family="var(--font-mono)">${p.name}</text>`;
+
+    // 阶段下方：步骤块
+    const sx = x + 14;
+    const sw = colW - 28;
+    s += `<rect x="${sx}" y="${stepY}" width="${sw}" height="${stepH}" rx="5" fill="var(--ink-0)" stroke="var(--azure)" stroke-width="1" stroke-dasharray="3 3"/>`;
+    s += `<text x="${sx+sw/2}" y="${stepY+18}" text-anchor="middle" fill="var(--azure)" font-size="12" font-weight="600" font-family="var(--font-cn)">${p.steps}</text>`;
+    s += `<text x="${sx+sw/2}" y="${stepY+38}" text-anchor="middle" fill="var(--ivory-2)" font-size="11" font-family="var(--font-cn)">${p.desc}</text>`;
+    s += `<text x="${sx+sw/2}" y="${stepY+54}" text-anchor="middle" fill="var(--ivory-3)" font-size="9" font-family="var(--font-mono)" opacity="0.7">9 步中的关键步</text>`;
+
+    // 阶段 → 步骤的连接线
+    s += `<line x1="${x+colW/2}" y1="${phaseY+phaseH}" x2="${x+colW/2}" y2="${stepY}" stroke="var(--gold-3)" stroke-width="0.8" stroke-dasharray="2 3" opacity="0.6"/>`;
+  });
+
+  // 阶段之间的箭头（横向）
+  for (let i = 0; i < phases.length - 1; i++) {
+    const x1 = margin.l + (i + 1) * colW;
+    const x2 = x1 + 14;
+    const ay = phaseY + phaseH / 2;
+    s += `<line x1="${x1}" y1="${ay}" x2="${x2-3}" y2="${ay}" stroke="var(--gold-1)" stroke-width="1.4"/>`;
+    s += `<polygon points="${x2},${ay} ${x2-5},${ay-3} ${x2-5},${ay+3}" fill="var(--gold-1)"/>`;
+  }
+
+  // 底部时间轴提示
+  s += `<line x1="${margin.l}" y1="${stepY+stepH+22}" x2="${W-margin.r}" y2="${stepY+stepH+22}" stroke="var(--ink-3)" stroke-width="0.8"/>`;
+  s += `<text x="${margin.l}" y="${stepY+stepH+38}" fill="var(--ivory-3)" font-size="10" font-family="var(--font-mono)">t = 评估开始</text>`;
+  s += `<text x="${W-margin.r}" y="${stepY+stepH+38}" text-anchor="end" fill="var(--ivory-3)" font-size="10" font-family="var(--font-mono)">t = 报告交付</text>`;
+
+  svg.innerHTML = s;
+}
+
 function c33Init() { _timerRegistry.push(makeTimer('c33-clock', 'c33-fill', 'c33-btn', 45, 'c33-hint')); }
 function c34Init() { _timerRegistry.push(makeTimer('c34-clock', 'c34-fill', 'c34-btn', 360, 'c34-hint')); clProgress(); }
 
@@ -8852,6 +9142,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('c34-btn')) c34Init();
   if (document.getElementById('c35-pie')) drawScorePie();
   if (document.getElementById('atam-timeline')) atamInit();
+  if (document.getElementById('atam-v1')) drawAtamViews();
+  if (document.getElementById('atam-v2')) drawAtamPhases();
   if (document.getElementById('rm-detail')) rmDetail('减轻', 'threat');
 
   // Hero 脉冲动画：所有 .calc-result / .rel-result 文本变化时闪烁
