@@ -7415,37 +7415,59 @@ function drawMcGraph(type) {
     svg += `<text x="${(240+340)/2 + 22}" y="14" fill="var(--ivory-3)"
       font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">D3 N: back to D2</text>`;
   } else {
-    // V=5: if + while + switch(2 判定)  (m=10, n=7, 4判定 D1/D2/D3/D4)
-    //   S → D1 → D2 → A → D3 → D4 → E
-    //   ↑       └─(while-N skip)─┘   ↑
-    //   N(skip)                    N(back to D2)
+    // V=5: if + while + switch(2 cases)  (m=10, n=7, 4判定 D1/D2/D3/D4)
+    //   S → D1(if) → D2(while) → A → D3(case1) → D4(case2) → E
+    //     │           │            │     │              │
+    //     │           │            │     │              └─N→ D2 (default → continue while)
+    //     │           │            │     └─N→ D2 (case 1 不匹配 → 兼作体回边)
+    //     │           │            └─(顺序流)→ D3
+    //     │           └─N→ E (skip while)
+    //     └─N→ E (skip if)
+    //
+    // 节点布局：E 放在图最右端,所有 skip 弧清晰汇入 E 顶部
     svg += node(40,  H/2, 'S', 'entry');
-    svg += node(120, H/2, 'D1', 'dec');
-    svg += node(210, H/2, 'D2', 'dec');
-    svg += node(310, H/2, 'A', 'proc');
-    svg += node(370, H/2, 'D3', 'dec');
-    svg += node(440, H/2, 'D4', 'dec');
-    svg += node(430, H-50, 'E', 'exit');
-    svg += edge(58,  H/2, 98,  H/2);
-    svg += edge(142, H/2, 188, H/2, 'Y');
-    svg += edge(142, H/2, 408, H-50, 'N skip');
-    svg += edge(232, H/2, 288, H/2, 'Y');
-    svg += edge(232, H/2, 408, H-50, 'N skip');
-    svg += edge(332, H/2, 348, H/2);
-    svg += edge(392, H/2, 418, H/2, 'Y');
-    svg += edge(392, H/2, 408, H-50, 'N');
-    // back-loop：D4 → D2（沿底部绕开 A 与 D3）
-    svg += `<path d="M ${440+22} ${H/2+18} L ${440+22} ${H-12} L ${210-22} ${H-12} L ${210-22} ${H/2+18}"
-      fill="none" stroke="var(--gold-3)" stroke-width="1.6"
-      marker-end="url(#mcArrow)"/>`;
-    svg += `<text x="${(210+440)/2}" y="${H-18}" fill="var(--ivory-2)"
-      font-family="var(--font-cn)" font-size="10" text-anchor="middle">N back to D2</text>`;
-    // D3 → D2（switch 其他分支回到 while 头）
-    svg += `<path d="M ${370-22} ${H/2-18} L ${370-22} ${H-32} L ${210-22} ${H-32} L ${210-22} ${H/2-18}"
+    svg += node(100, H/2, 'D1', 'dec');   // 外层 if
+    svg += node(180, H/2, 'D2', 'dec');   // while 判
+    svg += node(250, H/2, 'A', 'proc');   // 循环体
+    svg += node(310, H/2, 'D3', 'dec');   // switch case 1
+    svg += node(370, H/2, 'D4', 'dec');   // switch case 2
+    svg += node(440, H/2, 'E', 'exit');   // 出口（图最右端）
+
+    // 主流直边：S → D1 → D2 → A → D3 → D4 → E
+    svg += edge(58,  H/2, 78,  H/2);
+    svg += edge(122, H/2, 158, H/2, 'Y');
+    svg += edge(202, H/2, 236, H/2, 'Y');
+    svg += edge(264, H/2, 288, H/2);     // A → D3（顺序流）
+    svg += edge(332, H/2, 348, H/2, 'Y'); // D3 → D4（case 1 → case 2）
+    svg += edge(392, H/2, 418, H/2, 'Y'); // D4 → E（case 2 命中 → E）
+
+    // D3 N → D2（case 1 不命中回到 while 头 - 沿底部弧 - 同时作为循环体回边）
+    svg += `<path d="M ${310-22} ${H/2+18} L ${310-22} ${H-44} L ${180+22} ${H-44} L ${180+22} ${H/2+18}"
       fill="none" stroke="var(--gold-3)" stroke-width="1.6" stroke-dasharray="4 3"
       marker-end="url(#mcArrow)"/>`;
-    svg += `<text x="${(210+370)/2}" y="${H-38}" fill="var(--ivory-3)"
-      font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">default 分支回流</text>`;
+    svg += `<text x="${(180+310)/2 + 22}" y="${H-48}" fill="var(--ivory-2)"
+      font-family="var(--font-cn)" font-size="10" text-anchor="middle">D3 N: 回 D2 (continue while)</text>`;
+
+    // D4 N → D2（case 2 不命中 default 也回到 while 头 - 沿 D4 上方弧到 D2）
+    svg += `<path d="M ${370+22} ${H/2-18} L ${370+22} 60 L ${180+22} 60 L ${180+22} ${H/2-18}"
+      fill="none" stroke="var(--gold-3)" stroke-width="1.6" stroke-dasharray="4 3"
+      marker-end="url(#mcArrow)"/>`;
+    svg += `<text x="${(180+370)/2 + 22}" y="56" fill="var(--ivory-3)"
+      font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">D4 N: back to D2</text>`;
+
+    // D2 N-skip → E（顶部弧 - 退出 while 到 E 顶部偏左）
+    svg += `<path d="M ${180} ${H/2-18} L ${180} 40 L ${430} 40 L ${430} ${H/2-14}"
+      fill="none" stroke="var(--gold-3)" stroke-width="1.6" stroke-dasharray="4 3"
+      marker-end="url(#mcArrow)"/>`;
+    svg += `<text x="${(180+430)/2}" y="36" fill="var(--ivory-3)"
+      font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">D2 N: skip → E</text>`;
+
+    // D1 N-skip → E（顶部弧 1 - 跳过整个 if 块, 汇入 E 顶部偏右）
+    svg += `<path d="M ${100} ${H/2-18} L ${100} 18 L ${450} 18 L ${450} ${H/2-14}"
+      fill="none" stroke="var(--gold-3)" stroke-width="1.6" stroke-dasharray="4 3"
+      marker-end="url(#mcArrow)"/>`;
+    svg += `<text x="${(100+450)/2}" y="14" fill="var(--ivory-3)"
+      font-family="var(--font-cn)" font-size="9" text-anchor="middle" font-style="italic">D1 N: skip → E</text>`;
   }
   svg += '</svg>';
   const target = document.getElementById('mc-graph');
