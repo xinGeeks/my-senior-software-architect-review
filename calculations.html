@@ -3774,7 +3774,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
     <div class="sidebar-items" id="items-sec6"></div>
   </div>
   <div class="sidebar-section" data-section="appx">
-    <div class="sidebar-section-title">📝 附录 <span class="sidebar-section-count">4</span></div>
+    <div class="sidebar-section-title">📝 附录 <span class="sidebar-section-count">3</span></div>
     <div class="sidebar-items" id="items-appx"></div>
   </div>
 </nav>
@@ -3823,9 +3823,68 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <b>陷阱</b>：分层 Cache 不要漏算前级的访问时间（先查 L1 不命中才会查 L2）。
       </div>
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">单层 Cache</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统 Cache 访问时间 20 ns、主存访问时间 200 ns，命中率 h=0.95。则平均访问时间约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>T = h·Tc + (1−h)·Tm = 0.95×20 + 0.05×200</li>
+              <li>= 19 + 10 = <b style="color:var(--gold-1)">29 ns</b></li>
+              <li>加速比 = 200 / 29 ≈ <b style="color:var(--gold-1)">6.9 倍</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">分层 Cache</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某两级 Cache：L1 访问 1 ns（命中率 90%），L2 访问 10 ns（命中率 90%），主存 100 ns。则平均访问时间约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>逐层展开：T = h₁·Tc₁ + (1−h₁)·[h₂·(Tc₁+Tc₂) + (1−h₂)·(Tc₁+Tm)]</li>
+              <li>= 0.9×1 + 0.1×[0.9×(1+10) + 0.1×(1+100)]</li>
+              <li>= 0.9 + 0.1×[9.9 + 10.1] = 0.9 + 2.0 = <b style="color:var(--gold-1)">2.9 ns</b></li>
+              <li>陷阱：先查 L1 不命中才查 L2，因此 L2 路径包含 L1 的 1 ns 开销</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">命中率敏感</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Cache 10 ns、主存 100 ns，命中率从 50% 提高到 90%，平均访问时间减少多少？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>h=0.5：T = 0.5×10 + 0.5×100 = <b>55 ns</b></li>
+              <li>h=0.9：T = 0.9×10 + 0.1×100 = <b>19 ns</b></li>
+              <li>减少 55 − 19 = <b style="color:var(--gold-1)">36 ns（降幅 65.5%）</b></li>
+              <li>印证：性能优化先优化命中率，比直接换硬件更划算</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · Cache 平均访问时间是计算机组成常考 3 分题</div>
+      </div>
+
 </article>
 
-      
+
     <article class="card-detail" data-id="c02" data-section="sec1">
 
       <div class="card-title">1.2 流水线性能</div>
@@ -3861,7 +3920,65 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         T = (5+100−1)·10 = <b>1040 ns</b><br>
         TP = 100/1040 ≈ <b>0.096 条/ns</b>
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">吞吐率</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某 5 段流水线执行 100 条指令，Δt = 20 ns。求总执行时间和吞吐率：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>T = (k + n − 1) · Δt = (5 + 100 − 1) × 20 = <b style="color:var(--gold-1)">2080 ns</b></li>
+              <li>TP = n / T = 100 / 2080 ≈ <b style="color:var(--gold-1)">0.048 条/ns</b></li>
+              <li>加速比（相对顺序）：顺序 = 100 × 5 × 20 = 10000 ns → S ≈ 10000 / 2080 ≈ <b>4.81 倍</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">流水线公式</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>4 段流水线执行 10 条指令，Δt = 100 ns，求 T 和 TP：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>T = (4 + 10 − 1) × 100 = <b style="color:var(--gold-1)">1300 ns</b></li>
+              <li>TP = 10 / 1300 ≈ <b style="color:var(--gold-1)">0.0077 条/ns</b>（约 769 万条/秒）</li>
+              <li>关键：公式是 (k + n − 1) 不是 kn，常错 kn = 40 周期</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2022</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">加速比</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>5 段顺序执行每段 100 ns，n = 100 条指令；改为 5 段流水线 Δt = 100 ns。求加速比 S：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>顺序执行时间 = n × k × Δt = 100 × 5 × 100 = <b>50000 ns</b></li>
+              <li>流水时间 = (k + n − 1) × Δt = (5 + 99) × 100 = <b>10400 ns</b></li>
+              <li>S = 50000 / 10400 ≈ <b style="color:var(--gold-1)">4.81 倍</b>（趋近于 k=5，但永远 < k）</li>
+              <li>陷阱：加速比上限是 k，但因填充与排空永远达不到 k</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 流水线公式 (k+n−1)·Δt 是必背项</div>
+      </div>
+
 </article>
 
       
@@ -4127,7 +4244,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <tr><td>海明码</td><td>多位错</td><td>1 位错</td></tr>
         </tbody>
       </table>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">校验位数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>采用海明码纠错，信息位 m = 32 位，求所需校验位 k：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>列 2^k ≥ m + k + 1 候选：k=5: 32 ≥ 32+5+1=38 ✗；k=6: 64 ≥ 32+6+1=39 ✓</li>
+              <li>故 <b style="color:var(--gold-1)">k = 6</b></li>
+              <li>总码长 = m + k = 32 + 6 = 38 位</li>
+              <li>陷阱：常忘加右侧 "1"（用于全局校验位）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">大信息位</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>用海明码校验，m = 64 位，求校验位数 k：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>k=6: 2⁶=64 < 64+6+1=71 ✗</li>
+              <li>k=7: 2⁷=128 ≥ 64+7+1=72 ✓</li>
+              <li>故 <b style="color:var(--gold-1)">k = 7</b></li>
+              <li>记忆规律：信息位翻倍，校验位一般 +1（信息位 32→k=6、64→k=7）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2022</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">概念辨析</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于 CRC 与海明码的描述，正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>CRC：检多位错，<b style="color:var(--gold-1)">不能纠错</b>（仅检错）</li>
+              <li>海明码：检多位错，<b style="color:var(--gold-1)">可纠 1 位错</b></li>
+              <li>海明码距 = 3，可纠正 1 位错误或检测 2 位错误</li>
+              <li>陷阱：误认为 CRC 可纠错；实际上 CRC 是多项式除法求余，只能告知"有错"而无法定位</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 2^k ≥ m+k+1 是核心必背公式</div>
+      </div>
+
 </article>
 
       
@@ -4298,10 +4475,70 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：全 0 和全 1 子网在老协议中不可用，新协议（CIDR）可用——多数题目默认减 2。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">C 类 /26</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>将 C 类网络 192.168.1.0 划分为 4 个子网，子网掩码与每子网可用主机数是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>借位 = log₂4 = 2 位 → 子网掩码 = /26 = 255.255.255.192</li>
+              <li>每子网主机位 = 32 − 26 = 6 位</li>
+              <li>可用主机 = 2⁶ − 2 = <b style="color:var(--gold-1)">62 台</b></li>
+              <li>子网段：192.168.1.0、192.168.1.64、192.168.1.128、192.168.1.192（每段 64 地址）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">B 类 /22</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>B 类地址 172.16.0.0 使用子网掩码 255.255.252.0 (/22)，每个子网可用主机数为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>主机位 = 32 − 22 = 10 位</li>
+              <li>可用主机 = 2¹⁰ − 2 = <b style="color:var(--gold-1)">1022 台</b></li>
+              <li>借位 = 22 − 16 = 6 位 → 子网数 = 2⁶ = <b>64 个</b></li>
+              <li>子网段示例：172.16.0.0、172.16.4.0、172.16.8.0...（每段 1024 地址）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">A 类划分</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>A 类地址 10.0.0.0/8 需要划分为 8 个子网，则子网掩码变为 /11，每个子网的可用主机数为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>借位 = log₂8 = 3 位 → /11 掩码 = 255.224.0.0</li>
+              <li>主机位 = 32 − 11 = 21 位</li>
+              <li>可用主机 = 2²¹ − 2 = <b style="color:var(--gold-1)">2 097 150 台</b>（约 200 万）</li>
+              <li>子网段示例：10.0.0.0、10.32.0.0、10.64.0.0...（每段 2²³ = 8M 地址）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 主机数 2^h − 2 是必背项；区分"借位"与"剩余主机位"</div>
+      </div>
+
 </article>
 
-      
+
     <article class="card-detail" data-id="c07" data-section="sec1">
 
       <div class="card-title">1.7 IP ↔ 整数转换</div>
@@ -4343,7 +4580,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
       <div class="tip"><b>套路</b>：写出二进制按 8 位分组，再转十进制；或用公式直接乘权重 2²⁴/2¹⁶/2⁸/1。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">IP → 整数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>将 IP 地址 10.0.0.1 转换为 32 位整数，值为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>N = 10×2²⁴ + 0×2¹⁶ + 0×2⁸ + 1</li>
+              <li>= 10×16 777 216 + 0 + 0 + 1 = <b style="color:var(--gold-1)">167 772 161</b></li>
+              <li>权重记忆：2²⁴ ≈ 1677 万、2¹⁶ = 65536、2⁸ = 256</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">整数 → IP</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>已知 IP 对应的整数为 0xC0A8010A（十六进制），转换为点分十进制 IP 为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>按 8 位切分：0xC0 | 0xA8 | 0x01 | 0x0A</li>
+              <li>转十进制：192 | 168 | 1 | 10</li>
+              <li>结果：<b style="color:var(--gold-1)">192.168.1.10</b></li>
+              <li>验算：192×2²⁴ + 168×2¹⁶ + 1×2⁸ + 10 = 3 232 235 786</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2022</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">大整数转换</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>将 IP 172.16.32.5 转换为 32 位整数：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>N = 172×2²⁴ + 16×2¹⁶ + 32×2⁸ + 5</li>
+              <li>= 2 885 681 152 + 1 048 576 + 8 192 + 5</li>
+              <li>= <b style="color:var(--gold-1)">2 886 737 925</b></li>
+              <li>技巧：先转十六进制更直观（0xAC.10.20.05 = 0xAC102005）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · IP 与整数互转每年必考，常结合子网掩码求网络号</div>
+      </div>
+
 </article>
 
       
@@ -4393,7 +4689,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：保留端口（0-1023）不算可用端口；每内网主机可能开多连接。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">PAT 容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某公司用 1 个公网 IP 做 PAT（端口地址转换），可用端口 64511 个，平均每内网主机同时占用 1.2 个端口，可支持内网主机数为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>支持主机数 = 可用端口数 ÷ 每主机占用端口数</li>
+              <li>= 64511 ÷ 1.2 ≈ <b style="color:var(--gold-1)">53 759 台</b></li>
+              <li>陷阱：常忘记每个内网主机可能占多端口（浏览器开多连接、下载工具等）</li>
+              <li>N 公网 IP 时再 ×N（IP 池扩展）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">ARP 缓存</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某局域网共 1000 台主机，本期新增 100 台。则 ARP 缓存的近似命中率为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>p(命中) = 1 − (本期新增主机数 / 总主机数)</li>
+              <li>= 1 − 100 / 1000 = <b style="color:var(--gold-1)">0.9（90%）</b></li>
+              <li>命中含义：目标 MAC 已在 ARP 表中，无需广播</li>
+              <li>陷阱：新增 ≠ 全部；命中率高时广播开销少</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">DNS 查询</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>主机访问 www.xyz.com，若采用<b>迭代查询</b>且本地缓存为空，则查询过程的正确顺序是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>迭代查询路径：本地 DNS → 根 DNS（.） → 顶级 DNS（com）→ 权威 DNS（xyz.com）</li>
+              <li>查询次数 = <b style="color:var(--gold-1)">3 次（标准题目默认）</b>，部分题目答 ≥3 次</li>
+              <li>递归查询：本地 DNS 代查全部过程，主机只发 1 次请求</li>
+              <li>陷阱：迭代每次查询返回"下一步去哪查"的信息，不直接返回结果</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · NAT、ARP、DNS 是网络层高频 3 件套</div>
+      </div>
+
 </article>
 
       
@@ -4798,7 +5154,9 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       
     <article class="card-detail" data-id="c11" data-section="sec1">
 
+      <span class="tier-label">⭐⭐⭐ 中频</span>
       <div class="card-title">1.11 段页式存储</div>
+      <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2023上·2024下·2025上</span></div>
       <div class="card-sub">Segmented Paging</div>
 
       <div class="calc">
@@ -4845,6 +5203,69 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
       <div class="tip"><b>套路</b>：看到地址拆 3 段就是段页式；先求页大小，再求段内页数。</div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">地址拆分 · 基本参数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统采用段页式存储管理，逻辑地址 32 位，段号 8 位、页号 10 位、页内偏移 14 位。则每段最多可容纳多少页？页大小为多少？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>每段页数 = 2<sup>页号位数</sup> = 2<sup>10</sup> = <b style="color:var(--gold-1)">1024 页</b></li>
+              <li>页大小 = 2<sup>页内偏移位数</sup> = 2<sup>14</sup> = <b style="color:var(--gold-1)">16 KB</b></li>
+              <li>验证：8 + 10 + 14 = 32 ✓</li>
+              <li>答案：<b style="color:var(--gold-1)">选 A（1024 页 / 16 KB）</b></li>
+              <li>易错：把"页大小"和"段内页数"搞反——前者由偏移位数决定，后者由页号位数决定</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">地址转换 · 访存次数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>段页式存储管理中，CPU 完成一次数据访问（<b>不包含访问数据本身</b>）至少需要访问内存几次？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>第 1 次：<b>查段表</b>，得页表起始地址</li>
+              <li>第 2 次：<b>查页表</b>，得物理块号</li>
+              <li>共 <b style="color:var(--gold-1)">2 次</b>（不含访问数据本身）</li>
+              <li>答案：<b style="color:var(--gold-1)">选 B（2 次）</b></li>
+              <li>口诀："<b>段表 + 页表 = 2 次</b>"；加访问数据本身 = 3 次；快表 TLB 命中可减少</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">段页式 vs 分页 · 概念辨析</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于段页式存储管理，下列说法<b>错误</b>的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>A. 地址结构为 段号 + 页号 + 页内偏移 三级——✓ 正确</li>
+              <li>B. 兼具段式的逻辑可见性 + 页式的物理管理便利——✓ 正确</li>
+              <li>C. <b>段内各页必须连续存放</b>——✗ <b>错误</b>。段内各页离散映射物理块，不要求连续</li>
+              <li>D. 地址转换需先查段表再查页表——✓ 正确</li>
+              <li>答案：<b style="color:var(--gold-1)">选 C</b>。这是段页式与"段式"的关键区别——段页式靠页解决了段内连续性问题</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖"地址拆分 / 访存次数 / 概念辨析"3 类高频考点</div>
+      </div>
 
 </article>
 
@@ -5791,7 +6212,69 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="trap">
         <b>陷阱</b>：常数 0.65 是固定值，不是 0.65×14；常错。
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">UFP 计算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统功能项统计：EI=3（中等）、EO=2（中等）、EQ=1（中等）、ILF=2（中等）、EIF=1（中等），求 UFP：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>EI：3 × 4 = 12</li>
+              <li>EO：2 × 5 = 10</li>
+              <li>EQ：1 × 4 = 4</li>
+              <li>ILF：2 × 10 = 20</li>
+              <li>EIF：1 × 7 = 7</li>
+              <li>UFP = 12 + 10 + 4 + 20 + 7 = <b style="color:var(--gold-1)">53</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">AFP 公式</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>已知 UFP = 53、TCF = 35，求 AFP：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>AFP = UFP × (0.65 + 0.01 × TCF)</li>
+              <li>= 53 × (0.65 + 0.01 × 35) = 53 × (0.65 + 0.35)</li>
+              <li>= 53 × 1.0 = <b style="color:var(--gold-1)">53</b></li>
+              <li>陷阱：常数 0.65 是固定值，不要乘 14 个调节因子；TCF 每项 0-5 范围</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">典型场景</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>UFP = 100、TCF = 20，求 AFP 与所需人月（生产率 10 FP/人月）：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>AFP = 100 × (0.65 + 0.01 × 20) = 100 × 0.85 = <b style="color:var(--gold-1)">85 FP</b></li>
+              <li>工作量 = AFP / 生产率 = 85 / 10 = <b style="color:var(--gold-1)">8.5 人月</b></li>
+              <li>陷阱：AFP 用 UFP×调整系数，<b>不可直接用 UFP 算人月</b></li>
+              <li>经验：典型生产率 6-12 FP/人月（取决于语言/团队成熟度）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · FP 与 COCOMO 常组合出案例题（FP → LOC → 人月）</div>
+      </div>
+
 </article>
 
       
@@ -5862,9 +6345,9 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             <span class="exam-qa-lbl">答案要点</span>
             <ol>
               <li>PM = 2.4 × 50^1.05</li>
-              <li>50^1.05 ≈ 50 × 50^0.05 ≈ 50 × 1.215 ≈ 60.5</li>
-              <li>PM ≈ 2.4 × 60.5 ≈ <b style="color:var(--gold-1)">145 人月</b></li>
-              <li>工期 TDEV = 2.5 × PM^0.38 ≈ 2.5 × 145^0.38 ≈ 12 个月（常考配套公式）</li>
+              <li>50^1.05 ≈ 50 × 50^0.05 ≈ 50 × 1.215 ≈ 60.8</li>
+              <li>PM ≈ 2.4 × 60.8 ≈ <b style="color:var(--gold-1)">146 人月</b></li>
+              <li>工期 TDEV = 2.5 × PM^0.38 ≈ 2.5 × 146^0.38 ≈ 21 个月（常考配套公式）</li>
             </ol>
           </div>
         </div>
@@ -5991,6 +6474,68 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <b>问题</b>：模块 A 调用模块 B 时传入结构体 S 但只用了 S.id 字段 → 这是 <b>标记耦合</b>（不是数据耦合）。<br>
         <b>改进</b>：将 B 的接口改为只接收 id 参数。
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">耦合判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>模块 A 调用模块 B 时传入<b>结构体 S</b>（仅使用 S.id 一个字段）。该耦合类型为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>传简单数据（int/string）→ 数据耦合</li>
+              <li>传结构体/对象但只用部分字段 → <b style="color:var(--gold-1)">标记耦合</b>（stamp coupling）</li>
+              <li>传控制标志/布尔 → 控制耦合</li>
+              <li>传全局变量 → 公共耦合；直接访问内部 → 内容耦合（最糟）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">内聚判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某模块内所有语句操作<b>同一数据集</b>，且语句之间无顺序依赖。该内聚类型为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>语句毫无关系 → 偶然内聚</li>
+              <li>同一时间执行 → 时间内聚</li>
+              <li>按特定顺序但无数据依赖 → 过程内聚</li>
+              <li>操作同一数据集 → <b style="color:var(--gold-1)">通信内聚</b></li>
+              <li>输出=下一句输入（流水线） → 顺序内聚；只做一件事 → 功能内聚（最好）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">排序原则</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>软件设计应遵循<b>高内聚、低耦合</b>原则，下列耦合类型中耦合度由低到高的顺序是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>由低到高：<b style="color:var(--gold-1)">非直接 &lt; 数据 &lt; 标记 &lt; 控制 &lt; 外部 &lt; 公共 &lt; 内容</b></li>
+              <li>口诀：<b style="color:var(--gold-1)">非数标控外公内</b>（7 个字对应 7 级耦合）</li>
+              <li>内聚由低到高：偶然 &lt; 逻辑 &lt; 时间 &lt; 过程 &lt; 通信 &lt; 顺序 &lt; 功能</li>
+              <li>口诀：<b style="color:var(--gold-1)">偶逻时过通顺功</b></li>
+              <li>陷阱：耦合越低越好、内聚越高越好，方向相反</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 案例 T2 设计题问"哪个内聚/耦合类型"是高频考点</div>
+      </div>
+
 </article>
 
       
@@ -6093,6 +6638,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
       <div class="trap">
         <b>陷阱</b>:① <b>不可重复读 vs 幻读</b>:前者是<b>同行值</b>被改,后者是<b>范围行数</b>变了;② MySQL InnoDB 在 RR 级别用 MVCC + Next-Key Lock 在很大程度上<b>避免</b>了幻读(但 SQL 标准认为 RR 不防幻读);③ 题目默认按 <b>SQL 标准</b>答,不要被 MySQL 实现细节误导。
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">幻读概念</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>事务 T1 执行 SELECT ... WHERE age > 20,期间 T2 插入一行 age=25 并提交。T1 再次 SELECT 时多出一行（幻影）。该现象是（　），在（　）隔离级别下不会发生。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>现象：<b style="color:var(--gold-1)">幻读（Phantom Read）</b>——范围行数变化</li>
+              <li>防幻读需：<b style="color:var(--gold-1)">Serializable（串行化）</b>——SQL 标准认为 RR 仍允许幻读</li>
+              <li>区分：不可重复读 = 同行值被改；幻读 = 范围行数变化</li>
+              <li>陷阱：MySQL InnoDB 在 RR 通过 Next-Key Lock 接近避免，但<b>标准答案仍是 Serializable</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">RC 判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>SQL 标准中，能够避免<b>脏读</b>但<b>不能避免不可重复读</b>的隔离级别是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>SQL 标准 4 级（低→高）：RU → RC → RR → SE</li>
+              <li>RC = <b style="color:var(--gold-1)">Read Committed（读已提交）</b></li>
+              <li>避免：脏读 ✗、不可重复读 ✗、幻读 ✗（只有 RC 自己能避免脏读）</li>
+              <li>记忆：级别越高越严，<b>能避免是单调递增</b>（上一级避免的下一级必避免）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2021下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">SQL vs MySQL</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于 MySQL InnoDB 默认隔离级别的描述，正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>MySQL InnoDB 默认 <b style="color:var(--gold-1)">RR（Repeatable Read，可重复读）</b></li>
+              <li>Oracle 默认 RC；SQL Server 默认 RC；PostgreSQL 默认 RC</li>
+              <li>注意：SQL 标准下 RR 不防幻读，但 InnoDB 用 MVCC + Next-Key Lock <b>极大缓解</b>幻读</li>
+              <li>应试策略：题目无明示数据库时按 <b>SQL 标准</b> 答；明示 MySQL 时才考虑实际行为</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 数据库每年常考 1-2 题；区分 SQL 标准 vs MySQL 实现</div>
       </div>
 
     </article>
@@ -6261,7 +6866,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div style="font-size:0.86rem;color:var(--ivory-2);margin-top:6px">
         推论：合并规则、分解规则、伪传递规则
       </div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">平凡 vs 非平凡</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列函数依赖中，属于<b>平凡函数依赖</b>的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>平凡 FD 定义：Y ⊆ X（即右侧被左侧"包含"）</li>
+              <li>例如：(SNO, CNO) → SNO、(SNO, CNO) → CNO 都是平凡 FD</li>
+              <li>非平凡 FD：右侧不在左侧中，如 SNO → SN</li>
+              <li>记忆：<b style="color:var(--gold-1)">"平凡"= 右边是左边的子集</b>，恒成立</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">完全 vs 部分</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关系 SC(SNO, CNO, GRADE)，FD: (SNO, CNO) → GRADE。GRADE 对候选码是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>GRADE 依赖于 (SNO, CNO) 整体；去掉任一属性都不能决定 GRADE</li>
+              <li>→ <b style="color:var(--gold-1)">完全函数依赖</b></li>
+              <li>对比：若 GRADE 仅依赖 SNO（候选码真子集），则为<b>部分函数依赖</b>（2NF 违规）</li>
+              <li>判别口诀：去掉任一属性后 FD 仍成立 → 部分依赖；都不成立 → 完全依赖</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">Armstrong 公理</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>由 FD: A → B, B → C，可推出的 FD 是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>由 A → B 与 B → C 用<b style="color:var(--gold-1)">传递律</b>得：A → C</li>
+              <li>由 A → B 用<b style="color:var(--gold-1)">增广律</b>：A,X → B,X（X 为任意属性集）</li>
+              <li>由 A → B 与 A → C 用<b style="color:var(--gold-1)">合并规则</b>（增广律推论）：A → BC</li>
+              <li>由 A → BC 用<b style="color:var(--gold-1)">分解规则</b>：A → B、A → C</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 函数依赖是范式题前置概念（与 3.1 / 3.3 联动）</div>
+      </div>
+
 </article>
 
       
@@ -7000,7 +7665,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
       <div class="tip"><b>精度排序</b>：类比 < 参数估算 &lt; <b>三点估算</b> &lt; 自下而上。<br>案例题若考估算，问"采用哪种最准确"答<b>自下而上</b>。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">案例 T2/T3</span>
+            <span class="exam-qa-tag">三点估算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某活动乐观工期 O=8 天、最可能 M=10 天、悲观 P=24 天，求 PERT 期望工期 E 与标准差 σ：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>E = (O + 4M + P) / 6 = (8 + 40 + 24) / 6 = 72 / 6 = <b style="color:var(--gold-1)">12 天</b></li>
+              <li>σ = (P − O) / 6 = (24 − 8) / 6 ≈ <b style="color:var(--gold-1)">2.67 天</b></li>
+              <li>±1σ 区间 [9.33, 14.67] 对应完工概率 <b>68.26%</b></li>
+              <li>±2σ 区间 [6.66, 17.34] 对应完工概率 <b>95.46%</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">案例 T2</span>
+            <span class="exam-qa-tag">精度排序</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>按估算精度从低到高排序：①类比估算 ②参数估算 ③自下而上估算 ④三点估算</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>精度：① 类比 (±50%) &lt; ② 参数 (±30%) &lt; ④ 三点 (±5%) &lt; ③ 自下而上 (±10%)</li>
+              <li>注：自下而上精度最高（±10%），但耗时最长</li>
+              <li>附加数轴（陷阱修正）：题目常考<b>"项目早期快速估算"</b>选<b>类比/参数</b>；<b>"工期有不确定性"</b>选<b>三点估算</b></li>
+              <li>案例题问"最准确"答自下而上；问"快速粗估"答类比估算</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">COCOMO 参数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某中型 ERP 系统规模 100 KLOC，采用 COCOMO 半分离模型（a=3.0, b=1.12）估算工作量 PM：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>PM = a × KLOC<sup>b</sup> = 3.0 × 100<sup>1.12</sup></li>
+              <li>100<sup>1.12</sup> ≈ 100 × 100<sup>0.12</sup> ≈ 100 × 1.738 ≈ 173.8</li>
+              <li>PM ≈ 3.0 × 173.8 ≈ <b style="color:var(--gold-1)">522 人月</b></li>
+              <li>关联：TDEV = 2.5 × PM<sup>0.38</sup> ≈ 2.5 × 522<sup>0.38</sup> ≈ 27 个月；平均人力 = 522/27 ≈ 19 人</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：案例分析真题 · 成本估算 + 三点估算 + COCOMO 是案例 T2/T3 铁三角</div>
+      </div>
+
 </article>
 
       
@@ -7260,7 +7985,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </table>
 
       <div class="tip"><b>6 类质量</b>：可用 / 可修改 / 性能 / 安全 / 可测试 / 易用（QAW 经典分类）。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">效用树含义</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在 ATAM 评估中，效用树的作用是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>效用树 = 质量属性（根）+ 场景（叶）+ (重要性, 难度) 优先级</li>
+              <li>作用：将<b>模糊的质量诉求</b>转为<b>可比较、可优先级的具体场景</b></li>
+              <li>两个维度：重要性（业务重要程度 H/M/L）+ 实现难度（技术风险 H/M/L）</li>
+              <li>(H,L) 场景应优先实现；(L,H) 场景可以暂缓</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">QAW vs ISO</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>QAW（质量属性工作坊）定义的 6 类质量属性与 ISO 25010 的 8 大质量特性的关系是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>QAW 6 类 = <b>可用 / 可修改 / 性能 / 安全 / 可测试 / 易用</b>（SEI 方法学分类，<b>场景驱动</b>）</li>
+              <li>ISO 25010 = 8 大特性（含 31 子特性，<b>国际标准</b>完整质量模型）</li>
+              <li>QAW 6 类 ⊂ ISO 25010 8 类（大概念层面对应）</li>
+              <li>陷阱：<b>不可互换</b>——案例题问"质量属性有哪些"需注明出处</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">优先级判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>效用树中场景优先级标 (H, M)，下列解释正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>(重要性, 实现难度) = (高, 中)</li>
+              <li>含义：<b>业务重要但实现有一定难度</b>，应<b>优先规划资源</b>实现</li>
+              <li>(H, L) 最重要最优先（性价比最高）</li>
+              <li>(L, H) 可暂缓或寻找替代方案；典型陷阱：H = 高优先级 ≠ 必先做</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：案例 T1 · 效用树是 ATAM 第 3 阶段核心，每年必考</div>
+      </div>
+
 </article>
 
       
@@ -7313,7 +8098,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
       <div class="trap"><b>陷阱</b>：风险点 ≠ 不好的点；要写成"决策+风险+建议"。</div>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">敏感点定义</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在架构评估中，"缓存命中率 95% 是性能属性的敏感点"。下列对"敏感点"的解释正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>敏感点定义：影响<b>一个</b>质量属性的<b>单个决策</b>或参数</li>
+              <li>本例中"命中率 95%"是性能属性的关键参数 → <b style="color:var(--gold-1)">敏感点</b></li>
+              <li>区别：权衡点影响<b>多个</b>属性（且互相矛盾）；风险点是潜在问题</li>
+              <li>案例题答题模板："X 参数对 Y 属性有重大影响 → 敏感点"</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">权衡点</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>"为提升安全性对密码进行高强度加密，会降低系统性能（响应时间↑）"。这是哪类点？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>同时影响<b>安全性</b>和<b>性能</b>两个属性，且方向相反 → <b style="color:var(--gold-1)">权衡点</b></li>
+              <li>关键特征：A↑ 则 B↓（属性之间互相矛盾）</li>
+              <li>常见权衡点：缓存（性能↑ vs 一致性↓）、加密（安全↑ vs 性能↓）、冗余（可用↑ vs 成本↑）</li>
+              <li>陷阱：不要把"决策对单个属性有重大影响"写成权衡点</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023上</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">风险点</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某架构采用单节点 MySQL 主库，存在单点故障风险。案例题问"识别风险点并给出建议"的标准答案模板是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>风险点定义：<b>存在潜在问题</b>的架构决策，需降低或消除</li>
+              <li>答题三段式：<b>决策</b> + <b>风险</b> + <b>建议</b></li>
+              <li>标准答案："单点 MySQL 主库 → 主库宕机导致全站不可用 → 建议采用 MHA / 主从热备 + 自动故障转移"</li>
+              <li>陷阱：不要只写"<b>单点故障</b>"四个字；必须<b>决策 + 风险 + 缓解方案</b>三件套</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：案例 T1 必考 · 4 类点（敏感/权衡/风险/非风险）是 ATAM 报告核心</div>
+      </div>
+
 </article>
 
       
@@ -7358,6 +8203,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
       <div class="tip">
         <b>注意</b>：本节以<b>概念区分</b>为主，无数值计算。案例 T1 常考"请说明 SAAM/ATAM/CBAM 区别"——按表中特点 + 演进关系答题即可。
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">三代演进</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列架构评估方法的演进关系，正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>演进顺序：<b style="color:var(--gold-1)">SAAM（1980s）→ ATAM（1990s）→ CBAM（2000s）</b></li>
+              <li>SAAM：5 步流程，场景驱动，<b>只能定性分析</b>，不能给出成本</li>
+              <li>ATAM：9 步流程，引入<b style="color:var(--gold-1)">效用树 + 风险点</b>概念</li>
+              <li>CBAM：在 ATAM 基础上加入<b style="color:var(--gold-1)">成本-效益分析（ROI/预算）</b>，支持投资决策</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">CBAM 特征</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>在架构评估方法中，<b>支持 ROI/成本-效益分析</b>的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>SAAM：仅场景评估，无成本概念</li>
+              <li>ATAM：效用树 + 风险点，仍<b>不含成本</b></li>
+              <li>CBAM：<b style="color:var(--gold-1)">唯一支持成本-效益分析</b>（效益 / 成本 = ROI）</li>
+              <li>记忆口诀：<b style="color:var(--gold-1)">SAAM 看场景 · ATAM 看质量 · CBAM 看成本</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">ATAM 9 步</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于 ATAM 的描述，错误的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>ATAM 由 SEI（卡耐基梅隆大学软件工程研究所）提出</li>
+              <li>含 <b style="color:var(--gold-1)">9 个核心步骤</b>（场景收集 → 架构描述 → 效用树 → 决策点 / 风险点 / 权衡点 / 敏感点）</li>
+              <li>关注 4 类质量属性 = 性能 / 可用性 / 安全性 / 可修改性（注：2024 上有真题考过 "可测试性" 替代 "可用性" 的版本，以新版教材为准）</li>
+              <li>陷阱：ATAM 不做 ROI（那是 CBAM）；ATAM 不只是定性分析（含优先级排序）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：案例 T1 必考 · 3 代方法区分是架构评估题基本功</div>
       </div>
 
 </article>
@@ -7515,7 +8420,67 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </ol>
       </div>
 
-    </article>
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">特性归属</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某电商系统需支撑大促 50 万 QPS，"QPS / 容量" 这一指标属于 ISO 25010 哪个一级特性的子特性？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>QPS、容量、响应时间 → 属于 <b style="color:var(--gold-1)">性能效率</b> 下的 <b style="color:var(--gold-1)">容量</b> 子特性</li>
+              <li>性能效率共 3 个子特性：时间特性 / 资源利用性 / <b style="color:var(--gold-1)">容量</b></li>
+              <li>对应架构策略：读写分离 + 水平扩展 + 多级缓存 + 限流降级</li>
+              <li>陷阱：不要写成"可用性"或"可扩展性"（后者不在 ISO 25010 子特性中）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">案例 T1/T2</span>
+            <span class="exam-qa-tag">安全子特性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>ISO 25010 中"用户密码不可被管理员查看"对应哪个子特性？采用什么策略？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>一级特性：<b style="color:var(--gold-1)">安全性</b></li>
+              <li>子特性：<b style="color:var(--gold-1)">机密性</b>（Confidentiality）</li>
+              <li>安全 5 子特性：机密性 / 完整性 / 不可否认性 / 可问责性 / 真实性</li>
+              <li>策略：<b>bcrypt 哈希 + salt 盐 + 密钥分级管理 + TLS 传输加密</b>（明文存储密码 → 机密性失效）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">8 类特性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列不属于 ISO 25010 定义的 8 大质量特性的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>8 大特性：功能适合性 / 性能效率 / 兼容性 / 易用性 / 可靠性 / 安全性 / 可维护性 / <b style="color:var(--gold-1)">可移植性</b></li>
+              <li>陷阱项：可重用性、可扩展性、互操作性 → 可重用 ⊂ 可维护；互操作 ⊂ 兼容；<b>可扩展性不在 ISO 25010</b></li>
+              <li>记忆：8 大一字诀 = "功性容易靠安维移"</li>
+              <li>陷阱：QAW 6 类（可用 / 可修改 / 性能 / 安全 / 可测试 / 易用）≠ ISO 25010 8 类，<b>不可互换</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：案例 T1/T2 必考 · ISO 25010 是国际标准，每年案例题必考 1-2 个子特性归属</div>
+      </div>
+
+</article>
 
 
 
@@ -7685,6 +8650,66 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="example">
         <div class="example-label">▸ 典型题</div>
         CD 音质：44.1 kHz × 16 bit × 2 声道 × 60 s / 8 = <b>10.584 MB / 分钟</b>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">图像容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>一幅 1024×768 像素的 24 位真彩色 BMP 图像，未压缩的存储空间约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>D = 像素总数 × 量化位数 / 8</li>
+              <li>= 1024 × 768 × 24 / 8 = 786 432 × 3 = <b style="color:var(--gold-1)">2 359 296 字节 ≈ 2.25 MB</b></li>
+              <li>陷阱：24 bit = 3 byte，不要除以 24</li>
+              <li>附加：分辨率翻倍 → 数据量变 4 倍（×2 横 ×2 纵）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">视频容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某 PAL 制视频帧率 25 fps、每帧 1 MB（未压缩），录制 1 小时数据量为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>总帧数 = 25 × 3600 = 90 000 帧</li>
+              <li>总数据量 = 90 000 × 1 MB = <b style="color:var(--gold-1)">90 000 MB ≈ 90 GB</b>（未压缩）</li>
+              <li>常用压缩比 100:1 → 约 900 MB；MPEG-2 压缩比约 30-50:1</li>
+              <li>记忆：<b>1 小时标清 DVD ≈ 4 GB</b>（压缩后）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">电话音质</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>电话音质常用 8 kHz 采样率、8 bit 量化、单声道，10 秒音频的存储空间约为：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>D = 8000 × 8 × 1 × 10 / 8 = <b style="color:var(--gold-1)">80 000 字节 ≈ 78 KB</b></li>
+              <li>对比 CD 音质（44.1kHz × 16bit × 2声道）数据量是电话音质的 ≈ <b>22 倍</b>（176 400 B/s vs 8 000 B/s）</li>
+              <li>陷阱：电话音质每秒 8 KB，1 分钟仅 480 KB ≈ 0.5 MB</li>
+              <li>记忆：<b>CD 1 分钟 ≈ 10 MB；MP3 1 分钟 ≈ 1 MB</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 多媒体每年 1 题；常结合存储容量估算</div>
       </div>
 
 </article>
@@ -7857,15 +8882,15 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
   <article class="card-detail" data-id="c33" data-section="appx">
 
-      <div class="card-title">综合知识计算题</div>
-      <div class="card-sub">45 秒 / 题</div>
+      <div class="card-title">综合知识计算题 · 历年真题集锦</div>
+      <div class="card-sub">37 题 速答 · 45 秒 / 题</div>
       <div class="timer-wrap">
         <div class="timer-clock" id="c33-clock">00:45</div>
         <div style="flex:1">
           <div class="timer-bar"><div class="timer-bar-fill" id="c33-fill" style="width:100%"></div></div>
           <div style="margin-top:6px;color:var(--ivory-3);font-size:0.82rem;font-family:var(--font-cn)" id="c33-hint">建议节奏：前 15 秒读题 + 列公式 → 中间 20 秒代入计算 → 最后 10 秒检查</div>
         </div>
-        <button class="timer-btn" id="c33-btn" onclick="c33Toggle()">▶ 开始</button>
+        <button class="timer-btn" id="c33-btn">▶ 开始</button>
       </div>
       <ol class="steps">
         <li>识别题型（公式 / 推理 / 判定）</li>
@@ -7874,22 +8899,641 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <li>检查陷阱（漏 0.01、漏 − 2、漏峰值）</li>
         <li>圈答案（不留疑问）</li>
       </ol>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 第一部分 · 计算机组成与体系结构（5 题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#1</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">Cache 平均访问时间</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Cache 10 ns、主存 100 ns、h=0.9，平均访问时间 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>T = 0.9×10 + 0.1×100 = 9 + 10 = <b style="color:var(--gold-1)">19 ns</b></li>
+              <li>加速比 = 100 / 19 ≈ 5.26 倍</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#2</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">流水线总时间</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>5 段流水线执行 100 条指令，Δt = 10 ns，总时间 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>T = (k + n − 1) × Δt = (5 + 99) × 10 = <b style="color:var(--gold-1)">1040 ns</b></li>
+              <li>TP = 100 / 1040 ≈ 0.096 条/ns</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#3</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">海明码</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>信息位 m = 64，求校验位 k。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>2⁶ = 64 &lt; 64+6+1=71 ✗</li>
+              <li>2⁷ = 128 ≥ 64+7+1=72 ✓</li>
+              <li><b style="color:var(--gold-1)">k = 7</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#4</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">系统可靠性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>3 个 R=0.9 模块串联，R = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>R<sub>串</sub> = R₁ × R₂ × R₃ = 0.9³ = <b style="color:var(--gold-1)">0.729</b></li>
+              <li>对比并联 1 − 0.1³ = 0.999</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#5</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">磁盘存取</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>磁盘 7200 RPM，平均寻道 8 ms，平均旋转等待 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>旋转周期 = 60000 / 7200 ≈ 8.33 ms</li>
+              <li>平均旋转等待 = 8.33 / 2 ≈ <b style="color:var(--gold-1)">4.17 ms</b></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 第二部分 · 操作系统与存储（10 题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#6</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">PV 操作 / 死锁</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>5 个进程共享 3 台同类设备，每个进程最多申请 2 台。系统不会发生死锁的最少设备数 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>不死锁条件：n × (k − 1) + 1 = 5 × (2−1) + 1 = <b style="color:var(--gold-1)">6 台</b></li>
+              <li>推导：n 个进程每个最大 k 资源请求时，不死锁的最小资源数 = n(k−1)+1</li>
+              <li>陷阱：题给 3 台不满足 → 必发生死锁</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#7</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">段页式拆分</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>32 位逻辑地址，段号 8 位、页号 10 位、页内偏移 14 位。每段最多页数 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>每段页数 = 2<sup>页号位</sup> = 2<sup>10</sup> = <b style="color:var(--gold-1)">1024 页</b></li>
+              <li>页大小 = 2<sup>偏移位</sup> = 2<sup>14</sup> = <b>16 KB</b></li>
+              <li>段数 = 2<sup>段号位</sup> = 2<sup>8</sup> = 256 段</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#8</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">inode 容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>inode 含 12 直接 + 1 一级间接 + 1 二级间接。块大小 1 KB，块号 4 B。最大文件长度 ≈ ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>每块指针数 = 1024 / 4 = 256</li>
+              <li>直接 = 12 × 1 KB = 12 KB</li>
+              <li>一级 = 256 × 1 KB = 256 KB</li>
+              <li>二级 = 256 × 256 × 1 KB = <b style="color:var(--gold-1)">64 MB</b></li>
+              <li>总和 ≈ 64 MB（12 KB + 256 KB 可忽略）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#9</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">位示图大小</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>16 GB 磁盘，物理块 4 KB，位示图大小 = ? KB</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>总物理块数 = 16 GB / 4 KB = 4 × 1024 × 1024 = 4 194 304 块</li>
+              <li>位示图位数 = 4 194 304 bit</li>
+              <li>字节 = 4 194 304 / 8 = <b style="color:var(--gold-1)">512 KB</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#10</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">RMS 调度</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>3 个周期任务：τ1(C=1,T=4)、τ2(C=2,T=6)、τ3(C=3,T=10)。用 RMS 充分条件判断可调度？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>U = 1/4 + 2/6 + 3/10 = 0.25 + 0.333 + 0.3 = <b>0.883</b></li>
+              <li>RMS 充分条件：U ≤ n(2<sup>1/n</sup>−1) = 3 × (2<sup>1/3</sup>−1) ≈ 3 × 0.26 = 0.78</li>
+              <li>0.883 &gt; 0.78 → <b style="color:var(--gold-1)">RMS 充分条件不满足（但 EDF 0.883 &lt; 1 可调度）</b></li>
+              <li>陷阱：充分条件非必要，实际可调度需精确分析（仿真/响应时间分析）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#11</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">字号位号</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>位示图共 8000 位，每字 32 位。字号 100、位号 15 对应的物理块号 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>块号 = 字号 × 字长 + 位号 = 100 × 32 + 15 = <b style="color:var(--gold-1)">3215</b></li>
+              <li>注意字位号是否从 0 开始编号</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#12</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">页表容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>32 位逻辑地址，页大小 4 KB，页表项 4 B。进程的页表占用字节数 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>页数 = 2<sup>32</sup> / 4K = 2<sup>32</sup> / 2<sup>12</sup> = 2<sup>20</sup> = 1M 页</li>
+              <li>页表大小 = 1M × 4 B = <b style="color:var(--gold-1)">4 MB</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#13</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">隔离级别</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>哪一隔离级别能避免脏读但不能避免不可重复读？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>RU → RC → RR → SE（单调递增）</li>
+              <li>只有 RC 满足条件 → <b style="color:var(--gold-1)">读已提交（Read Committed）</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#14</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">进程资源图</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>单实例资源，资源分配图存在环路 → ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>单实例：环路 = 死锁（充要）</li>
+              <li>多实例：环路 ≠ 死锁（必要不充分）</li>
+              <li>本题 → <b style="color:var(--gold-1)">存在环路必有死锁</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#15</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">PV 同步</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>生产者-消费者问题中，初始 empty=N、full=0、mutex=1。生产者执行 P(mutex) 后执行的操作是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>标准顺序：<b>P(empty) → P(mutex) → 放入 → V(mutex) → V(full)</b></li>
+              <li>本题中已 P(mutex)，则下一步为<b style="color:var(--gold-1)">放入数据</b></li>
+              <li>陷阱：先 P(mutex) 紧接 P(empty) 会死锁——empty 满时消费者无法 V(empty)</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 第三部分 · 网络与软件工程（12 题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#16</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">子网划分</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>192.168.1.0/26 每子网可用主机数 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>主机位 = 32 − 26 = 6 位</li>
+              <li>可用主机 = 2⁶ − 2 = <b style="color:var(--gold-1)">62 台</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#17</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">IP 转整数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>将 192.168.1.10 转 32 位整数。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>N = 192×2²⁴ + 168×2¹⁶ + 1×2⁸ + 10</li>
+              <li>= 3 221 225 472 + 11 010 048 + 256 + 10 = <b style="color:var(--gold-1)">3 232 235 786</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#18</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">NAT 容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>1 公网 IP + 64511 可用端口 + 每主机 1.2 端口 → 支持内网主机数？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>= 64511 / 1.2 ≈ <b style="color:var(--gold-1)">53 759 台</b></li>
+              <li>N 公网 IP → ×N</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#19</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">DNS 查询</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>www.xyz.com 迭代查询次数？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>迭代：根 → 顶级 → 权威 = <b style="color:var(--gold-1)">3 次</b></li>
+              <li>递归：1 次（本地 DNS 代查）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#20</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">FP 计算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>UFP = 100，TCF = 20，AFP = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>AFP = 100 × (0.65 + 0.01×20) = 100 × 0.85 = <b style="color:var(--gold-1)">85 FP</b></li>
+              <li>注意：常数 0.65 是固定的</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#21</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">COCOMO</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>50 KLOC 有机模式（a=2.4,b=1.05），PM = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>PM = 2.4 × 50<sup>1.05</sup> ≈ 2.4 × 60.8 ≈ <b style="color:var(--gold-1)">146 人月</b></li>
+              <li>TDEV = 2.5 × 146<sup>0.38</sup> ≈ 21 个月</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#22</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">三点估算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>O=8, M=10, P=24，PERT 期望工期 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>E = (O + 4M + P) / 6 = (8 + 40 + 24) / 6 = <b style="color:var(--gold-1)">12 天</b></li>
+              <li>σ = (P − O) / 6 = 16 / 6 ≈ <b>2.67 天</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#23</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">耦合类型</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>模块 A 调用 B 时传入<b>结构体但只用部分字段</b>，是哪种耦合？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>传结构体但只用部分 → <b style="color:var(--gold-1)">标记耦合</b></li>
+              <li>陷阱：传简单数据才是数据耦合</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#24</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">范式判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>R(A,B,C)，A→B，B→C。最高几范式？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>候选码 A（单属性）→ 无部分依赖 → 满足 2NF</li>
+              <li>但 A→B→C 传递依赖 → <b style="color:var(--gold-1)">最高 2NF</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#25</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">McCabe 复杂度</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>程序流图 m = 17 条边、n = 13 个节点，V(G) = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>V(G) = m − n + 2 = 17 − 13 + 2 = <b style="color:var(--gold-1)">6</b></li>
+              <li>或 V(G) = 判定节点数 + 1</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#26</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">信道容量</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>带宽 3 kHz，信噪比 30 dB，求香农极限容量。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>信噪比 = 10<sup>30/10</sup> = 1000</li>
+              <li>C = W × log₂(1 + S/N) = 3000 × log₂(1001) ≈ 3000 × 10 = <b style="color:var(--gold-1)">30 000 bps ≈ 30 kbps</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#27</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">多媒体</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>CD 音质 1 分钟数据量？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>44.1 × 16 × 2 × 60 / 8 = <b style="color:var(--gold-1)">10.584 MB</b>（按 1000 进制）</li>
+              <li>1 小时 ≈ 635 MB</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 第四部分 · 架构与质量（10 题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#28</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">4+1 视图</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>从系统集成人员视角看进程/线程并发 → 哪个视图？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>4+1 = 逻辑 / 开发 / 进程 / 物理 + 场景</li>
+              <li>关注进程/线程/并发 → <b style="color:var(--gold-1)">进程视图</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#29</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">ATAM 4 属性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>ATAM 初设的 4 类质量属性 = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>= <b style="color:var(--gold-1)">性能 / 可测试性 / 安全性 / 可修改性</b></li>
+              <li>注意：可用性不在初设 4 属性中</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#30</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">效用树</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>效用树 (H, L) 含义？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>两维度 = (重要性, 实现难度)</li>
+              <li>(H, L) = <b style="color:var(--gold-1)">业务重要 + 实现容易</b> → 优先实现</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#31</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">ISO 25010</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>不在 ISO 25010 8 大特性中是？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>8 类：功能适合 / 性能 / 兼容 / 易用 / 可靠 / 安全 / 可维护 / 可移植</li>
+              <li><b style="color:var(--gold-1)">可扩展性</b>不在 ISO 25010 中</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#32</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">敏感点</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>"缓存命中率 95% 是性能属性的关键参数"属于哪类点？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>影响<b>单个</b>质量属性的参数 → <b style="color:var(--gold-1)">敏感点</b></li>
+              <li>影响<b>多个</b>属性且矛盾 → 权衡点</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#33</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">CBAM</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>哪个评估方法支持 ROI 成本效益分析？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>SAAM：仅场景评估；ATAM：效用树；<b style="color:var(--gold-1)">CBAM：含 ROI/成本效益</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#34</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">架构风格</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>"客户-服务器"架构主要支持的属性是？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>C/S 关注<b>可用性</b>（多客户端 + 服务器）和<b>性能</b>（负载分担）</li>
+              <li>缺点：服务器单点风险，可用性受限</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#35</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">CAP</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>CAP 理论中分布式系统最多同时满足几项？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>CAP = <b style="color:var(--gold-1)">一致性 / 可用性 / 分区容错</b>，最多同时满足 2 项</li>
+              <li>P 必选（分布式）；实际是 AP 还是 CP 的取舍</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#36</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">微服务</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>微服务架构最主要的优点？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b style="color:var(--gold-1)">可修改性 / 独立部署 / 技术异构</b></li>
+              <li>缺点：分布式复杂度 / 运维成本 / 数据一致性</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">真题集锦·#37</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">EVM 挣值</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>PV=100, EV=90, AC=95。CV / SV = ?</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>CV = EV − AC = 90 − 95 = <b style="color:var(--gold-1)">−5（超支）</b></li>
+              <li>SV = EV − PV = 90 − 100 = <b style="color:var(--gold-1)">−10（落后）</b></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa-foot">来源：综合知识真题回忆版 · 37 题精选，覆盖全部 7 章高频考点</div>
+
 </article>
 
-      
 
     <article class="card-detail" data-id="c34" data-section="appx">
 
-      <div class="card-title">案例分析计算题</div>
-      <div class="card-sub">5-8 分钟 / 题</div>
+      <div class="card-title">案例分析计算题 · 历年真题集锦</div>
+      <div class="card-sub">20 大经典变形 · 5-8 分钟 / 题</div>
       <div class="timer-wrap">
         <div class="timer-clock" id="c34-clock">06:00</div>
         <div style="flex:1">
           <div class="timer-bar"><div class="timer-bar-fill" id="c34-fill" style="width:100%"></div></div>
           <div style="margin-top:6px;color:var(--ivory-3);font-size:0.82rem;font-family:var(--font-cn)" id="c34-hint">案例每题 25 分，建议 8-12 分钟。计算过程必写公式与数值单位。</div>
         </div>
-        <button class="timer-btn" id="c34-btn" onclick="c34Toggle()">▶ 开始</button>
+        <button class="timer-btn" id="c34-btn">▶ 开始</button>
       </div>
       <div class="cl-checklist" id="c34-list">
         <div class="cl-item" onclick="clToggle(this)"><div class="check"></div>① 识别题型（CPM / EVM / 范式 / 评估）</div>
@@ -7899,100 +9543,812 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="cl-item" onclick="clToggle(this)"><div class="check"></div>⑤ 技术名词 + 改进建议（务必多写）</div>
       </div>
       <div class="cl-progress">完成度：<span id="c34-pct">0</span> / 5 步
-        <div class="cl-progress-bar"><div class="cl-progress-fill" id="c34-fill-bar" style="width:0%"></div></div>
+        <div class="cl-progress-bar"><div class="cl-progress-fill" id="cl-progress-fill" style="width:0%"></div></div>
       </div>
-    
-</article>
 
-      
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 案例 T1 · 架构评估（5 大经典题）</div>
 
-    <article class="card-detail" data-id="c35" data-section="appx">
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 1</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">ATAM 完整流程</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某电商系统采用 ATAM 评估，请说明 ATAM 4 阶段与每阶段核心目标，并描述如何在第 3 阶段构建效用树。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>① 场景与需求收集</b>（Presentation）：摸清业务诉求，列质量场景（如"下单 P99 &lt; 200ms"）</li>
+              <li><b>② 架构视图与场景分析</b>（Architect's Presentation）：用 4+1 视图描述架构，映射到场景</li>
+              <li><b>③ 效用树构建</b>（Analysis）：把场景挂到效用树上，标 (重要性, 实现难度) 两维度</li>
+              <li><b>④ 决策/风险/权衡/敏感点识别</b>（Reporting）：识别 4 类点 + 生成报告</li>
+              <li>效用树构建 = 根(质量属性) → 中间分类 → 叶子(场景 + 优先级 H/M/L)</li>
+            </ol>
+          </div>
+        </div>
 
-      <div class="card-title">关键提醒</div>
-      <div class="card-sub">Cross-cutting Concerns</div>
-      <div class="score-pie-wrap">
-        <svg viewBox="0 0 200 200" id="c35-pie" role="img" aria-label="案例评分分布饼图">
-          <g transform="translate(100,100)">
-            <circle r="80" fill="var(--ink-2)" stroke="var(--ink-4)" stroke-width="1"/>
-          </g>
-          <text x="100" y="96" text-anchor="middle" fill="var(--gold-2)" font-family="Cinzel" font-size="13" font-weight="700">案例评分</text>
-          <text x="100" y="115" text-anchor="middle" fill="var(--gold-1)" font-family="var(--font-mono)" font-size="22" font-weight="700">100</text>
-          <text x="100" y="132" text-anchor="middle" fill="var(--ivory-3)" font-family="var(--font-cn)" font-size="10">满分</text>
-        </svg>
-        <div class="score-legend">
-          <div class="row"><span class="sw" style="background:var(--gold-2)"></span>公式 + 技术名词　<b style="color:var(--gold-1)">40%</b></div>
-          <div class="row"><span class="sw" style="background:var(--azure)"></span>量化结论　<b style="color:var(--azure)">30%</b></div>
-          <div class="row"><span class="sw" style="background:var(--violet)"></span>权衡 + 理由　<b style="color:var(--violet)">20%</b></div>
-          <div class="row"><span class="sw" style="background:var(--emerald)"></span>有条理表达　<b style="color:var(--emerald)">10%</b></div>
-          <div style="margin-top:10px;padding:8px 10px;background:var(--ink-2);border-left:3px solid var(--crimson);border-radius:3px;font-size:0.84rem">
-            ⚠ <b style="color:var(--crimson)">只写名词不给数值 ≈ 0 分</b>；公式必须配数值单位才得分。
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 2</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">识别风险点</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某架构采用单点 MySQL 主库。请识别风险点并给出 3 条改进建议（每条用"决策+风险+建议"模板）。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>风险点 1</b>：单点 MySQL 主库 → 主库宕机导致全站不可用 → 建议采用 MHA / 主从热备 + 自动故障转移</li>
+              <li><b>风险点 2</b>：单库写压力大 → 写并发瓶颈 → 建议分库分表或读写分离 + 中间件（MyCAT/ShardingSphere）</li>
+              <li><b>风险点 3</b>：单机房部署 → 机房断电/火灾全停 → 建议同城双活 + 异地灾备 + DNS 切流</li>
+              <li>每条必须<b>决策 + 风险 + 建议</b>三件套，缺一不可</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 3</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">效用树 + 优先级</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>为某电商构建效用树，要求：(1) 至少 3 个一级质量属性；(2) 每属性下 ≥2 个具体场景；(3) 每个场景标 (重要性, 难度) 优先级。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>性能</b> (H)：下单 P99 &lt; 200ms (H,H)、列表查询 &lt; 500ms (M,L)</li>
+              <li><b>可用性</b> (H)：全年宕机 &lt; 52min (H,M)、主库故障 RTO &lt; 30s (H,H)</li>
+              <li><b>安全性</b> (H)：用户密码 bcrypt+salt (H,L)、支付链路 TLS1.3 (H,M)</li>
+              <li><b>可修改性</b> (M)：新增营销活动 2 周上线 (M,H)、A/B 测试无缝切换 (L,M)</li>
+              <li>(H,L) 优先；(H,H) 必攻克；(L,×) 可暂缓</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 4</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">ISO 25010 归属</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某系统描述：(a) 大促需支撑 50 万 QPS；(b) MySQL 主库宕机自动切换；(c) 用户密码 bcrypt+salt；(d) 模块化支持业务快速迭代。分别归属 ISO 25010 哪个一级/子特性？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>(a) 50 万 QPS → <b style="color:var(--gold-1)">性能效率 → 容量</b></li>
+              <li>(b) 自动切换 → <b style="color:var(--gold-1)">可靠性 → 容错性</b></li>
+              <li>(c) bcrypt+salt → <b style="color:var(--gold-1)">安全性 → 机密性</b></li>
+              <li>(d) 模块化 → <b style="color:var(--gold-1)">可维护性 → 模块化</b></li>
+              <li>答题模板：现象 → {一级特性} → {子特性} + 策略</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 5</span>
+            <span class="exam-qa-pts">案例 T1</span>
+            <span class="exam-qa-tag">权衡点分析</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>请举例说明 3 个权衡点，每个用"A↑则 B↓"格式描述。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>缓存</b>：性能↑（响应时间↓）vs 一致性↓（数据可能短暂不一致）</li>
+              <li><b>加密</b>：安全性↑（破解难度↑）vs 性能↓（加解密耗时）</li>
+              <li><b>冗余</b>：可用性↑（多副本）vs 成本↑（硬件 + 同步开销）</li>
+              <li>特征：影响<b>多个属性</b> + 互相<b>矛盾</b></li>
+            </ol>
           </div>
         </div>
       </div>
-      <ul class="steps" style="counter-reset:none;list-style:disc;padding-left:24px">
-        <li>必写<b>公式</b>和<b>技术名词</b>（评分 40%）</li>
-        <li>必给<b>量化结论</b>（评分 30%）</li>
-        <li>必给<b>权衡 / 理由</b>（评分 20%）</li>
-        <li>表达<b>有条理</b>（评分 10%）</li>
-      </ul>
-    
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 案例 T2 · 软件工程与项目管理（5 大经典题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 6</span>
+            <span class="exam-qa-pts">案例 T2</span>
+            <span class="exam-qa-tag">COCOMO + 三点估算</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某航空嵌入式系统规模 30 KLOC（OC = 32, MC = 28, PC = 56）。求：① COCOMO 嵌入式 (a=3.6,b=1.20) 工作量 PM；② 三点估算期望工期 E 与标准差 σ；③ TDEV 与推荐人力 N。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>PM</b> = 3.6 × 30<sup>1.20</sup> ≈ 3.6 × 59.2 ≈ <b style="color:var(--gold-1)">213 人月</b></li>
+              <li><b>E</b> = (O + 4M + P) / 6 = (32 + 112 + 56) / 6 = <b style="color:var(--gold-1)">33.3 周</b></li>
+              <li><b>σ</b> = (P − O) / 6 = 24 / 6 = <b>4 周</b></li>
+              <li><b>TDEV</b> = 2.5 × PM<sup>0.38</sup> = 2.5 × 213<sup>0.38</sup> ≈ 2.5 × 9.3 ≈ <b style="color:var(--gold-1)">23 个月</b></li>
+              <li><b>N</b> = PM / TDEV = 213 / 23 ≈ <b style="color:var(--gold-1)">9 人</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 7</span>
+            <span class="exam-qa-pts">案例 T2</span>
+            <span class="exam-qa-tag">CPM 关键路径</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>项目网络图：A(3)→B(4)→D(5)；A(3)→C(6)→D(5)；C(6)→E(2)。求关键路径与总工期。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>路径 1: A → B → D = 3 + 4 + 5 = 12 周</li>
+              <li>路径 2: A → C → D = 3 + 6 + 5 = <b style="color:var(--gold-1)">14 周</b></li>
+              <li>路径 3: A → C → E = 3 + 6 + 2 = 11 周</li>
+              <li>关键路径 = <b style="color:var(--gold-1)">A → C → D = 14 周</b>（最长路径决定总工期）</li>
+              <li>陷阱：C 和 D 在关键路径上 → 缩短 C 或 D 可压缩工期</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 8</span>
+            <span class="exam-qa-pts">案例 T2</span>
+            <span class="exam-qa-tag">EVM 挣值分析</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>项目预算 BAC = 100 万，3 个月后：PV=60 万, EV=55 万, AC=65 万。判断进度/成本状态并预测 EAC。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>CV = EV − AC = 55 − 65 = <b style="color:var(--gold-1)">−10 万（成本超支）</b></li>
+              <li>SV = EV − PV = 55 − 60 = <b style="color:var(--gold-1)">−5 万（进度落后）</b></li>
+              <li>CPI = EV / AC = 55/65 ≈ 0.85（每花 1 元只完成 0.85 元工作）</li>
+              <li>SPI = EV / PV = 55/60 ≈ 0.92</li>
+              <li>EAC = BAC / CPI = 100 / 0.85 ≈ <b style="color:var(--gold-1)">117.6 万</b>（按当前效率完成需 117.6 万）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 9</span>
+            <span class="exam-qa-pts">案例 T2</span>
+            <span class="exam-qa-tag">FP → COCOMO</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>UFP=120，TCF=25。① 求 AFP；② 假设 1 FP ≈ 50 LOC，求代码规模 KLOC；③ COCOMO 有机 (a=2.4, b=1.05) 估算 PM。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>① AFP = 120 × (0.65 + 0.01×25) = 120 × 0.9 = <b style="color:var(--gold-1)">108 FP</b></li>
+              <li>② KLOC = 108 × 50 / 1000 = <b>5.4 KLOC</b></li>
+              <li>③ PM = 2.4 × 5.4<sup>1.05</sup> ≈ 2.4 × 5.7 ≈ <b style="color:var(--gold-1)">13.7 人月</b></li>
+              <li>关联：TDEV = 2.5 × 13.7<sup>0.38</sup> ≈ 6 个月；人力 ≈ 2.3 人</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 10</span>
+            <span class="exam-qa-pts">案例 T2</span>
+            <span class="exam-qa-tag">风险应对</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目关键开发人员可能离职。PMI 风险应对策略中，分别适用哪种？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>负面风险</b>（威胁）：规避（消除）/ 转移（外包+保险）/ 减轻（降低概率或影响）/ 接受（应急储备）</li>
+              <li><b>正面风险</b>（机会）：开拓（确保发生）/ 分享（多方共担）/ 提高（增加概率）/ 接受（获利储备）</li>
+              <li>关键人员离职应对：<b>知识共享 + 备份人员 + 股权激励（减轻）</b>，或<b>购买关键人险（转移）</b></li>
+              <li>陷阱：常把负面风险策略误用于正面风险（如机会做"规避"）</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 案例 T3 · 数据库与缓存（5 大经典题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 11</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">范式分解</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关系 R(A,B,C,D,E)，候选码 A，FD = {A→BC, B→D, D→E}。判断属于几范式，并分解为 3NF。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>候选码 A 单属性 → 无部分依赖 → <b>2NF</b></li>
+              <li>A→B→D→E 传递依赖 → 违反 3NF → <b style="color:var(--gold-1)">最高 2NF</b></li>
+              <li>分解：R1(A,B,C) + R2(B,D) + R3(D,E)</li>
+              <li>各关系候选码：A、B、D；均无传递依赖 → 全部 3NF</li>
+              <li>陷阱：保持依赖 vs 无损连接需同时保证</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 12</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">候选码求解</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>R(A,B,C,D,E)，F = {A→BC, CD→E, B→D, E→A}。求所有候选码。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>L 类属性（只在 FD 左边）：C → 必在候选码中</li>
+              <li>候选码必含 C；尝试最小组合 CE：CE⁺ = {A,B,C,D,E}（E→A→BC，B→D）✓</li>
+              <li>另两个最小候选码：BC⁺ = ABCDE（B→D→E→A，CD→E）✓；BE⁺ = ABCDE（E→A→BC，B→D）✓</li>
+              <li>候选码 = <b style="color:var(--gold-1)">{CE, BC, BE}</b>（3 个，都是最小）</li>
+              <li>陷阱：候选码不唯一，需枚举所有最小闭包；ACE/ACDE 是<b>超码</b>非最小</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 13</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">分库分表</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>订单表日增 1000 万行，3 年后预计 100 亿行。请设计分库分表策略，并说明查询/扩容方案。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>分片维度</b>：按 user_id 哈希分 64 库 × 64 表 = <b style="color:var(--gold-1)">4096 表</b></li>
+              <li><b>分片算法</b>：hash(user_id) % 64 → 库；hash(user_id) % 4096 → 表</li>
+              <li><b>查询</b>：带 user_id 直接定位；不带 user_id 用 ES 二级索引或冗余表</li>
+              <li><b>扩容</b>：一致性 hash 或双倍扩容（先从 64→128 库，再迁移数据）</li>
+              <li>陷阱：分片键选择决定 80% 性能；避免热点（按时间分易热点）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 14</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">缓存设计</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某商品详情页 QPS=5万，请求参数：商品 ID。设计 Redis 缓存方案，回答：① Key 设计；② 过期策略；③ 一致性方案；④ 缓存击穿/雪崩/穿透。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>Key 设计</b>：item:{item_id}，value 用 JSON 或 hash 结构</li>
+              <li><b>过期策略</b>：TTL = 30min + 随机 1-5min（防雪崩）</li>
+              <li><b>一致性</b>：Cache-Aside（读时按需加载，更新 DB 后删缓存）+ 延迟双删（删缓存 → 更新 DB → 500ms 后再删）</li>
+              <li><b>击穿</b>（热点 key 失效）：分布式锁 + singleflight（合并请求）</li>
+              <li><b>雪崩</b>（大批 key 同时失效）：过期时间加随机 + 多级缓存</li>
+              <li><b>穿透</b>（查询不存在）：布隆过滤器 + 空值缓存</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 15</span>
+            <span class="exam-qa-pts">案例 T3</span>
+            <span class="exam-qa-tag">分布式事务</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>电商下单需同时：扣库存 + 扣款 + 生成订单。如何保证分布式事务一致性？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>方案 1：TCC</b>（Try-Confirm-Cancel）：3 阶段，业务侵入大但强一致</li>
+              <li><b>方案 2：本地消息表</b>：下单写本地表 + 发消息，消费者重试保证最终一致</li>
+              <li><b>方案 3：可靠消息</b>（RocketMQ 事务消息）：半消息 + 反查</li>
+              <li><b>方案 4：Saga</b>：长事务拆 N 子事务 + 补偿</li>
+              <li>取舍：强一致 → TCC / Seata；性能优先 → 可靠消息 / Saga</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 案例 T4 · 架构设计与性能（5 大经典题）</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 16</span>
+            <span class="exam-qa-pts">案例 T4</span>
+            <span class="exam-qa-tag">PV → QPS → 机器数</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>电商日活 200 万、每人每天 8 次、峰值 12 倍、单机 QPS 1000、页面 300 KB。求：PV、平均 QPS、峰值 QPS、机器数、单机带宽、每日存储。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>PV</b> = 200 万 × 8 = <b style="color:var(--gold-1)">1600 万 / 天</b></li>
+              <li><b>平均 QPS</b> = 16 000 000 / 86 400 ≈ <b style="color:var(--gold-1)">185 QPS</b></li>
+              <li><b>峰值 QPS</b> = 185 × 12 = <b style="color:var(--gold-1)">2222 QPS</b></li>
+              <li><b>机器数</b> = ceil(2222 / 1000) = <b style="color:var(--gold-1)">3 台</b>（读多写少）；写多 → ×2 = 6 台</li>
+              <li><b>单机带宽</b> = 300 KB × 1000 × 8 = <b style="color:var(--gold-1)">2.4 Gbps</b></li>
+              <li><b>每日存储</b> = 16 000 000 × 300 KB / 1024² ≈ <b style="color:var(--gold-1)">4 577 GB ≈ 4.5 TB / 天</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 17</span>
+            <span class="exam-qa-pts">案例 T4</span>
+            <span class="exam-qa-tag">秒杀架构</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>秒杀 1000 件商品，预计 50 万用户同时抢购。请设计架构并说明关键技术。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>前端</b>：按钮防抖 + 验证码 + 排队页（削峰）</li>
+              <li><b>接入层</b>：CDN 静态化 + Nginx 限流（令牌桶 / 漏桶）</li>
+              <li><b>应用层</b>：Redis 预扣库存（DECR 原子操作）+ 异步下单（MQ 削峰）</li>
+              <li><b>数据层</b>：库存预热到 Redis + 异步落 DB + 最终一致性补偿</li>
+              <li><b>防超卖</b>：Lua 脚本原子操作库存；DB 唯一索引兜底</li>
+              <li>关键技术：限流 + 削峰 + 异步 + 缓存 + 最终一致</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 18</span>
+            <span class="exam-qa-pts">案例 T4</span>
+            <span class="exam-qa-tag">读写分离</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>业务峰值读 QPS=50 000、写 QPS=500、Redis 单机 QPS 50 000、MySQL 单机 QPS 1 500。设计读写分离方案。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>Redis</b> = ceil(50 000 / 50 000) = 1 台（集群一般 3 副本起步）</li>
+              <li><b>MySQL 主库</b> = ceil(500 / 1 500) = 1 台</li>
+              <li><b>MySQL 从库</b>：承担读 QPS = 50 000 − 500 = 49 500 ≈ 50 000</li>
+              <li>从库数 = ceil(50 000 / 1 500) ≈ <b style="color:var(--gold-1)">34 台</b></li>
+              <li>实际方案：1 主 + 17 从（双倍冗余）≈ <b style="color:var(--gold-1)">18 台从库</b></li>
+              <li>主从延迟：读写分离只能容忍秒级延迟，强一致走主库</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 19</span>
+            <span class="exam-qa-pts">案例 T4</span>
+            <span class="exam-qa-tag">微服务拆分</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>单体电商系统耦合严重，请按业务能力拆分微服务，并说明拆分原则 + 数据一致性方案。</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>拆分维度</b>：业务能力（用户/商品/订单/支付/库存/营销）</li>
+              <li><b>拆分原则</b>：单一职责 + 高内聚低耦合 + 数据独立 + 团队对齐（康威定律）</li>
+              <li><b>服务粒度</b>：3 人组可维护（两个披萨原则）</li>
+              <li><b>数据一致性</b>：避免分布式事务 → Saga / 可靠消息 / TCC</li>
+              <li><b>调用方式</b>：同步 REST/gRPC；异步 MQ（Kafka/RocketMQ）</li>
+              <li><b>基础设施</b>：服务注册（Eureka/Nacos）、配置中心、网关（Spring Cloud Gateway/Kong）、链路追踪（SkyWalking）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">经典·变形 20</span>
+            <span class="exam-qa-pts">案例 T4</span>
+            <span class="exam-qa-tag">架构对比</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>对比单体架构 vs 微服务架构 vs Serverless，各适用什么场景？</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>单体</b>：小型项目、团队 ≤ 10 人、迭代少、追求简单；缺点：耦合、改动影响大</li>
+              <li><b>微服务</b>：大型复杂系统、多团队并行、需要弹性伸缩、独立技术栈；缺点：复杂度↑、运维成本↑、分布式事务</li>
+              <li><b>Serverless</b>：事件驱动、流量波动大（如定时任务、文件处理）、按调用付费；缺点：冷启动、厂商锁定、调试难</li>
+              <li>选择铁律：先单体后微服务；不要一上来就微服务化（"分布式单体"是反模式）</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="exam-qa-foot">来源：案例分析真题回忆版 · 20 题精选，覆盖 T1 评估 / T2 管理 / T3 数据库 / T4 架构</div>
+
 </article>
 
       
 
-    <article class="card-detail" data-id="c36" data-section="appx">
 
-      <div class="card-title">风险应对策略（PMI）</div>
-      <div class="card-sub">Risk Response (Concept)</div>
-      <div class="risk-matrix">
-        <div class="rm-corner"></div>
-        <div class="rm-col-head" style="color:var(--crimson)">⚠ 负面风险（威胁）</div>
-        <div class="rm-col-head" style="color:var(--emerald)">✨ 正面风险（机会）</div>
+      
 
-        <div class="rm-row-head">策略 ①</div>
-        <div class="rm-cell neg" onclick="rmDetail('规避','threat')">
-          <div class="name neg">规避 Avoid</div>
-          <div class="desc">消除威胁源 / 改方案 / 移除条件</div>
-        </div>
-        <div class="rm-cell pos" onclick="rmDetail('开拓','opportunity')">
-          <div class="name pos">开拓 Exploit</div>
-          <div class="desc">确保机会发生 / 主动追加资源</div>
-        </div>
 
-        <div class="rm-row-head">策略 ②</div>
-        <div class="rm-cell neg" onclick="rmDetail('转移','threat')">
-          <div class="name neg">转移 Transfer</div>
-          <div class="desc">外包 / 保险 / 担保（付费让第三方承担）</div>
-        </div>
-        <div class="rm-cell pos" onclick="rmDetail('分享','opportunity')">
-          <div class="name pos">分享 Share</div>
-          <div class="desc">合伙 / 风险共担（多方共享利益）</div>
-        </div>
 
-        <div class="rm-row-head">策略 ③</div>
-        <div class="rm-cell neg" onclick="rmDetail('减轻','threat')">
-          <div class="name neg">减轻 Mitigate</div>
-          <div class="desc">降低概率或影响（最常用）</div>
-        </div>
-        <div class="rm-cell pos" onclick="rmDetail('提高','opportunity')">
-          <div class="name pos">提高 Enhance</div>
-          <div class="desc">提高机会发生概率或收益</div>
-        </div>
+    <article class="card-detail tier-n" data-id="c38" data-section="appx">
 
-        <div class="rm-row-head">策略 ④</div>
-        <div class="rm-cell neg" onclick="rmDetail('接受','threat')">
-          <div class="name neg">接受 Accept</div>
-          <div class="desc">被动接受 / 应急储备</div>
-        </div>
-        <div class="rm-cell pos" onclick="rmDetail('接受','opportunity')">
-          <div class="name pos">接受 Accept</div>
-          <div class="desc">主动愿意 / 不追机会</div>
+      <span class="tier-label">🚀 速成</span>
+      <div class="card-title">📖 英语阅读 5 题 · 套路速成（71-75）</div>
+      <div class="card-sub">5 分钟过门 · 不需要英语基础，只需要套路</div>
+
+      <!-- ========== Hero ROI Banner ========== -->
+      <div style="margin-top:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(232,195,132,.18),rgba(232,195,132,.04));border:1px solid var(--gold-2);border-radius:var(--radius-md);position:relative;overflow:hidden">
+        <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(232,195,132,.25),transparent 70%)"></div>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="font-size:1.6rem;font-weight:700;color:var(--gold-1);font-family:var(--font-display);letter-spacing:.06em">ROI 之王</div>
+          <div style="flex:1;min-width:240px;color:var(--ivory-1);font-family:var(--font-cn);line-height:1.7">
+            <b style="color:var(--emerald)">5 题 = 5 分</b>，15 分钟搞定；不需要英语基础，
+            <b style="color:var(--gold-1)">背完套路 + 蒙猜绝技 = 稳拿 3-4 分</b>。
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="padding:4px 10px;background:var(--ink-3);border:1px solid var(--emerald);border-radius:14px;font-size:.74rem;color:var(--emerald);font-family:var(--font-mono)">✓ 题型固定</span>
+            <span style="padding:4px 10px;background:var(--ink-3);border:1px solid var(--azure);border-radius:14px;font-size:.74rem;color:var(--azure);font-family:var(--font-mono)">✓ 答案可推</span>
+            <span style="padding:4px 10px;background:var(--ink-3);border:1px solid var(--gold-2);border-radius:14px;font-size:.74rem;color:var(--gold-2);font-family:var(--font-mono)">✓ 不靠词汇</span>
+          </div>
         </div>
       </div>
-      <div class="rm-detail" id="rm-detail"><b>点击上方任一单元格</b>查看典型场景与答题模板。</div>
-      <div class="tip"><b>口诀</b>：负面 — "规转减接"；正面 — "开分提接"。</div>
-    
-</article>
+
+      <!-- ========== ① 题型与位置 ========== -->
+      <span class="formula-label">① 题型与位置速查表（71-75 必背）</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.86rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:8px 10px;width:10%">题号</th>
+              <th style="text-align:left;padding:8px 10px;width:18%">题型</th>
+              <th style="text-align:left;padding:8px 10px;width:32%">标志关键词</th>
+              <th style="text-align:left;padding:8px 10px">核心动作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">71</td>
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">主旨题</td>
+              <td style="padding:8px 10px;color:var(--ivory-1)">main idea / best title / mainly about</td>
+              <td style="padding:8px 10px;color:var(--ivory-2)">找<b style="color:var(--gold-1)">最全面、最抽象</b>的选项</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">72</td>
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">细节题</td>
+              <td style="padding:8px 10px;color:var(--ivory-1)">According to the passage, ... is TRUE</td>
+              <td style="padding:8px 10px;color:var(--ivory-2)">回原文<b style="color:var(--gold-1)">逐字比对</b>（同义替换）</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">73</td>
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">词义题</td>
+              <td style="padding:8px 10px;color:var(--ivory-1)">The word "xxx" most probably means</td>
+              <td style="padding:8px 10px;color:var(--ivory-2)"><b style="color:var(--gold-1)">前后句即答案</b> + 词根分析</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">74</td>
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">推断题</td>
+              <td style="padding:8px 10px;color:var(--ivory-1)">What can we infer from the passage?</td>
+              <td style="padding:8px 10px;color:var(--ivory-2)"><b style="color:var(--gold-1)">能推出但不能太绝对</b></td>
+            </tr>
+            <tr>
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">75</td>
+              <td style="padding:8px 10px;color:var(--gold-1);font-weight:700">目的题</td>
+              <td style="padding:8px 10px;color:var(--ivory-1)">The author mentions X to ___</td>
+              <td style="padding:8px 10px;color:var(--ivory-2)">找<b style="color:var(--gold-1)">illustrate/explain/show/demonstrate</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip"><b>固定套路口诀</b>：<b style="color:var(--gold-1)">71 主旨、72 细节、73 词汇、74 推断、75 目的</b>。题号 ↔ 题型一一对应，永远不变。</div>
+
+      <!-- ========== ② 反着做题 ========== -->
+      <span class="formula-label">② 5 题通用做题顺序（反着做！）</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:8px 0 12px">
+        <div style="padding:10px 12px;background:var(--ink-2);border:1px solid var(--emerald);border-radius:var(--radius-sm);position:relative">
+          <div style="position:absolute;top:-8px;left:10px;padding:1px 8px;background:var(--emerald);color:var(--ink-0);font-family:var(--font-mono);font-size:.7rem;font-weight:700;border-radius:2px">STEP 1</div>
+          <div style="margin-top:6px;color:var(--ivory-1);font-family:var(--font-cn)"><b style="color:var(--emerald)">先看选项</b> → 划关键词</div>
+          <div style="margin-top:4px;color:var(--ivory-3);font-size:.78rem">不要先读文章！先看选项知道考什么</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--ink-2);border:1px solid var(--azure);border-radius:var(--radius-sm);position:relative">
+          <div style="position:absolute;top:-8px;left:10px;padding:1px 8px;background:var(--azure);color:var(--ink-0);font-family:var(--font-mono);font-size:.7rem;font-weight:700;border-radius:2px">STEP 2</div>
+          <div style="margin-top:6px;color:var(--ivory-1);font-family:var(--font-cn)"><b style="color:var(--azure)">通读首尾段 + 各段首句</b></div>
+          <div style="margin-top:4px;color:var(--ivory-3);font-size:.78rem">3 分钟搞定，<b style="color:var(--gold-1)">不要逐字读全文</b></div>
+        </div>
+        <div style="padding:10px 12px;background:var(--ink-2);border:1px solid var(--gold-2);border-radius:var(--radius-sm);position:relative">
+          <div style="position:absolute;top:-8px;left:10px;padding:1px 8px;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-size:.7rem;font-weight:700;border-radius:2px">STEP 3</div>
+          <div style="margin-top:6px;color:var(--ivory-1);font-family:var(--font-cn)"><b style="color:var(--gold-1)">定位原文</b> → 找对应句</div>
+          <div style="margin-top:4px;color:var(--ivory-3);font-size:.78rem">用关键词跳读，跳过不相关的段落</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--ink-2);border:1px solid var(--violet);border-radius:var(--radius-sm);position:relative">
+          <div style="position:absolute;top:-8px;left:10px;padding:1px 8px;background:var(--violet);color:var(--ink-0);font-family:var(--font-mono);font-size:.7rem;font-weight:700;border-radius:2px">STEP 4</div>
+          <div style="margin-top:6px;color:var(--ivory-1);font-family:var(--font-cn)"><b style="color:var(--violet)">同义替换比对</b></div>
+          <div style="margin-top:4px;color:var(--ivory-3);font-size:.78rem">选项 ≠ 原文原字，是同义改写</div>
+        </div>
+        <div style="padding:10px 12px;background:var(--ink-2);border:1px solid var(--crimson);border-radius:var(--radius-sm);position:relative">
+          <div style="position:absolute;top:-8px;left:10px;padding:1px 8px;background:var(--crimson);color:var(--ink-0);font-family:var(--font-mono);font-size:.7rem;font-weight:700;border-radius:2px">STEP 5</div>
+          <div style="margin-top:6px;color:var(--ivory-1);font-family:var(--font-cn)"><b style="color:var(--crimson)">排除极端词</b> → 选最优</div>
+          <div style="margin-top:4px;color:var(--ivory-3);font-size:.78rem">always/never/must/only/完全 → 错</div>
+        </div>
+      </div>
+      <div class="trap"><b>❌ 错误做法</b>：先读文章 → 读完忘了 → 看选项 → 重新读（耗时 25+ 分钟，正确率还低）。</div>
+
+      <!-- ========== ③ 5 大题型答案特征 ========== -->
+      <span class="formula-label">③ 5 大题型「答案特征 + 干扰项特征」对照表</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.84rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:7px 10px;width:14%">题型</th>
+              <th style="text-align:left;padding:7px 10px;width:36%">✅ 答案特征</th>
+              <th style="text-align:left;padding:7px 10px">❌ 干扰项特征</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">71 主旨题</td>
+              <td style="padding:7px 10px;color:var(--emerald)">最全面 + 最抽象 + 覆盖全文</td>
+              <td style="padding:7px 10px;color:var(--crimson)">细节 / 具体 / 数字 / 极端词 / 跑题</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">72 细节题</td>
+              <td style="padding:7px 10px;color:var(--emerald)">原文中能找到对应句（同义替换）</td>
+              <td style="padding:7px 10px;color:var(--crimson)">反义词 / 时态错 / 数量错 / 原文无</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">73 词义题</td>
+              <td style="padding:7px 10px;color:var(--emerald)">前后句线索 + 符合主题 + 褒义</td>
+              <td style="padding:7px 10px;color:var(--crimson)">无关词义 / 混淆不同概念</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">74 推断题</td>
+              <td style="padding:7px 10px;color:var(--emerald)">能推出 + 不太绝对 + 合理延伸</td>
+              <td style="padding:7px 10px;color:var(--crimson)">always/never/must/完全 / 过度推断</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">75 目的题</td>
+              <td style="padding:7px 10px;color:var(--emerald)">illustrate/explain/show/demonstrate/argue</td>
+              <td style="padding:7px 10px;color:var(--crimson)">describe/list/mention（假目的词）+ only/all</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========== ④ 3 大蒙猜绝技 ========== -->
+      <span class="formula-label">④ 3 大蒙猜绝技（不会也能拿分！）</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:8px 0 12px">
+        <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(108,196,154,.12),rgba(108,196,154,.02));border:1px solid var(--emerald);border-radius:var(--radius-sm)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--emerald);color:var(--ink-0);border-radius:50%;font-family:var(--font-mono);font-weight:700;font-size:.85rem">1</span>
+            <span style="color:var(--emerald);font-weight:700;font-family:var(--font-cn)">同义替换法</span>
+          </div>
+          <div style="color:var(--ivory-2);font-family:var(--font-cn);font-size:.86rem;line-height:1.6">
+            选项和原文<b style="color:var(--emerald)">同义但不同字</b>。例：原文 "improve performance" ↔ 选项 "enhance efficiency"。
+          </div>
+        </div>
+        <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(200,85,61,.12),rgba(200,85,61,.02));border:1px solid var(--crimson);border-radius:var(--radius-sm)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--crimson);color:var(--ink-0);border-radius:50%;font-family:var(--font-mono);font-weight:700;font-size:.85rem">2</span>
+            <span style="color:var(--crimson);font-weight:700;font-family:var(--font-cn)">排除极端词</span>
+          </div>
+          <div style="color:var(--ivory-2);font-family:var(--font-cn);font-size:.86rem;line-height:1.6">
+            含 <b style="color:var(--crimson)">always / never / must / 完全 / 100%</b> 的选项几乎一定是错的。
+          </div>
+        </div>
+        <div style="padding:12px 14px;background:linear-gradient(135deg,rgba(232,195,132,.12),rgba(232,195,132,.02));border:1px solid var(--gold-2);border-radius:var(--radius-sm)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--gold-2);color:var(--ink-0);border-radius:50%;font-family:var(--font-mono);font-weight:700;font-size:.85rem">3</span>
+            <span style="color:var(--gold-1);font-weight:700;font-family:var(--font-cn)">主旨一致法</span>
+          </div>
+          <div style="color:var(--ivory-2);font-family:var(--font-cn);font-size:.86rem;line-height:1.6">
+            4 个选项里<b style="color:var(--gold-1)">和主旨一致的对，矛盾的错</b>。主旨 = 全文反复出现的关键词。
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== ⑤ 时间分配 ========== -->
+      <span class="formula-label">⑤ 时间分配（15 分钟 = 5 题通关）</span>
+      <div class="formula" style="padding:14px 16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+          <div style="text-align:center;padding:10px;background:var(--ink-2);border-radius:var(--radius-sm)">
+            <div style="font-family:var(--font-display);font-size:1.6rem;color:var(--gold-1);font-weight:700">15<span style="font-size:.9rem">min</span></div>
+            <div style="color:var(--ivory-2);font-family:var(--font-cn);font-size:.82rem;margin-top:2px">5 题总计（平均 3 分钟/题）</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:var(--ink-2);border-radius:var(--radius-sm)">
+            <div style="font-family:var(--font-display);font-size:1.6rem;color:var(--azure);font-weight:700">3<span style="font-size:.9rem">min</span></div>
+            <div style="color:var(--ivory-2);font-family:var(--font-cn);font-size:.82rem;margin-top:2px">通读（首尾段 + 各段首句）</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:var(--ink-2);border-radius:var(--radius-sm)">
+            <div style="font-family:var(--font-display);font-size:1.6rem;color:var(--emerald);font-weight:700">2-3<span style="font-size:.9rem">min</span></div>
+            <div style="color:var(--ivory-2);font-family:var(--font-cn);font-size:.82rem;margin-top:2px">做题（每题）</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip"><b>关键策略</b>：通读时<b style="color:var(--gold-1)">只读首尾段 + 各段首句</b>（3 分钟），<b style="color:var(--crimson)">不要逐字读全文</b>。细节题再用关键词跳读定位。</div>
+
+      <!-- ========== ⑥ 高频段结构 ========== -->
+      <span class="formula-label">⑥ 高频段结构（必背段落功能）</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.86rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:7px 10px;width:25%">段落</th>
+              <th style="text-align:left;padding:7px 10px;width:25%">功能</th>
+              <th style="text-align:left;padding:7px 10px">重点读什么</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">Paragraph 1（首段）</td>
+              <td style="padding:7px 10px;color:var(--emerald);font-weight:700">Topic sentence（主题）</td>
+              <td style="padding:7px 10px;color:var(--ivory-1)">全文主旨 = 首段核心词 + 反复出现的词</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">Paragraph 2</td>
+              <td style="padding:7px 10px;color:var(--ivory-1)">Reason / cause（原因）</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)">细节题、推断题考点</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--ink-3)">
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">Paragraph 3</td>
+              <td style="padding:7px 10px;color:var(--ivory-1)">Example / detail（例证）</td>
+              <td style="padding:7px 10px;color:var(--ivory-2)">例证类细节题、词义题考点</td>
+            </tr>
+            <tr>
+              <td style="padding:7px 10px;color:var(--gold-1);font-weight:700">Last Paragraph（尾段）</td>
+              <td style="padding:7px 10px;color:var(--emerald);font-weight:700">Conclusion（结论）</td>
+              <td style="padding:7px 10px;color:var(--ivory-1)">主旨题第二来源、目的题常考</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip"><b>典型主题词（必背）</b>：<span style="font-family:var(--font-mono);color:var(--gold-1)">architecture</span> · <span style="font-family:var(--font-mono);color:var(--gold-1)">software</span> · <span style="font-family:var(--font-mono);color:var(--gold-1)">system</span> · <span style="font-family:var(--font-mono);color:var(--gold-1)">design</span> · <span style="font-family:var(--font-mono);color:var(--gold-1)">performance</span> · <span style="font-family:var(--font-mono);color:var(--gold-1)">security</span> · <span style="font-family:var(--font-mono);color:var(--gold-1)">scalability</span></div>
+
+      <!-- ========== ⑦ 5 大题型的标志词汇总 ========== -->
+      <span class="formula-label">⑦ 5 大题型的「真假标志词」速查</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 12px">
+        <div style="padding:10px 12px;background:var(--ink-2);border-left:3px solid var(--emerald);border-radius:var(--radius-sm)">
+          <div style="color:var(--emerald);font-family:var(--font-cn);font-weight:700;margin-bottom:6px">✅ 7 大真标志词（目的题）</div>
+          <div style="color:var(--ivory-1);font-family:var(--font-mono);font-size:.86rem;line-height:1.7">
+            illustrate · explain · show · demonstrate · emphasize · argue · introduce
+          </div>
+        </div>
+        <div style="padding:10px 12px;background:var(--ink-2);border-left:3px solid var(--crimson);border-radius:var(--radius-sm)">
+          <div style="color:var(--crimson);font-family:var(--font-cn);font-weight:700;margin-bottom:6px">❌ 5 大假目的词（陷阱）</div>
+          <div style="color:var(--ivory-1);font-family:var(--font-mono);font-size:.86rem;line-height:1.7">
+            describe · list · mention · report · detail
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== ⑧ 高频形容词速查 ========== -->
+      <span class="formula-label">⑧ 软件架构高频形容词（同义替换必备）</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:6px 10px;width:18%">形容词</th>
+              <th style="text-align:left;padding:6px 10px;width:18%">含义</th>
+              <th style="text-align:left;padding:6px 10px">常考同义词</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">robust</td><td style="padding:5px 10px">健壮</td><td style="padding:5px 10px;color:var(--ivory-2)">strong, resilient, fault-tolerant</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">scalable</td><td style="padding:5px 10px">可扩展</td><td style="padding:5px 10px;color:var(--ivory-2)">extensible, expandable, growable</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">maintainable</td><td style="padding:5px 10px">可维护</td><td style="padding:5px 10px;color:var(--ivory-2)">modifiable, repairable, supportable</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">modular</td><td style="padding:5px 10px">模块化</td><td style="padding:5px 10px;color:var(--ivory-2)">composable, pluggable, component-based</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">monolithic</td><td style="padding:5px 10px">单体</td><td style="padding:5px 10px;color:var(--ivory-2)">tightly coupled, single-tier, unified</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">available</td><td style="padding:5px 10px">可用</td><td style="padding:5px 10px;color:var(--ivory-2)">reliable, accessible, uptime</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">secure</td><td style="padding:5px 10px">安全</td><td style="padding:5px 10px;color:var(--ivory-2)">protected, safe, hardened</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">performant</td><td style="padding:5px 10px">高性能</td><td style="padding:5px 10px;color:var(--ivory-2)">efficient, fast, high-throughput</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">portable</td><td style="padding:5px 10px">可移植</td><td style="padding:5px 10px;color:var(--ivory-2)">transferable, cross-platform</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">distributed</td><td style="padding:5px 10px">分布式</td><td style="padding:5px 10px;color:var(--ivory-2)">decentralized, networked, clustered</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">flexible</td><td style="padding:5px 10px">灵活</td><td style="padding:5px 10px;color:var(--ivory-2)">adaptable, versatile, configurable</td></tr>
+            <tr><td style="padding:5px 10px;color:var(--gold-1);font-weight:700">reliable</td><td style="padding:5px 10px">可靠</td><td style="padding:5px 10px;color:var(--ivory-2)">dependable, trustworthy, stable</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ========== ⑨ 5 道实战例题 ========== -->
+      <div class="exam-qa">
+        <div class="exam-qa-head">▸ 实战 5 题（按 71→75 顺序，每题配完整解析）</div>
+
+        <!-- 71 主旨题 -->
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">📝 71 主旨</span>
+            <span class="exam-qa-pts">English Q71</span>
+            <span class="exam-qa-tag">main idea</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Passage: Software architecture is the foundation of any large-scale system. It defines how components interact, how data flows, and how the system evolves over time. A well-designed architecture enables scalability, maintainability, and reliability.<br><br><b>What is the main idea of the passage?</b></div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>答案：B</b></li>
+              <li>A 错：「only way」太绝对 + 「replacing all」夸张</li>
+              <li><b style="color:var(--gold-1)">B 对：</b>「defines how components interact, how data flows, how the system evolves」= 全面 + 抽象 + 覆盖全文</li>
+              <li>C 错：「only experts」跑题（原文讲架构重要性，不是难度）</li>
+              <li>D 错：「should always」太绝对 + 细节（数据库是具体例子）</li>
+              <li>🎯 <b>主旨题口诀</b>：<b style="color:var(--gold-1)">最全面 + 最抽象 + 排除极端词</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 72 细节题 -->
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">📝 72 细节</span>
+            <span class="exam-qa-pts">English Q72</span>
+            <span class="exam-qa-tag">detail / TRUE</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Passage: Microservices break a large application into small, independent services. Each service runs its own process and communicates via lightweight mechanisms, often an HTTP API.<br><br><b>According to the passage, which of the following is TRUE about microservices?</b></div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>答案：D</b></li>
+              <li>A 错：「one large unified component」与原文「break into small」<b style="color:var(--crimson)">反义</b></li>
+              <li>B 错：「shares the same process」与原文「runs its own process」<b style="color:var(--crimson)">反义</b></li>
+              <li>C 错：「heavy mechanisms such as SOAP」与原文「lightweight」<b style="color:var(--crimson)">反义</b></li>
+              <li><b style="color:var(--gold-1)">D 对：</b>「runs its own process + often HTTP API」= 与原文<b>同义替换</b></li>
+              <li>🎯 <b>细节题口诀</b>：<b style="color:var(--gold-1)">回原文逐字比对，选项 ≠ 原文但同义</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 73 词义题 -->
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">📝 73 词汇</span>
+            <span class="exam-qa-pts">English Q73</span>
+            <span class="exam-qa-tag">vocabulary</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Passage: <b>A robust system</b> can recover gracefully from failures and continue serving user requests without significant downtime.<br><br><b>The word "robust" most probably means ____.</b></div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>答案：A</b></li>
+              <li>前后句线索：「recover gracefully from failures」= 从故障<b>优雅恢复</b></li>
+              <li>词根分析：robustus (拉丁) = <b>强壮的</b></li>
+              <li><b style="color:var(--gold-1)">A 对：</b>「strong and able to handle failures and recover well」= 强健 + 恢复</li>
+              <li>B 错：「fast and high-performance」是 performant 的定义（<b style="color:var(--crimson)">混淆 robust 与 performant</b>）</li>
+              <li>C 错：「easy to modify」是 maintainable 的定义</li>
+              <li>D 错：「simple and easy to understand」是 simple 的定义</li>
+              <li>🎯 <b>词义题口诀</b>：<b style="color:var(--gold-1)">前后句即答案 + 词根辅助 + 同义替换</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 74 推断题 -->
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">📝 74 推断</span>
+            <span class="exam-qa-pts">English Q74</span>
+            <span class="exam-qa-tag">inference</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Passage: Software architecture has evolved from monolithic systems to microservices. While microservices offer benefits like independent deployment, they also introduce complexity in service communication and data consistency.<br><br><b>What can we infer from the passage?</b></div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>答案：A</b></li>
+              <li><b style="color:var(--gold-1)">A 对：</b>「introduce new challenges (data consistency and network latency)」= 能推出 + 不绝对</li>
+              <li>推断链：微服务 → 分布式 → 一致性挑战 + 网络延迟</li>
+              <li>B 错：「always perform better」= always <b style="color:var(--crimson)">太绝对</b></li>
+              <li>C 错：「perfect + all companies」= 完美 + 全部 <b style="color:var(--crimson)">双重太绝对</b></li>
+              <li>D 错：「never changes」= never <b style="color:var(--crimson)">太绝对</b> + 跑题（原文讲演进）</li>
+              <li>🎯 <b>推断题口诀</b>：<b style="color:var(--gold-1)">能推出但不能太绝对（避免 always/never/must）</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 75 目的题 -->
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">📝 75 目的</span>
+            <span class="exam-qa-pts">English Q75</span>
+            <span class="exam-qa-tag">purpose</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>Passage: ...In paragraph 4, the author mentions <b>"load balancing"</b> to ____.<br><br><b>The author mentions "load balancing" to ____.</b></div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li><b>答案：D</b></li>
+              <li>A 错：「describe the history」= <b style="color:var(--crimson)">describe 是假目的词</b> + history 跑题</li>
+              <li>B 错：「list all」= <b style="color:var(--crimson)">list 是假目的词</b> + all 太绝对</li>
+              <li>C 错：「only solution to all」= <b style="color:var(--crimson)">only + all 双重绝对</b></li>
+              <li><b style="color:var(--gold-1)">D 对：</b>「demonstrate a technique for distributing traffic to improve system performance」</li>
+              <li>demonstrate = 真标志词；technique = 命中「负载均衡是一种技术」；improve = 命中目的</li>
+              <li>🎯 <b>目的题口诀</b>：<b style="color:var(--gold-1)">illustrate/explain/show/demonstrate 才是真目的词</b></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：英语阅读 5 题标准套路 · 71 主旨 / 72 细节 / 73 词汇 / 74 推断 / 75 目的 · 背完这套模板稳拿 3-5 分</div>
+      </div>
+
+    </article>
+
+
 
 </div>
 </main>
