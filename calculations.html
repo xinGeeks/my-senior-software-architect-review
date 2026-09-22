@@ -2931,6 +2931,208 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
   .qcase-grid { grid-template-columns: 1fr; }
 }
 
+/* ========== 嵌入式调度算法 RMS & EDF ========== */
+.sched-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 14px 0;
+}
+.sched-card {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-3);
+  border-top: 3px solid var(--accent, var(--gold-2));
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.sched-card .sched-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 0.05em;
+  color: var(--accent, var(--gold-1));
+  font-weight: 700;
+}
+.sched-card .sched-en {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ivory-3);
+  margin-bottom: 8px;
+}
+.sched-card .sched-rule, .sched-card .sched-type {
+  font-size: 0.84rem;
+  color: var(--ivory-1);
+  padding: 5px 0;
+  border-top: 1px dashed var(--ink-3);
+  line-height: 1.5;
+}
+.sched-card .sched-rule b, .sched-card .sched-type b {
+  color: var(--ivory-3);
+  font-weight: 500;
+  margin-right: 4px;
+}
+.sched-card .sched-formula {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--ink-2);
+  border-radius: var(--radius-sm);
+}
+.sched-card .sched-formula .formula-lbl {
+  font-size: 0.72rem;
+  color: var(--ivory-3);
+  letter-spacing: 0.1em;
+}
+.sched-card .sched-formula .formula-math {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--accent, var(--gold-1));
+  margin-top: 3px;
+  font-weight: 600;
+}
+.sched-card .sched-bound {
+  font-size: 0.74rem;
+  color: var(--ivory-3);
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  line-height: 1.6;
+}
+@media (max-width: 720px) {
+  .sched-compare { grid-template-columns: 1fr; }
+}
+
+.sched-tasks-hdr, .sched-task-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 1fr 28px;
+  gap: 8px;
+  align-items: center;
+}
+.sched-tasks-hdr {
+  font-size: 0.72rem;
+  color: var(--ivory-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--ink-3);
+  margin-bottom: 6px;
+}
+.sched-task-row {
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+.sched-task-row input {
+  padding: 5px 8px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-3);
+  color: var(--ivory-0);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  width: 100%;
+}
+.sched-task-row input:focus {
+  outline: none;
+  border-color: var(--gold-3);
+}
+.sched-task-row .sched-task-no {
+  text-align: center;
+  font-family: var(--font-mono);
+  color: var(--gold-1);
+  font-weight: 700;
+}
+.sched-task-row .sched-task-del {
+  cursor: pointer;
+  color: var(--crimson);
+  font-size: 1.2rem;
+  text-align: center;
+  user-select: none;
+}
+.sched-task-row .sched-task-del:hover { opacity: 0.65; }
+
+.sched-util-bars { margin-top: 12px; }
+.sched-util-bar {
+  display: grid;
+  grid-template-columns: 84px 1fr 70px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+}
+.sched-util-bar .sched-util-lbl {
+  font-weight: 600;
+  color: var(--ivory-1);
+  font-family: var(--font-mono);
+}
+.sched-util-bar .sched-util-track {
+  height: 18px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-3);
+  border-radius: 9px;
+  position: relative;
+  overflow: hidden;
+}
+.sched-util-bar .sched-util-fill {
+  height: 100%;
+  border-radius: 8px 0 0 8px;
+  transition: width 0.3s ease;
+}
+.sched-util-bar .sched-util-val {
+  font-family: var(--font-mono);
+  color: var(--ivory-1);
+  text-align: right;
+}
+
+.sched-verdict {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  border-left: 4px solid var(--accent, var(--gold-2));
+  background: var(--ink-1);
+  line-height: 1.55;
+}
+.sched-verdict.ok { border-left-color: var(--emerald); }
+.sched-verdict.warn { border-left-color: var(--amber-deep); }
+.sched-verdict.fail { border-left-color: var(--crimson); }
+.sched-verdict b { color: var(--accent); }
+.sched-verdict.ok b { color: var(--emerald); }
+.sched-verdict.warn b { color: var(--amber-deep); }
+.sched-verdict.fail b { color: var(--crimson); }
+
+.sched-btns {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-top: 10px;
+  align-items: center;
+}
+.sched-btns button {
+  padding: 5px 12px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-3);
+  color: var(--ivory-1);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-cn);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sched-btns button:hover {
+  background: var(--ink-3);
+  border-color: var(--gold-3);
+  color: var(--gold-1);
+}
+
+.sched-timeline-wrap { margin: 14px 0 4px 0; }
+.sched-timeline-wrap svg {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  aspect-ratio: 600 / 240;
+  display: block;
+  margin: 0 auto;
+  background: var(--ink-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ink-3);
+}
+[data-theme="light"] .sched-timeline-wrap svg { background: #fafaf3; }
+
 /* ========== Lists ========== */
 .steps {
   list-style: none;
@@ -5222,6 +5424,120 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
 </article>
+
+
+    <article class="card-detail tier-2" data-id="c37" data-section="sec1">
+
+      <span class="tier-label">⭐⭐⭐ 中频</span>
+      <div class="card-title">1.16 嵌入式调度算法 · RMS & EDF</div>
+      <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2023下·2024下·2025下</span></div>
+      <div class="card-sub">单核实时调度 · 可调度性判定</div>
+
+      <div class="formula">实时调度 = 任务集 {τᵢ(Tᵢ, Cᵢ)} 在截止时间内完成 ↔ U = Σ(Cᵢ/Tᵢ) ≤ 上界 bound</div>
+
+      <div class="sched-compare">
+        <div class="sched-card" style="--accent:var(--azure)">
+          <div class="sched-name">RMS</div>
+          <div class="sched-en">Rate Monotonic Scheduling · 速率单调调度</div>
+          <div class="sched-rule">📏 <b>规则</b>：周期越短，优先级越高</div>
+          <div class="sched-type">🔒 <b>类型</b>：静态优先级（任务来了不重排）</div>
+          <div class="sched-formula">
+            <div class="formula-lbl">可调度条件（Liu & Layland 1973）</div>
+            <div class="formula-math">U = Σ(Cᵢ/Tᵢ) ≤ n(2<sup>1/n</sup> − 1)</div>
+          </div>
+          <div class="sched-bound">
+            n=1: 1.000 · n=2: 0.828 · n=3: 0.779<br>
+            n=5: 0.743 · n=10: 0.718 · n→∞: ln2 ≈ 0.693
+          </div>
+        </div>
+
+        <div class="sched-card" style="--accent:var(--gold-2)">
+          <div class="sched-name">EDF</div>
+          <div class="sched-en">Earliest Deadline First · 最早截止时间优先</div>
+          <div class="sched-rule">⏰ <b>规则</b>：截止时间越早，越先执行</div>
+          <div class="sched-type">🔄 <b>类型</b>：动态优先级（每个时刻重算）</div>
+          <div class="sched-formula">
+            <div class="formula-lbl">可调度条件</div>
+            <div class="formula-math">U = Σ(Cᵢ/Tᵢ) ≤ 1</div>
+          </div>
+          <div class="sched-bound">
+            理论最优：利用率可逼近 100%<br>
+            单核下：EDF 可调度 ⇔ 任意算法可调度
+          </div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:12%">算法</th>
+            <th style="width:28%">优先级规则</th>
+            <th style="width:25%">类型</th>
+            <th>可调度条件</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>RMS</code></td>
+            <td>周期越短，优先级越高</td>
+            <td>静态优先级（任务来了不重排）</td>
+            <td>U = Σ(Cᵢ/Tᵢ) ≤ n(2<sup>1/n</sup> − 1)</td>
+          </tr>
+          <tr>
+            <td><code>EDF</code></td>
+            <td>截止时间越早，越先执行</td>
+            <td>动态优先级（每个时刻重算）</td>
+            <td>U = Σ(Cᵢ/Tᵢ) ≤ 1</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="calc">
+        <div class="calc-title">📊 可调度性判定计算器 · 输入任务集自动判 RMS / EDF</div>
+        <div class="calc-row">
+          <div>
+            <div class="sched-tasks-hdr">
+              <div>#</div><div>执行时间 Cᵢ</div><div>周期 Tᵢ</div><div></div>
+            </div>
+            <div id="sched-tasks"></div>
+            <div class="sched-btns">
+              <button onclick="addSchedTask()">+ 添加任务</button>
+              <button onclick="resetSchedTasks()">重置</button>
+              <button onclick="loadSchedExample()">载入例题</button>
+              <span style="margin-left:auto;color:var(--ivory-3);font-size:0.78rem">任务数 n=<b style="color:var(--gold-1);font-family:var(--font-mono)" id="sched-n">0</b></span>
+            </div>
+          </div>
+          <div id="sched-result"></div>
+        </div>
+        <div id="sched-bars" class="sched-util-bars"></div>
+      </div>
+
+      <div class="sched-timeline-wrap">
+        <div class="formula">▸ RMS 调度时间轴（超周期 = lcm(Tᵢ)）</div>
+        <svg id="sched-timeline" viewBox="0 0 600 240" preserveAspectRatio="xMidYMid meet" role="img" aria-label="RMS 调度时间轴"></svg>
+      </div>
+
+      <div class="tip">
+        <b>答题模板</b>：判 X 算法能否调度任务集 {τ₁, τ₂, ..., τₙ}：
+        <ol style="margin:6px 0 0 20px;line-height:1.7">
+          <li>计算每个任务 uᵢ = Cᵢ / Tᵢ（单个任务利用率）</li>
+          <li>总利用率 U = Σuᵢ</li>
+          <li>取该算法上界 bound（RMS: n(2<sup>1/n</sup>−1)；EDF: 1）</li>
+          <li>U ≤ bound → <b>可调度</b>（充分条件）；U > bound → <b>不一定不可调度</b>（仅充分条件不满足）</li>
+        </ol>
+      </div>
+
+      <div class="trap">
+        <b>易混点</b>：
+        <ol style="margin:6px 0 0 20px;line-height:1.7">
+          <li>U ≤ bound 是<b>充分条件</b>而非充要——U > bound 时不一定不可调度（如特定相位下仍可能调度）。</li>
+          <li>RMS 要求 Dᵢ = Tᵢ（截止时间 = 周期）；EDF 还可处理 Dᵢ ≤ Tᵢ 及偶发任务。</li>
+          <li><b>EDF 是单核最优</b>：若 EDF 都不能调度（U > 1），任何单核算法都不能调度。</li>
+          <li>RMS 上界 n→∞ 时趋近 ln2 ≈ 0.693（约 69%）——<b>不是</b> 100%。</li>
+        </ol>
+      </div>
+
+    </article>
 
 
       <span class="tier-label">⭐⭐ 低频</span>
@@ -9527,6 +9843,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('dk-req')) drawDisk();
   if (document.getElementById('nad-tab')) nadInit();
   if (document.getElementById('sp-s')) drawSegPage();
+  if (document.getElementById('sched-tasks')) initSched();
   if (document.getElementById('idx-blk')) drawIndex();
   if (document.getElementById('mm-tab')) mmInit();
   if (document.getElementById('ca-h')) calcCache();
@@ -12770,6 +13087,260 @@ function drawCapStress(peak) {
     <!-- 角标 -->
     <text x="${padL}" y="${padT - 16}" fill="var(--gold-1)" font-family="var(--font-cn)" font-size="10" font-weight="600">▸ 24h 流量压力曲线（峰值倍数 ×${peak}）</text>
   `;
+}
+
+// ============ 1.16 嵌入式调度 RMS & EDF ============
+function addSchedTask(C, T) {
+  const container = document.getElementById('sched-tasks');
+  if (!container) return;
+  const idx = container.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'sched-task-row';
+  row.innerHTML = `
+    <div class="sched-task-no">τ${idx}</div>
+    <input type="number" class="sched-C" placeholder="Cᵢ" min="0" step="0.1" value="${C ?? ''}">
+    <input type="number" class="sched-T" placeholder="Tᵢ" min="0" step="0.1" value="${T ?? ''}">
+    <div class="sched-task-del" title="删除该任务">×</div>
+  `;
+  container.appendChild(row);
+  row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calcSched));
+  row.querySelector('.sched-task-del').addEventListener('click', () => { row.remove(); renumberSched(); calcSched(); });
+  calcSched();
+}
+
+function renumberSched() {
+  document.querySelectorAll('#sched-tasks .sched-task-row').forEach((row, i) => {
+    row.querySelector('.sched-task-no').textContent = 'τ' + (i + 1);
+  });
+}
+
+function resetSchedTasks() {
+  const c = document.getElementById('sched-tasks');
+  if (c) c.innerHTML = '';
+  calcSched();
+}
+
+function loadSchedExample() {
+  resetSchedTasks();
+  addSchedTask(1, 4);   // τ1: C=1, T=4  → u=0.25
+  addSchedTask(2, 6);   // τ2: C=2, T=6  → u=0.333
+  addSchedTask(3, 10);  // τ3: C=3, T=10 → u=0.300
+  // 总 U = 0.883 ; n=3 bound = 0.779 → RMS 不满足（但实际可调度，相位相关）
+}
+
+function calcSched() {
+  const rows = document.querySelectorAll('#sched-tasks .sched-task-row');
+  const tasks = [];
+  rows.forEach(row => {
+    const C = parseFloat(row.querySelector('.sched-C').value);
+    const T = parseFloat(row.querySelector('.sched-T').value);
+    if (!isNaN(C) && !isNaN(T) && T > 0 && C >= 0) tasks.push({ C, T, u: C / T });
+  });
+  const n = tasks.length;
+  const nEl = document.getElementById('sched-n');
+  if (nEl) nEl.textContent = n;
+  const U = tasks.reduce((s, t) => s + t.u, 0);
+  const rmsBound = n === 0 ? 0 : n * (Math.pow(2, 1 / n) - 1);
+  const edfBound = 1;
+  renderSchedResult(tasks, U, rmsBound, edfBound, n);
+  renderSchedBars(U, rmsBound, edfBound);
+  drawSchedTimeline(tasks);
+}
+
+function renderSchedResult(tasks, U, rmsBound, edfBound, n) {
+  const out = document.getElementById('sched-result');
+  if (!out) return;
+  if (n === 0) {
+    out.innerHTML = '<div class="sched-verdict" style="--accent:var(--ivory-3)"><b>提示</b>：添加任务后自动判定可调度性。点击「载入例题」快速试用。</div>';
+    return;
+  }
+  const rmsOK = U <= rmsBound;
+  const edfOK = U <= edfBound;
+  const uItems = tasks.map((t, i) =>
+    `<span style="font-family:var(--font-mono);color:var(--ivory-1)">τ${i + 1}=${t.u.toFixed(3)}</span>`
+  ).join(' <span style="color:var(--ivory-3)">+</span> ');
+
+  out.innerHTML = `
+    <div style="margin-bottom:8px;font-size:0.84rem;color:var(--ivory-2);line-height:1.7">
+      <b style="color:var(--gold-1)">总利用率</b>
+      U = Σuᵢ = <b style="color:var(--ivory-0);font-family:var(--font-mono);font-size:0.95rem">${U.toFixed(4)}</b>
+      <div style="margin-top:4px;font-size:0.78rem;color:var(--ivory-3)">${uItems}</div>
+    </div>
+    <div class="sched-verdict ${rmsOK ? 'ok' : 'fail'}">
+      <b>RMS</b> 界 = ${rmsBound.toFixed(4)} &nbsp;·&nbsp;
+      ${rmsOK
+        ? '<span style="color:var(--emerald)">✓ U ≤ bound · 充分条件满足</span>'
+        : '<span style="color:var(--crimson)">✗ U > bound · 充分条件不满足，可能仍可调度（与相位有关）</span>'}
+    </div>
+    <div class="sched-verdict ${edfOK ? 'ok' : 'fail'}">
+      <b>EDF</b> 界 = 1.0000 &nbsp;·&nbsp;
+      ${edfOK
+        ? '<span style="color:var(--emerald)">✓ U ≤ 1 · 理论可调度</span>'
+        : '<span style="color:var(--crimson)">✗ U > 1 · 不可调度（任何单核算法均不可调度）</span>'}
+    </div>
+  `;
+}
+
+function renderSchedBars(U, rmsBound, edfBound) {
+  const out = document.getElementById('sched-bars');
+  if (!out) return;
+  const scale = Math.max(1, rmsBound) * 1.15;
+  const uPct = Math.min(100, (U / scale) * 100);
+  const rmsPct = Math.min(100, (rmsBound / scale) * 100);
+  const edfPct = Math.min(100, (edfBound / scale) * 100);
+  const uOver = U > 1;
+  const rmsOver = U > rmsBound;
+
+  out.innerHTML = `
+    <div class="sched-util-bar ${uOver ? '' : ''}">
+      <div class="sched-util-lbl" style="color:var(--gold-1)">U 当前</div>
+      <div class="sched-util-track">
+        <div class="sched-util-fill" style="width:${uPct}%;background:${uOver ? 'var(--crimson)' : 'var(--gold-2)'}"></div>
+        ${rmsBound > 0 ? `<div class="sched-util-bound" style="left:${rmsPct}%"></div>` : ''}
+        ${edfBound > 0 ? `<div class="sched-util-bound" style="left:${edfPct}%;background:var(--emerald);opacity:0.5"></div>` : ''}
+      </div>
+      <div class="sched-util-val" style="color:${uOver ? 'var(--crimson)' : 'var(--gold-1)'}">${U.toFixed(4)}</div>
+    </div>
+    <div class="sched-util-bar">
+      <div class="sched-util-lbl" style="color:var(--azure)">RMS 界</div>
+      <div class="sched-util-track">
+        <div class="sched-util-fill" style="width:${rmsPct}%;background:var(--azure);opacity:0.7"></div>
+      </div>
+      <div class="sched-util-val">${rmsBound.toFixed(4)}</div>
+    </div>
+    <div class="sched-util-bar">
+      <div class="sched-util-lbl" style="color:var(--emerald)">EDF 界</div>
+      <div class="sched-util-track">
+        <div class="sched-util-fill" style="width:${edfPct}%;background:var(--emerald);opacity:0.7"></div>
+      </div>
+      <div class="sched-util-val">1.0000</div>
+    </div>
+    <div style="font-size:0.74rem;color:var(--ivory-3);margin-top:4px">
+      <span style="display:inline-block;width:10px;height:2px;background:var(--crimson);vertical-align:middle;margin-right:4px"></span>RMS 界
+      <span style="display:inline-block;width:10px;height:2px;background:var(--emerald);opacity:0.5;vertical-align:middle;margin:0 4px 0 12px"></span>EDF 界
+    </div>
+  `;
+}
+
+function drawSchedTimeline(tasks) {
+  const svg = document.getElementById('sched-timeline');
+  if (!svg) return;
+
+  if (tasks.length === 0) {
+    svg.innerHTML = '<text x="300" y="120" fill="var(--ivory-3)" font-family="var(--font-cn)" font-size="13" text-anchor="middle">添加任务后显示 RMS 调度时间轴</text>';
+    return;
+  }
+
+  const W = 600, H = 240;
+  const padL = 110, padR = 14, padT = 32, padB = 32;
+
+  // 超周期 (lcm)
+  const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+  const lcm = (a, b) => Math.round(a / gcd(a, b) * b);
+  const hyperPeriod = tasks.map(t => Math.round(t.T)).reduce((a, b) => lcm(a, b), 1);
+  const displayPeriod = Math.min(hyperPeriod, 30);
+
+  // RMS 优先级：周期越短优先级越高（prio 1 = 最高）
+  const indices = tasks.map((_, i) => i).sort((a, b) => tasks[a].T - tasks[b].T);
+  const prioOf = new Array(tasks.length);
+  indices.forEach((idx, rank) => prioOf[idx] = rank + 1);
+
+  // 模拟 RMS 调度（时间步进）
+  const remaining = tasks.map(t => t.C); // 每个任务当前实例剩余时间
+  const schedule = new Array(displayPeriod).fill(0); // 0 = idle
+
+  for (let t = 0; t < displayPeriod; t++) {
+    // 新任务实例释放：当前时间是某任务周期的整数倍
+    tasks.forEach((task, i) => {
+      if (t > 0 && t % task.T === 0) remaining[i] = task.C;
+    });
+    // 选优先级最高且 remaining > 0 的任务
+    let bestIdx = -1, bestPrio = Infinity;
+    for (let i = 0; i < tasks.length; i++) {
+      if (remaining[i] > 0 && prioOf[i] < bestPrio) {
+        bestPrio = prioOf[i]; bestIdx = i;
+      }
+    }
+    if (bestIdx >= 0) {
+      schedule[t] = bestIdx + 1; // 1-indexed
+      remaining[bestIdx] -= 1;
+    }
+  }
+
+  // 合并连续相同任务为 bar
+  const bars = [];
+  let cur = schedule[0], start = 0;
+  for (let i = 1; i <= schedule.length; i++) {
+    if (i === schedule.length || schedule[i] !== cur) {
+      bars.push({ taskIdx: cur, start, end: i });
+      cur = i < schedule.length ? schedule[i] : 0;
+      start = i;
+    }
+  }
+
+  const colors = ['var(--gold-2)', 'var(--azure)', 'var(--emerald)', 'var(--violet)', 'var(--amber-deep)', 'var(--crimson)'];
+  const xScale = tt => padL + (tt / displayPeriod) * (W - padL - padR);
+  const taskH = (H - padT - padB) / tasks.length;
+
+  // X 轴刻度
+  const tickStep = displayPeriod <= 12 ? 1 : (displayPeriod <= 24 ? 2 : 5);
+  const xTicks = [];
+  for (let t = 0; t <= displayPeriod; t += tickStep) xTicks.push(t);
+
+  let s = `
+    <!-- 网格 -->
+    ${xTicks.map(t => `<line x1="${xScale(t)}" y1="${padT}" x2="${xScale(t)}" y2="${H - padB}" stroke="var(--ink-3)" stroke-width="0.5" stroke-dasharray="2 3"/>`).join('')}
+    <!-- X 轴 -->
+    <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="var(--ink-3)" stroke-width="1"/>
+    ${xTicks.map(t => `<text x="${xScale(t)}" y="${H - padB + 14}" fill="var(--ivory-3)" font-family="var(--font-mono)" font-size="9" text-anchor="middle">t=${t}</text>`).join('')}
+    <!-- Y 轴任务标签（按 RMS 优先级排序） -->
+    ${indices.map((origIdx, rank) => {
+      const t = tasks[origIdx];
+      const y = padT + rank * taskH + taskH / 2 + 3;
+      return `<text x="${padL - 8}" y="${y}" fill="var(--ivory-2)" font-family="var(--font-mono)" font-size="10" text-anchor="end">P${rank + 1} · τ${origIdx + 1}(${t.C},${t.T})</text>`;
+    }).join('')}
+    <!-- 行分隔线 -->
+    ${indices.slice(0, -1).map((_, i) => `<line x1="${padL}" y1="${padT + (i + 1) * taskH}" x2="${W - padR}" y2="${padT + (i + 1) * taskH}" stroke="var(--ink-3)" stroke-width="0.3" stroke-dasharray="2 3"/>`).join('')}
+  `;
+
+  // 绘制执行条
+  bars.forEach(bar => {
+    if (bar.taskIdx === 0) return;
+    // 找到此任务在 Y 轴的行（按优先级）
+    const rank = prioOf[bar.taskIdx - 1] - 1;
+    const y = padT + rank * taskH + 4;
+    const h = taskH - 8;
+    const x = xScale(bar.start);
+    const w = Math.max(1, xScale(bar.end) - xScale(bar.start));
+    const color = colors[(bar.taskIdx - 1) % colors.length];
+    s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${color}" opacity="0.85" stroke="var(--ink-0)" stroke-width="0.5"/>`;
+    if (w > 16) {
+      s += `<text x="${x + w / 2}" y="${y + h / 2 + 3}" fill="var(--ink-0)" font-family="var(--font-mono)" font-size="9" text-anchor="middle" font-weight="700">τ${bar.taskIdx}</text>`;
+    }
+  });
+
+  // 任务释放时刻标记（小竖线）
+  tasks.forEach((task, i) => {
+    for (let k = 0; k * task.T < displayPeriod; k++) {
+      const tx = xScale(k * task.T);
+      const rank = prioOf[i] - 1;
+      const yMid = padT + rank * taskH + taskH / 2;
+      s += `<line x1="${tx}" y1="${yMid - taskH / 2 + 2}" x2="${tx}" y2="${yMid - 4}" stroke="${colors[i % colors.length]}" stroke-width="0.8" opacity="0.5"/>`;
+    }
+  });
+
+  // 角标
+  s += `<text x="${padL}" y="${padT - 12}" fill="var(--gold-1)" font-family="var(--font-cn)" font-size="11" font-weight="600">▸ RMS 调度 · 超周期 = ${hyperPeriod}${hyperPeriod > displayPeriod ? `（显示前 ${displayPeriod}）` : ''}</text>`;
+  s += `<text x="${W - padR}" y="${padT - 12}" fill="var(--ivory-3)" font-family="var(--font-cn)" font-size="9" text-anchor="end">↓ 任务释放时刻 · 块 = 执行段</text>`;
+
+  svg.innerHTML = s;
+}
+
+// 初始化：载入例题（如未自定义）
+function initSched() {
+  if (document.getElementById('sched-tasks')) {
+    loadSchedExample();
+  }
 }
 </script>
 </body>
