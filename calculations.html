@@ -75,6 +75,7 @@
 [data-theme="light"] svg [fill="#d4a574"]   { fill: #a88040 !important; }
 [data-theme="light"] svg [fill="#b88a52"]   { fill: #c69a55 !important; }
 [data-theme="light"] svg [fill="#8b6f3e"]   { fill: #dbb778 !important; }
+[data-theme="light"] svg [fill="#e8dfc4"]   { fill: #2a2a2a !important; }
 [data-theme="light"] svg [fill="#c8553d"]   { fill: #a6392b !important; }
 [data-theme="light"] svg [fill="#4a6fa5"]   { fill: #2c4d7a !important; }
 [data-theme="light"] svg [fill="#6f5d8a"]   { fill: #503f6a !important; }
@@ -875,7 +876,7 @@ body::before {
   padding: 10px;
   margin-top: 12px;
 }
-.evm-svg-wrap svg { width: 100%; height: 240px; display: block; }
+.evm-svg-wrap svg { width: 100%; height: auto; display: block; }
 .evm-bars {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2586,23 +2587,47 @@ body::before {
   margin-top: 12px;
 }
 .evm-cell {
-  padding: 10px;
+  padding: 6px 8px;
   background: var(--ink-2);
   border-radius: var(--radius-sm);
   text-align: center;
+  display: flex; flex-direction: column; gap: 2px;
 }
 .evm-cell .lbl {
   font-family: var(--font-display);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
   color: var(--ivory-3);
+  line-height: 1.2;
 }
 .evm-cell .num {
   font-family: var(--font-mono);
-  font-size: 1.2rem;
+  font-size: 1.02rem;
   color: var(--gold-1);
-  margin-top: 4px;
+  line-height: 1.2;
 }
+.evm-cell .num sub {
+  font-size: 0.72rem; opacity: 0.85; margin-left: 2px;
+}
+.evm-meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+  margin-top: 6px;
+  font-size: 0.82rem; color: var(--ivory-2);
+  padding: 4px 8px;
+  background: var(--ink-2);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--gold-2);
+}
+.evm-meta .group { display: inline-flex; align-items: baseline; gap: 3px; }
+.evm-meta .k { color: var(--ivory-3); font-size: 0.74rem; }
+.evm-meta .v { font-family: var(--font-mono); color: var(--gold-1); font-weight: 600; }
+.evm-meta .sep { color: var(--ink-4); margin: 0 2px; }
+.evm-meta .tag {
+  font-size: 0.74rem; padding: 1px 6px; border-radius: 4px;
+  background: var(--ink-3); color: var(--ivory-2);
+}
+.evm-meta .tag.bad { background: rgba(200,85,61,.18); color: var(--crimson); }
+.evm-meta .tag.ok  { background: rgba(93,138,111,.18); color: var(--emerald); }
 
 /* Capacity funnel */
 .funnel {
@@ -3159,6 +3184,150 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
   .app-main { padding: 16px; }
   .app-header .stats-mini { display: none; }
 }
+
+/* ========== 3.0 Transaction Isolation Levels ========== */
+.iso-tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+  margin: 0 0 12px;
+}
+@media (max-width: 720px) { .iso-tabs { grid-template-columns: repeat(2, 1fr); } }
+.iso-tab {
+  background: var(--ink-2); color: var(--ivory-1);
+  border: 1px solid var(--ink-4); border-radius: 8px;
+  padding: 10px 8px; font-family: var(--font-cn); font-size: 0.92rem;
+  cursor: pointer; transition: all .2s; line-height: 1.35;
+  text-align: center;
+}
+.iso-tab .iso-en { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ivory-3); display: block; margin-top: 2px; letter-spacing: .04em; }
+.iso-tab:hover { background: var(--ink-3); color: var(--gold-1); border-color: var(--gold-2); }
+.iso-tab.is-active {
+  background: var(--gold-2); color: var(--ink-0);
+  border-color: var(--gold-2); font-weight: 600;
+  box-shadow: 0 2px 10px rgba(212, 168, 95, 0.25);
+}
+.iso-tab.is-active .iso-en { color: var(--ink-1); }
+
+.iso-summary {
+  background: var(--ink-1); border: 1px solid var(--ink-4); border-left: 3px solid var(--gold-2);
+  border-radius: 8px; padding: 10px 14px; margin: 4px 0 14px;
+  font-size: 0.92rem; color: var(--ivory-1); line-height: 1.7;
+  min-height: 60px;
+}
+.iso-summary b { color: var(--gold-1); }
+
+.iso-matrix-wrap { overflow-x: auto; margin: 6px 0 4px; }
+.iso-matrix {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  font-family: var(--font-cn); font-size: 0.92rem;
+  background: var(--ink-1); border-radius: 8px; overflow: hidden;
+}
+.iso-matrix th, .iso-matrix td {
+  padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--ink-3);
+  border-right: 1px solid var(--ink-3);
+  transition: all .25s var(--ease-out);
+}
+.iso-matrix th:last-child, .iso-matrix td:last-child { border-right: none; }
+.iso-matrix tr:last-child th, .iso-matrix tr:last-child td { border-bottom: none; }
+.iso-matrix thead th {
+  background: var(--ink-2); color: var(--gold-1); font-weight: 600;
+  font-size: 0.86rem; letter-spacing: .04em; line-height: 1.25;
+}
+.iso-matrix thead th .iso-en { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ivory-3); font-weight: 400; }
+.iso-matrix .iso-row-th {
+  background: var(--ink-2); color: var(--gold-3); font-weight: 600;
+  text-align: left; padding-left: 14px; min-width: 140px; line-height: 1.25;
+}
+.iso-matrix .iso-row-th .iso-en { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ivory-3); display: block; margin-top: 1px; font-weight: 400; }
+
+.iso-matrix td[data-st] {
+  position: relative; cursor: default;
+}
+.iso-matrix td[data-st="yes"]::before {
+  content: "✓"; color: var(--emerald); font-size: 1.5em; font-weight: 700;
+  text-shadow: 0 0 8px rgba(93, 138, 111, 0.5);
+}
+.iso-matrix td[data-st="no"]::before {
+  content: "✗"; color: var(--crimson); font-size: 1.5em; font-weight: 700;
+  text-shadow: 0 0 8px rgba(200, 85, 61, 0.5);
+}
+
+.iso-matrix tbody tr.iso-row-active {
+  background: linear-gradient(90deg, rgba(212, 168, 95, 0.12), rgba(212, 168, 95, 0.04));
+}
+.iso-matrix tbody tr.iso-row-active .iso-row-th {
+  color: var(--gold-1); background: rgba(212, 168, 95, 0.18);
+}
+
+.iso-matrix thead th.iso-col-active { color: var(--gold-1); background: rgba(212, 168, 95, 0.2); }
+.iso-matrix tbody td.iso-col-active { background: rgba(212, 168, 95, 0.08); }
+
+.iso-matrix td.iso-cell-pulse {
+  animation: isoCellPulse .8s var(--ease-out);
+}
+@keyframes isoCellPulse {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.18); box-shadow: 0 0 0 6px rgba(212, 168, 95, 0.35); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 168, 95, 0); }
+}
+
+.iso-legend {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  margin: 8px 0 14px; font-size: 0.86rem; color: var(--ivory-2);
+}
+.iso-dot {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  margin-right: 5px; vertical-align: middle;
+}
+.iso-dot.iso-yes { background: var(--emerald); box-shadow: 0 0 6px rgba(93, 138, 111, 0.5); }
+.iso-dot.iso-no  { background: var(--crimson); box-shadow: 0 0 6px rgba(200, 85, 61, 0.5); }
+.iso-hint { color: var(--ivory-3); font-style: italic; }
+
+.iso-prob-panels {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  margin: 6px 0 16px;
+}
+@media (max-width: 720px) { .iso-prob-panels { grid-template-columns: 1fr; } }
+.iso-prob {
+  background: var(--ink-2); border: 1px solid var(--ink-4); border-radius: 8px;
+  padding: 10px 12px; transition: all .25s;
+}
+.iso-prob.iso-prob-active {
+  border-color: var(--gold-2);
+  box-shadow: 0 2px 12px rgba(212, 168, 95, 0.18);
+  background: linear-gradient(135deg, rgba(212, 168, 95, 0.08), var(--ink-2));
+}
+.iso-prob-title {
+  font-size: 0.95rem; color: var(--gold-1); font-weight: 600; margin-bottom: 4px;
+}
+.iso-prob-title .iso-en { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ivory-3); margin-left: 4px; font-weight: 400; }
+.iso-prob-desc { font-size: 0.84rem; color: var(--ivory-2); line-height: 1.55; }
+.iso-prob-desc b { color: var(--gold-3); }
+
+.iso-scenario {
+  background: var(--ink-0); border: 1px solid var(--ink-4); border-radius: 8px;
+  padding: 10px 12px; margin-top: 8px;
+}
+.iso-scenario-title {
+  font-size: 0.92rem; color: var(--gold-1); font-weight: 600; margin-bottom: 6px;
+}
+.iso-timeline { width: 100%; height: auto; max-height: 240px; }
+.iso-scenario-legend {
+  font-size: 0.82rem; color: var(--ivory-3); margin-top: 4px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.iso-scenario-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.iso-scenario-legend i { display: inline-block; width: 18px; height: 3px; border-radius: 2px; }
+
+[data-theme="light"] .iso-tab { background: #f4eedc; color: #2a2618; border-color: #d4c89a; }
+[data-theme="light"] .iso-tab.is-active { background: var(--gold-2); color: #fff; }
+[data-theme="light"] .iso-tab .iso-en { color: #6b5d3e; }
+[data-theme="light"] .iso-summary { background: #f4eedc; border-color: #d4c89a; }
+[data-theme="light"] .iso-matrix { background: #f4eedc; }
+[data-theme="light"] .iso-matrix thead th,
+[data-theme="light"] .iso-matrix .iso-row-th { background: #ebe1c0; }
+[data-theme="light"] .iso-matrix tbody tr.iso-row-active { background: rgba(184, 134, 56, 0.12); }
+[data-theme="light"] .iso-matrix thead th.iso-col-active { background: rgba(184, 134, 56, 0.25); }
+[data-theme="light"] .iso-prob { background: #ebe1c0; border-color: #d4c89a; }
 </style>
 </head>
 <body>
@@ -3190,7 +3359,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
     <div class="sidebar-items" id="items-sec2"></div>
   </div>
   <div class="sidebar-section" data-section="sec3">
-    <div class="sidebar-section-title">🗃️ 数据库范式 <span class="sidebar-section-count">4</span></div>
+    <div class="sidebar-section-title">🗃️ 数据库 <span class="sidebar-section-count">5</span></div>
     <div class="sidebar-items" id="items-sec3"></div>
   </div>
   <div class="sidebar-section" data-section="sec4">
@@ -3611,6 +3780,57 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
       <span class="formula-label">子网掩码速算</span>
       <div class="formula">/n → 前 n 位为 1，后 (32−n) 位为 0<br>如 /26 → 255.255.255.192</div>
+
+      <span class="formula-label">常见 CIDR 速记</span>
+      <div class="formula">
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;font-family:var(--font-mono)">
+  <thead>
+    <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+      <th style="text-align:left;padding:6px 10px">前缀</th>
+      <th style="text-align:left;padding:6px 10px">可用主机</th>
+      <th style="text-align:left;padding:6px 10px">典型场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom:1px solid var(--ink-3)">
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/24</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">254 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">最常见家庭/企业子网</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--ink-3)">
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/25</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">126 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">半个 C 段，等分子网常用</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--ink-3)">
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/26</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">62 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">小型部门/楼层子网</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--ink-3)">
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/27</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">30 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">办公区/会议室子网</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--ink-3)">
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/28</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">14 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">小型办公/IoT 网段</td>
+    </tr>
+    <tr style="border-bottom:1px solid var(--ink-3)">
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/30</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">2 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">点对点链路（路由器互联）</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px;color:var(--gold-1);font-weight:700">/32</td>
+      <td style="padding:6px 10px;color:var(--emerald);font-weight:700">1 台</td>
+      <td style="padding:6px 10px;color:var(--ivory-2)">主机路由（精确到一台主机）</td>
+    </tr>
+  </tbody>
+</table>
+      </div>
+      <div class="tip"><b>记忆口诀</b>：主机位 h → 2ʰ − 2 台。/24 借 0 位主机 8 位 → 256−2；/30 借 6 位主机 2 位 → 4−2；/32 全网络位 → 仅自身 1 台。</div>
 
       <span class="formula-label">子网聚合（CIDR 路由汇总）</span>
       <div class="formula">汇总后 /n = max(各子网相同前缀位数)</div>
@@ -5181,6 +5401,110 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 </article>
 
       
+    <article class="card-detail tier-1" data-id="c17a" data-section="sec3">
+
+      <span class="tier-label">⭐⭐⭐ 高频</span>
+      <div class="card-title">3.0 事务隔离级别</div>
+      <div class="exam-flag"><span class="freq">×4</span><span>真题考过</span><span class="years">2019下·2021下·2023上·2024下</span></div>
+      <div class="card-sub">Transaction Isolation Levels · ANSI SQL 92</div>
+
+      <div class="calc">
+        <div class="calc-title">交互可视化 · 4 隔离级别 → 能/不能避免的并发问题</div>
+        <div class="iso-tabs" id="iso-tabs">
+          <button class="iso-tab is-active" data-iso="RU">① 读未提交<br><span class="iso-en">Read Uncommitted</span></button>
+          <button class="iso-tab" data-iso="RC">② 读已提交<br><span class="iso-en">Read Committed</span></button>
+          <button class="iso-tab" data-iso="RR">③ 可重复读<br><span class="iso-en">Repeatable Read</span></button>
+          <button class="iso-tab" data-iso="SE">④ 串行化<br><span class="iso-en">Serializable</span></button>
+        </div>
+
+        <div class="iso-summary" id="iso-summary"></div>
+
+        <div class="iso-matrix-wrap">
+          <table class="iso-matrix" id="iso-matrix">
+            <thead>
+              <tr>
+                <th class="iso-row-th">隔离级别 ↓ \ 并发问题 →</th>
+                <th data-prob="DR">脏读<br><span class="iso-en">Dirty Read</span></th>
+                <th data-prob="NR">不可重复读<br><span class="iso-en">Non-Repeatable</span></th>
+                <th data-prob="PH">幻读<br><span class="iso-en">Phantom</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-row="RU">
+                <th class="iso-row-th">① 读未提交<br><span class="iso-en">RU</span></th>
+                <td data-cell="DR" data-st="no"></td>
+                <td data-cell="NR" data-st="no"></td>
+                <td data-cell="PH" data-st="no"></td>
+              </tr>
+              <tr data-row="RC">
+                <th class="iso-row-th">② 读已提交<br><span class="iso-en">RC</span></th>
+                <td data-cell="DR" data-st="yes"></td>
+                <td data-cell="NR" data-st="no"></td>
+                <td data-cell="PH" data-st="no"></td>
+              </tr>
+              <tr data-row="RR">
+                <th class="iso-row-th">③ 可重复读<br><span class="iso-en">RR</span></th>
+                <td data-cell="DR" data-st="yes"></td>
+                <td data-cell="NR" data-st="yes"></td>
+                <td data-cell="PH" data-st="no"></td>
+              </tr>
+              <tr data-row="SE">
+                <th class="iso-row-th">④ 串行化<br><span class="iso-en">Serializable</span></th>
+                <td data-cell="DR" data-st="yes"></td>
+                <td data-cell="NR" data-st="yes"></td>
+                <td data-cell="PH" data-st="yes"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="iso-legend">
+          <span><i class="iso-dot iso-yes"></i>✓ 可避免</span>
+          <span><i class="iso-dot iso-no"></i>✗ 仍可能发生</span>
+          <span class="iso-hint">提示：级别越高 → 并发问题越少 → 但性能开销越大</span>
+        </div>
+
+        <div class="iso-prob-panels">
+          <div class="iso-prob" data-prob-pane="DR">
+            <div class="iso-prob-title">▸ 脏读 <span class="iso-en">Dirty Read</span></div>
+            <div class="iso-prob-desc">事务 T1 读到 T2 <b>未提交</b>的修改;若 T2 回滚,T1 读到的就是"脏数据"。</div>
+          </div>
+          <div class="iso-prob" data-prob-pane="NR">
+            <div class="iso-prob-title">▸ 不可重复读 <span class="iso-en">Non-Repeatable Read</span></div>
+            <div class="iso-prob-desc">T1 两次读同一行,期间 T2 修改并提交了该行 → 两次读到的<b>值不同</b>。</div>
+          </div>
+          <div class="iso-prob" data-prob-pane="PH">
+            <div class="iso-prob-title">▸ 幻读 <span class="iso-en">Phantom Read</span></div>
+            <div class="iso-prob-desc">T1 两次按条件查同一范围,期间 T2 插入并提交了符合条件的新行 → 第二次查到<b>多出一行</b>(幻影)。</div>
+          </div>
+        </div>
+
+        <div class="iso-scenario">
+          <div class="iso-scenario-title">▸ 时序图 · 选择级别查看并发行为</div>
+          <svg class="iso-timeline" id="iso-timeline" viewBox="0 0 720 220" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="iso-scenario-legend" id="iso-scenario-legend"></div>
+        </div>
+      </div>
+
+      <span class="formula-label">记忆口诀</span>
+      <div class="formula">
+        <b>RU</b>:啥都不防;<b>RC</b>:写时加锁防脏读;<b>RR</b>:读时加锁防不可重复读;<b>SE</b>:范围锁防幻读。<br>
+        排除法速记:能避免 → ✓;不能避免 → ✗。<b>从左往右</b>单调递增——上一级能避免的,下一级必能避免。
+      </div>
+
+      <div class="example">
+        <div class="example-label">▸ 典型题</div>
+        题目:某系统采用 SQL 标准隔离级别,事务 T1 执行 SELECT ... WHERE age>20,期间 T2 插入一行 age=25 并提交。T1 再次执行相同 SELECT 时<b>多出一行</b>。该现象称为(<u>&nbsp;&nbsp;&nbsp;</u>),在(<u>&nbsp;&nbsp;&nbsp;</u>)隔离级别下<b>不会发生</b>。<br>
+        答案:<b style="color:var(--crimson)">幻读</b> · <b style="color:var(--emerald)">Serializable(串行化)</b>
+      </div>
+
+      <div class="trap">
+        <b>陷阱</b>:① <b>不可重复读 vs 幻读</b>:前者是<b>同行值</b>被改,后者是<b>范围行数</b>变了;② MySQL InnoDB 在 RR 级别用 MVCC + Next-Key Lock 在很大程度上<b>避免</b>了幻读(但 SQL 标准认为 RR 不防幻读);③ 题目默认按 <b>SQL 标准</b>答,不要被 MySQL 实现细节误导。
+      </div>
+
+    </article>
+
+
     <article class="card-detail tier-2" data-id="c18" data-section="sec3">
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
@@ -5889,7 +6213,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div id="evm-out" class="calc-result"></div>
         <div class="evm-svg-wrap">
-          <svg id="evm-svg" viewBox="0 0 480 240" preserveAspectRatio="none" role="img" aria-label="EVM PV/EV/AC 曲线对比"></svg>
+          <svg id="evm-svg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="EVM PV/EV/AC 曲线对比"></svg>
         </div>
         <div class="evm-bars">
           <div>
@@ -5911,6 +6235,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <span class="formula-label">偏差</span>
       <div class="formula">SV = EV − PV  (>0 超前，<0 落后)</div>
       <div class="formula">CV = EV − AC  (>0 节约，<0 超支)</div>
+      <div class="tip"><b>口诀</b>:「SV 看进度(−PV),CV 看成本(−AC),>0 都是好事」。</div>
 
       <span class="formula-label">绩效指数</span>
       <div class="formula">SPI = EV / PV  (>1 超前，<1 落后)</div>
@@ -5921,6 +6246,32 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="formula">EAC = BAC / CPI       ← 典型性差异</div>
       <div class="formula">ETC = EAC − AC</div>
       <div class="formula">VAC = BAC − EAC       ← 完工偏差</div>
+
+      <span class="formula-label">▸ EVM 专有缩写名词解释</span>
+      <div class="formula" style="padding:0">
+        <table style="width:100%;border-collapse:collapse;font-size:.88rem;font-family:var(--font-cn)">
+          <thead>
+            <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+              <th style="text-align:left;padding:6px 8px;width:80px">缩写</th>
+              <th style="text-align:left;padding:6px 8px;width:170px">英文全称</th>
+              <th style="text-align:left;padding:6px 8px">中文释义</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">PV</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Planned Value</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>计划值</b> · 按进度计划,到某时点本应完成工作的预算成本</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">EV</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Earned Value</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>挣值</b> · 实际完成工作的<b>预算</b>成本(用预算衡量产出)</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">AC</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Actual Cost</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>实际成本</b> · 到某时点已完成工作的<b>实际</b>花费</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">BAC</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Budget At Completion</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>完工预算</b> · 项目全部工作的总预算(基线)</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">EAC</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Estimate At Completion</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>完工估算</b> · 按当前绩效预测的项目总成本(典型差异=BAC/CPI)</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">ETC</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Estimate To Complete</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>完工尚需成本</b> · 剩余工作预计还要花多少(=EAC−AC)</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">VAC</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Variance At Completion</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>完工偏差</b> · BAC 与 EAC 的差(=BAC−EAC),正数=省,负数=超</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">SV</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Schedule Variance</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>进度偏差</b> · EV−PV,>0 超前,<0 落后</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">CV</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Cost Variance</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>成本偏差</b> · EV−AC,>0 节约,<0 超支</td></tr>
+            <tr style="border-bottom:1px solid var(--ink-3)"><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">SPI</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Schedule Performance Index</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>进度绩效指数</b> · EV/PV,>1 超前,<1 落后</td></tr>
+            <tr><td style="padding:5px 8px;color:var(--gold-1);font-family:var(--font-mono);font-weight:700">CPI</td><td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono);font-size:.82rem">Cost Performance Index</td><td style="padding:5px 8px;color:var(--ivory-2)"><b>成本绩效指数</b> · EV/AC,>1 节约,<1 超支</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="example">
         <div class="example-label">▸ 典型题</div>
@@ -7166,6 +7517,301 @@ function toggleTheme() {
   document.getElementById('theme-toggle').textContent = next === 'light' ? '☀' : '☾';
   refreshThemeColors();
   if (document.getElementById('bm-canvas')) drawBitmap();  // Canvas 不受 CSS 切换影响,需主动重绘
+}
+
+/* ========== 3.0 Transaction Isolation Levels ========== */
+const ISO_LEVELS = {
+  RU: { name: '读未提交', en: 'Read Uncommitted', desc: '事务可以读到其他事务<b>未提交</b>的修改。并发性能最高,但可能出现所有并发问题。' },
+  RC: { name: '读已提交', en: 'Read Committed',   desc: '只能读到其他事务<b>已提交</b>的修改。避免<b>脏读</b>,但仍有不可重复读和幻读(Oracle / PostgreSQL / SQL Server 默认)。' },
+  RR: { name: '可重复读', en: 'Repeatable Read', desc: '同一事务内多次读同一行结果一致。避免<b>脏读</b>和<b>不可重复读</b>;SQL 标准下仍有幻读(MySQL InnoDB 默认)。' },
+  SE: { name: '串行化',   en: 'Serializable',    desc: '强制事务串行执行。避免<b>全部</b>三种并发问题,但并发性能最低,容易引发锁等待/超时。' }
+};
+
+const ISO_AVOIDS = {
+  RU: { DR: false, NR: false, PH: false },
+  RC: { DR: true,  NR: false, PH: false },
+  RR: { DR: true,  NR: true,  PH: false },
+  SE: { DR: true,  NR: true,  PH: true  }
+};
+
+let _isoCur = 'RU';
+let _isoCol = null;  // 当前高亮的并发问题列 (DR/NR/PH),null 表示不高亮列
+
+const ISO_PROBS = {
+  DR: { name: '脏读', en: 'Dirty Read', example: 'T1 读 X=100 → T2 改 X=200 未提交 → T1 再读 X=200;T2 回滚 → T1 读到的是不存在的值' },
+  NR: { name: '不可重复读', en: 'Non-Repeatable', example: 'T1 读 X=100 → T2 改 X=200 并提交 → T1 再读 X=200(同事务,值变了)' },
+  PH: { name: '幻读', en: 'Phantom', example: 'T1 查 WHERE age>20 返回 3 行 → T2 插入一行 age=25 并提交 → T1 再查返回 4 行(多了"幻影"行)' }
+};
+
+function isoSelect(level, fromTab) {
+  _isoCur = level;
+  if (fromTab !== true) {
+    // 同步 tab 状态(以防外部触发)
+  }
+  document.querySelectorAll('#iso-tabs .iso-tab').forEach(b => {
+    b.classList.toggle('is-active', b.dataset.iso === level);
+  });
+  isoUpdate();
+}
+
+function isoUpdate() {
+  const lvl = ISO_LEVELS[_isoCur];
+  const avd = ISO_AVOIDS[_isoCur];
+
+  // 1) 文字摘要
+  const avoided = [];
+  if (avd.DR) avoided.push('<b style="color:var(--emerald)">脏读</b>');
+  if (avd.NR) avoided.push('<b style="color:var(--emerald)">不可重复读</b>');
+  if (avd.PH) avoided.push('<b style="color:var(--emerald)">幻读</b>');
+  const notAvoided = [];
+  if (!avd.DR) notAvoided.push('<b style="color:var(--crimson)">脏读</b>');
+  if (!avd.NR) notAvoided.push('<b style="color:var(--crimson)">不可重复读</b>');
+  if (!avd.PH) notAvoided.push('<b style="color:var(--crimson)">幻读</b>');
+
+  const sum = document.getElementById('iso-summary');
+  if (sum) {
+    sum.innerHTML =
+      `<b style="color:var(--gold-1);font-size:1.05em">${lvl.name}</b> ` +
+      `<span style="font-family:var(--font-mono);color:var(--ivory-3);font-size:.85em">${lvl.en}</span><br>` +
+      `${lvl.desc}<br>` +
+      `<span style="display:inline-block;margin-top:4px">可避免:${avoided.length ? avoided.join(' · ') : '<i style="color:var(--ivory-3)">无</i>'}</span> &nbsp; ` +
+      `<span style="display:inline-block;margin-top:4px">仍可能:${notAvoided.length ? notAvoided.join(' · ') : '<i style="color:var(--ivory-3)">无(全部避免)</i>'}</span>`;
+  }
+
+  // 2) 矩阵行高亮
+  document.querySelectorAll('#iso-matrix tbody tr').forEach(tr => {
+    tr.classList.toggle('iso-row-active', tr.dataset.row === _isoCur);
+  });
+
+  // 3) 列高亮
+  document.querySelectorAll('#iso-matrix thead th').forEach(th => {
+    th.classList.toggle('iso-col-active', th.dataset.prob === _isoCol);
+  });
+  document.querySelectorAll('#iso-matrix tbody td').forEach(td => {
+    td.classList.toggle('iso-col-active', td.dataset.cell === _isoCol);
+  });
+
+  // 4) 单元格脉冲(选中行 + 选中列 的交叉点)
+  document.querySelectorAll('#iso-matrix tbody td').forEach(td => {
+    td.classList.remove('iso-cell-pulse');
+  });
+  if (_isoCol) {
+    const cell = document.querySelector(`#iso-matrix tbody tr[data-row="${_isoCur}"] td[data-cell="${_isoCol}"]`);
+    if (cell) {
+      // 触发 reflow 才能重新跑动画
+      void cell.offsetWidth;
+      cell.classList.add('iso-cell-pulse');
+    }
+  }
+
+  // 5) 问题面板聚焦
+  document.querySelectorAll('.iso-prob').forEach(p => {
+    p.classList.toggle('iso-prob-active', p.dataset.probPane === _isoCol);
+  });
+
+  // 6) 重绘时序图
+  isoDrawTimeline();
+}
+
+function isoHighlightProb(prob) {
+  _isoCol = (_isoCol === prob) ? null : prob;
+  isoUpdate();
+}
+
+function isoDrawTimeline() {
+  const svg = document.getElementById('iso-timeline');
+  if (!svg) return;
+
+  const W = 720, H = 220;
+  const tx = (x) => 40 + x;  // 时间轴起点
+  const laneY = (lane) => 60 + lane * 70;
+
+  const avd = ISO_AVOIDS[_isoCur];
+  const colMap = { DR: avd.DR ? '#5d8a6f' : '#c8553d', NR: avd.NR ? '#5d8a6f' : '#c8553d', PH: avd.PH ? '#5d8a6f' : '#c8553d' };
+
+  // 不同级别显示不同的事件序列
+  // T1 / T2 两个事务,每个有 2-3 个操作
+  // 用事件位置定义场景
+  const scenarios = {
+    RU: [
+      { lane: 0, label: 'T1', events: [
+        { t: 20,  op: 'SELECT X', prob: 'DR' },
+        { t: 200, op: 'SELECT X', prob: 'DR' }
+      ]},
+      { lane: 1, label: 'T2', events: [
+        { t: 80,  op: 'UPDATE X=200', prob: 'DR', style: 'uncommitted' },
+        { t: 160, op: 'ROLLBACK',    prob: 'DR', style: 'rollback' }
+      ]}
+    ],
+    RC: [
+      { lane: 0, label: 'T1', events: [
+        { t: 20,  op: 'SELECT X →100', prob: 'NR' },
+        { t: 220, op: 'SELECT X →200', prob: 'NR', style: 'changed' }
+      ]},
+      { lane: 1, label: 'T2', events: [
+        { t: 100, op: 'UPDATE X=200', prob: 'NR' },
+        { t: 150, op: 'COMMIT',       prob: 'NR', style: 'commit' }
+      ]}
+    ],
+    RR: [
+      { lane: 0, label: 'T1', events: [
+        { t: 20,  op: 'SELECT * WHERE age>20', prob: 'PH', style: 'range' },
+        { t: 220, op: 'SELECT * WHERE age>20', prob: 'PH', style: 'range' }
+      ]},
+      { lane: 1, label: 'T2', events: [
+        { t: 100, op: 'INSERT age=25', prob: 'PH' },
+        { t: 150, op: 'COMMIT',        prob: 'PH', style: 'commit' }
+      ]}
+    ],
+    SE: [
+      { lane: 0, label: 'T1', events: [
+        { t: 20,  op: 'SELECT * WHERE age>20', prob: 'PH', style: 'range' },
+        { t: 240, op: 'SELECT * WHERE age>20', prob: 'PH', style: 'range', value: '3 行(同前)' }
+      ]},
+      { lane: 1, label: 'T2', events: [
+        { t: 100, op: 'INSERT age=25', prob: 'PH', style: 'blocked' },
+        { t: 280, op: 'INSERT age=25', prob: 'PH', style: 'after', value: 'T1 提交后才执行' }
+      ]}
+    ]
+  };
+
+  const sc = scenarios[_isoCur];
+  let html = '';
+
+  // 背景网格 + 时间轴
+  html += `<defs>
+    <linearGradient id="isoLaneBg${_isoCur}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#1a1814" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#1a1814" stop-opacity="0"/>
+    </linearGradient>
+  </defs>`;
+
+  // 车道背景
+  for (let i = 0; i < 2; i++) {
+    html += `<rect x="40" y="${laneY(i) - 30}" width="${W - 60}" height="50" rx="6"
+      fill="url(#isoLaneBg${_isoCur})" stroke="#3a3528" stroke-width="1"/>`;
+  }
+
+  // 时间刻度(0/100/200/300)
+  for (let t = 0; t <= 300; t += 100) {
+    html += `<line x1="${tx(t)}" y1="30" x2="${tx(t)}" y2="${H - 20}"
+      stroke="#3a3528" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>`;
+    html += `<text x="${tx(t)}" y="22" text-anchor="middle"
+      font-family="JetBrains Mono" font-size="9" fill="#7a6f55">t=${t}</text>`;
+  }
+
+  // 车道标签
+  sc.forEach((lane, i) => {
+    html += `<text x="14" y="${laneY(i) + 5}" font-family="JetBrains Mono" font-size="11"
+      font-weight="700" fill="#d4a574">${lane.label}</text>`;
+    html += `<line x1="40" y1="${laneY(i) - 5}" x2="${tx(0)}" y2="${laneY(i) - 5}"
+      stroke="#d4a574" stroke-width="1.5"/>`;
+  });
+
+  // 主时间轴
+  html += `<line x1="40" y1="${H - 25}" x2="${W - 20}" y2="${H - 25}"
+    stroke="#d4a574" stroke-width="2"/>`;
+  html += `<polygon points="${W - 20},${H - 25} ${W - 28},${H - 29} ${W - 28},${H - 21}"
+    fill="#d4a574"/>`;
+
+  // 事件
+  sc.forEach((lane, i) => {
+    lane.events.forEach(ev => {
+      const x = tx(ev.t);
+      const y = laneY(i);
+      const color = ev.prob ? colMap[ev.prob] : '#d4a574';
+      const isProblem = ev.prob && _isoCol === ev.prob;
+      const r = isProblem ? 8 : 5;
+
+      // 节点
+      let nodeFill = color;
+      let nodeStroke = color;
+      let extraText = '';
+      if (ev.style === 'uncommitted') nodeFill = '#c8553d';
+      if (ev.style === 'rollback')    { nodeFill = '#3a3528'; nodeStroke = '#c8553d'; }
+      if (ev.style === 'commit')      nodeFill = '#5d8a6f';
+      if (ev.style === 'changed')     nodeFill = '#c8553d';
+      if (ev.style === 'blocked')     { nodeFill = '#3a3528'; nodeStroke = '#d4a574'; nodeStroke = '#d4a574'; }
+      if (ev.style === 'after')       nodeFill = '#5d8a6f';
+
+      html += `<circle cx="${x}" cy="${y}" r="${r}"
+        fill="${nodeFill}" stroke="${nodeStroke}" stroke-width="2"
+        ${isProblem ? 'filter="drop-shadow(0 0 6px ' + color + ')"' : ''}/>`;
+
+      // 操作标签
+      const textY = (i === 0) ? y - 14 : y + 22;
+      const textColor = ev.style === 'rollback' ? '#c8553d'
+                      : ev.style === 'commit'  ? '#5d8a6f'
+                      : ev.style === 'blocked' ? '#7a6f55'
+                      : '#e8dfc4';
+      html += `<text x="${x}" y="${textY}" text-anchor="middle"
+        font-family="JetBrains Mono" font-size="9.5" fill="${textColor}">${ev.op}</text>`;
+      if (ev.value) {
+        html += `<text x="${x}" y="${textY + (i === 0 ? -10 : 14)}" text-anchor="middle"
+          font-family="JetBrains Mono" font-size="8.5" fill="#d4a574" font-style="italic">${ev.value}</text>`;
+      }
+    });
+  });
+
+  // 如果有当前选中问题,画一条横跨两条车道的虚线连接对应事件
+  if (_isoCol) {
+    const probEvents = [];
+    sc.forEach((lane, i) => {
+      lane.events.forEach(ev => {
+        if (ev.prob === _isoCol) probEvents.push({ x: tx(ev.t), y: laneY(i) });
+      });
+    });
+    if (probEvents.length >= 2) {
+      const minX = Math.min(...probEvents.map(e => e.x));
+      const maxX = Math.max(...probEvents.map(e => e.x));
+      html += `<path d="M ${minX} ${laneY(0) - 22} Q ${(minX + maxX) / 2} ${laneY(0) - 38} ${maxX} ${laneY(0) - 22}"
+        fill="none" stroke="${colMap[_isoCol]}" stroke-width="1.5" stroke-dasharray="3 3"
+        opacity="0.6"/>`;
+      const probName = ISO_PROBS[_isoCol].name;
+      html += `<text x="${(minX + maxX) / 2}" y="${laneY(0) - 42}" text-anchor="middle"
+        font-family="var(--font-cn)" font-size="11" font-weight="700"
+        fill="${colMap[_isoCol]}">▼ ${probName}</text>`;
+    }
+  }
+
+  // 状态注解(右下角)
+  let verdict = '';
+  const safeCount = (avd.DR ? 1 : 0) + (avd.NR ? 1 : 0) + (avd.PH ? 1 : 0);
+  if (safeCount === 3)      verdict = '<tspan fill="#5d8a6f" font-weight="700">✓ 避免全部 3 种并发问题</tspan>';
+  else if (safeCount === 2) verdict = '<tspan fill="#d4a574" font-weight="700">△ 避免 2 种,仍有 1 种</tspan>';
+  else if (safeCount === 1) verdict = '<tspan fill="#d4a574" font-weight="700">△ 仅避免 1 种</tspan>';
+  else                       verdict = '<tspan fill="#c8553d" font-weight="700">✗ 三种并发问题都可能发生</tspan>';
+
+  html += `<text x="${W - 105}" y="${H - 9}" text-anchor="middle"
+    font-family="var(--font-cn)" font-size="10">${verdict}</text>`;
+
+  svg.innerHTML = html;
+
+  // 图例
+  const legend = document.getElementById('iso-scenario-legend');
+  if (legend) {
+    legend.innerHTML =
+      `<span><i style="background:#c8553d"></i>异常事件</span>` +
+      `<span><i style="background:#5d8a6f"></i>COMMIT / 正常完成</span>` +
+      `<span><i style="background:#d4a574"></i>当前选中行</span>` +
+      `<span style="color:#7a6f55">点击列头(脏读/不可重复读/幻读)可叠加列高亮</span>`;
+  }
+}
+
+// 绑定 tab 点击
+document.querySelectorAll('#iso-tabs .iso-tab').forEach(btn => {
+  btn.addEventListener('click', () => isoSelect(btn.dataset.iso, true));
+});
+
+// 绑定矩阵列头点击 → 切换列高亮 + 时序图联动
+document.querySelectorAll('#iso-matrix thead th[data-prob]').forEach(th => {
+  th.style.cursor = 'pointer';
+  th.addEventListener('click', () => isoHighlightProb(th.dataset.prob));
+});
+
+// 初始化
+if (document.getElementById('iso-tabs')) {
+  isoSelect('RU', true);
 }
 
 /* ================== rAF 节流（高频 oninput 不再每帧都重建 SVG/Canvas）================== */
@@ -11140,19 +11786,29 @@ function calcEVM() {
 
   document.getElementById('evm-out').innerHTML = `
     <div class="evm-bar">
-      <div class="evm-cell"><div class="lbl">SV</div><div class="num ${svCls}">${SV >= 0 ? '+' : ''}${fmt(SV)}</div></div>
-      <div class="evm-cell"><div class="lbl">CV</div><div class="num ${cvCls}">${CV >= 0 ? '+' : ''}${fmt(CV)}</div></div>
-      <div class="evm-cell"><div class="lbl">SPI / CPI</div><div class="num">${fmt(SPI,2)} / ${fmt(CPI,2)}</div></div>
+      <div class="evm-cell">
+        <div class="lbl">SV</div>
+        <div class="num ${svCls}">${SV >= 0 ? '+' : ''}${fmt(SV)}</div>
+      </div>
+      <div class="evm-cell">
+        <div class="lbl">CV</div>
+        <div class="num ${cvCls}">${CV >= 0 ? '+' : ''}${fmt(CV)}</div>
+      </div>
+      <div class="evm-cell">
+        <div class="lbl">SPI / CPI</div>
+        <div class="num">${fmt(SPI,2)} <sub>/</sub> ${fmt(CPI,2)}</div>
+      </div>
     </div>
-    <div style="margin-top:8px">
-      <span class="key">EAC = ${eacFormula} =</span> <span class="val">${fmt(EAC,1)}</span> &nbsp;|&nbsp;
-      <span class="key">ETC =</span> <span class="val">${fmt(ETC,1)}</span> &nbsp;|&nbsp;
-      <span class="key">VAC =</span> <span class="val">${fmt(VAC,1)}</span>
-    </div>
-    <div style="margin-top:6px;color:var(--ivory-3);font-size:0.82rem">
-      模式：<b style="color:var(--gold-2)">${evmMode === 'typical' ? '典型差异' : '非典型差异'}</b> ·
-      ${SPI < 1 ? '⚠ 进度落后' : '✓ 进度正常'} ·
-      ${CPI < 1 ? '⚠ 成本超支' : '✓ 成本正常'}
+    <div class="evm-meta">
+      <span class="group"><span class="k">EAC</span>=<span class="v">${fmt(EAC,1)}</span></span>
+      <span class="sep">·</span>
+      <span class="group"><span class="k">ETC</span>=<span class="v">${fmt(ETC,1)}</span></span>
+      <span class="sep">·</span>
+      <span class="group"><span class="k">VAC</span>=<span class="v">${VAC >= 0 ? '+' : ''}${fmt(VAC,1)}</span></span>
+      <span class="sep">·</span>
+      <span class="tag">${evmMode === 'typical' ? '典型差异' : '非典型差异'}</span>
+      <span class="tag ${SPI < 1 ? 'bad' : 'ok'}">${SPI < 1 ? '⚠ 进度落后' : '✓ 进度正常'}</span>
+      <span class="tag ${CPI < 1 ? 'bad' : 'ok'}">${CPI < 1 ? '⚠ 成本超支' : '✓ 成本正常'}</span>
     </div>`;
 
   // S 曲线（累计值随时间）
@@ -11177,52 +11833,106 @@ function calcEVM() {
 function drawEVMCurve(PV, EV, AC, BAC, EAC) {
   const svg = document.getElementById('evm-svg');
   if (!svg) return;
-  const W = 480, H = 240;
-  const padL = 40, padR = 10, padT = 20, padB = 28;
-  const max = Math.max(PV, EV, AC, BAC, EAC, 1);
+  const W = 600, H = 360;
+  const padL = 52, padR = 130, padT = 28, padB = 36;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const max = Math.max(PV, EV, AC, BAC, EAC, 1) * 1.15;  // 顶部留 15% 空白
   const t = 10;
   // 当前完成时间点（按 EV/BAC 比例）
-  const curT = BAC > 0 ? (EV / BAC) * t : 0;
-  // 折线点
-  const ptPV = Array.from({length: t+1}, (_, i) => [padL + (i/t) * (W - padL - padR), padT + (H - padT - padB) * (1 - (BAC * i/t) / max)]);
-  const ptEV = ptPV.map((p, i) => [p[0], padT + (H - padT - padB) * (1 - (EV * Math.min(i/t, curT/t)) / max)]);
-  const ptAC = Array.from({length: t+1}, (_, i) => {
-    const x = padL + (i/t) * (W - padL - padR);
-    // 起点到当前 curT 用 AC 实测累积；curT 之后线性延伸至 EAC
+  const curT = BAC > 0 ? Math.min(t, (EV / BAC) * t) : 0;
+  const sx = (i) => padL + (i / t) * plotW;
+  const sy = (v) => padT + plotH * (1 - v / max);
+
+  // PV: 直线从 0 到 BAC
+  const ptPV = Array.from({length: t+1}, (_, i) => [sx(i), sy(BAC * i / t)]);
+  // EV: 从 (0,0) 累计到 (curT, EV)，之后线性延伸到 (t, BAC)（挣值持续增长直至完工）
+  const ptEV = ptPV.map((p, i) => {
+    const v = i <= curT
+      ? (curT > 0 ? EV * (i / curT) : EV)
+      : EV + (BAC - EV) * ((i - curT) / (t - curT));
+    return [p[0], sy(v)];
+  });
+  // AC: 到 curT 处累积到 AC，之后延伸到 EAC
+  const ptAC = ptPV.map((p, i) => {
     const v = i <= curT
       ? (curT > 0 ? AC * (i / curT) : AC)
       : AC + (EAC - AC) * ((i - curT) / (t - curT));
-    return [x, padT + (H - padT - padB) * (1 - v / max)];
+    return [p[0], sy(v)];
   });
-  // 简化：AC 累积到当前 AC，预测延伸至 EAC
+
   const ptPVstr = ptPV.map(p => p.join(',')).join(' ');
   const ptEVstr = ptEV.map(p => p.join(',')).join(' ');
   const ptACstr = ptAC.map(p => p.join(',')).join(' ');
-  // 当前时刻竖线
-  const xCur = padL + (curT/t) * (W - padL - padR);
+
+  const xCur = sx(curT);
+  // 当前时刻点在曲线上的"理想"PV 值（按 BAC × 进度比），与用户输入 PV 可能不一致 → 以曲线值为准
+  const yPV_now = sy(BAC * curT / t);
+  const yEV_now = sy(EV);
+  const yAC_now = sy(AC);
+  const yBAC    = sy(BAC);
+  const yEAC    = sy(EAC);
+
+  // Y 轴刻度（5 等分）
+  const yTicks = [0, 0.25, 0.5, 0.75, 1].map(p => p * max);
+
   svg.innerHTML = `
-    <!-- 网格 -->
-    ${[0, 0.25, 0.5, 0.75, 1].map(p => `<line x1="${padL}" y1="${padT + p * (H - padT - padB)}" x2="${W - padR}" y2="${padT + p * (H - padT - padB)}" stroke="#1c2440" stroke-width="0.5"/>`).join('')}
-    <!-- 当前时刻 -->
-    <line x1="${xCur}" y1="${padT}" x2="${xCur}" y2="${H - padB}" stroke="#8e8a7a" stroke-width="1" stroke-dasharray="3 3"/>
-    <text x="${xCur + 4}" y="${padT + 10}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9">当前</text>
-    <!-- Y 轴标签 -->
-    <text x="6" y="${padT + 4}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9">${max.toFixed(1)}</text>
-    <text x="6" y="${H - padB}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9">0</text>
-    <!-- 曲线 -->
-    <polyline points="${ptPVstr}" fill="none" stroke="#d4a574" stroke-width="2"/>
-    <polyline points="${ptEVstr}" fill="none" stroke="#e8c384" stroke-width="2"/>
-    <polyline points="${ptACstr}" fill="none" stroke="#c8553d" stroke-width="2"/>
+    <!-- 背景 -->
+    <rect x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="#0a0f1f" stroke="#2a3056" stroke-width="1"/>
+
+    <!-- 水平网格 + Y 轴刻度 -->
+    ${yTicks.map(v => `
+      <line x1="${padL}" y1="${sy(v)}" x2="${padL + plotW}" y2="${sy(v)}" stroke="#1c2440" stroke-width="0.5" stroke-dasharray="2 4"/>
+      <text x="${padL - 6}" y="${sy(v) + 3}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10" text-anchor="end">${v.toFixed(1)}</text>
+    `).join('')}
+
+    <!-- Y 轴标题 -->
+    <text x="${padL - 38}" y="${padT - 10}" fill="#c4bda7" font-family="var(--font-cn)" font-size="10">成本(万)</text>
+
+    <!-- BAC 参考线（项目完工预算） -->
+    <line x1="${padL}" y1="${yBAC}" x2="${padL + plotW}" y2="${yBAC}" stroke="#5d8a6f" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>
+    <text x="${padL + plotW - 4}" y="${yBAC - 4}" fill="#5d8a6f" font-family="JetBrains Mono" font-size="10" text-anchor="end">BAC = ${BAC.toFixed(1)}</text>
+
+    <!-- EAC 参考线（预测完工） -->
+    <line x1="${padL}" y1="${yEAC}" x2="${padL + plotW}" y2="${yEAC}" stroke="#c8553d" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>
+    <text x="${padL + plotW - 4}" y="${yEAC - 4}" fill="#c8553d" font-family="JetBrains Mono" font-size="10" text-anchor="end">EAC = ${EAC.toFixed(1)}</text>
+
+    <!-- 当前时刻竖虚线 -->
+    <line x1="${xCur}" y1="${padT}" x2="${xCur}" y2="${padT + plotH}" stroke="#8e8a7a" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="${xCur + 6}" y="${padT + 12}" fill="#8e8a7a" font-family="var(--font-cn)" font-size="11">当前 ${(curT / t * 100).toFixed(0)}%</text>
+
+    <!-- 三条曲线 -->
+    <polyline points="${ptPVstr}" fill="none" stroke="#d4a574" stroke-width="2.5" stroke-linejoin="round"/>
+    <polyline points="${ptEVstr}" fill="none" stroke="#e8c384" stroke-width="2.5" stroke-linejoin="round"/>
+    <polyline points="${ptACstr}" fill="none" stroke="#c8553d" stroke-width="2.5" stroke-linejoin="round"/>
+
+    <!-- 当前时刻三点 + 标签 -->
+    <circle cx="${xCur}" cy="${yPV_now}" r="5" fill="#d4a574" stroke="#0a0f1f" stroke-width="1.5"/>
+    <circle cx="${xCur}" cy="${yEV_now}" r="5" fill="#e8c384" stroke="#0a0f1f" stroke-width="1.5"/>
+    <circle cx="${xCur}" cy="${yAC_now}" r="5" fill="#c8553d" stroke="#0a0f1f" stroke-width="1.5"/>
+
+    <!-- 偏差箭头标注：EV-PV (SV) -->
+    <line x1="${xCur - 1}" y1="${yPV_now}" x2="${xCur - 1}" y2="${yEV_now}" stroke="#8e8a7a" stroke-width="1.5"/>
+    <text x="${xCur + 10}" y="${(yPV_now + yEV_now) / 2 + 3}" fill="#c4bda7" font-family="JetBrains Mono" font-size="10">SV=${(EV-PV).toFixed(1)}</text>
+
+    <!-- 偏差箭头标注：EV-AC (CV) -->
+    <line x1="${xCur + 1}" y1="${yEV_now}" x2="${xCur + 1}" y2="${yAC_now}" stroke="#8e8a7a" stroke-width="1.5"/>
+    <text x="${xCur + 10}" y="${(yEV_now + yAC_now) / 2 + 3}" fill="#c4bda7" font-family="JetBrains Mono" font-size="10">CV=${(EV-AC).toFixed(1)}</text>
+
+    <!-- X 轴刻度 + 标签 -->
+    ${[0, 0.25, 0.5, 0.75, 1].map(p => `
+      <text x="${sx(p * t)}" y="${padT + plotH + 18}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10" text-anchor="middle">${(p * 100).toFixed(0)}%</text>
+    `).join('')}
+    <text x="${padL + plotW / 2}" y="${H - 6}" fill="#c4bda7" font-family="var(--font-cn)" font-size="10" text-anchor="middle">项目进度</text>
+
     <!-- 图例 -->
-    <g transform="translate(${W - 110}, 4)">
-      <rect x="0" y="0" width="100" height="50" fill="rgba(10,15,31,0.7)" stroke="#2a3056"/>
-      <line x1="6" y1="12" x2="22" y2="12" stroke="#d4a574" stroke-width="2"/><text x="26" y="15" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">PV (计划)</text>
-      <line x1="6" y1="26" x2="22" y2="26" stroke="#e8c384" stroke-width="2"/><text x="26" y="29" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">EV (挣值)</text>
-      <line x1="6" y1="40" x2="22" y2="40" stroke="#c8553d" stroke-width="2"/><text x="26" y="43" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">AC (实际)</text>
+    <g transform="translate(${W - padR + 10}, ${padT - 6})">
+      <text x="10" y="16" fill="#d4a574" font-family="var(--font-cn)" font-size="10" font-weight="700">图例</text>
+      <line x1="10" y1="30" x2="28" y2="30" stroke="#d4a574" stroke-width="2.5"/><text x="34" y="33" fill="#c4bda7" font-family="JetBrains Mono" font-size="10">PV 计划值</text>
+      <line x1="10" y1="48" x2="28" y2="48" stroke="#e8c384" stroke-width="2.5"/><text x="34" y="51" fill="#c4bda7" font-family="JetBrains Mono" font-size="10">EV 挣值</text>
+      <line x1="10" y1="66" x2="28" y2="66" stroke="#c8553d" stroke-width="2.5"/><text x="34" y="69" fill="#c4bda7" font-family="JetBrains Mono" font-size="10">AC 实际成本</text>
+      <line x1="10" y1="84" x2="28" y2="84" stroke="#5d8a6f" stroke-width="1.5" stroke-dasharray="4 3"/><text x="34" y="87" fill="#c4bda7" font-family="JetBrains Mono" font-size="10">BAC/EAC</text>
     </g>
-    <!-- X 轴标签 -->
-    <text x="${padL}" y="${H - 8}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9">0%</text>
-    <text x="${W - padR}" y="${H - 8}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9" text-anchor="end">100%</text>
   `;
 }
 
