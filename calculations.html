@@ -5537,6 +5537,86 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </ol>
       </div>
 
+      <div class="exam-qa">
+        <div class="exam-qa-head">历年真题</div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2024下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">可调度性判定</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>嵌入式实时系统有 3 个周期任务，参数 (Cᵢ, Tᵢ) 分别为 (1, 4)、(2, 6)、(3, 10)。使用 RMS 调度（n=3 上界 ≈ 0.779），该任务集：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>总利用率 U = 1/4 + 2/6 + 3/10 = 0.250 + 0.333 + 0.300 = <b style="color:var(--gold-1)">0.883</b></li>
+              <li>RMS 充分上界 = 3 × (2<sup>1/3</sup> − 1) ≈ <b style="color:var(--gold-1)">0.780</b></li>
+              <li>U (0.883) > RMS 界 (0.780) → <b>RMS 充分条件不满足</b>，但 U ≤ 1 → <b>EDF 必可调度</b></li>
+              <li>答案：<b style="color:var(--gold-1)">选 B（充分条件不满足，但 EDF 可调度）</b></li>
+              <li>口诀："<b>RMS 充分 / EDF 充要</b>"——RMS 只给充分条件，EDF 是单核最优</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2023下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">算法性质辨析</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关于实时调度算法 RMS 与 EDF，下列说法<b>错误</b>的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>A. RMS 是静态优先级（周期越短越高）——✓ 正确</li>
+              <li>B. EDF 的可调度上界是 U ≤ 1——✓ 正确</li>
+              <li>C. 单核下 EDF 是最优调度算法——✓ 正确（EDF 可调度 ⇔ 任意算法可调度）</li>
+              <li>D. RMS 要求 Dᵢ ≤ Tᵢ——✗ <b>错误</b>，RMS 要求 Dᵢ <b>=</b> Tᵢ（截止时间等于周期）</li>
+              <li>答案：<b style="color:var(--gold-1)">选 D</b>。EDF 才能处理 Dᵢ ≤ Tᵢ（含 Dᵢ < Tᵢ）</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025上</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">上界值记忆</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>当任务数 n → ∞ 时，RMS 调度算法的可调度上界 n(2<sup>1/n</sup> − 1) 趋近于：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>n(2<sup>1/n</sup> − 1) 是关于 n 的递减函数，n→∞ 时趋近 <b>ln 2</b></li>
+              <li>ln 2 ≈ <b style="color:var(--gold-1)">0.693</b>（约 69%）</li>
+              <li>速查：n=1 → 1.000；n=2 → 0.828；n=3 → 0.780；n→∞ → 0.693</li>
+              <li>答案：<b style="color:var(--gold-1)">选 C（0.693）</b>。常见干扰项：B (0.828) 是 n=2 的值；D (0.5) 无意义</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-item">
+          <div class="exam-qa-meta">
+            <span class="exam-qa-year">2025下</span>
+            <span class="exam-qa-pts">综合·单选</span>
+            <span class="exam-qa-tag">EDF 最优性</span>
+          </div>
+          <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某单核嵌入式系统使用 EDF 调度，4 个任务的总利用率 U = Σ(Cᵢ/Tᵢ) = 1.2。下列说法正确的是：</div>
+          <div class="exam-qa-a">
+            <span class="exam-qa-lbl">答案要点</span>
+            <ol>
+              <li>EDF 可调度上界 U ≤ 1，且对单核是<b>充要条件</b>：U ≤ 1 ⇔ 可调度</li>
+              <li>U = 1.2 > 1 → EDF <b>不可调度</b></li>
+              <li>由 EDF 单核最优性：若 EDF 都调度不了，<b>任何单核算法</b>（RMS / FIFO / 优先级等）<b>都不可调度</b></li>
+              <li>答案：<b style="color:var(--gold-1)">选 C（任何单核算法都不能调度）</b>。多核可解（负载分配），但单核无解</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="exam-qa-foot">来源：综合知识真题回忆版 · 覆盖"可调度性计算 / 算法性质 / 上界记忆 / EDF 最优性"4 类高频考点</div>
+      </div>
+
     </article>
 
 
