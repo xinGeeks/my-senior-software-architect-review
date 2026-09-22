@@ -923,7 +923,7 @@ body::before {
   padding: 10px;
   margin-top: 12px;
 }
-.cap-stress-wrap svg { width: 100%; height: 180px; display: block; }
+.cap-stress-wrap svg { width: 100%; height: auto; aspect-ratio: 480 / 200; display: block; }
 .cap-mode-toggle {
   display: inline-flex;
   border: 1px solid var(--gold-4);
@@ -944,6 +944,95 @@ body::before {
   background: var(--gold-3);
   color: var(--ink-0);
   font-weight: 600;
+}
+
+/* 4 步漏斗（PV → 平均QPS → 峰值QPS → 机器数）*/
+.cap-funnel {
+  display: flex; align-items: stretch; gap: 0;
+  margin: 12px 0 8px 0;
+}
+.cap-funnel-step {
+  flex: 1;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-3);
+  border-left: 4px solid var(--accent, var(--gold-2));
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  position: relative;
+  min-height: 84px;
+}
+.cap-funnel-step.cap-funnel-final {
+  background: linear-gradient(135deg, var(--ink-1), var(--ink-2));
+  box-shadow: 0 0 12px rgba(184, 134, 56, 0.18);
+}
+.cap-step-num {
+  position: absolute; top: -8px; left: 8px;
+  width: 22px; height: 22px;
+  background: var(--accent, var(--gold-2));
+  color: var(--ink-0);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 700;
+}
+.cap-step-lbl {
+  font-family: var(--font-cn);
+  font-size: 11px;
+  color: var(--ivory-2);
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+.cap-step-num-val {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent, var(--gold-1));
+  line-height: 1.1;
+}
+.cap-step-formula {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ivory-3);
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+.cap-funnel-arrow {
+  flex: 0 0 18px;
+  align-self: center;
+  height: 0;
+  border-top: 2px solid var(--accent, var(--gold-3));
+  border-right: 2px solid var(--accent, var(--gold-3));
+  position: relative;
+}
+.cap-funnel-arrow::after {
+  content: '';
+  position: absolute;
+  right: -2px; top: -5px;
+  width: 8px; height: 8px;
+  border-top: 2px solid var(--accent, var(--gold-3));
+  border-right: 2px solid var(--accent, var(--gold-3));
+  transform: rotate(45deg);
+}
+.cap-meta {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  margin: 8px 0 4px 0;
+  padding: 8px 12px;
+  background: var(--ink-0);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+.cap-meta > span { display: inline-flex; align-items: baseline; gap: 6px; }
+.cap-meta-k { color: var(--ivory-3); font-family: var(--font-cn); }
+.cap-meta-v { color: var(--gold-1); font-weight: 700; font-family: var(--font-mono); font-size: 0.92rem; }
+.cap-tip {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: var(--ivory-3);
+  font-style: italic;
+}
+@media (max-width: 720px) {
+  .cap-funnel { flex-direction: column; gap: 6px; }
+  .cap-funnel-arrow { display: none; }
 }
 
 /* ========== COCOMO (2.3) ========== */
@@ -2755,6 +2844,92 @@ td code {
   color: var(--gold-1);
 }
 tr:hover td { background: rgba(212, 165, 116, 0.04); }
+
+/* ISO 25010 子特性归属速查表 */
+.iso25010-table { font-size: 0.84rem; }
+.iso25010-table td { vertical-align: top; }
+.iso25010-table .qcnt {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  background: var(--gold-2);
+  color: var(--ink-0);
+  border-radius: 9px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.iso25010-table .qchip {
+  display: inline-block;
+  margin: 2px 5px 2px 0;
+  padding: 2px 9px;
+  background: rgba(95, 165, 200, 0.1);
+  border: 1px solid rgba(95, 165, 200, 0.32);
+  border-radius: 11px;
+  color: var(--ivory-1);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+.iso25010-table .qchip.cap { background: rgba(212, 165, 116, 0.12); border-color: rgba(212, 165, 116, 0.4); color: var(--gold-1); font-weight: 600; }
+.iso25010-table .qchip.sec { background: rgba(192, 88, 88, 0.1); border-color: rgba(192, 88, 88, 0.32); }
+[data-theme="light"] .iso25010-table .qchip { background: rgba(95, 130, 165, 0.1); border-color: rgba(95, 130, 165, 0.3); }
+[data-theme="light"] .iso25010-table .qchip.cap { background: rgba(180, 130, 60, 0.18); border-color: rgba(180, 130, 60, 0.5); color: #7a5320; }
+
+/* ISO 25010 经典案例卡片网格 */
+.qcase-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 14px 0 4px 0;
+}
+.qcase {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-3);
+  border-left: 3px solid var(--accent, var(--gold-2));
+  border-radius: var(--radius-sm);
+  padding: 10px 12px 9px 12px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  position: relative;
+}
+.qcase-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 5px;
+  margin-bottom: 6px;
+  font-size: 0.84rem;
+}
+.qcase-q {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-0);
+  background: var(--accent, var(--gold-2));
+  padding: 1px 7px;
+  border-radius: 9px;
+  font-weight: 700;
+}
+.qcase-q small { opacity: 0.65; margin-left: 3px; font-weight: 500; }
+.qcase-arrow { color: var(--ivory-3); font-size: 0.8rem; }
+.qcase-sub {
+  color: var(--accent, var(--gold-1));
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+.qcase-phen {
+  color: var(--ivory-2);
+  font-size: 0.8rem;
+  margin: 3px 0 4px 0;
+}
+.qcase-phen b { color: var(--ivory-0); font-weight: 600; }
+.qcase-strat {
+  color: var(--ivory-1);
+  font-size: 0.78rem;
+  padding-top: 5px;
+  border-top: 1px dashed var(--ink-3);
+}
+.qcase-strat b { color: var(--emerald); font-weight: 600; }
+@media (max-width: 720px) {
+  .qcase-grid { grid-template-columns: 1fr; }
+}
 
 /* ========== Lists ========== */
 .steps {
@@ -6788,10 +6963,165 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="tip">
         <b>注意</b>：本节以<b>概念区分</b>为主，无数值计算。案例 T1 常考"请说明 SAAM/ATAM/CBAM 区别"——按表中特点 + 演进关系答题即可。
       </div>
-    
+
 </article>
 
-      
+
+
+    <article class="card-detail tier-2" data-id="c29a" data-section="sec5">
+
+      <span class="tier-label">⭐⭐⭐ 中频</span>
+      <div class="card-title">5.5 软件质量模型 ISO 25010 · 子特性归属速查</div>
+      <div class="card-sub">8 大一级特性 + 子特性全表 · 案例 T1 / T2 答题母版</div>
+
+      <div class="formula">ISO/IEC 25010 = 8 大一级质量特性（含 31 个子特性）</div>
+
+      <table class="iso25010-table">
+        <thead>
+          <tr>
+            <th style="width:24%">一级特性</th>
+            <th>子特性（速查）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>功能适合性</code><span class="qcnt">3</span></td>
+            <td><span class="qchip">功能完备性</span><span class="qchip">功能正确性</span><span class="qchip">功能适当性</span></td>
+          </tr>
+          <tr>
+            <td><code>性能效率</code><span class="qcnt">3</span></td>
+            <td><span class="qchip">时间特性</span><span class="qchip">资源利用性</span><span class="qchip cap">容量</span></td>
+          </tr>
+          <tr>
+            <td><code>兼容性</code><span class="qcnt">2</span></td>
+            <td><span class="qchip">共存性</span><span class="qchip">互操作性</span></td>
+          </tr>
+          <tr>
+            <td><code>易用性</code><span class="qcnt">6</span></td>
+            <td><span class="qchip">可识别性</span><span class="qchip">易学性</span><span class="qchip">易操作性</span><span class="qchip">错误保护性</span><span class="qchip">用户界面美观性</span><span class="qchip">可访问性</span></td>
+          </tr>
+          <tr>
+            <td><code>可靠性</code><span class="qcnt">4</span></td>
+            <td><span class="qchip">成熟性</span><span class="qchip">可用性</span><span class="qchip">容错性</span><span class="qchip">可恢复性</span></td>
+          </tr>
+          <tr>
+            <td><code>安全性</code><span class="qcnt">5</span></td>
+            <td><span class="qchip sec">机密性</span><span class="qchip sec">完整性</span><span class="qchip sec">不可否认性</span><span class="qchip sec">可问责性</span><span class="qchip sec">真实性</span></td>
+          </tr>
+          <tr>
+            <td><code>可维护性</code><span class="qcnt">5</span></td>
+            <td><span class="qchip">模块化</span><span class="qchip">可重用性</span><span class="qchip">易分析性</span><span class="qchip">易修改性</span><span class="qchip">易测试性</span></td>
+          </tr>
+          <tr>
+            <td><code>可移植性</code><span class="qcnt">3</span></td>
+            <td><span class="qchip">适应性</span><span class="qchip">易安装性</span><span class="qchip">易替换性</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="tip">
+        <b>答题模板</b>："题干描述的现象" → 属于 ISO 25010 <b>{一级特性} → {子特性}</b>，对应<b>量化指标 / 架构策略</b>。<br>
+        <b>案例</b>：电商大促支撑 50 万 QPS → <b style="color:var(--gold-1)">性能效率 → 容量</b>，策略：读写分离 + 水平扩展 + 多级缓存。
+      </div>
+
+      <div class="formula" style="margin-top:14px">📚 <b>8 大特性 · 经典答题案例</b>（每特性挑一个最高频考点）</div>
+
+      <div class="qcase-grid">
+
+        <div class="qcase" style="--accent:var(--azure)">
+          <div class="qcase-head">
+            <span class="qcase-q">功能适合性<small>3</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">功能完备性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：电商系统需支持秒杀 / 团购 / 预售 / 直播带货等多玩法快速上线</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：营销引擎插件化 + 活动模板配置化 + 规则引擎</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--gold-2)">
+          <div class="qcase-head">
+            <span class="qcase-q">性能效率<small>3</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">容量</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：电商大促需支撑 50 万 QPS / 1000 万 PV</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：读写分离 + 水平扩展 + 多级缓存 + 限流降级</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--violet)">
+          <div class="qcase-head">
+            <span class="qcase-q">兼容性<small>2</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">互操作性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：与微信 / 支付宝 / 银联多家支付完成对接</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：支付网关适配器 + 标准化接口 (OpenAPI) + 异步消息解耦</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--emerald)">
+          <div class="qcase-head">
+            <span class="qcase-q">易用性<small>6</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">易学性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：新员工 30 分钟内掌握核心操作 / 老人 / 视障用户也能使用</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：交互引导 + 操作模板 + 帮助系统 + 高对比度 UI + 屏幕阅读器</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--amber-deep)">
+          <div class="qcase-head">
+            <span class="qcase-q">可靠性<small>4</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">容错性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：单机房 / 单节点宕机业务无感知</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：同城双活 + 自动故障转移 + 服务降级 + 熔断</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--crimson)">
+          <div class="qcase-head">
+            <span class="qcase-q">安全性<small>5</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">机密性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：用户密码不可被管理员查看 / 敏感数据不泄露</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：bcrypt 哈希 + salt + 密钥分级管理 + 传输 TLS</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--gold-3)">
+          <div class="qcase-head">
+            <span class="qcase-q">可维护性<small>5</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">易修改性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：新增业务模块 2 周内上线 / 修改不影响其他功能</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：模块化 + 依赖注入 + 开放封闭 (OCP) + 单元测试</div>
+        </div>
+
+        <div class="qcase" style="--accent:var(--gold-1)">
+          <div class="qcase-head">
+            <span class="qcase-q">可移植性<small>3</small></span>
+            <span class="qcase-arrow">→</span>
+            <span class="qcase-sub">易替换性</span>
+          </div>
+          <div class="qcase-phen">📌 <b>现象</b>：从 Oracle 迁移到 MySQL 不改业务代码</div>
+          <div class="qcase-strat">🛠 <b>策略</b>：抽象数据访问层 (DAL) + ORM (Hibernate/MyBatis) + 标准化 SQL</div>
+        </div>
+
+      </div>
+
+      <div class="trap">
+        <b>易混点</b>：
+        <ol style="margin:6px 0 0 20px;line-height:1.7">
+          <li>QAW 6 类（可用 / 可修改 / 性能 / 安全 / 可测试 / 易用）≠ ISO 25010 8 类——前者是 SEI 方法学分类（场景驱动），后者是国际标准完整质量模型。<b>不可互换</b>。</li>
+          <li>ISO 25010 严格意义上 <b>容量 = 性能效率</b> 的子特性之一（共 3 个：时间特性 / 资源利用性 / 容量）。本表为速查单列。</li>
+          <li>兼容性有 <b>2</b> 个子特性（共存性 + 互操作性）。</li>
+        </ol>
+      </div>
+
+    </article>
+
+
 
 <article class="card-detail tier-2" data-id="c30" data-section="sec6">
 
@@ -6994,7 +7324,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="calc-field" style="flex:2">
             <label>压力曲线（24h 流量分布 · 调"峰值倍数"上方的滑块联动）</label>
             <div class="cap-stress-wrap">
-              <svg id="cap-stress" viewBox="0 0 480 180" preserveAspectRatio="none" role="img" aria-label="24 小时流量压力曲线"></svg>
+              <svg id="cap-stress" viewBox="0 0 480 200" preserveAspectRatio="xMidYMid meet" role="img" aria-label="24 小时流量压力曲线"></svg>
             </div>
           </div>
         </div>
@@ -12327,22 +12657,41 @@ function calcCap() {
   const modeColor = capMode === 'read' ? 'var(--emerald)' : capMode === 'write' ? 'var(--amber-deep)' : 'var(--crimson)';
 
   document.getElementById('cap-out').innerHTML = `
-    <div class="funnel">
-      <div class="funnel-step"><div class="lbl">日 PV</div><div class="num">${PV.toLocaleString()}</div></div>
-      <div class="funnel-arrow">▶</div>
-      <div class="funnel-step"><div class="lbl">峰值 QPS</div><div class="num" style="color:var(--crimson)">${fmt(peakQPS,1)}</div></div>
-      <div class="funnel-arrow">▶</div>
-      <div class="funnel-step"><div class="lbl">机器数</div><div class="num" style="color:${modeColor}">${machines}</div></div>
+    <div class="cap-funnel">
+      <div class="cap-funnel-step" style="--accent:var(--gold-2)">
+        <div class="cap-step-num">1</div>
+        <div class="cap-step-lbl">日 PV</div>
+        <div class="cap-step-num-val">${PV.toLocaleString()}</div>
+        <div class="cap-step-formula">DAU × 访问频次</div>
+      </div>
+      <div class="cap-funnel-arrow"></div>
+      <div class="cap-funnel-step" style="--accent:var(--azure)">
+        <div class="cap-step-num">2</div>
+        <div class="cap-step-lbl">平均 QPS</div>
+        <div class="cap-step-num-val">${fmt(avgQPS, 2)}</div>
+        <div class="cap-step-formula">PV ÷ 86400</div>
+      </div>
+      <div class="cap-funnel-arrow"></div>
+      <div class="cap-funnel-step" style="--accent:var(--amber-deep)">
+        <div class="cap-step-num">3</div>
+        <div class="cap-step-lbl">峰值 QPS</div>
+        <div class="cap-step-num-val">${fmt(peakQPS, 1)}</div>
+        <div class="cap-step-formula">平均 QPS × ${peak}</div>
+      </div>
+      <div class="cap-funnel-arrow"></div>
+      <div class="cap-funnel-step cap-funnel-final" style="--accent:${modeColor}">
+        <div class="cap-step-num">4</div>
+        <div class="cap-step-lbl">机器数</div>
+        <div class="cap-step-num-val">${machines}</div>
+        <div class="cap-step-formula">⌈峰值 ÷ 单机⌉ × ${modeCoef}</div>
+      </div>
     </div>
-    <div style="margin-top:10px;color:var(--ivory-2);font-size:0.84rem">
-      <span class="key">模式</span> <span class="val" style="color:${modeColor}">${modeLabel} (×${modeCoef})</span> &nbsp;|&nbsp;
-      <span class="key">平均 QPS =</span> <span class="val">${fmt(avgQPS,2)}</span> &nbsp;|&nbsp;
-      <span class="key">单机带宽 =</span> <span class="val">${bandwidth} Gbps</span> &nbsp;|&nbsp;
-      <span class="key">日存储 =</span> <span class="val">${storage} GB</span>
+    <div class="cap-meta">
+      <span><span class="cap-meta-k">模式</span><span class="cap-meta-v" style="color:${modeColor}">${modeLabel} (×${modeCoef})</span></span>
+      <span><span class="cap-meta-k">单机带宽</span><span class="cap-meta-v">${bandwidth} Gbps</span></span>
+      <span><span class="cap-meta-k">日存储</span><span class="cap-meta-v">${storage} GB</span></span>
     </div>
-    <div style="margin-top:6px;color:var(--ivory-3);font-size:0.78rem">
-      💡 ${capMode === 'read' ? '读场景可加 CDN 进一步减压' : capMode === 'write' ? '写场景需考虑主从复制和 DB 瓶颈' : '秒杀需消息队列削峰 + 限流'}
-    </div>`;
+    <div class="cap-tip">💡 ${capMode === 'read' ? '读场景可加 CDN 进一步减压' : capMode === 'write' ? '写场景需考虑主从复制和 DB 瓶颈' : '秒杀需消息队列削峰 + 限流'}</div>`;
 
   drawCapStress(peak);
 }
@@ -12350,12 +12699,11 @@ function calcCap() {
 function drawCapStress(peak) {
   const svg = document.getElementById('cap-stress');
   if (!svg) return;
-  const W = 480, H = 180;
-  const padL = 30, padR = 10, padT = 10, padB = 22;
+  const W = 480, H = 200;
+  const padL = 36, padR = 12, padT = 30, padB = 26;
   // 24h 流量分布（默认早 8 / 午 12 / 晚 18 三峰；峰值倍数缩放）
   const baseDist = [];
   for (let h = 0; h < 24; h++) {
-    // 三峰分布（基线）
     const peak1 = Math.exp(-Math.pow(h - 8, 2) / 8);
     const peak2 = Math.exp(-Math.pow(h - 12, 2) / 4);
     const peak3 = Math.exp(-Math.pow(h - 18, 2) / 8) * 1.3;
@@ -12363,10 +12711,9 @@ function drawCapStress(peak) {
     baseDist.push(base);
   }
   const sum = baseDist.reduce((a, b) => a + b, 0);
-  // 平均 QPS = 1，归一化到峰值倍数
   const normDist = baseDist.map(v => (v / sum) * 24 * peak);
   const maxV = Math.max(...normDist, 1);
-  // 画折线 + 填充
+  // 坐标点
   const points = normDist.map((v, i) => {
     const x = padL + (i / 23) * (W - padL - padR);
     const y = padT + (H - padT - padB) * (1 - v / maxV);
@@ -12374,29 +12721,54 @@ function drawCapStress(peak) {
   });
   const lineStr = points.map(p => p.join(',')).join(' ');
   const fillStr = `${padL},${H - padB} ${lineStr} ${W - padR},${H - padB}`;
-  // 平均线（= peak/peak 倍数）
+  // 平均线
   const avgY = padT + (H - padT - padB) * (1 - 1 / peak);
+  // Y 轴刻度：0、avg、peak
+  const yTick0 = padT + (H - padT - padB);
+  const yTickPeak = padT;
+
+  // 找三个峰（早 8 / 午 12 / 晚 18）的索引
+  const peakIdx = normDist.indexOf(maxV);
+  const peakHr = peakIdx;
+
   svg.innerHTML = `
-    <!-- 网格 -->
-    <line x1="${padL}" y1="${avgY}" x2="${W - padR}" y2="${avgY}" stroke="#8e8a7a" stroke-width="0.5" stroke-dasharray="3 3"/>
-    <text x="${W - padR - 4}" y="${avgY - 4}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9" text-anchor="end">平均 QPS</text>
+    <!-- 网格底色 -->
+    <rect x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="rgba(212, 168, 95, 0.04)" rx="2"/>
+    <!-- 平均线 -->
+    <line x1="${padL}" y1="${avgY}" x2="${W - padR}" y2="${avgY}" stroke="var(--azure)" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="${W - padR - 4}" y="${avgY - 5}" fill="var(--azure)" font-family="var(--font-mono)" font-size="10" text-anchor="end" font-weight="600">平均 QPS</text>
     <!-- 填充 -->
-    <polygon points="${fillStr}" fill="rgba(212, 165, 116, 0.2)"/>
+    <polygon points="${fillStr}" fill="rgba(212, 165, 116, 0.22)"/>
     <!-- 折线 -->
-    <polyline points="${lineStr}" fill="none" stroke="#d4a574" stroke-width="2"/>
-    <!-- 峰值点 -->
+    <polyline points="${lineStr}" fill="none" stroke="var(--gold-2)" stroke-width="2.2"/>
+    <!-- 副峰标注（早 8h / 午 12h） -->
+    ${[8, 12].map((h, i) => {
+      const x = padL + (h / 23) * (W - padL - padR);
+      const y = padT + (H - padT - padB) * (1 - normDist[h] / maxV);
+      const labels = ['早高峰', '午峰'];
+      return `<line x1="${x}" y1="${y - 8}" x2="${x}" y2="${y - 24}" stroke="var(--ivory-3)" stroke-width="0.6" stroke-dasharray="2 2"/>
+              <text x="${x}" y="${y - 28}" fill="var(--ivory-2)" font-family="var(--font-cn)" font-size="9" text-anchor="middle">${labels[i]} ${h}h</text>`;
+    }).join('')}
+    <!-- 主峰（晚峰 18h）= 整日峰值：光环 + 标点 + 标号条 -->
     ${(() => {
-      const peakIdx = normDist.indexOf(maxV);
       const px = padL + (peakIdx / 23) * (W - padL - padR);
-      const py = padT + (H - padT - padB) * (1 - maxV / maxV);
-      return `<circle cx="${px}" cy="${py}" r="4" fill="#c8553d"/>
-              <text x="${px}" y="${py - 8}" fill="#c8553d" font-family="JetBrains Mono" font-size="10" text-anchor="middle">峰值 ${fmt(maxV, 1)}</text>`;
+      const py = padT;
+      return `<circle cx="${px}" cy="${py}" r="11" fill="none" stroke="var(--crimson)" stroke-width="1" opacity="0.45"/>
+              <circle cx="${px}" cy="${py}" r="6" fill="var(--crimson)" stroke="var(--ink-0)" stroke-width="2"/>
+              <rect x="${px - 44}" y="${py - 26}" width="88" height="18" rx="9" fill="var(--crimson)"/>
+              <text x="${px}" y="${py - 13}" fill="#fff" font-family="var(--font-cn)" font-size="10" font-weight="700" text-anchor="middle">晚峰 18h · 峰值 ${fmt(maxV, 1)}</text>`;
     })()}
     <!-- X 轴 -->
+    <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="var(--ink-3)" stroke-width="0.8"/>
     ${[0, 6, 12, 18, 23].map(h => {
       const x = padL + (h / 23) * (W - padL - padR);
-      return `<text x="${x}" y="${H - 6}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9" text-anchor="middle">${h}h</text>`;
+      return `<text x="${x}" y="${H - 8}" fill="var(--ivory-3)" font-family="var(--font-mono)" font-size="10" text-anchor="middle">${h}h</text>`;
     }).join('')}
+    <!-- Y 轴标签 -->
+    <text x="${padL - 4}" y="${yTick0 + 3}" fill="var(--ivory-3)" font-family="var(--font-mono)" font-size="9" text-anchor="end">0</text>
+    <text x="${padL - 4}" y="${yTickPeak + 3}" fill="var(--crimson)" font-family="var(--font-mono)" font-size="9" text-anchor="end">peak</text>
+    <!-- 角标 -->
+    <text x="${padL}" y="${padT - 16}" fill="var(--gold-1)" font-family="var(--font-cn)" font-size="10" font-weight="600">▸ 24h 流量压力曲线（峰值倍数 ×${peak}）</text>
   `;
 }
 </script>
