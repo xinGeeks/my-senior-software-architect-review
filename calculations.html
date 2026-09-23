@@ -7097,7 +7097,11 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
       <div style="margin-top:14px;padding:12px 14px;background:rgba(212,168,95,0.08);border:1px solid var(--gold-2);border-radius:6px;font-family:var(--font-cn);font-size:0.88rem">
-        <div style="color:var(--gold-1);font-weight:700;letter-spacing:0.06em;margin-bottom:10px">▸ 关键判定口诀 · 三步速判 几NF</div>
+        <div style="color:var(--gold-1);font-weight:700;letter-spacing:0.06em;margin-bottom:10px">▸ 关键判定口诀 · 覆盖范围视角</div>
+        <div style="color:var(--ivory-1);font-size:0.84rem;line-height:1.55;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed var(--ink-4)">
+          <b style="color:var(--gold-1)">BCNF 的本意</b>：在 3NF 基础上，把 3NF 没覆盖到的<b style="color:var(--crimson)">「主属性对主属性的依赖」</b>也兜住。
+          <br><span style="color:var(--ivory-2)">口诀：</b><b style="color:var(--emerald)">1NF 兜非原子</b>　·　<b style="color:var(--gold-1)">3NF 兜非主属性</b>　·　<b style="color:var(--azure)">BCNF 兜主属性</b></span>
+        </div>
         <div style="display:grid;grid-template-columns:48px 1fr 1.4fr;gap:8px;align-items:center;margin-bottom:6px">
           <div style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-weight:700;font-size:1rem">①</div>
           <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">候选码是不是单列？</b></div>
@@ -7105,13 +7109,13 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div style="display:grid;grid-template-columns:48px 1fr 1.4fr;gap:8px;align-items:center;margin-bottom:6px">
           <div style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-weight:700;font-size:1rem">②</div>
-          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">非主属性 → 非主属性 的链？</b></div>
-          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--crimson)">违反 3NF</b>（传递依赖，如 学号→系号→系主任）</div>
+          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">兜非主属性：</b>非主属性 → 非主属性的链？</div>
+          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--crimson)">违反 3NF</b>（如 学号 → 系号 → 系主任）</div>
         </div>
         <div style="display:grid;grid-template-columns:48px 1fr 1.4fr;gap:8px;align-items:center">
           <div style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-weight:700;font-size:1rem">③</div>
-          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">决定因素（非超键）→ 任意属性？</b></div>
-          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--crimson)">违反 BCNF</b>（含主属性被非超键决定的极端情形）</div>
+          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">兜主属性：</b>主属性被非超键决定？</div>
+          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--crimson)">违反 BCNF</b>（如 课程↔教师 互决，但左部都不含学号）</div>
         </div>
       </div>
 
