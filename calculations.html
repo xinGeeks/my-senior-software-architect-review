@@ -1213,6 +1213,333 @@ body::before {
   font-size: 1.05rem;
   box-shadow: 0 0 12px var(--gold-1);
 }
+
+/* ===== 3.1 判定器 v2：阶梯进度 + 结果三段 ===== */
+.nf-hint {
+  font-family: var(--font-cn);
+  font-size: 0.72rem;
+  color: var(--ivory-3);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.nf-hint code {
+  font-family: var(--font-mono);
+  color: var(--gold-2);
+  background: rgba(212, 168, 95, 0.1);
+  padding: 0 3px;
+  border-radius: 2px;
+}
+.nf-stair {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin-top: 12px;
+  font-family: var(--font-mono);
+}
+.nf-step {
+  flex: 1;
+  padding: 10px 6px 8px;
+  background: var(--ink-3);
+  border: 1px solid var(--ink-4);
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+  transition: all 0.25s ease;
+}
+.nf-step-num {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--ivory-3);
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+.nf-step-state {
+  font-size: 0.76rem;
+  color: var(--ivory-3);
+}
+.nf-step.pass {
+  background: rgba(108, 196, 154, 0.18);
+  border-color: var(--emerald);
+  box-shadow: 0 0 10px rgba(108, 196, 154, 0.25);
+}
+.nf-step.pass .nf-step-num,
+.nf-step.pass .nf-step-state { color: var(--emerald); }
+.nf-step.fail {
+  background: rgba(220, 95, 100, 0.18);
+  border-color: var(--crimson);
+}
+.nf-step.fail .nf-step-num,
+.nf-step.fail .nf-step-state { color: var(--crimson); }
+.nf-step.final-pass {
+  background: linear-gradient(135deg, rgba(108, 196, 154, 0.25), rgba(212, 168, 95, 0.25));
+  border-color: var(--gold-1);
+  box-shadow: 0 0 14px rgba(212, 168, 95, 0.4);
+}
+.nf-step.final-pass .nf-step-num,
+.nf-step.final-pass .nf-step-state { color: var(--gold-1); font-weight: 700; }
+.nf-step-dim .nf-step-num,
+.nf-step-dim .nf-step-state { color: var(--ink-4); font-style: italic; }
+.nf-step-sep {
+  display: flex; align-items: center;
+  color: var(--ivory-3);
+  font-size: 0.8rem;
+  padding: 0 2px;
+}
+.nf-step-sep-dim { color: var(--ink-4); }
+
+/* 最高范式 banner */
+.nf-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 5px;
+  font-family: var(--font-cn);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.nf-banner-icon {
+  font-size: 1.3rem;
+  font-family: var(--font-mono);
+}
+.nf-banner-tier {
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+}
+.nf-banner.pass {
+  background: linear-gradient(90deg, rgba(108, 196, 154, 0.2), rgba(108, 196, 154, 0.08));
+  border: 1px solid var(--emerald);
+  color: var(--emerald);
+}
+.nf-banner.warn {
+  background: linear-gradient(90deg, rgba(212, 168, 95, 0.22), rgba(212, 168, 95, 0.08));
+  border: 1px solid var(--gold-1);
+  color: var(--gold-1);
+}
+.nf-banner.fail {
+  background: linear-gradient(90deg, rgba(220, 95, 100, 0.2), rgba(220, 95, 100, 0.08));
+  border: 1px solid var(--crimson);
+  color: var(--crimson);
+}
+.nf-banner-sub {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--ivory-3);
+}
+
+/* 属性分组 + 判定详情 两列 */
+.nf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+.nf-panel {
+  padding: 10px 12px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-4);
+  border-radius: 5px;
+  font-family: var(--font-cn);
+  font-size: 0.84rem;
+}
+.nf-panel-title {
+  color: var(--gold-2);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--ink-4);
+}
+.nf-chip-row {
+  display: flex; flex-wrap: wrap; gap: 4px; min-height: 24px;
+}
+.nf-chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+.nf-chip.prime   { color: var(--gold-1); background: rgba(212, 168, 95, 0.12); border-color: rgba(212, 168, 95, 0.5); }
+.nf-chip.nonprime{ color: var(--azure);   background: rgba(106, 156, 192, 0.12); border-color: rgba(106, 156, 192, 0.5); }
+.nf-chip.empty   { color: var(--ivory-3); font-style: italic; border-color: var(--ink-4); background: transparent; }
+.nf-judge-list { display: flex; flex-direction: column; gap: 5px; }
+.nf-judge-line {
+  display: flex; align-items: flex-start; gap: 6px;
+  font-size: 0.82rem;
+  color: var(--ivory-1);
+  line-height: 1.5;
+}
+.nf-judge-mark {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 18px;
+}
+.nf-judge-mark.pass { color: var(--emerald); }
+.nf-judge-mark.fail { color: var(--crimson); }
+.nf-judge-mark.skip { color: var(--ink-4); }
+.nf-judge-reason { color: var(--ivory-3); font-size: 0.78rem; }
+
+/* 违规溯源 */
+.nf-trace {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(220, 95, 100, 0.06);
+  border: 1px dashed var(--crimson);
+  border-radius: 5px;
+  font-family: var(--font-cn);
+  font-size: 0.82rem;
+}
+.nf-trace-title {
+  color: var(--crimson);
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+.nf-trace-list {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.nf-trace-item {
+  padding-left: 12px;
+  border-left: 2px solid var(--crimson);
+  color: var(--ivory-2);
+  line-height: 1.55;
+}
+.nf-trace-item b { color: var(--gold-1); font-family: var(--font-mono); }
+
+/* 输入警告条 */
+.nf-warn-bar {
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: rgba(212, 168, 95, 0.1);
+  border-left: 3px solid var(--gold-2);
+  border-radius: 3px;
+  font-family: var(--font-cn);
+  font-size: 0.78rem;
+  color: var(--gold-2);
+}
+.nf-warn-bar b { color: var(--gold-1); }
+
+/* ===== 3.1 示例数据样本面板 ===== */
+.nf-sample {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-4);
+  border-radius: 5px;
+}
+.nf-sample-title {
+  color: var(--gold-2);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--ink-4);
+  font-family: var(--font-cn);
+}
+.nf-sample-tbl-wrap {
+  overflow-x: auto;
+  margin-bottom: 8px;
+}
+.nf-sample-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+.nf-sample-tbl th, .nf-sample-tbl td {
+  padding: 5px 8px;
+  text-align: center;
+  border: 1px solid var(--ink-4);
+  color: var(--ivory-1);
+}
+.nf-sample-tbl thead th {
+  background: var(--ink-3);
+  color: var(--gold-2);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  position: relative;
+}
+.nf-sample-tbl tbody td {
+  background: rgba(74, 111, 165, 0.06);
+}
+/* 列着色：违规列 */
+.nf-sample-tbl th.col-partial  { background: rgba(220, 95, 100, 0.22); color: var(--crimson); }
+.nf-sample-tbl th.col-trans-mid { background: rgba(212, 168, 95, 0.22); color: var(--gold-1); }
+.nf-sample-tbl th.col-trans-end { background: rgba(220, 95, 100, 0.22); color: var(--crimson); }
+.nf-sample-tbl th.col-bcnf-bad  { background: rgba(220, 95, 100, 0.22); color: var(--crimson); }
+.nf-sample-tbl th.col-key       { background: rgba(212, 168, 95, 0.18); color: var(--gold-1); border-bottom: 2px solid var(--gold-2); }
+.nf-sample-tbl td.col-partial   { background: rgba(220, 95, 100, 0.08); }
+.nf-sample-tbl td.col-trans-mid { background: rgba(212, 168, 95, 0.08); }
+.nf-sample-tbl td.col-trans-end { background: rgba(220, 95, 100, 0.08); }
+.nf-sample-tbl td.col-bcnf-bad  { background: rgba(220, 95, 100, 0.08); }
+/* 候选码下划线 */
+.nf-sample-tbl .key-attr { text-decoration: underline; text-decoration-color: var(--gold-2); text-underline-offset: 3px; }
+
+.nf-sample-fd {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+.nf-fd-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--ink-1);
+  border-left: 3px solid;
+  border-radius: 2px;
+}
+.nf-fd-line.fd-ok    { border-color: var(--emerald); }
+.nf-fd-line.fd-err   { border-color: var(--crimson); }
+.nf-fd-arrow { color: var(--gold-2); font-weight: 700; }
+.nf-fd-lhs, .nf-fd-rhs {
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background: rgba(212, 168, 95, 0.12);
+  color: var(--gold-2);
+}
+.nf-fd-rhs {
+  background: rgba(106, 156, 192, 0.12);
+  color: var(--azure);
+}
+.nf-fd-mark {
+  margin-left: auto;
+  font-size: 0.74rem;
+  font-family: var(--font-cn);
+}
+.nf-fd-mark.ok  { color: var(--emerald); }
+.nf-fd-mark.err { color: var(--crimson); }
+
+.nf-sample-note {
+  font-family: var(--font-cn);
+  font-size: 0.8rem;
+  color: var(--ivory-2);
+  padding: 8px 10px;
+  background: rgba(74, 111, 165, 0.1);
+  border-left: 3px solid var(--azure);
+  border-radius: 3px;
+  line-height: 1.5;
+}
+.nf-sample-note b { color: var(--gold-1); }
+.nf-sample-note.note-violation {
+  background: rgba(220, 95, 100, 0.08);
+  border-left-color: var(--crimson);
+}
+.nf-sample-note.note-ok {
+  background: rgba(108, 196, 154, 0.1);
+  border-left-color: var(--emerald);
+}
 .nf-presets {
   display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap;
 }
@@ -6718,17 +7045,20 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="calc-row">
           <div class="calc-field" style="flex:2">
             <label>属性集 R（逗号分隔）</label>
-            <input id="nf-r" class="txt" type="text" value="SNO,SN,CNO,CN,GRADE" oninput="raf('nfCheck')">
+            <input id="nf-r" class="txt" type="text" placeholder="如 SNO,SN,CNO,CN,GRADE" value="SNO,SN,CNO,CN,GRADE" oninput="raf('nfCheck')">
+            <div class="nf-hint">所有出现在 FD 左/右部的属性都要在这里列出</div>
           </div>
           <div class="calc-field" style="flex:2">
-            <label>候选码（多条用分号）</label>
-            <input id="nf-key" class="txt" type="text" value="SNO,CNO" oninput="raf('nfCheck')">
+            <label>候选码（多条用 <code>;</code> 分隔）</label>
+            <input id="nf-key" class="txt" type="text" placeholder="如 SNO,CNO 或 A;B,C" value="SNO,CNO" oninput="raf('nfCheck')">
+            <div class="nf-hint">单候选码直接写；联合码用逗号，多候选码用分号</div>
           </div>
         </div>
         <div class="calc-row">
           <div class="calc-field" style="flex:1">
-            <label>FD 集（每条用分号）</label>
-            <input id="nf-fd" class="txt" type="text" value="SNO->SN;CNO->CN;SNO,CNO->GRADE" oninput="raf('nfCheck')">
+            <label>FD 集（每条用 <code>;</code> 分隔，形如 <code>左部->右部</code>）</label>
+            <input id="nf-fd" class="txt" type="text" placeholder="如 SNO->SN;CNO->CN;SNO,CNO->GRADE" value="SNO->SN;CNO->CN;SNO,CNO->GRADE" oninput="raf('nfCheck')">
+            <div class="nf-hint">联合左部用逗号；右部多属性也用逗号；平凡 FD（X⊇Y）可省</div>
           </div>
         </div>
         <div class="nf-presets">
@@ -6737,14 +7067,32 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button onclick="nfPreset('3nf')">3NF 违规示例</button>
           <button onclick="nfPreset('bcnf')">BCNF 违规示例</button>
           <button onclick="nfPreset('3nfok')">3NF 合规示例</button>
+          <button onclick="nfPreset('bcnfok')">BCNF 达标示例</button>
         </div>
-        <div class="result-row">
-          <div class="nf-badge" id="nf-1">1NF</div>
-          <div class="nf-badge" id="nf-2">2NF</div>
-          <div class="nf-badge" id="nf-3">3NF</div>
-          <div class="nf-badge" id="nf-bcnf">BCNF</div>
-          <div class="nf-badge" id="nf-4nf">4NF</div>
+
+        <!-- 示例数据样本 -->
+        <div class="nf-sample" id="nf-sample">
+          <div class="nf-sample-title" id="nf-sample-title">▸ 当前示例关系的数据样本</div>
+          <div class="nf-sample-tbl-wrap">
+            <table class="nf-sample-tbl" id="nf-sample-tbl"></table>
+          </div>
+          <div class="nf-sample-fd" id="nf-sample-fd"></div>
+          <div class="nf-sample-note" id="nf-sample-note"></div>
         </div>
+
+        <!-- 阶梯进度条 -->
+        <div class="nf-stair" id="nf-stair">
+          <div class="nf-step" data-step="1"><div class="nf-step-num">1NF</div><div class="nf-step-state" id="nf-1">—</div></div>
+          <div class="nf-step-sep">▶</div>
+          <div class="nf-step" data-step="2"><div class="nf-step-num">2NF</div><div class="nf-step-state" id="nf-2">—</div></div>
+          <div class="nf-step-sep">▶</div>
+          <div class="nf-step" data-step="3"><div class="nf-step-num">3NF</div><div class="nf-step-state" id="nf-3">—</div></div>
+          <div class="nf-step-sep">▶</div>
+          <div class="nf-step" data-step="bcnf"><div class="nf-step-num">BCNF</div><div class="nf-step-state" id="nf-bcnf">—</div></div>
+          <div class="nf-step-sep nf-step-sep-dim">?</div>
+          <div class="nf-step nf-step-dim" data-step="4nf" title="需 MVD 信息，本判定器未覆盖"><div class="nf-step-num">4NF</div><div class="nf-step-state" id="nf-4nf">未判</div></div>
+        </div>
+
         <div id="nf-out" class="calc-result" style="margin-top:10px"></div>
       </div>
 
@@ -6758,6 +7106,61 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <tr><td><code>4NF</code></td><td>BCNF + 消除多值依赖</td><td>独立多值属性分离</td></tr>
         </tbody>
       </table>
+
+      <div style="margin-top:14px;padding:12px 14px;background:rgba(74,111,165,0.08);border:1px solid var(--ink-4);border-radius:6px;font-family:var(--font-cn);font-size:0.86rem">
+        <div style="color:var(--gold-2);font-weight:700;letter-spacing:0.06em;margin-bottom:8px">最小反例 · 违反 → 满足</div>
+
+        <div style="display:grid;grid-template-columns:54px 1fr 1fr;gap:8px;align-items:stretch;margin-bottom:10px">
+          <div style="display:flex;align-items:center;justify-content:center;background:rgba(212,168,95,0.15);border:1px solid var(--gold-2);border-radius:4px;font-family:var(--font-mono);font-weight:700;color:var(--gold-1)">1NF</div>
+          <div style="padding:8px 10px;background:rgba(196,59,75,0.08);border-left:3px solid var(--crimson);border-radius:3px">
+            <div style="color:var(--crimson);font-weight:700;margin-bottom:4px">违反 1NF</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生(<u>学号</u>, 联系方式)
+ 001, "010-1234, 138-0013-8000"</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">联系方式字段含多个值，<b style="color:var(--crimson)">不可再分</b>。</div>
+          </div>
+          <div style="padding:8px 10px;background:rgba(74,165,122,0.08);border-left:3px solid var(--emerald);border-radius:3px">
+            <div style="color:var(--emerald);font-weight:700;margin-bottom:4px">满足 1NF</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生(<u>学号</u>, 固定电话, 手机)
+ 001, "010-1234", "138-0013-8000"</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">每个属性<b style="color:var(--emerald)">只存单一原子值</b>。</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:54px 1fr 1fr;gap:8px;align-items:stretch;margin-bottom:10px">
+          <div style="display:flex;align-items:center;justify-content:center;background:rgba(212,168,95,0.15);border:1px solid var(--gold-2);border-radius:4px;font-family:var(--font-mono);font-weight:700;color:var(--gold-1)">2NF</div>
+          <div style="padding:8px 10px;background:rgba(196,59,75,0.08);border-left:3px solid var(--crimson);border-radius:3px">
+            <div style="color:var(--crimson);font-weight:700;margin-bottom:4px">违反 2NF（部分依赖）</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">选课(<u>学号, 课程号</u>, 姓名, 学分, 成绩)
+ 姓名 只依赖学号
+ 学分 只依赖课程号
+ 成绩 依赖 (学号, 课程号)</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">姓名/学分仅依赖候选码<b style="color:var(--crimson)">真子集</b>。</div>
+          </div>
+          <div style="padding:8px 10px;background:rgba(74,165,122,0.08);border-left:3px solid var(--emerald);border-radius:3px">
+            <div style="color:var(--emerald);font-weight:700;margin-bottom:4px">满足 2NF</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生(<u>学号</u>, 姓名)
+课程(<u>课程号</u>, 学分)
+选课(<u>学号, 课程号</u>, 成绩)</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">非主属性<b style="color:var(--emerald)">完全依赖</b>所在关系的候选码。</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:54px 1fr 1fr;gap:8px;align-items:stretch">
+          <div style="display:flex;align-items:center;justify-content:center;background:rgba(212,168,95,0.15);border:1px solid var(--gold-2);border-radius:4px;font-family:var(--font-mono);font-weight:700;color:var(--gold-1)">3NF</div>
+          <div style="padding:8px 10px;background:rgba(196,59,75,0.08);border-left:3px solid var(--crimson);border-radius:3px">
+            <div style="color:var(--crimson);font-weight:700;margin-bottom:4px">违反 3NF（传递依赖）</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生(<u>学号</u>, 姓名, 系号, 系主任)
+ 学号 → 系号 → 系主任</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">系主任<b style="color:var(--crimson)">不直接</b>依赖学号，经系号中转。</div>
+          </div>
+          <div style="padding:8px 10px;background:rgba(74,165,122,0.08);border-left:3px solid var(--emerald);border-radius:3px">
+            <div style="color:var(--emerald);font-weight:700;margin-bottom:4px">满足 3NF</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生(<u>学号</u>, 姓名, 系号)
+系(<u>系号</u>, 系主任)</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">非主属性<b style="color:var(--emerald)">直接依赖</b>候选码，无传递链。</div>
+          </div>
+        </div>
+      </div>
 
       <div class="exam-qa">
         <div class="exam-qa-head">历年真题</div>
@@ -11802,8 +12205,25 @@ function nfCheck() {
   const Kstr = document.getElementById('nf-key').value;
   const Fstr = document.getElementById('nf-fd').value;
   const R = new Set(Rstr.split(',').map(s=>s.trim()).filter(Boolean));
-  const keys = Kstr.split(';').map(s=>s.split(',').map(t=>t.trim()).filter(Boolean));
+  const keys = Kstr.split(';').map(s=>s.split(',').map(t=>t.trim()).filter(Boolean)).filter(k => k.length);
   const fds = nfParseFd(Fstr);
+
+  // ===== 输入健康度校验 =====
+  const warnings = [];
+  const fdAttrs = new Set();
+  fds.forEach(([l, r]) => {
+    l.split(',').map(s=>s.trim()).filter(Boolean).forEach(x => fdAttrs.add(x));
+    r.split(',').map(s=>s.trim()).filter(Boolean).forEach(x => fdAttrs.add(x));
+  });
+  const missingInR = [...fdAttrs].filter(x => !R.has(x));
+  if (missingInR.length) warnings.push(`属性集 R 缺少 FD 中出现的属性：<b>${missingInR.join(', ')}</b>`);
+  const unusedInR = [...R].filter(x => !fdAttrs.has(x));
+  if (unusedInR.length) warnings.push(`属性 <b>${unusedInR.join(', ')}</b> 出现在 R 但未参与任何 FD（判定器无法定位候选码，请确认是否输入遗漏）`);
+  const keyNotInR = [];
+  keys.forEach(k => k.forEach(x => { if (!R.has(x)) keyNotInR.push(x); }));
+  if (keyNotInR.length) warnings.push(`候选码包含 R 中不存在的属性：<b>${keyNotInR.join(', ')}</b>`);
+  if (keys.length === 0) warnings.push('未输入候选码，请填写');
+  if (fds.length === 0) warnings.push('未输入 FD，请填写');
 
   // 计算所有主属性（出现在任何候选码中）
   const prime = new Set();
@@ -11815,7 +12235,7 @@ function nfCheck() {
   // 1NF: 所有属性原子（这里默认输入已原子，无法自动判）
   const passes1 = true;
   // 2NF: 非主属性对每个候选码完全依赖（无部分依赖）
-  let pass2 = true, fail2reason = '';
+  let pass2 = true, fail2reason = '', fail2traces = [];
   for (const k of keys) {
     for (const lhs of powerset(k)) {
       if (lhs.length === 0 || lhs.length === k.length) continue;
@@ -11824,22 +12244,23 @@ function nfCheck() {
       for (const np of nonPrime) {
         if (closure.has(np)) {
           pass2 = false;
-          fail2reason = `${np} 仅依赖 {${lhsArr.join(',')}} ⊂ 候选码 ${k.join(',')}，存在部分依赖`;
+          const r = `非主属性 <b>${np}</b> 仅依赖真子集 <b>{${lhsArr.join(',')}}</b> ⊂ 候选码 <b>{${k.join(',')}}</b>`;
+          if (!fail2traces.includes(r)) fail2traces.push(r);
         }
       }
     }
   }
+  if (!pass2) fail2reason = `存在 <b>${fail2traces.length}</b> 处部分依赖`;
+
   // 3NF: 非主属性无传递依赖 (X→Y, Y→Z 且 Y 非超键则违规)
-  let pass3 = true, fail3reason = '';
+  let pass3 = true, fail3reason = '', fail3traces = [];
   if (pass2) {
     for (const np of nonPrime) {
-      // 找 X→np 的所有 X
       for (const [l, r] of fds) {
         const rset = new Set(r.split(',').map(s=>s.trim()));
         if (!rset.has(np)) continue;
         const lhs = l.split(',').map(s=>s.trim());
         const closure = nfClosure(lhs, fds);
-        // 看是否通过中间属性传递
         for (const m of closure) {
           if (m === np || prime.has(m) || lhs.includes(m)) continue;
           for (const [l2, r2] of fds) {
@@ -11847,18 +12268,21 @@ function nfCheck() {
               const r2set = new Set(r2.split(',').map(s=>s.trim()));
               if (r2set.has(np)) {
                 pass3 = false;
-                fail3reason = `${lhs.join(',')} → ${m} → ${np}（${m} 非主属性、非超键），存在传递依赖`;
+                const r = `传递链 <b>${lhs.join(',')} → ${m} → ${np}</b>（中转属性 ${m} 非主属性、非超键）`;
+                if (!fail3traces.includes(r)) fail3traces.push(r);
               }
             }
           }
         }
       }
     }
+    if (!pass3) fail3reason = `存在 <b>${fail3traces.length}</b> 条传递依赖链`;
   } else {
     pass3 = false;
   }
+
   // BCNF: 每个 FD 的左部都是超键
-  let passBcnf = true, failBcnfReason = '';
+  let passBcnf = true, failBcnfReason = '', failBcnfTraces = [];
   if (pass3) {
     for (const [l, r] of fds) {
       const lhs = l.split(',').map(s=>s.trim());
@@ -11866,49 +12290,99 @@ function nfCheck() {
       const isSuper = keys.some(k => k.every(x => closure.has(x)));
       if (!isSuper) {
         passBcnf = false;
-        failBcnfReason = `${l} → ${r} 的左部 ${l} 非超键`;
+        const r = `FD <b>${l} → ${r}</b> 的左部 <b>{${l}}</b> 不是超键（闭包 {${[...closure].join(',')}}）`;
+        if (!failBcnfTraces.includes(r)) failBcnfTraces.push(r);
       }
     }
+    if (!passBcnf) failBcnfReason = `存在 <b>${failBcnfTraces.length}</b> 条非超键左部的 FD`;
   } else {
     passBcnf = false;
   }
 
-  const setBadge = (id, pass) => {
+  // ===== 渲染阶梯条 =====
+  const setStep = (id, pass, label) => {
     const el = document.getElementById(id);
-    el.className = 'nf-badge ' + (pass ? 'pass' : 'fail');
-    el.textContent = pass ? '✓' : '✗';
+    el.closest('.nf-step').classList.remove('pass', 'fail', 'final-pass');
+    if (pass === true) {
+      el.closest('.nf-step').classList.add('pass');
+      el.textContent = '✓ ' + label;
+    } else if (pass === false) {
+      el.closest('.nf-step').classList.add('fail');
+      el.textContent = '✗ ' + label;
+    } else {
+      el.textContent = label;
+    }
   };
-  setBadge('nf-1', passes1);
-  setBadge('nf-2', pass2);
-  setBadge('nf-3', pass3);
-  setBadge('nf-bcnf', passBcnf);
-  setBadge('nf-4nf', passBcnf); // 简化处理
+  setStep('nf-1', passes1, '原子');
+  setStep('nf-2', pass2, pass2 ? '无部分依赖' : '部分依赖');
+  setStep('nf-3', pass3, pass3 ? '无传递依赖' : '传递依赖');
+  setStep('nf-bcnf', passBcnf, passBcnf ? '左部皆超键' : '左部非超键');
+  // 4NF 修复：不再与 BCNF 同步，明确标注「需 MVD 信息，未自动判定」
+  const step4nf = document.getElementById('nf-4nf');
+  step4nf.closest('.nf-step').classList.remove('pass', 'fail', 'final-pass');
+  step4nf.textContent = '需 MVD';
 
-  // 计算最高范式
-  let maxNF = '不满足 1NF';
+  // ===== 计算最高范式 + 渲染 banner =====
+  let maxNF = '不满足 1NF', bannerCls = 'fail', icon = '✗';
   if (passes1) {
-    if (passBcnf) maxNF = 'BCNF / 4NF ✓';
-    else if (pass3) maxNF = '3NF';
-    else if (pass2) maxNF = '2NF';
-    else maxNF = '1NF';
+    if (passBcnf) { maxNF = 'BCNF'; bannerCls = 'pass'; icon = '✓'; }
+    else if (pass3) { maxNF = '3NF'; bannerCls = 'pass'; icon = '✓'; }
+    else if (pass2) { maxNF = '2NF'; bannerCls = 'warn'; icon = '◐'; }
+    else { maxNF = '1NF'; bannerCls = 'warn'; icon = '◐'; }
+  }
+  // 突出最终达标层级：给对应 step 加 final-pass
+  document.querySelectorAll('.nf-step.final-pass').forEach(el => el.classList.remove('final-pass'));
+  const finalStepMap = { '1NF':'nf-1', '2NF':'nf-2', '3NF':'nf-3', 'BCNF':'nf-bcnf' };
+  if (finalStepMap[maxNF]) {
+    document.getElementById(finalStepMap[maxNF]).closest('.nf-step').classList.add('final-pass');
   }
 
-  const finalBadge = document.createElement('div');
-  finalBadge.className = 'nf-badge final';
-  finalBadge.style.marginTop = '8px';
-  finalBadge.style.flex = '0 0 auto';
-  finalBadge.style.padding = '6px 14px';
-  finalBadge.textContent = '最高范式：' + maxNF;
+  // ===== 渲染输出区 =====
   const out = document.getElementById('nf-out');
-  out.innerHTML = '';
-  out.appendChild(finalBadge);
-  out.insertAdjacentHTML('beforeend',
-    `<div style="margin-top:10px;color:var(--ivory-2);font-size:0.86rem;font-family:var(--font-cn)">` +
-    `主属性：{${[...prime].join(',') || '（空）'}}　|　非主属性：{${nonPrime.join(',') || '（空）'}}` +
-    (fail2reason ? `<br><span style="color:var(--crimson)">⚠ 2NF 违规：${fail2reason}</span>` : '') +
-    (fail3reason ? `<br><span style="color:var(--crimson)">⚠ 3NF 违规：${fail3reason}</span>` : '') +
-    (failBcnfReason ? `<br><span style="color:var(--crimson)">⚠ BCNF 违规：${failBcnfReason}</span>` : '') +
-    `</div>`);
+  const tipMap = {
+    '1NF': '原子属性，但可能含部分 / 传递依赖',
+    '2NF': '已消除部分依赖，请检查传递依赖',
+    '3NF': '已消除部分 + 传递依赖，主流设计标准',
+    'BCNF': '每个 FD 左部都是超键，理论上无异常'
+  };
+  const bcnfNotCovered = `<span class="nf-judge-mark skip">·</span><span class="nf-judge-reason">4NF 需 MVD 信息，本判定器未覆盖</span>`;
+
+  out.innerHTML =
+    `<div class="nf-banner ${bannerCls}">
+       <span class="nf-banner-icon">${icon}</span>
+       <span>最高范式</span>
+       <span class="nf-banner-tier">${maxNF}</span>
+       <span class="nf-banner-sub">${tipMap[maxNF] || ''}</span>
+     </div>` +
+    (warnings.length ? `<div class="nf-warn-bar">⚠ 输入提示：${warnings.join('；')}</div>` : '') +
+    `<div class="nf-grid">
+       <div class="nf-panel">
+         <div class="nf-panel-title">▸ 属性分组</div>
+         <div style="color:var(--ivory-3);font-size:0.78rem;margin-bottom:4px">主属性（出现在候选码中）</div>
+         <div class="nf-chip-row">${[...prime].length ? [...prime].map(x => `<span class="nf-chip prime">${x}</span>`).join('') : `<span class="nf-chip empty">（空）</span>`}</div>
+         <div style="color:var(--ivory-3);font-size:0.78rem;margin:6px 0 4px">非主属性</div>
+         <div class="nf-chip-row">${nonPrime.length ? nonPrime.map(x => `<span class="nf-chip nonprime">${x}</span>`).join('') : `<span class="nf-chip empty">（空）</span>`}</div>
+       </div>
+       <div class="nf-panel">
+         <div class="nf-panel-title">▸ 判定详情</div>
+         <div class="nf-judge-list">
+           <div class="nf-judge-line"><span class="nf-judge-mark ${passes1?'pass':'fail'}">${passes1?'✓':'✗'}</span><span>1NF · 属性原子性</span></div>
+           <div class="nf-judge-line"><span class="nf-judge-mark ${pass2?'pass':'fail'}">${pass2?'✓':'✗'}</span><span>2NF · 无部分依赖${fail2reason ? ` · <span class="nf-judge-reason">${fail2reason}</span>` : ''}</span></div>
+           <div class="nf-judge-line"><span class="nf-judge-mark ${pass3?'pass':'fail'}">${pass3?'✓':'✗'}</span><span>3NF · 无传递依赖${fail3reason ? ` · <span class="nf-judge-reason">${fail3reason}</span>` : ''}</span></div>
+           <div class="nf-judge-line"><span class="nf-judge-mark ${passBcnf?'pass':'fail'}">${passBcnf?'✓':'✗'}</span><span>BCNF · 左部皆超键${failBcnfReason ? ` · <span class="nf-judge-reason">${failBcnfReason}</span>` : ''}</span></div>
+           <div class="nf-judge-line">${bcnfNotCovered}</div>
+         </div>
+       </div>
+     </div>` +
+    ((fail2traces.length || fail3traces.length || failBcnfTraces.length) ?
+      `<div class="nf-trace">
+         <div class="nf-trace-title">▸ 违规溯源（点击展开思路）</div>
+         <div class="nf-trace-list">
+           ${fail2traces.map(t => `<div class="nf-trace-item">2NF 违规：${t}</div>`).join('')}
+           ${fail3traces.map(t => `<div class="nf-trace-item">3NF 违规：${t}</div>`).join('')}
+           ${failBcnfTraces.map(t => `<div class="nf-trace-item">BCNF 违规：${t}</div>`).join('')}
+         </div>
+       </div>` : '');
 }
 
 function powerset(arr) {
@@ -11923,18 +12397,156 @@ function powerset(arr) {
   return result;
 }
 
+/* ================== 3.1 NF 示例数据样本 ================== */
+const NF_SAMPLES = {
+  '2nf': {
+    title: '选课关系 SC（候选码 {学号, 课程号}）',
+    headers: ['学号', '姓名', '课程号', '课程名', '成绩'],
+    hcols: { '姓名': 'partial', '课程名': 'partial' },
+    rows: [
+      ['S01', '张三', 'C1', '数据库', '85'],
+      ['S01', '张三', 'C2', '网络',   '78'],
+      ['S02', '李四', 'C1', '数据库', '92']
+    ],
+    fds: [
+      { l: '学号',         r: '姓名',     ok: false, why: '姓名 只由 学号 决定 → 部分依赖（真子集）' },
+      { l: '课程号',       r: '课程名',   ok: false, why: '课程名 只由 课程号 决定 → 部分依赖（真子集）' },
+      { l: '学号,课程号', r: '成绩',     ok: true }
+    ],
+    note: '违反 <b>2NF</b>：姓名、课程名 仅依赖候选码真子集。修复：分解为 <b>学生(学号,姓名) + 课程(课程号,课程名) + 选课(学号,课程号,成绩)</b>。',
+    noteCls: 'note-violation'
+  },
+  '3nf': {
+    title: '学生关系（候选码 {学号}）',
+    headers: ['学号', '姓名', '系号', '系主任'],
+    hcols: { '系号': 'trans-mid', '系主任': 'trans-end' },
+    rows: [
+      ['S01', '张三', 'D1', '王教授'],
+      ['S02', '李四', 'D1', '王教授'],
+      ['S03', '王五', 'D2', '赵教授']
+    ],
+    fds: [
+      { l: '学号',   r: '姓名,系号', ok: true },
+      { l: '系号',   r: '系主任',     ok: false, why: '系主任 经 系号 中转依赖学号 → 传递依赖' }
+    ],
+    note: '违反 <b>3NF</b>：学号 → 系号 → 系主任 构成传递链。修复：分解为 <b>学生(学号,姓名,系号) + 系(系号,系主任)</b>。',
+    noteCls: 'note-violation'
+  },
+  'bcnf': {
+    title: '学生-课程简表（候选码 {学号, 课程号}）',
+    headers: ['学号', '姓名', '课程号'],
+    hcols: { '姓名': 'bcnf-bad' },
+    rows: [
+      ['S01', '张三', 'C1'],
+      ['S01', '张三', 'C2'],
+      ['S02', '李四', 'C1']
+    ],
+    fds: [
+      { l: '学号',   r: '姓名', ok: false, why: '学号 不是超键 → 违反 BCNF' },
+      { l: '课程号', r: '姓名', ok: false, why: '课程号 不是超键 → 违反 BCNF' }
+    ],
+    note: '违反 <b>BCNF</b>：姓名 是非主属性，被 <b>学号</b> / <b>课程号</b> 两个非超键左部决定。本例是教学示意；实际场景多见"主属性被部分决定"的复合候选码情形。',
+    noteCls: 'note-violation'
+  },
+  '3nfok': {
+    title: '选课成绩（候选码 {学号, 课程号}）',
+    headers: ['学号', '课程号', '成绩'],
+    hcols: {},
+    rows: [
+      ['S01', 'C1', '85'],
+      ['S01', 'C2', '78'],
+      ['S02', 'C1', '92']
+    ],
+    fds: [
+      { l: '学号,课程号', r: '成绩', ok: true, why: '左部 = 候选码（超键），符合 3NF / BCNF' }
+    ],
+    note: '✓ 满足 <b>3NF</b>，且因唯一 FD 的左部就是候选码，自动达到 <b>BCNF</b>。这是"选课成绩"类最简结构。',
+    noteCls: 'note-ok'
+  },
+  'bcnfok': {
+    title: '学生-课程完整信息（候选码 {学号, 课程号}）',
+    headers: ['学号', '姓名', '课程号', '课程名'],
+    hcols: {},
+    rows: [
+      ['S01', '张三', 'C1', '数据库'],
+      ['S01', '张三', 'C2', '网络'],
+      ['S02', '李四', 'C1', '数据库']
+    ],
+    fds: [
+      { l: '学号,课程号', r: '姓名,课程名', ok: true, why: '左部 = 候选码，所有 FD 都由超键决定' }
+    ],
+    note: '✓ 满足 <b>BCNF</b>：单一 FD 联合左部 = 候选码，无部分依赖、无传递依赖。代价：<b>姓名</b> / <b>课程名</b> 有数据冗余（同 S01 出现两次），但已消除所有更新异常。',
+    noteCls: 'note-ok'
+  }
+};
+
+function nfRenderSample(kind) {
+  const s = NF_SAMPLES[kind];
+  if (!s) return;
+  const titleEl = document.getElementById('nf-sample-title');
+  const tblEl   = document.getElementById('nf-sample-tbl');
+  const fdEl    = document.getElementById('nf-sample-fd');
+  const noteEl  = document.getElementById('nf-sample-note');
+  if (!titleEl || !tblEl) return;
+
+  titleEl.textContent = '▸ ' + s.title;
+
+  // 表头：键属性 + 列着色
+  const keySet = new Set();
+  const keyAttr = document.getElementById('nf-key').value;
+  keyAttr.split(/[,;]/).map(x=>x.trim()).filter(Boolean).forEach(k => keySet.add(k));
+  const rAttr = document.getElementById('nf-r').value.split(',').map(x=>x.trim()).filter(Boolean);
+  // 建立 header → attr code 映射（按出现顺序）
+  const headToAttr = {};
+  s.headers.forEach((h, i) => { if (rAttr[i]) headToAttr[h] = rAttr[i]; });
+  const isKeyHeader = h => keySet.has(headToAttr[h]);
+
+  tblEl.innerHTML =
+    '<thead><tr>' +
+    s.headers.map(h => {
+      const col = s.hcols[h] || (isKeyHeader(h) ? 'col-key' : '');
+      const keyCls = isKeyHeader(h) ? ' key-attr' : '';
+      return `<th class="${col}${keyCls}">${h}</th>`;
+    }).join('') +
+    '</tr></thead>' +
+    '<tbody>' +
+    s.rows.map(row => '<tr>' +
+      row.map((cell, i) => {
+        const h = s.headers[i];
+        const col = s.hcols[h] || '';
+        return `<td class="${col}">${cell}</td>`;
+      }).join('') +
+    '</tr>').join('') +
+    '</tbody>';
+
+  // FD 关系图
+  fdEl.innerHTML = s.fds.map(fd =>
+    `<div class="nf-fd-line ${fd.ok ? 'fd-ok' : 'fd-err'}">` +
+      `<span class="nf-fd-lhs">{${fd.l}}</span>` +
+      `<span class="nf-fd-arrow">→</span>` +
+      `<span class="nf-fd-rhs">${fd.r}</span>` +
+      `<span class="nf-fd-mark ${fd.ok ? 'ok' : 'err'}">${fd.ok ? '✓ 正常' : '✗ ' + (fd.why || '违规')}</span>` +
+    `</div>`
+  ).join('');
+
+  noteEl.className = 'nf-sample-note ' + (s.noteCls || '');
+  noteEl.innerHTML = s.note;
+}
+
 function nfPreset(kind) {
   const presets = {
     '2nf':    { r: 'SNO,SN,CNO,CN,GRADE', key: 'SNO,CNO', fd: 'SNO->SN;CNO->CN;SNO,CNO->GRADE' },
     '3nf':    { r: 'SNO,SN,DEPT,MN',       key: 'SNO',     fd: 'SNO->SN,DEPT;DEPT->MN' },
     'bcnf':   { r: 'SNO,SN,CNO',           key: 'SNO,CNO', fd: 'SNO->SN;CNO->SN' },
-    '3nfok':  { r: 'SNO,CNO,GRADE',        key: 'SNO,CNO', fd: 'SNO,CNO->GRADE' }
+    '3nfok':  { r: 'SNO,CNO,GRADE',        key: 'SNO,CNO', fd: 'SNO,CNO->GRADE' },
+    'bcnfok': { r: 'SNO,SN,CNO,CN',        key: 'SNO,CNO', fd: 'SNO,CNO->SN,CN' }
   };
   const p = presets[kind];
   document.getElementById('nf-r').value = p.r;
   document.getElementById('nf-key').value = p.key;
   document.getElementById('nf-fd').value = p.fd;
   nfCheck();
+  nfRenderSample(kind);
 }
 
 /* ================== 附录：计时器/Checklist/饼图/风险矩阵 ================== */
@@ -12288,7 +12900,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('mc-graph')) drawMcGraph(mcGraphType);
   if (document.getElementById('fp-tcf')) fpInit();
   if (document.getElementById('fd-mindmap')) drawFdMindmap();
-  if (document.getElementById('nf-r')) nfCheck();
+  if (document.getElementById('nf-r')) { nfCheck(); nfRenderSample('2nf'); }
   if (document.getElementById('c33-btn')) c33Init();
   if (document.getElementById('c34-btn')) c34Init();
   if (document.getElementById('c35-pie')) drawScorePie();
