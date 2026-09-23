@@ -504,6 +504,29 @@ const EXTRA = {
 <p><strong>第二梯队（选答主力）：</strong>Redis 缓存、微服务与分布式、数据库（分片／高可用）、大数据架构——每个专题准备一套"方案设计＋对比"答题框架。</p>
 <p><strong>第三梯队（新技术加分）：</strong>云原生、AI 大模型／RAG、向量数据库、NewSQL——掌握概念、流程与选型理由。</p>
 <p><strong>放弃项：</strong>嵌入式、通信系统等陌生方向（除非有从业背景），把时间留给有把握的题。</p>` },
+  '6-5': { title:'6.5 8 大题型速查 · 关键词库', chap:6, body:`
+<table><thead><tr><th>#</th><th>题型（标准名）</th><th>关键词</th></tr></thead><tbody>
+<tr><td>1</td><td>架构评估</td><td>ATAM / SAAM / CBAM / 效用树 / 敏感点 / 权衡点</td></tr>
+<tr><td>2</td><td>数据库设计</td><td>E-R 图 / 范式 / SQL / 读写分离</td></tr>
+<tr><td>3</td><td>UML 建模</td><td>用例图 / 类图 / 状态图 / 活动图</td></tr>
+<tr><td>4</td><td>架构风格对比</td><td>分层 / SOA / 微服务 / 事件驱动</td></tr>
+<tr><td>5</td><td>微服务与云原生重构</td><td>服务拆分 / API 网关 / DDD / 容器化</td></tr>
+<tr><td>6</td><td>消息／缓存</td><td>一致性 / 击穿／雪崩／穿透 / 消息队列</td></tr>
+<tr><td>7</td><td>安全架构</td><td>认证授权 / 加密 / STRIDE / 等保</td></tr>
+<tr><td>8</td><td>嵌入式组件</td><td>RMS / EDF / 实时调度 / 看门狗</td></tr>
+</tbody></table>
+<p>用法：拿到题干先用关键词定位题型（命中哪一行就套哪一套框架作答），再从 6-1／6-2 找对应的答题模板。</p>` },
+  '6-6': { title:'6.6 4 大应试招数速查', chap:6, body:`
+<table><thead><tr><th>#</th><th>招</th><th>触发场景</th><th>用在哪类题型</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>题干是答案仓库</strong></td><td>不知道写啥</td><td>所有题型（基础）</td></tr>
+<tr><td>2</td><td><strong>编号 + 表格作答</strong></td><td>写得啰嗦没分</td><td>对比题、列举题（架构风格／微服务）</td></tr>
+<tr><td>3</td><td><strong>填空题首选</strong></td><td>选题时犹豫</td><td>后 4 选 2 时</td></tr>
+<tr><td>4</td><td><strong>不会也写满</strong></td><td>时间不够</td><td>所有题（兜底）</td></tr>
+</tbody></table>
+<p><strong>招 1（题干是答案仓库）：</strong>题干里的项目背景、关键词往往就是阅卷点所在——质量属性名称、架构风格名、组件名词等"原词"抄进答案，至少覆盖 50% 得分点。</p>
+<p><strong>招 2（编号 + 表格作答）：</strong>对比题先列对比维度（一致性、性能、复杂度、适用场景等）做成表格，再逐维度作答；列举题用 ①②③ 编号 4—6 条，比写段落更易得"关键词分"。</p>
+<p><strong>招 3（填空题首选）：</strong>遇到"简述 XX 的步骤／流程／组成"类问法，按"第一步→第二步→…→结果"4—5 步填空式作答，每步一句关键词，最稳。</p>
+<p><strong>招 4（不会也写满）：</strong>完全没思路时不要留空。先抄题干背景（项目名、采用 XX 技术）再补上"采用 XX 架构／中间件／策略以提升 XX 质量属性"的通用句式，触发阅卷人"沾边给分"。</p>` },
   'A': { title:'附录 A 主要参考来源', chap:7, body:`
 <ul style="line-height:1.9;color:var(--ivory-1);font-family:var(--font-cn);font-size:.92rem;padding-left:20px">
 <li>软考官方网站（报名、大纲）：<a href="https://www.ruankao.org.cn" style="color:var(--azure)">https://www.ruankao.org.cn</a></li>
@@ -522,7 +545,7 @@ const CHAPTERS = [
   { id:3, title:'第 3 章 · 数据存储与缓存', items:['c3-1','c3-2','c3-3','c3-4','c3-5','c3-6','c3-7','c3-8','c3-9'] },
   { id:4, title:'第 4 章 · 分布式系统与中间件', items:['c4-1','c4-2','c4-3'] },
   { id:5, title:'第 5 章 · 架构风格与新技术', items:['c5-1','c5-2','c5-3','c5-4','c5-5','c5-6'] },
-  { id:6, title:'第 6 章 · 高频考点速查', items:['6-1','6-2','6-3','6-4'] },
+  { id:6, title:'第 6 章 · 高频考点速查', items:['6-1','6-2','6-3','6-4','6-5','6-6'] },
   { id:7, title:'附录', items:['A'] },
 ];
 
