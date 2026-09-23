@@ -7096,16 +7096,24 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div id="nf-out" class="calc-result" style="margin-top:10px"></div>
       </div>
 
-      <table>
-        <thead><tr><th>范式</th><th>条件</th><th>解决问题</th></tr></thead>
-        <tbody>
-          <tr><td><code>1NF</code></td><td>属性不可再分</td><td>消除重复组</td></tr>
-          <tr><td><code>2NF</code></td><td>1NF + 非主属性完全依赖候选码</td><td>消除<b>部分函数依赖</b></td></tr>
-          <tr><td><code>3NF</code></td><td>2NF + 非主属性不传递依赖候选码</td><td>消除<b>传递依赖</b></td></tr>
-          <tr><td><code>BCNF</code></td><td>3NF + 主属性无部分和传递依赖</td><td>消除主属性异常</td></tr>
-          <tr><td><code>4NF</code></td><td>BCNF + 消除多值依赖</td><td>独立多值属性分离</td></tr>
-        </tbody>
-      </table>
+      <div style="margin-top:14px;padding:12px 14px;background:rgba(212,168,95,0.08);border:1px solid var(--gold-2);border-radius:6px;font-family:var(--font-cn);font-size:0.88rem">
+        <div style="color:var(--gold-1);font-weight:700;letter-spacing:0.06em;margin-bottom:10px">▸ 关键判定口诀 · 三步速判 几NF</div>
+        <div style="display:grid;grid-template-columns:48px 1fr 1.4fr;gap:8px;align-items:center;margin-bottom:6px">
+          <div style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-weight:700;font-size:1rem">①</div>
+          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">候选码是不是单列？</b></div>
+          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--emerald)">天然 2NF</b>（不存在真子集，无部分依赖可谈）</div>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 1fr 1.4fr;gap:8px;align-items:center;margin-bottom:6px">
+          <div style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-weight:700;font-size:1rem">②</div>
+          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">非主属性 → 非主属性 的链？</b></div>
+          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--crimson)">违反 3NF</b>（传递依赖，如 学号→系号→系主任）</div>
+        </div>
+        <div style="display:grid;grid-template-columns:48px 1fr 1.4fr;gap:8px;align-items:center">
+          <div style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--gold-2);color:var(--ink-0);font-family:var(--font-mono);font-weight:700;font-size:1rem">③</div>
+          <div style="color:var(--ivory-1);font-size:0.86rem"><b style="color:var(--gold-1)">决定因素（非超键）→ 任意属性？</b></div>
+          <div style="color:var(--ivory-2);font-size:0.84rem">是 → <b style="color:var(--crimson)">违反 BCNF</b>（含主属性被非超键决定的极端情形）</div>
+        </div>
+      </div>
 
       <div style="margin-top:14px;padding:12px 14px;background:rgba(74,111,165,0.08);border:1px solid var(--ink-4);border-radius:6px;font-family:var(--font-cn);font-size:0.86rem">
         <div style="color:var(--gold-2);font-weight:700;letter-spacing:0.06em;margin-bottom:8px">最小反例 · 违反 → 满足</div>
@@ -7158,6 +7166,23 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
             <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生(<u>学号</u>, 姓名, 系号)
 系(<u>系号</u>, 系主任)</pre>
             <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">非主属性<b style="color:var(--emerald)">直接依赖</b>候选码，无传递链。</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:54px 1fr 1fr;gap:8px;align-items:stretch">
+          <div style="display:flex;align-items:center;justify-content:center;background:rgba(212,168,95,0.15);border:1px solid var(--gold-2);border-radius:4px;font-family:var(--font-mono);font-weight:700;color:var(--gold-1)">BCNF</div>
+          <div style="padding:8px 10px;background:rgba(196,59,75,0.08);border-left:3px solid var(--crimson);border-radius:3px">
+            <div style="color:var(--crimson);font-weight:700;margin-bottom:4px">违反 BCNF（主属性被非超键决定）</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">选课(<u>学号, 课程</u>, <u>教师</u>)
+ FD: 课程 → 教师,
+     教师 → 课程</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">两个候选码 (学号,课程) 和 (学号,教师) 都正确；教师、课程互决但都<b style="color:var(--crimson)">不是超键</b>（闭包不含学号）。</div>
+          </div>
+          <div style="padding:8px 10px;background:rgba(74,165,122,0.08);border-left:3px solid var(--emerald);border-radius:3px">
+            <div style="color:var(--emerald);font-weight:700;margin-bottom:4px">满足 BCNF</div>
+            <pre style="font-family:var(--font-mono);font-size:0.8rem;margin:0;color:var(--ivory-1);white-space:pre-wrap">学生选课(<u>学号, 课程</u>)
+课程教师(<u>课程, 教师</u>)</pre>
+            <div style="color:var(--ivory-3);font-size:0.78rem;margin-top:4px">每个 FD 左部都<b style="color:var(--emerald)">成为超键</b>；代价是课程↔教师的互决 FD 被切到 R2 单独维护。</div>
           </div>
         </div>
       </div>
@@ -13404,7 +13429,7 @@ const NF_DATA = [
   { lvl: '2NF', cond: '1NF + 非主属性完全依赖候选码（无部分依赖）', solves: '部分函数依赖', tip: '<b>2NF</b>：联合主键时，非主属性必须依赖全部主键，而不是其中一部分。<br>反例：(学号, 课程) → 学生姓名（姓名只依赖学号）。' },
   { lvl: '3NF', cond: '2NF + 非主属性不传递依赖候选码', solves: '传递依赖', tip: '<b>3NF</b>：X → Y，Y → Z，则 Z 不应直接放在 X 关系中。<br>反例：学号 → 系号 → 系主任（系主任传递依赖学号）。' },
   { lvl: 'BCNF', cond: '3NF + 主属性也无部分和传递依赖', solves: '主属性异常', tip: '<b>BCNF</b>：每个决定因素都必须是候选码。<br>反例：X→Y，X 不是候选码但 Y 是主属性（如 (SJ)→T 但 S→T 也成立时）。' },
-  { lvl: '4NF', cond: 'BCNF + 非平凡多值依赖中至少一为函数依赖', solves: '独立多值属性', tip: '<b>4NF</b>：消除多值依赖。一个关系中不能同时存在两个独立的多值属性。<br>反例：学生-课程-兴趣（课程与兴趣互相独立）。' },
+  { lvl: '4NF', cond: 'BCNF + 消除多值依赖（非平凡多值依赖中至少一个为函数依赖）', solves: '独立多值属性', tip: '<b>4NF</b>：消除多值依赖。一个关系中不能同时存在两个独立的多值属性。<br>反例：学生-课程-兴趣（课程与兴趣互相独立）。' },
 ];
 function nfInit() {
   const wrap = document.getElementById('nf-funnel');
