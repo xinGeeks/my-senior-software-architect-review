@@ -7745,6 +7745,19 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2020·2023下·2024上</span></div>
       <div class="card-sub">Relational Algebra & B+ Tree Index Cost</div>
 
+      <div class="calc">
+        <div class="calc-title">交互计算器 · 输入记录数 + 页/键/指针大小自动算阶数与高度</div>
+        <div class="calc-row">
+          <div class="calc-field"><label>记录数 N</label><input id="nk-N" type="number" value="1000000" min="1" oninput="raf('computeBTree')"></div>
+          <div class="calc-field"><label>页大小 (B)</label><input id="nk-page" type="number" value="4096" min="64" oninput="raf('computeBTree')"></div>
+          <div class="calc-field"><label>键大小 (B)</label><input id="nk-key" type="number" value="4" min="1" oninput="raf('computeBTree')"></div>
+          <div class="calc-field"><label>指针大小 (B)</label><input id="nk-ptr" type="number" value="8" min="1" oninput="raf('computeBTree')"></div>
+        </div>
+        <button class="pr-play-btn" onclick="computeBTree()">📐 计算阶数与高度</button>
+        <button class="pr-reset-btn" onclick="nkLoadExample()">载入真题</button>
+        <div class="tf-result" id="nk-out"></div>
+      </div>
+
       <span class="formula-label">关系代数 8 大运算</span>
       <table>
         <thead><tr><th>运算</th><th>符号</th><th>说明</th><th>结果元数</th></tr></thead>
@@ -7984,9 +7997,22 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
     <article class="card-detail tier-3" data-id="c22a" data-section="sec4">
 
       <span class="tier-label">⭐⭐⭐ 中频</span>
-      <div class="card-title">4.6 时差公式 · FF / TF</div>
+      <div class="card-title">4.1a 时差公式 · FF / TF（CPM 延伸）</div>
       <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2022·2023下·2024上</span></div>
       <div class="card-sub">Free Float & Total Float</div>
+
+      <div class="calc">
+        <div class="calc-title">交互计算器 · 输入任务工期 + 依赖自动推 ES/EF/LS/LF/FF/TF</div>
+        <div class="calc-row">
+          <div class="calc-field" style="flex:1">
+            <label>任务定义（分号分隔，格式：<code>ID:工期[,依赖1,依赖2]</code>）</label>
+            <input id="tf-input" type="text" value="A:3; B:4,A; C:2,A; D:5,B,C" oninput="raf('computeFloat')" placeholder="例：A:3; B:4,A; C:2,A; D:5,B,C">
+          </div>
+        </div>
+        <button class="pr-play-btn" onclick="computeFloat()">📐 重算时差</button>
+        <button class="pr-reset-btn" onclick="tfLoadExample()">载入真题</button>
+        <div class="tf-result" id="tf-out"></div>
+      </div>
 
       <span class="formula-label">4 个时间参数</span>
       <div class="formula">
@@ -17156,6 +17182,150 @@ function initSched() {
     loadSchedExample();
   }
 }
+
+/* ================== Calculator: CPM 时差 (4.1a) ================== */
+function topoSortTasks(tasks) {
+  const visited = new Set();
+  const order = [];
+  const dfs = (id) => {
+    if (visited.has(id)) return;
+    visited.add(id);
+    for (const d of (tasks[id]?.deps || [])) dfs(d);
+    order.push(id);
+  };
+  for (const id in tasks) dfs(id);
+  return order;
+}
+
+function computeFloat() {
+  const raw = document.getElementById('tf-input').value.trim();
+  if (!raw) {
+    document.getElementById('tf-out').innerHTML = '<div style="color:var(--crimson)">请输入任务定义</div>';
+    return;
+  }
+  const tasks = {};
+  for (const t of raw.split(';').map(s => s.trim()).filter(Boolean)) {
+    const [id, rest] = t.split(':').map(s => s.trim());
+    if (!id || !rest) continue;
+    const parts = rest.split(',').map(s => s.trim()).filter(Boolean);
+    const dur = +parts[0] || 0;
+    const deps = parts.slice(1);
+    tasks[id] = { dur, deps, ES: 0, EF: 0, LS: 0, LF: 0, FF: 0, TF: 0 };
+  }
+  if (Object.keys(tasks).length === 0) {
+    document.getElementById('tf-out').innerHTML = '<div style="color:var(--crimson)">解析失败，请检查格式</div>';
+    return;
+  }
+  const order = topoSortTasks(tasks);
+  // 正向推算
+  for (const id of order) {
+    const t = tasks[id];
+    t.ES = t.deps.length ? Math.max(...t.deps.map(d => tasks[d]?.EF ?? 0)) : 0;
+    t.EF = t.ES + t.dur;
+  }
+  const projectEnd = Math.max(...Object.values(tasks).map(t => t.EF));
+  // 逆向推算
+  for (const id of [...order].reverse()) {
+    const t = tasks[id];
+    const succs = Object.values(tasks).filter(o => o.deps.includes(id));
+    t.LF = succs.length ? Math.min(...succs.map(s => s.LS)) : projectEnd;
+    t.LS = t.LF - t.dur;
+  }
+  // 时差
+  for (const id of order) {
+    const t = tasks[id];
+    t.TF = t.LS - t.ES;
+    const succs = Object.values(tasks).filter(o => o.deps.includes(id));
+    t.FF = succs.length ? Math.min(...succs.map(s => s.ES)) - t.EF : projectEnd - t.EF;
+  }
+  const criticalIds = order.filter(id => tasks[id].TF === 0);
+  let html = `<table style="font-size:0.82rem">
+    <thead><tr>
+      <th>任务</th><th>工期</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>FF</th><th>TF</th><th>关键?</th>
+    </tr></thead><tbody>`;
+  for (const id of order) {
+    const t = tasks[id];
+    const isCrit = t.TF === 0;
+    const bg = isCrit ? 'background:rgba(232,195,132,0.18);color:var(--gold-1);font-weight:600' : '';
+    html += `<tr style="${bg}">
+      <td>${id}</td><td>${t.dur}</td>
+      <td>${t.ES}</td><td>${t.EF}</td>
+      <td>${t.LS}</td><td>${t.LF}</td>
+      <td>${t.FF}</td><td>${t.TF}</td>
+      <td>${isCrit ? '★' : '—'}</td>
+    </tr>`;
+  }
+  html += `</tbody></table>
+    <div style="margin-top:8px;font-size:0.86rem;color:var(--ivory-2)">
+      总工期 = <b style="color:var(--gold-1)">${projectEnd}</b> ·
+      关键路径 = <b style="color:var(--gold-1)">${criticalIds.join(' → ')}</b> ·
+      关键任务数 = ${criticalIds.length}/${order.length}
+    </div>`;
+  document.getElementById('tf-out').innerHTML = html;
+}
+
+function tfLoadExample() {
+  document.getElementById('tf-input').value = 'A:3; B:4,A; C:2,A; D:5,B,C';
+  computeFloat();
+}
+
+function initFloat() {
+  if (document.getElementById('tf-input')) {
+    tfLoadExample();
+  }
+}
+
+/* ================== Calculator: B+ 树高度 (3.5) ================== */
+function computeBTree() {
+  const N = +document.getElementById('nk-N').value || 0;
+  const page = +document.getElementById('nk-page').value || 0;
+  const key = +document.getElementById('nk-key').value || 0;
+  const ptr = +document.getElementById('nk-ptr').value || 0;
+  if (!N || !page || !key || !ptr) {
+    document.getElementById('nk-out').innerHTML = '<div style="color:var(--crimson)">请填全 4 个参数</div>';
+    return;
+  }
+  // 阶数 m：忽略头开销时 m ≈ page / (key + ptr)
+  const m = Math.floor(page / (key + ptr));
+  // 高度 h = ⌈log_m(N)⌉
+  let h = 1, cap = m;
+  while (cap < N) { cap = cap * m; h++; }
+  // 各层可容纳节点数（粗估）
+  const levelCaps = [];
+  let c = 1;
+  for (let i = 0; i <= h; i++) { levelCaps.push(c); c *= m; }
+  // 叶子层每节点可容纳记录数 ≈ page / key
+  const leafCap = Math.floor(page / key);
+  const maxRecords = Math.pow(m, h - 1) * leafCap;
+  let html = `<table style="font-size:0.84rem">
+    <thead><tr><th>参数</th><th>计算</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>阶数 m</td><td>⌊${page} / (${key} + ${ptr})⌋</td><td><b style="color:var(--gold-1)">${m}</b></td></tr>
+      <tr><td>高度 h</td><td>⌈log<sub>${m}</sub>(${N.toLocaleString()})⌉</td><td><b style="color:var(--gold-1)">${h} 层</b></td></tr>
+      <tr><td>叶子记录数</td><td>⌊${page} / ${key}⌋</td><td>${leafCap} 条/节点</td></tr>
+      <tr><td>最大记录数</td><td>m<sup>h−1</sup> × ${leafCap} = ${m}<sup>${h - 1}</sup> × ${leafCap}</td><td>${maxRecords.toLocaleString()} 条</td></tr>
+    </tbody></table>
+    <div style="margin-top:8px;font-size:0.86rem;color:var(--ivory-2)">
+      ${N.toLocaleString()} 条记录在 ${h} 层 B+ 树中，每次查找最多 <b style="color:var(--gold-1)">${h - 1}</b> 次磁盘 I/O（根常驻内存）
+    </div>`;
+  document.getElementById('nk-out').innerHTML = html;
+}
+
+function nkLoadExample() {
+  document.getElementById('nk-N').value = 1000000;
+  document.getElementById('nk-page').value = 4096;
+  document.getElementById('nk-key').value = 4;
+  document.getElementById('nk-ptr').value = 8;
+  computeBTree();
+}
+
+function initBTree() {
+  if (document.getElementById('nk-N')) {
+    nkLoadExample();
+  }
+}
+initBTree();
+initFloat();
 </script>
 </body>
 </html>
