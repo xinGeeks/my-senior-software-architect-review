@@ -541,7 +541,7 @@ const EXTRA = {
 
 const CHAPTERS = [
   { id:1, title:'备考策略', items:['1-1','1-2','1-3'] },
-  { id:2, title:'第 2 章 · 架构设计基础（必答高频区）', items:['c2-1','c2-2','c2-3','c2-4','c2-5','c2-6'] },
+  { id:2, title:'第 2 章 · 架构设计基础（必答高频区）', items:['c2-1','c2-2','c2-3','c2-4','c2-5','c2-6','c2-7'] },
   { id:3, title:'第 3 章 · 数据存储与缓存', items:['c3-1','c3-2','c3-3','c3-4','c3-5','c3-6','c3-7','c3-8','c3-9'] },
   { id:4, title:'第 4 章 · 分布式系统与中间件', items:['c4-1','c4-2','c4-3'] },
   { id:5, title:'第 5 章 · 架构风格与新技术', items:['c5-1','c5-2','c5-3','c5-4','c5-5','c5-6'] },
@@ -551,33 +551,37 @@ const CHAPTERS = [
 
 const TOPICS = {
 'c2-1': { chap:2, title:'质量属性', tier:1, tag:'必答拿分', viz:`<div class="viz-title">六大质量属性 + QAS 六要素</div>
-<svg viewBox="0 0 560 280">
+<svg viewBox="0 0 580 330">
   <defs><marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--gold-2)"/></marker></defs>
-  <rect x="10" y="120" width="80" height="36" rx="4" fill="rgba(232,195,132,.15)" stroke="var(--gold-2)"/>
-  <text x="50" y="143" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">系统需求</text>
-  <line x1="90" y1="138" x2="160" y2="50" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
-  <line x1="90" y1="138" x2="160" y2="100" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
-  <line x1="90" y1="138" x2="160" y2="150" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
-  <line x1="90" y1="138" x2="160" y2="200" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
-  <line x1="90" y1="138" x2="160" y2="250" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <rect x="10" y="142" width="80" height="36" rx="4" fill="rgba(232,195,132,.15)" stroke="var(--gold-2)"/>
+  <text x="50" y="165" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">系统需求</text>
+  <line x1="90" y1="160" x2="160" y2="20" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="160" x2="160" y2="70" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="160" x2="160" y2="120" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="160" x2="160" y2="170" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="160" x2="160" y2="220" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
+  <line x1="90" y1="160" x2="160" y2="270" stroke="var(--gold-2)" marker-end="url(#arr1)"/>
   <g font-family="Noto Serif SC" font-size="12" fill="var(--ivory-1)">
-  <rect x="160" y="32" width="100" height="36" rx="4" fill="rgba(74,111,165,.18)" stroke="var(--azure)"/><text x="210" y="55" text-anchor="middle">性能</text>
-  <rect x="160" y="82" width="100" height="36" rx="4" fill="rgba(93,138,111,.18)" stroke="var(--emerald)"/><text x="210" y="105" text-anchor="middle">可用性</text>
-  <rect x="160" y="132" width="100" height="36" rx="4" fill="rgba(200,85,61,.18)" stroke="var(--crimson)"/><text x="210" y="155" text-anchor="middle">安全性</text>
-  <rect x="160" y="182" width="100" height="36" rx="4" fill="rgba(111,93,138,.18)" stroke="var(--violet)"/><text x="210" y="205" text-anchor="middle">可修改性</text>
-  <rect x="160" y="232" width="100" height="36" rx="4" fill="rgba(212,168,95,.18)" stroke="var(--gold-2)"/><text x="210" y="255" text-anchor="middle">易用性</text>
+  <rect x="160" y="2" width="100" height="36" rx="4" fill="rgba(74,111,165,.18)" stroke="var(--azure)"/><text x="210" y="25" text-anchor="middle">性能</text>
+  <rect x="160" y="52" width="100" height="36" rx="4" fill="rgba(93,138,111,.18)" stroke="var(--emerald)"/><text x="210" y="75" text-anchor="middle">可用性</text>
+  <rect x="160" y="102" width="100" height="36" rx="4" fill="rgba(200,85,61,.18)" stroke="var(--crimson)"/><text x="210" y="125" text-anchor="middle">安全性</text>
+  <rect x="160" y="152" width="100" height="36" rx="4" fill="rgba(111,93,138,.18)" stroke="var(--violet)"/><text x="210" y="175" text-anchor="middle">可修改性</text>
+  <rect x="160" y="202" width="100" height="36" rx="4" fill="rgba(212,168,95,.18)" stroke="var(--gold-2)"/><text x="210" y="225" text-anchor="middle">可测试性 ★</text>
+  <rect x="160" y="252" width="100" height="36" rx="4" fill="rgba(140,180,200,.18)" stroke="var(--azure)"/><text x="210" y="275" text-anchor="middle">易用性</text>
   </g>
-  <line x1="260" y1="50" x2="380" y2="50" stroke="var(--azure)"/>
-  <line x1="260" y1="105" x2="380" y2="105" stroke="var(--emerald)"/>
-  <line x1="260" y1="155" x2="380" y2="155" stroke="var(--crimson)"/>
-  <line x1="260" y1="205" x2="380" y2="205" stroke="var(--violet)"/>
-  <line x1="260" y1="255" x2="380" y2="255" stroke="var(--gold-2)"/>
+  <line x1="260" y1="20" x2="380" y2="20" stroke="var(--azure)"/>
+  <line x1="260" y1="70" x2="380" y2="70" stroke="var(--emerald)"/>
+  <line x1="260" y1="120" x2="380" y2="120" stroke="var(--crimson)"/>
+  <line x1="260" y1="170" x2="380" y2="170" stroke="var(--violet)"/>
+  <line x1="260" y1="220" x2="380" y2="220" stroke="var(--gold-2)"/>
+  <line x1="260" y1="270" x2="380" y2="270" stroke="var(--azure)"/>
   <g font-family="JetBrains Mono" font-size="11" fill="var(--ivory-3)">
-  <rect x="380" y="32" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="48">响应时间 / 吞吐量</text><text x="390" y="62" fill="var(--ivory-3)">≤ 1s / 1000 TPS</text>
-  <rect x="380" y="82" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="98">故障检测 / 恢复</text><text x="390" y="112" fill="var(--ivory-3)">MTBF / MTTR</text>
-  <rect x="380" y="132" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="148">认证 / 授权 / 加密</text><text x="390" y="162" fill="var(--ivory-3)">防篡改 / 审计</text>
-  <rect x="380" y="182" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="198">新增 / 修改成本</text><text x="390" y="212" fill="var(--ivory-3)">影响范围</text>
-  <rect x="380" y="232" width="160" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="248">易学习 / 易操作</text><text x="390" y="262" fill="var(--ivory-3)">用户体验</text>
+  <rect x="380" y="2" width="180" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="18">响应时间 / 吞吐量 / 并发</text><text x="390" y="32" fill="var(--ivory-3)">≤ 1s · 1000 TPS</text>
+  <rect x="380" y="52" width="180" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="68">故障检测 / 恢复 / 切换</text><text x="390" y="82" fill="var(--ivory-3)">MTBF · MTTR · ≤ 3s 切换</text>
+  <rect x="380" y="102" width="180" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="118">认证 / 授权 / 加密 / 审计</text><text x="390" y="132" fill="var(--ivory-3)">TLS · ACL · 数字签名</text>
+  <rect x="380" y="152" width="180" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="168">新增 / 修改 / 替换成本</text><text x="390" y="182" fill="var(--ivory-3)">模块化 · 接口抽象</text>
+  <rect x="380" y="202" width="180" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="218">缺陷发现 / 验证 / 覆盖</text><text x="390" y="232" fill="var(--ivory-3)">桩模块 · 记录回放</text>
+  <rect x="380" y="252" width="180" height="36" rx="4" fill="var(--ink-2)" stroke="var(--ink-4)"/><text x="390" y="268">易学 / 易记 / 高效</text><text x="390" y="282" fill="var(--ivory-3)">用户体验 · 帮助系统</text>
   </g>
 </svg>
 <div class="viz-flow" style="margin-top:14px">
@@ -597,6 +601,15 @@ const TOPICS = {
   <div class="viz-card"><div class="lbl">④ 制品 (Artifact)</div>应用服务与数据库等系统</div>
   <div class="viz-card"><div class="lbl">⑤ 响应 (Response)</div>应能够正常处理请求并正确返回结果</div>
   <div class="viz-card gold"><div class="lbl">⑥ 响应度量 (Measure)</div>95% 请求响应时间 ≤ 300ms，吞吐量 ≥ 1000 TPS</div>
+</div>
+<div class="viz-title" style="margin-top:16px">📋 六大质量属性 · 子项 + 战术 + 典型场景</div>
+<div class="viz-grid c3">
+  <div class="viz-card b"><div class="lbl">① 性能 Performance</div><b>子项：</b>响应时间、吞吐量、并发数<br><b style="color:var(--azure)">战术：</b>缓存、CDN、负载均衡、异步、并发调度<br><b style="color:var(--ivory-3)">例：</b>95% 请求 ≤ 1s，TPS ≥ 1000</div>
+  <div class="viz-card g"><div class="lbl">② 可用性 Availability</div><b>子项：</b>故障检测、恢复时间、MTBF、MTTR<br><b style="color:var(--emerald)">战术：</b>冗余、心跳、主备、自动故障转移<br><b style="color:var(--ivory-3)">例：</b>3 秒内切换备用桩</div>
+  <div class="viz-card r"><div class="lbl">③ 安全性 Security</div><b>子项：</b>认证、授权、加密、防篡改、审计<br><b style="color:var(--crimson)">战术：</b>TLS/SSL、ACL、防火墙、数字签名<br><b style="color:var(--ivory-3)">例：</b>支付全程加密传输</div>
+  <div class="viz-card gold"><div class="lbl">④ 可修改性 Modifiability</div><b>子项：</b>新增、修改、替换成本、影响范围<br><b style="color:var(--gold-1)">战术：</b>模块化、接口抽象、信息隐藏<br><b style="color:var(--ivory-3)">例：</b>新增支付方式零修改原代码</div>
+  <div class="viz-card b"><div class="lbl">⑤ 可测试性 Testability</div><b>子项：</b>测试覆盖、缺陷发现、易验证<br><b style="color:var(--azure)">战术：</b>模块化接口、桩模块、记录回放<br><b style="color:var(--ivory-3)">例：</b>单元测试覆盖关键路径</div>
+  <div class="viz-card g"><div class="lbl">⑥ 易用性 Usability</div><b>子项：</b>易学、易记、高效、用户体验<br><b style="color:var(--emerald)">战术：</b>界面分离、用户模型、帮助系统<br><b style="color:var(--ivory-3)">例：</b>自助查询响应 ≤ 2s</div>
 </div>`,
 core:`常用质量属性：性能、可用性、安全性、可修改性（可维护性）、可测试性、易用性；功能性、可靠性（容错、健壮性）常作为区分项出现。\n质量属性场景（QAS）六要素：刺激源、刺激、环境、制品、响应、响应度量。\n质量属性效用树：树根为"效用"，一级节点为质量属性（性能、可用性、安全性、可修改性等），逐级细化到叶子——可度量的质量属性场景；评估时按"重要性"和"实现难度"打分排序，决定架构优先级。\n架构评估方法：SAAM（场景架构分析法，基于场景评估可修改性等）；ATAM（架构权衡分析法，引入权衡，识别敏感点、权衡点、风险点、非风险点，分 4 个活动领域、9 个步骤）；CBAM（成本效益分析法，从经济角度评估架构决策）。\n关键术语：敏感点——影响某一质量属性的构件特性；权衡点——同时影响多个质量属性的敏感点；风险点——可能导致问题的架构决策；非风险点——不会导致问题的架构决策。`, exam:`质量属性几乎是案例分析第 1 题的固定考点。典型问法：给一段系统需求（场景 a～n），逐一判断属于功能性还是哪个质量属性，用"功能性／性能／可用性／安全性／可修改性"等标准词作答。\n质量属性场景六要素填空：刺激源、刺激、环境、制品、响应、响应度量。\n给出效用树补全节点，或说明优先级排序依据；结合 ATAM 识别敏感点、权衡点、风险点。\n真题印证：2024 下半年（质量属性填空＋心跳策略故障检测）、2025 上半年大模型训练平台（性能：1 分钟内完成资源分配；可用性：20 分钟内切换备用库）、2025 下半年电动车充电管理系统（3 秒内响应、加密传输等场景）。`, pit:`功能性≠质量属性：功能性描述"系统能做什么"（如"支持用户登录"），质量属性描述"做得怎么样"（如"登录响应小于 1 秒"）。\n性能 vs 可用性：性能关注响应时间、吞吐量、并发数；可用性关注故障检测与恢复（MTBF／MTTR、切换时间）。\n安全性：认证、授权、数据加密、防篡改、审计；可修改性：新增／修改功能的成本与影响范围。\nATAM 输出术语必须准确：敏感点、权衡点、风险点、非风险点，答题时一一对应。`,
 qas:[
@@ -608,7 +621,65 @@ qas:[
     a:'3 秒切换对应可用性；传输加密对应安全性。\n可用性 QAS 六要素：\n刺激源：充电桩内部硬件故障\n刺激：主用充电桩异常下线\n环境：系统正常运行，计费业务持续中\n制品：充电桩控制器、计费服务、备用桩池\n响应：自动检测故障、切换到备用桩并继续完成计费结算\n响应度量：故障检测 + 切换 + 结算完成总时长 ≤ 3 秒' }
 ] },
 
-'c2-2': { chap:2, title:'系统架构图', tier:1, tag:'必答', viz:`<div class="viz-title">4+1 视图金字塔（Kruchten）</div>
+'c2-2': { chap:2, title:'ATAM', tier:1, tag:'必答拿分', viz:`<div class="viz-title">ATAM · 9 步骤 × 4 活动组（Kazman 等，CMU/SEI）</div>
+<div class="viz-flow" style="margin-top:6px">
+  <span class="step gold">活动 1 · 场景</span>
+  <span class="step">① 描述 ATAM</span><span class="arrow">→</span>
+  <span class="step">② 描述业务动机</span><span class="arrow">→</span>
+  <span class="step">③ 描述架构</span><span class="arrow">→</span>
+  <span class="step gold">活动 2 · 架构分析</span>
+  <span class="step">④ 标识架构方法</span><span class="arrow">→</span>
+  <span class="step">⑤ 生成效用树</span><span class="arrow">→</span>
+  <span class="step">⑥ 分析架构方法</span><span class="arrow">→</span>
+  <span class="step gold">活动 3 · 权衡</span>
+  <span class="step">⑦ 讨论场景</span><span class="arrow">→</span>
+  <span class="step gold">活动 4 · 风险</span>
+  <span class="step">⑧ 分析风险点</span><span class="arrow">→</span>
+  <span class="step">⑨ 形成结论</span>
+</div>
+<div class="viz-title" style="margin-top:14px">📌 ATAM 4 大核心术语（阅卷得分点）</div>
+<div class="viz-grid c2">
+  <div class="viz-card gold"><div class="lbl">① 敏感点 Sensitivity Point</div>影响 <b>一个</b> 质量属性的构件特性（参数、决策）</div>
+  <div class="viz-card b"><div class="lbl">② 权衡点 Tradeoff Point</div>同时影响 <b>两个或以上</b> 质量属性的敏感点</div>
+  <div class="viz-card r"><div class="lbl">③ 风险点 Risk</div>可能导致问题的架构决策（与质量属性预期不符）</div>
+  <div class="viz-card g"><div class="lbl">④ 非风险点 Non-Risk</div>经分析不会引发问题的架构决策</div>
+</div>
+<div class="viz-title" style="margin-top:14px">🌳 效用树（Utility Tree）结构示意</div>
+<div class="viz-stack" style="margin-top:6px">
+  <div class="layer" style="border-color:var(--gold-2);background:rgba(212,168,95,.14)"><span><b>效用 Utility</b></span><span class="n">树根</span></div>
+  <div class="layer" style="border-color:var(--azure);background:rgba(74,111,165,.10)"><span><b>质量属性</b>（性能 / 可用性 / 安全性 / 可修改性 …）</span><span class="n">一级节点</span></div>
+  <div class="layer" style="border-color:var(--emerald);background:rgba(93,138,111,.10)"><span><b>属性细化</b>（响应时间 / 吞吐量 / MTBF / MTTR …）</span><span class="n">二级节点</span></div>
+  <div class="layer" style="border-color:var(--ivory-3)"><span><b>质量属性场景（QAS）</b> · 按"重要性＋实现难度"打分排序</span><span class="n">叶子</span></div>
+</div>
+<div class="viz-title" style="margin-top:14px">🆚 三大架构评估方法对比</div>
+<div class="viz-grid c3">
+  <div class="viz-card"><div class="lbl">SAAM</div>早期 · 场景驱动 · 偏重 <b>可修改性</b></div>
+  <div class="viz-card gold"><div class="lbl">ATAM ★</div>经典 · 效用树 + 权衡 · 6 大属性全覆盖</div>
+  <div class="viz-card b"><div class="lbl">CBAM</div>在 ATAM 之上 · <b>成本/效益</b> 量化决策</div>
+</div>
+<div class="viz-title" style="margin-top:12px">👥 评估参与方</div>
+<div class="viz-flow">
+  <span class="step gold">评估小组</span>
+  <span class="arrow">⇄</span>
+  <span class="step">项目决策者</span>
+  <span class="arrow">⇄</span>
+  <span class="step">架构师</span>
+  <span class="arrow">⇄</span>
+  <span class="step">开发经理</span>
+  <span class="arrow">⇄</span>
+  <span class="step">客户 / 用户代表</span>
+</div>`,
+core:`ATAM（Architecture Tradeoff Analysis Method，架构权衡分析法）由 Kazman 等人于 CMU/SEI 提出，是软件架构评估的经典方法。\n核心思想：通过效用树梳理质量属性场景 → 在场景中识别敏感点、权衡点、风险点、非风险点 → 形成架构决策建议。\n9 个步骤归并为 4 个活动组：① 场景（描述 ATAM / 业务动机 / 架构）→ ② 架构分析（标识架构方法 / 生成效用树 / 分析架构方法）→ ③ 权衡（讨论场景与权衡点）→ ④ 风险（分析风险点与非风险点 / 形成结论）。\n4 大核心术语：敏感点（影响一个质量属性的构件特性）、权衡点（同时影响多个质量属性的敏感点）、风险点（可能导致问题的架构决策）、非风险点（分析后判定不会引发问题的架构决策）。\n效用树：根为"效用"，一级节点为质量属性，二级为属性细化，叶子为可度量的 QAS 场景；评估时按"重要性"与"实现难度"对场景打分（高/中/低），决定架构优先级。\n参与者：评估小组（外部人员，主持评估）、项目决策者、项目管理者、架构师、客户代表、用户代表。\n输出物：效用树、风险与权衡清单、决策建议（哪些架构决策可接受 / 需调整 / 必须改变）。\n对比：SAAM（场景架构分析法，侧重可修改性）→ ATAM（在 SAAM 基础上加入质量属性权衡）→ CBAM（成本效益分析法，量化架构决策的 ROI）。`, exam:`必答拿分。问法：描述 ATAM 9 步骤及 4 活动组；给定架构方案，识别敏感点、权衡点、风险点、非风险点；给定需求，画出效用树结构或补全节点；区分 ATAM 与 SAAM、CBAM。\n真题印证：2009、2013、2018、2021 上半年、2024 上半年等多次出现 ATAM 步骤与术语辨析；2025 上半年与 QAS（质量属性场景）结合考查效用树构造。`, pit:`4 大术语必须严格区分：敏感点 ≠ 风险点；权衡点是"敏感点的子集"（同时影响多属性）；非风险点常被遗漏但阅卷老师会看。\nATAM vs SAAM：SAAM 只关注可修改性，ATAM 覆盖 6 大属性并引入权衡；ATAM vs CBAM：CBAM 是 ATAM 之上的成本量化层。\n效用树叶子是可度量的 QAS 场景（含刺激源、刺激、环境、制品、响应、响应度量），不是模糊描述。\n不要把"性能"列为敏感点——敏感点是影响性能的具体构件特性（如"缓存命中率""连接池大小"）。`,
+qas:[
+  { year:'2021 上半年', pts:'14 分',
+    q:'【背景】某电商系统采用分层架构：接入层（API 网关）→ 应用层（订单、库存、支付微服务）→ 数据访问层（MyBatis）→ 数据存储层（MySQL 主从 + Redis 缓存）。架构决策：① Redis 缓存订单详情；② MySQL 主从复制 + 自动故障转移；③ 网关层限流熔断。\n【问题】指出哪些是敏感点、权衡点、风险点、非风险点，并说明理由。',
+    a:'敏感点：① Redis 缓存订单详情（只影响性能，缩短响应时间）；③ 网关限流熔断（只影响可用性，保护后端）。\n权衡点：① 缓存策略（同时影响性能 ↑ 和 数据一致性 ↓，是经典的性能/一致性权衡）。\n风险点：② 主从切换可能数据丢失（异步复制，主库宕机时未同步数据丢失，触发数据一致性风险）。\n非风险点：限流熔断阈值在业务峰值的 1.5 倍以上，经评估不会误触发。\n补充：写完后输出效用树前 3 层（性能/可用性 → 响应时间、切换时间 → QAS 场景）。' },
+  { year:'2024 上半年', pts:'12 分',
+    q:'【背景】某银行核心系统采用"分布式微服务 + 事件驱动"架构，要求日终批处理时长 ≤ 30 分钟，任意节点故障不影响业务连续性，新业务上线 ≤ 2 周。\n【问题】① 描述 ATAM 评估的主要步骤；② 用效用树方式列出前两层（质量属性 + 属性细化）。',
+    a:'ATAM 9 步骤（4 活动组）：\n活动 1·场景：① 描述 ATAM 方法；② 描述业务动机（银行核心系统目标与关键质量属性）；③ 描述当前架构（微服务 + 事件驱动）。\n活动 2·架构分析：④ 标识架构方法（识别风格、模式）；⑤ 生成质量属性效用树；⑥ 分析架构方法（逐属性评估）。\n活动 3·权衡：⑦ 讨论场景与权衡点（性能 vs 一致性、可修改性 vs 性能）。\n活动 4·风险：⑧ 分析风险点与非风险点；⑨ 形成评估结论。\n效用树前两层：\n性能（响应时间、吞吐量、并发数）\n可用性（MTBF、MTTR、故障切换时间）\n安全性（认证、授权、加密、审计）\n可修改性（新增服务、修改接口、影响范围）\n可测试性（覆盖率、缺陷发现率）\n易用性（学习成本、操作效率）' }
+] },
+
+'c2-3': { chap:2, title:'系统架构图', tier:1, tag:'必答', viz:`<div class="viz-title">4+1 视图金字塔（Kruchten）</div>
 <div class="viz-pyramid">
   <div class="row apex"><div class="cell">📋 场景（用例 Scenarios）</div></div>
   <div class="row"><div class="cell" style="background:rgba(74,111,165,.12);border-color:var(--azure)">🧠 逻辑视图</div><div class="cell" style="background:rgba(93,138,111,.12);border-color:var(--emerald)">📦 开发视图</div></div>
@@ -639,7 +710,7 @@ qas:[
     a:'所属风格：独立构件风格——事件驱动／隐式调用。\n理由：\n车辆位置、订单、调度指令均为独立构件（Producer），通过消息队列（Kafka）发布事件；\n下游流处理引擎（Flink）订阅事件，触发相应处理逻辑；\n构件之间不直接调用，通过事件（隐式调用）松耦合；\n天然支持高并发、削峰、可扩展（新增订阅者不影响发布者）。' }
 ] },
 
-'c2-3': { chap:2, title:'面向对象设计原则', tier:2, tag:'必答', viz:`<div class="viz-title">SOLID + LD · 七大原则速记</div>
+'c2-4': { chap:2, title:'面向对象设计原则', tier:2, tag:'必答', viz:`<div class="viz-title">SOLID + LD · 七大原则速记</div>
 <div class="viz-grid c3">
   <div class="viz-card gold"><div class="lbl">S · SRP</div>单一职责 — 一个类只一个变化理由</div>
   <div class="viz-card gold"><div class="lbl">O · OCP</div>开闭原则 — 对扩展开放、对修改关闭</div>
@@ -667,7 +738,7 @@ qas:[
     a:'违反原则：开闭原则（OCP）—— 对扩展（新增支付方式）开放但对修改（改 PaymentContext）也开放，导致每次扩展都改原代码。\n重构：定义 PaymentStrategy 接口（pay、refund）；每种支付方式实现接口（AlipayStrategy、WechatStrategy、UnionPayStrategy）；PaymentContext 通过 Map<String,PaymentStrategy> 注入；新增支付方式只需添加实现类 + 注册 Bean，零修改原代码。\n附加：配合依赖倒置（DIP），高层策略调用面向接口而非实现类。' }
 ] },
 
-'c2-4': { chap:2, title:'UML', tier:2, tag:'必答', viz:`<div class="viz-title">UML 图分类 + 关系强度</div>
+'c2-5': { chap:2, title:'UML', tier:2, tag:'必答', viz:`<div class="viz-title">UML 图分类 + 关系强度</div>
 <div class="viz-grid c2">
   <div class="viz-card b"><div class="lbl">结构图（静态）</div>类图 · 对象图 · 组件图 · 部署图 · 制品图 · 包图</div>
   <div class="viz-card g"><div class="lbl">行为图（动态）</div>用例图 · 活动图 · 状态机图</div>
@@ -692,7 +763,7 @@ qas:[
     a:'序列图要素：\n对象生命线（垂直虚线）：User → OrderService → InventoryService → PaymentService → PaymentGateway → NotificationService\n消息流（带序号箭头）：\n1: submitOrder()  → OrderService\n2: deductStock()  → InventoryService\n3: stockResult    → PaymentService\n4: createPayment() → PaymentService\n5: pay()          → PaymentGateway\n6: callback       → PaymentService\n7: updateStatus() → OrderService\n8: notify()       → NotificationService\n要点：返回消息用虚线箭头；激活条覆盖消息处理时间；PaymentGateway 异步回调用异步消息箭头。' }
 ] },
 
-'c2-5': { chap:2, title:'数据流图', tier:2, tag:'必答', viz:`<div class="viz-title">DFD 四元素 + 分层示意</div>
+'c2-6': { chap:2, title:'数据流图', tier:2, tag:'必答', viz:`<div class="viz-title">DFD 四元素 + 分层示意</div>
 <svg viewBox="0 0 560 160">
   <rect x="20" y="50" width="80" height="60" fill="var(--ink-2)" stroke="var(--gold-2)" stroke-width="1.5"/>
   <text x="60" y="78" text-anchor="middle" fill="var(--gold-1)" font-size="13" font-family="Noto Serif SC">外部实体</text>
@@ -730,7 +801,7 @@ qas:[
     a:'问题：灰洞（输入不足以产生输出）—— 仅靠"订单信息"无法独立完成订单验证，必须读取"商品信息"才能校验商品是否存在、价格是否正确。该数据流在 DFD 中被遗漏。\n补全方案：\n1. 增加数据流："商品信息" ← 商品库（数据存储 D）→ P2.1；\n2. 增加数据流："库存状态" ← 库存库 → P2.1（验证库存是否充足）；\n3. 输出保持："验证结果"→ 后续加工 + "库存预占"→ 库存库。\n原则：每个加工的输入数据必须包含完成该加工所需的全部信息。' }
 ] },
 
-'c2-6': { chap:2, title:'领域驱动设计', tier:3, tag:'选答 加分', viz:`<div class="viz-title">DDD 战略 vs 战术 · 分层架构</div>
+'c2-7': { chap:2, title:'领域驱动设计', tier:3, tag:'选答 加分', viz:`<div class="viz-title">DDD 战略 vs 战术 · 分层架构</div>
 <div class="viz-grid c2">
   <div class="viz-card gold"><div class="lbl">战略设计（Why / Where）</div>限界上下文 BC · 上下文映射 CM · 通用语言 UL</div>
   <div class="viz-card b"><div class="lbl">战术设计（What / How）</div>实体 · 值对象 · 聚合根 · 领域服务 · 领域事件</div>

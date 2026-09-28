@@ -14616,35 +14616,35 @@ function drawCOCOMO() {
   const kloc = +document.getElementById('co-kloc').value || 1;
   const svg = document.getElementById('co-svg');
   if (!svg) return;
-  const W = 480, H = 320;
-  const padL = 50, padR = 16, padT = 20, padB = 36;
-  // X: KLOC 0..500（log 尺度感）
+  const W = 480, H = 360;
+  const padL = 54, padR = 16, padT = 20, padB = 36;
+  // X: KLOC 1..500（log 尺度，避免低 KLOC 挤在左边）
   const xMax = 500;
-  const x2px = x => padL + (Math.log(x + 1) / Math.log(xMax + 1)) * (W - padL - padR);
-  // Y: PM 最大值
-  const maxPM = Math.max(
-    CO_PARAMS.embed.a * Math.pow(xMax, CO_PARAMS.embed.b),
-    CO_PARAMS.semi.a * Math.pow(xMax, CO_PARAMS.semi.b),
-    CO_PARAMS.organic.a * Math.pow(xMax, CO_PARAMS.organic.b),
-  );
-  const y2px = y => padT + (H - padT - padB) * (1 - y / maxPM);
+  const x2px = x => padL + (Math.log(x) / Math.log(xMax)) * (W - padL - padR);
+  // Y: PM 50..5000（log 尺度但范围收紧 → 让 b 相近的三线纵向距离放大）
+  const yMin = 50, yMax = 5000;
+  const y2px = y => {
+    const clamped = Math.max(y, yMin);
+    return padT + (H - padT - padB) * (1 - (Math.log(clamped) - Math.log(yMin)) / (Math.log(yMax) - Math.log(yMin)));
+  };
 
   let html = '';
-  // 网格 + Y 轴刻度
-  [0, 0.25, 0.5, 0.75, 1].forEach(p => {
-    const y = padT + p * (H - padT - padB);
-    const v = maxPM * (1 - p);
-    html += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#1c2440" stroke-width="0.5"/>`;
-    html += `<text x="${padL - 6}" y="${y + 3}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9" text-anchor="end">${v.toFixed(0)}</text>`;
+  // Y 轴网格 + 刻度（log：50, 100, 500, 1000, 5000）
+  [50, 100, 500, 1000, 5000].forEach(v => {
+    if (v > yMax) return;
+    const y = y2px(v);
+    const op = v === yMin ? 0.8 : 0.4;
+    html += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#1c2440" stroke-width="0.5" opacity="${op}"/>`;
+    html += `<text x="${padL - 6}" y="${y + 3}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9" text-anchor="end">${v >= 1000 ? (v/1000)+'k' : v}</text>`;
   });
   // X 轴刻度
   [10, 50, 100, 200, 500].forEach(x => {
     html += `<text x="${x2px(x)}" y="${H - padB + 12}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="9" text-anchor="middle">${x}</text>`;
   });
-  html += `<text x="${W / 2}" y="${H - 8}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10" text-anchor="middle">KLOC</text>`;
-  html += `<text x="14" y="${H / 2}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10" text-anchor="middle" transform="rotate(-90, 14, ${H/2})">PM (人月)</text>`;
+  html += `<text x="${W / 2}" y="${H - 8}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10" text-anchor="middle">KLOC（log）</text>`;
+  html += `<text x="14" y="${H / 2}" fill="#8e8a7a" font-family="JetBrains Mono" font-size="10" text-anchor="middle" transform="rotate(-90, 14, ${H/2})">PM（log）</text>`;
 
-  // 三条曲线
+  // 三条曲线（log-log 下呈直线，斜率 = b）
   Object.entries(CO_PARAMS).forEach(([key, p]) => {
     const pts = [];
     for (let x = 1; x <= xMax; x += 2) {
@@ -14654,12 +14654,12 @@ function drawCOCOMO() {
     const isActive = key === coMode;
     const stroke = p.color;
     const width = isActive ? 3 : 1.5;
-    const opacity = isActive ? 1 : 0.5;
+    const opacity = isActive ? 1 : 0.45;
     html += `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="${stroke}" stroke-width="${width}" opacity="${opacity}"/>`;
   });
 
   // 当前 KLOC 处的竖线
-  const xCur = x2px(kloc);
+  const xCur = x2px(Math.max(kloc, 1));
   html += `<line x1="${xCur}" y1="${padT}" x2="${xCur}" y2="${H - padB}" stroke="#8e8a7a" stroke-width="1" stroke-dasharray="3 3"/>`;
 
   // 当前 KLOC 处的三点
@@ -14674,11 +14674,10 @@ function drawCOCOMO() {
   });
 
   // 图例
-  html += `<g transform="translate(${W - 110}, 8)">
-    <rect x="0" y="0" width="100" height="56" fill="rgba(10,15,31,0.7)" stroke="#2a3056"/>
-    <line x1="6" y1="12" x2="22" y2="12" stroke="#5d8a6f" stroke-width="2"/><text x="26" y="15" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">有机</text>
-    <line x1="6" y1="26" x2="22" y2="26" stroke="#4a6fa5" stroke-width="2"/><text x="26" y="29" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">半分离</text>
-    <line x1="6" y1="40" x2="22" y2="40" stroke="#c8553d" stroke-width="2"/><text x="26" y="43" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">嵌入式</text>
+  html += `<g transform="translate(${W - 118}, 8)">
+    <line x1="6" y1="12" x2="22" y2="12" stroke="#5d8a6f" stroke-width="2"/><text x="26" y="15" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">有机 b=1.05</text>
+    <line x1="6" y1="26" x2="22" y2="26" stroke="#4a6fa5" stroke-width="2"/><text x="26" y="29" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">半分离 b=1.12</text>
+    <line x1="6" y1="40" x2="22" y2="40" stroke="#c8553d" stroke-width="2"/><text x="26" y="43" fill="#c4bda7" font-family="JetBrains Mono" font-size="9">嵌入式 b=1.20</text>
   </g>`;
 
   svg.innerHTML = html;
