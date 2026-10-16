@@ -765,6 +765,90 @@ body::before {
 .subnet-seg.disabled { border-left-color: var(--crimson); opacity: 0.6; }
 .subnet-seg.disabled .num { color: var(--crimson); }
 
+/* ========== 子网划分 · 计算过程面板 ========== */
+.subnet-process {
+  margin-top: 14px;
+  background: var(--ink-1);
+  border: 1px solid var(--ink-4);
+  border-radius: var(--radius-sm);
+  padding: 4px 0;
+}
+.sn-step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px dashed rgba(212, 168, 95, 0.12);
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: var(--ivory-1);
+}
+.sn-step:last-child { border-bottom: none; }
+.sn-step .sn-no {
+  color: var(--gold-3);
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding-top: 2px;
+}
+.sn-step .sn-body { color: var(--ivory-1); }
+.sn-step .sn-body .sn-k { color: var(--gold-3); }
+.sn-step .sn-body .sn-v { color: var(--gold-1); font-weight: 700; font-size: 1.02rem; }
+.sn-step .sn-body .sn-h { color: var(--emerald); font-weight: 700; }
+.sn-step .sn-body .sn-w { color: var(--azure); font-weight: 700; }
+.sn-step .sn-body .sn-dim { color: var(--ivory-3); }
+.sn-step .sn-body b { color: var(--gold-1); font-weight: 700; }
+.sn-step .sn-formula {
+  margin-top: 4px;
+  padding: 6px 10px;
+  background: var(--ink-0);
+  border-left: 2px solid var(--gold-2);
+  border-radius: 4px;
+  color: var(--ivory-2);
+  font-size: 0.82rem;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.sn-step .sn-formula .hi { color: var(--gold-1); font-weight: 700; }
+.sn-step .sn-formula .hi-emerald { color: var(--emerald); font-weight: 700; }
+.sn-step .sn-formula .hi-crimson { color: var(--crimson); font-weight: 700; }
+.sn-step .sn-formula .hi-azure { color: var(--azure); font-weight: 700; }
+.sn-step .sn-table {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: 56px 1.1fr 1.1fr 1fr 1.1fr;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--ivory-2);
+}
+.sn-step .sn-table .sn-th,
+.sn-step .sn-table .sn-td {
+  padding: 4px 6px;
+  border: 1px solid var(--ink-3);
+  border-radius: 3px;
+  background: var(--ink-2);
+  text-align: center;
+}
+.sn-step .sn-table .sn-th {
+  background: var(--ink-3);
+  color: var(--gold-3);
+  font-weight: 700;
+}
+.sn-step .sn-table .sn-td.sn-net  { color: var(--ivory-1); }
+.sn-step .sn-table .sn-td.sn-host { color: var(--emerald); font-weight: 700; }
+.sn-step .sn-table .sn-td.sn-bc   { color: var(--crimson); font-weight: 700; }
+.sn-step .sn-table .sn-td.sn-idx  { color: var(--gold-1); font-weight: 700; }
+.sn-step .sn-foot {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--ivory-3);
+}
+@media (max-width: 640px) {
+  .sn-step { grid-template-columns: 1fr; gap: 4px; }
+  .sn-step .sn-table { grid-template-columns: 1fr 1.5fr 1.5fr 1fr 1.5fr; font-size: 0.7rem; }
+}
+
 /* ========== IP Converter (1.7) ========== */
 .ip-quad {
   display: grid;
@@ -4136,6 +4220,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div class="cache-bar" id="ca-bar"></div>
         <div id="ca-out" class="calc-result"></div>
+        <div id="ca-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">单层 Cache</span>
@@ -4231,6 +4316,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div class="sp-grid" id="pl-grid"></div>
         <div id="pl-out" class="calc-result"></div>
+        <div id="pl-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">总执行时间</span>
@@ -4339,6 +4425,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div class="rel-builder" id="rel-builder"></div>
         <div id="rel-out" class="rel-result"></div>
+        <div id="rel-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">串联（一个挂全挂）</span>
@@ -4457,6 +4544,30 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="disk-stats" id="dk-stats"></div>
       </div>
 
+      <div class="calc">
+        <div class="calc-title">存取时间计算器 · T<sub>存取</sub> = T<sub>寻道</sub> + T<sub>旋转等待</sub> + T<sub>传输</sub></div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>寻道时间 T<sub>s</sub> (ms)</label>
+            <input id="dk-time-seek" type="number" value="8" min="0" step="0.1" oninput="raf('drawDiskTime')">
+          </div>
+          <div class="calc-field">
+            <label>转速 RPM (转/分)</label>
+            <input id="dk-time-rpm" type="number" value="6000" min="0" step="100" oninput="raf('drawDiskTime')">
+          </div>
+          <div class="calc-field">
+            <label>每扇区传输 (ms)</label>
+            <input id="dk-time-tx" type="number" value="0.5" min="0" step="0.1" oninput="raf('drawDiskTime')">
+          </div>
+          <div class="calc-field">
+            <label>读取扇区数 n</label>
+            <input id="dk-time-n" type="number" value="1" min="1" step="1" oninput="raf('drawDiskTime')">
+          </div>
+        </div>
+        <div id="dk-time-out" class="calc-result"></div>
+        <div id="dk-process" class="subnet-process"></div>
+      </div>
+
       <div class="formula">T<sub>存取</sub> = T<sub>寻道</sub> + T<sub>旋转等待</sub> + T<sub>传输</sub></div>
 
       <div class="formula">T<sub>旋转等待</sub> = 旋转周期 / 2   （随机分布）</div>
@@ -4551,6 +4662,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div id="hm-result" class="calc-result"></div>
+        <div id="hm-process" class="subnet-process"></div>
         <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.18em;color:var(--gold-3);text-transform:uppercase;margin-top:10px">▸ k 搜索表（找最小满足 2^k ≥ m+k+1 的 k）</div>
         <div id="hm-grid" class="hamming-grid"></div>
         <div style="font-family:var(--font-display);font-size:0.7rem;letter-spacing:0.18em;color:var(--gold-3);text-transform:uppercase;margin-top:12px">▸ 码位分配（位置 1,2,4,8,… 是校验位；其余是信息位）</div>
@@ -4670,6 +4782,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="subnet-canvas-wrap" id="sn-canvas-wrap"></div>
         <div id="sn-summary" class="calc-result"></div>
         <div id="sn-segs" class="subnet-segments"></div>
+        <div id="sn-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">地址分类（A/B/C/D/E）</span>
@@ -4889,6 +5002,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div class="ip-quad" id="ip-quad"></div>
         <div id="ip-big" class="ip-result-big"></div>
+        <div id="ip-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">IP → 整数</span>
@@ -7887,6 +8001,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div id="cpm-out" class="calc-result"></div>
         <svg id="cpm-svg" class="cpm-canvas" width="100%" height="220"></svg>
         <div id="cpm-table" class="cpm-table"></div>
+        <div id="cpm-process" class="subnet-process"></div>
         <div style="font-size:0.8rem;color:var(--ivory-3);margin-top:8px">提示：节点可拖拽；关键路径红色虚线流动动画。</div>
       </div>
 
@@ -8162,6 +8277,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div class="pert-mark P"><div class="lbl">悲观 P</div><div class="val" id="pt-P-val">8</div></div>
         </div>
         <div id="pt-out" class="calc-result"></div>
+        <div id="pt-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">期望工期</span>
@@ -8274,6 +8390,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div id="evm-out" class="calc-result"></div>
+        <div id="evm-process" class="subnet-process"></div>
         <div class="evm-svg-wrap">
           <svg id="evm-svg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="EVM PV/EV/AC 曲线对比"></svg>
         </div>
@@ -8539,6 +8656,30 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="card-title">4.5 沟通路径 + EMV 决策树</div>
       <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2022·2024上·2025下</span></div>
       <div class="card-sub">Communication Channels & Expected Monetary Value</div>
+
+      <div class="calc">
+        <div class="calc-title">交互计算器 · 输入 n 与 EMV 概率/影响自动算路径数 + EMV</div>
+        <div class="calc-row">
+          <div class="calc-field"><label>团队规模 n</label><input id="com-n" type="number" value="8" min="2" max="50" oninput="raf('calcCom')"></div>
+          <div class="calc-field">
+            <label>沟通模式</label>
+            <select id="com-mode" onchange="raf('calcCom')">
+              <option value="full">全连通 n(n−1)/2</option>
+              <option value="hub" selected>集中式（设协调者）n−1</option>
+              <option value="dumb">哑铃式 2(n−2)+1</option>
+            </select>
+          </div>
+          <button class="btn-rand" onclick="randCom()">🎲 随机</button>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>分支 1 概率 P₁</label><input id="com-p1" type="number" value="0.6" min="0" max="1" step="0.05" oninput="raf('calcCom')"></div>
+          <div class="calc-field"><label>分支 1 影响 I₁（万）</label><input id="com-i1" type="number" value="500" step="10" oninput="raf('calcCom')"></div>
+          <div class="calc-field"><label>分支 2 概率 P₂</label><input id="com-p2" type="number" value="0.4" min="0" max="1" step="0.05" oninput="raf('calcCom')"></div>
+          <div class="calc-field"><label>分支 2 影响 I₂（万）</label><input id="com-i2" type="number" value="-200" step="10" oninput="raf('calcCom')"></div>
+        </div>
+        <div id="com-out" class="calc-result"></div>
+        <div id="com-process" class="subnet-process"></div>
+      </div>
 
       <span class="formula-label">沟通路径公式（全连通模式）</span>
       <div class="formula">
@@ -9472,6 +9613,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           二者取小 = 工程可用带宽。<br>
           ⚠ dB ↔ 线性换算：<code style="color:var(--gold-2)">S/N（线性）= 10^(dB/10)</code>。例：30 dB → 1000 倍。
         </div>
+        <div id="ch-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">奈奎斯特定理（无噪声）</span>
@@ -9828,6 +9970,39 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="card-title">6.4 编码 + 数据传输总时间</div>
       <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2020·2023下·2024下</span></div>
       <div class="card-sub">Manchester / CRC / End-to-End Delay</div>
+
+      <div class="calc">
+        <div class="calc-title">交互计算器 · 曼彻斯特效率 + 数据传输总时延</div>
+        <div class="calc-row">
+          <div class="calc-field">
+            <label>编码方式</label>
+            <select id="cd-enc" onchange="raf('calcCd')">
+              <option value="manch">曼彻斯特（效率 50%）</option>
+              <option value="diff">差分曼彻斯特（效率 50%）</option>
+              <option value="4b5b">4B/5B（效率 80%）</option>
+              <option value="8b10b">8B/10B（效率 80%）</option>
+              <option value="nrz">NRZ（效率 100%）</option>
+            </select>
+          </div>
+          <div class="calc-field"><label>信号速率 / 带宽 (Mbps)</label><input id="cd-bw" type="number" value="100" min="1" oninput="raf('calcCd')"></div>
+          <button class="btn-rand" onclick="randCd()">🎲 随机</button>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>数据量 (MB)</label><input id="cd-size" type="number" value="1" min="0.01" step="0.1" oninput="raf('calcCd')"></div>
+          <div class="calc-field"><label>链路段数</label><input id="cd-segs" type="number" value="2" min="1" max="10" oninput="raf('calcCd')"></div>
+          <div class="calc-field"><label>每段长度 (km)</label><input id="cd-len" type="number" value="1000" min="0" oninput="raf('calcCd')"></div>
+          <div class="calc-field">
+            <label>传播速度 (m/s)</label>
+            <select id="cd-speed" onchange="raf('calcCd')">
+              <option value="2e8" selected>光纤 2×10⁸</option>
+              <option value="3e8">真空 / 电缆近似 3×10⁸</option>
+              <option value="2.3e8">铜缆 2.3×10⁸</option>
+            </select>
+          </div>
+        </div>
+        <div id="cd-out" class="calc-result"></div>
+        <div id="cd-process" class="subnet-process"></div>
+      </div>
 
       <span class="formula-label">曼彻斯特 vs 差分曼彻斯特</span>
       <table>
@@ -12760,6 +12935,49 @@ function calcCache() {
     (h < 0.5 ? `<br><span style="color:var(--crimson)">⚠ 命中率过低，Cache 形同虚设，瓶颈在主存。</span>`
               : h > 0.95 ? `<br><span style="color:var(--emerald)">✓ 高命中率，再提高 h 收益递减（T 趋近 Tc）。</span>`
               : `<br><span style="color:var(--gold-3)">● 命中率合理区间。每提升 0.05，平均访问时间下降约 ${(0.05 * (Tm - Tc)).toFixed(2)} ns。</span>`);
+
+  // ===== 计算过程面板 =====
+  const hitPart = h * Tc;
+  const missPart = (1 - h) * Tm;
+  const speedup = Tm / T;
+  const effPct = (T / Tm) * 100;
+  document.getElementById('ca-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　单层 Cache 平均访问时间
+        <div class="sn-formula">T = h · Tc + (1 − h) · Tm</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">代入已知量</span>　命中率 <span class="sn-v">${h.toFixed(2)}</span>，Cache 访问 <span class="sn-v">${Tc} ns</span>，主存访问 <span class="sn-v">${Tm} ns</span>，失效率 <span class="sn-v">${(1 - h).toFixed(2)}</span>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">分别计算两项</span>
+        <div class="sn-formula">命中分支：h · Tc = ${h.toFixed(2)} × ${Tc} = <span class="hi">${hitPart.toFixed(2)} ns</span></div>
+        <div class="sn-formula">缺失分支：(1 − h) · Tm = ${(1 - h).toFixed(2)} × ${Tm} = <span class="hi">${missPart.toFixed(2)} ns</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">求和得到 T</span>
+        <div class="sn-formula">T = ${hitPart.toFixed(2)} + ${missPart.toFixed(2)} = <span class="hi-emerald">${T.toFixed(2)} ns</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">衍生指标</span>　加速比 S = Tm / T = ${Tm} / ${T.toFixed(2)} ≈ <span class="hi">${speedup.toFixed(2)} 倍</span>　|　访问效率 = T/Tm ≈ <span class="hi">${effPct.toFixed(0)}%</span>
+        <div class="sn-foot">含义：Cache 让平均访问时间从 ${Tm} ns 降到 ${T.toFixed(2)} ns，相对主存提速 ${speedup.toFixed(2)} 倍</div>
+      </div>
+    </div>
+  `;
 }
 
 /* ================== 1.2 流水线时空图 ================== */
@@ -12803,6 +13021,48 @@ function plInit() {
     `效率 E = 忙碌格数 ${n * k} / 总面积 ${k * T / dt} = <b style="color:var(--gold-1)">${eff}%</b>` +
     (eff < 50 ? `<br><span style="color:var(--crimson)">⚠ 效率偏低（n 偏少）；增加 n 至 ≥20 后效率可达 80%+。</span>`
                 : `<br><span style="color:var(--emerald)">✓ 时空图利用率${eff}%；前 ${k} 个周期为流水线建立期，之后每周期完成 1 条指令。</span>`);
+
+  // ===== 计算过程面板 =====
+  const sequential = n * k * dt;
+  document.getElementById('pl-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　<span class="sn-v">${k}</span> 段流水线执行 <span class="sn-v">${n}</span> 条指令，每段 Δt = <span class="sn-v">${dt}</span>
+        <div class="sn-formula">T = (k + n − 1) · Δt　|　TP = n / T　|　S = T<sub>顺序</sub> / T<sub>流水</sub></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">计算槽数</span>　前 k 个周期为建立期，之后每周期完成 1 条
+        <div class="sn-formula">槽数 = k + n − 1 = ${k} + ${n} − 1 = <span class="hi">${k + n - 1} 个</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">求总执行时间 T</span>
+        <div class="sn-formula">T = ${k + n - 1} × ${dt} = <span class="hi-emerald">${T} 单位时间</span></div>
+        <div class="sn-foot">对比顺序执行 T<sub>顺</sub> = n × k × Δt = ${n} × ${k} × ${dt} = <b>${sequential}</b>，流水线节省大量时间</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">求吞吐率 TP</span>　单位时间内完成的指令数
+        <div class="sn-formula">TP = n / T = ${n} / ${T} = <span class="hi">${tp} 条/单位时间</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">求加速比 S 与效率 E</span>
+        <div class="sn-formula">S = T<sub>顺</sub> / T<sub>流</sub> = ${sequential} / ${T} = <span class="hi">${sp} 倍</span>　（上限 k=${k}）</div>
+        <div class="sn-formula">E = 忙碌区 / 总面积 = (n × k) / (k × T/Δt) = (${n * k}) / (${k * T / dt}) = <span class="hi-emerald">${eff}%</span></div>
+      </div>
+    </div>
+  `;
 }
 
 /* ================== 1.3 系统可靠性串并联 ================== */
@@ -12825,6 +13085,30 @@ function relInit() {
     document.getElementById('rel-out').innerHTML =
       `R = ${r.toFixed(2)}^${m} = <b style="color:var(--crimson)">${R.toFixed(6)}</b>　|　失效率 ≈ <b>${((1 - R) * 100).toFixed(2)}%</b>` +
       `<br><span style="color:var(--ivory-2)">${m} 个模块串联，可靠性从 ${r.toFixed(2)} 降至 ${R.toFixed(4)}——数量越多越脆弱。</span>`;
+    document.getElementById('rel-process').innerHTML = `
+      <div class="sn-step">
+        <div class="sn-no">步骤 1</div>
+        <div class="sn-body">
+          <span class="sn-k">公式识别</span>　串联结构（一个挂则全部挂）
+          <div class="sn-formula">R = R<sub>1</sub> · R<sub>2</sub> · … · R<sub>n</sub> = R<sup>n</sup></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 2</div>
+        <div class="sn-body">
+          <span class="sn-k">代入数值</span>　模块数 n = <span class="sn-v">${m}</span>，单模块 R = <span class="sn-v">${r.toFixed(2)}</span>（所有模块相同）
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 3</div>
+        <div class="sn-body">
+          <span class="sn-k">逐步相乘</span>
+          <div class="sn-formula">R = ${r.toFixed(2)} × ${r.toFixed(2)} × …（共 ${m} 项）</div>
+          <div class="sn-formula">R = ${r.toFixed(2)}<sup>${m}</sup> = <span class="hi-emerald">${R.toFixed(6)}</span></div>
+          <div class="sn-foot">失效率 ≈ ${((1 - R) * 100).toFixed(2)}%　|　数量 ↑，可靠性 ↓——串联是脆弱结构</div>
+        </div>
+      </div>
+    `;
   } else if (mode === 'parallel') {
     html = `<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><div style="padding:14px 18px;background:var(--emerald);color:var(--ink-0);border-radius:4px;font-weight:700">主模块</div><span style="color:var(--gold-3);font-size:1.4rem">⇔</span><div style="display:grid;grid-template-columns:repeat(${m},1fr);gap:6px">`;
     for (let i = 1; i <= m; i++) {
@@ -12835,6 +13119,36 @@ function relInit() {
     document.getElementById('rel-out').innerHTML =
       `R = 1 − (1−${r.toFixed(2)})^${m} = <b style="color:var(--emerald)">${R.toFixed(6)}</b>　|　失效率 ≈ <b>${((1 - R) * 100).toFixed(4)}%</b>` +
       `<br><span style="color:var(--ivory-2)">${m} 个模块并联，可靠性从 ${r.toFixed(2)} 升至 ${R.toFixed(4)}——数量越多越健壮。</span>`;
+    document.getElementById('rel-process').innerHTML = `
+      <div class="sn-step">
+        <div class="sn-no">步骤 1</div>
+        <div class="sn-body">
+          <span class="sn-k">公式识别</span>　并联结构（互为冗余，全部挂才失效）
+          <div class="sn-formula">R = 1 − (1 − R<sub>1</sub>) · (1 − R<sub>2</sub>) · … · (1 − R<sub>n</sub>) = 1 − (1 − R)<sup>n</sup></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 2</div>
+        <div class="sn-body">
+          <span class="sn-k">代入数值</span>　模块数 n = <span class="sn-v">${m}</span>，单模块失效率 1 − R = <span class="sn-v">${(1 - r).toFixed(2)}</span>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 3</div>
+        <div class="sn-body">
+          <span class="sn-k">全部挂概率</span>
+          <div class="sn-formula">P<sub>全挂</sub> = (1 − R)<sup>n</sup> = ${(1 - r).toFixed(2)}<sup>${m}</sup> = <span class="hi">${Math.pow(1 - r, m).toFixed(6)}</span></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 4</div>
+        <div class="sn-body">
+          <span class="sn-k">求 R</span>
+          <div class="sn-formula">R = 1 − P<sub>全挂</sub> = 1 − ${Math.pow(1 - r, m).toFixed(6)} = <span class="hi-emerald">${R.toFixed(6)}</span></div>
+          <div class="sn-foot">失效率 ≈ ${((1 - R) * 100).toFixed(4)}%　|　数量 ↑，可靠性 ↑——并联是健壮结构</div>
+        </div>
+      </div>
+    `;
   } else {
     // N 模冗余 / K 取 N 表决
     const K = Math.min(Math.max(1, Math.ceil(m / 2)), m);
@@ -12855,6 +13169,52 @@ function relInit() {
     document.getElementById('rel-out').innerHTML =
       `R = Σ<sub>i=${K}..${m}</sub> C(${m},i)·${r.toFixed(2)}<sup>i</sup>·(1−${r.toFixed(2)})<sup>${m}−i</sup> = <b style="color:var(--violet)">${R.toFixed(6)}</b><br>` +
       `<span style="color:var(--ivory-2)">${m} 取 ${K} 表决，可靠性 ${R.toFixed(4)}。当 m=3, K=2 时即三模冗余（TMR）。</span>`;
+
+    // ===== 计算过程面板 =====
+    let rowsHTML = '';
+    for (let i = K; i <= m; i++) {
+      const ci = comb(m, i);
+      const part = ci * Math.pow(r, i) * Math.pow(1 - r, m - i);
+      rowsHTML += `
+        <div class="sn-td sn-idx">i=${i}</div>
+        <div class="sn-td">C(${m},${i}) = ${ci}</div>
+        <div class="sn-td">${r.toFixed(2)}<sup>${i}</sup> · (1−${r.toFixed(2)})<sup>${m - i}</sup></div>
+        <div class="sn-td sn-host">${part.toFixed(6)}</div>
+      `;
+    }
+    document.getElementById('rel-process').innerHTML = `
+      <div class="sn-step">
+        <div class="sn-no">步骤 1</div>
+        <div class="sn-body">
+          <span class="sn-k">公式识别</span>　N 模冗余 / K 取 N 表决
+          <div class="sn-formula">R = Σ<sub>i=K..N</sub> C(N,i) · R<sup>i</sup> · (1−R)<sup>N−i</sup></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 2</div>
+        <div class="sn-body">
+          <span class="sn-k">参数代入</span>　N = <span class="sn-v">${m}</span>，K = <span class="sn-v">${K}</span>（过半即正确），单模块 R = <span class="sn-v">${r.toFixed(2)}</span>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 3</div>
+        <div class="sn-body">
+          <span class="sn-k">逐项展开</span>　对 i = K..N 各项求和
+          <div class="sn-table">
+            <div class="sn-th">项</div><div class="sn-th">组合数</div><div class="sn-th">概率项</div><div class="sn-th">本项值</div>
+            ${rowsHTML}
+          </div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 4</div>
+        <div class="sn-body">
+          <span class="sn-k">求和得 R</span>
+          <div class="sn-formula">R = <span class="hi-emerald">${R.toFixed(6)}</span>　|　失效率 ≈ <span class="hi-crimson">${((1 - R) * 100).toFixed(4)}%</span></div>
+          <div class="sn-foot">当 m=3, K=2 即三模冗余（TMR），可纠正 1 位错</div>
+        </div>
+      </div>
+    `;
   }
   builder.innerHTML = html;
 }
@@ -13660,6 +14020,8 @@ function rmDetail(name, kind) {
 /* ================== Init ================== */
 window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('evm-pv')) calcEVM();
+  if (document.getElementById('com-n')) calcCom();
+  if (document.getElementById('cd-size')) calcCd();
   if (document.getElementById('cpm-a')) calcCPM();
   if (document.getElementById('cap-dau')) calcCap();
   if (document.getElementById('mc-edges')) calcMcCabe();
@@ -13681,6 +14043,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('dc-r1')) decideDecomp();
   if (document.getElementById('ch-w')) drawChannel();
   if (document.getElementById('dk-req')) drawDisk();
+  if (document.getElementById('dk-time-seek')) drawDiskTime();
   if (document.getElementById('nad-tab')) nadInit();
   if (document.getElementById('sp-s')) drawSegPage();
   if (document.getElementById('sched-tasks')) initSched();
@@ -13835,6 +14198,71 @@ function drawDisk() {
     <div class="disk-stat"><div class="lbl">平均寻道</div><div class="val">${fmt(avgMove, 1)} 道</div></div>
     <div class="disk-stat"><div class="lbl">寻道时间（5ms/道）</div><div class="val">${fmt(totalTime)} ms</div></div>
     <div class="disk-stat"><div class="lbl">访问次数</div><div class="val">${seq.length}</div></div>
+  `;
+}
+
+/* ================== 1.4 磁盘存取时间公式计算器 ================== */
+function drawDiskTime() {
+  const Ts = +document.getElementById('dk-time-seek').value || 0;
+  const rpm = +document.getElementById('dk-time-rpm').value || 6000;
+  const txPerSector = +document.getElementById('dk-time-tx').value || 0;
+  const n = +document.getElementById('dk-time-n').value || 1;
+
+  // 旋转周期 = 60000 ms / RPM（1 分钟 = 60000 ms）
+  const rotationPeriod = 60000 / rpm;
+  // 平均旋转等待 = 旋转周期 / 2（数据随机分布）
+  const rotWait = rotationPeriod / 2;
+  // 总传输时间 = 每扇区传输 × 扇区数
+  const txTotal = txPerSector * n;
+  // 总存取时间
+  const total = Ts + rotWait + txTotal;
+
+  document.getElementById('dk-time-out').innerHTML =
+    `T<sub>寻道</sub> = <b style="color:var(--gold-1)">${Ts.toFixed(2)} ms</b>　|　` +
+    `T<sub>旋转</sub> = ${(60000 / rpm).toFixed(2)}/2 = <b style="color:var(--gold-1)">${rotWait.toFixed(2)} ms</b>　|　` +
+    `T<sub>传输</sub> = ${txPerSector} × ${n} = <b style="color:var(--gold-1)">${txTotal.toFixed(2)} ms</b><br>` +
+    `T<sub>存取</sub> = ${Ts.toFixed(2)} + ${rotWait.toFixed(2)} + ${txTotal.toFixed(2)} = <b style="color:var(--crimson)">${total.toFixed(2)} ms</b>`;
+
+  // ===== 计算过程面板 =====
+  document.getElementById('dk-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　磁盘平均存取时间由三部分组成
+        <div class="sn-formula">T<sub>存取</sub> = T<sub>寻道</sub> + T<sub>旋转等待</sub> + T<sub>传输</sub></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">代入寻道时间</span>　磁臂从当前位置移动到目标磁道
+        <div class="sn-formula">T<sub>寻道</sub> = <span class="hi">${Ts.toFixed(2)} ms</span></div>
+        <div class="sn-foot">通常由平均寻道时间给出（如 8 ms），与调度算法和磁道距离相关</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">计算旋转等待时间</span>　转速 <span class="sn-v">${rpm}</span> RPM → 旋转周期 = 60000/RPM
+        <div class="sn-formula">旋转周期 = 60000 / ${rpm} = <span class="hi">${rotationPeriod.toFixed(2)} ms</span></div>
+        <div class="sn-formula">T<sub>旋转等待</sub> = 旋转周期 / 2 = ${rotationPeriod.toFixed(2)} / 2 = <span class="hi">${rotWait.toFixed(2)} ms</span>　（数据随机分布，取均值）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">计算传输时间</span>　读 <span class="sn-v">${n}</span> 个扇区，每扇区 <span class="sn-v">${txPerSector} ms</span>
+        <div class="sn-formula">T<sub>传输</sub> = ${txPerSector} × ${n} = <span class="hi">${txTotal.toFixed(2)} ms</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">三段求和</span>
+        <div class="sn-formula">T<sub>存取</sub> = ${Ts.toFixed(2)} + ${rotWait.toFixed(2)} + ${txTotal.toFixed(2)} = <span class="hi-emerald">${total.toFixed(2)} ms</span></div>
+        <div class="sn-foot">实战判别：寻道（数量级 1~10 ms）&gt; 旋转（1~10 ms）&gt; 传输（&lt;1 ms）——优化重点在寻道</div>
+      </div>
+    </div>
   `;
 }
 
@@ -14154,6 +14582,56 @@ function drawHamming() {
 
   // 码位分配可视化
   drawHammingBits(m, k);
+
+  // ===== 计算过程面板 =====
+  let searchHTML = '';
+  const maxTry = Math.min(Math.max(k + 2, 4), 10);
+  for (let i = 1; i <= maxTry; i++) {
+    const lhs = Math.pow(2, i);
+    const rhs = m + i + 1;
+    const ok = lhs >= rhs;
+    searchHTML += `
+      <div class="sn-td sn-idx">k=${i}</div>
+      <div class="sn-td">2<sup>${i}</sup> = ${lhs}</div>
+      <div class="sn-td">${m} + ${i} + 1 = ${rhs}</div>
+      <div class="sn-td ${ok ? 'sn-host' : 'sn-bc'}">${ok ? '✓ 满足' : '✗ 不满足'}</div>
+    `;
+  }
+  const redundancy = k * 100 / total;
+  document.getElementById('hm-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　海明码校验位数满足
+        <div class="sn-formula">2<sup>k</sup> ≥ m + k + 1</div>
+        <div class="sn-foot">m = 信息位数，k = 校验位数；右侧 +1 用于检测"全局奇偶"</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">已知条件</span>　信息位 m = <span class="sn-v">${m}</span>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">逐步试算 k</span>　从 k=1 开始递增，直到 2<sup>k</sup> ≥ m+k+1
+        <div class="sn-table">
+          <div class="sn-th">k</div><div class="sn-th">左 2<sup>k</sup></div><div class="sn-th">右 m+k+1</div><div class="sn-th">判定</div>
+          ${searchHTML}
+        </div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">取最小 k</span>
+        <div class="sn-formula">k = <span class="hi-emerald">${k}</span>　|　总码长 = m + k = ${m} + ${k} = ${total} 位</div>
+        <div class="sn-foot">校验位占比 ${redundancy.toFixed(1)}%　|　m 翻倍一般 k +1（32→k=6，64→k=7）</div>
+      </div>
+    </div>
+  `;
 }
 function drawHammingBits(m, k) {
   const wrap = document.getElementById('hm-vis');
@@ -14538,6 +15016,54 @@ function drawChannel() {
   document.getElementById('ch-w-disp2').textContent = W;
   document.getElementById('ch-snlin-disp').textContent = snLin;
 
+  // ===== 计算过程面板 =====
+  const log2N = Math.log2(N);
+  const log2SN = Math.log2(1 + snLin);
+  const snCls = Math.abs(sha - nyq) < 1 ? '二者相等' : sha < nyq ? '香农更低（噪声受限）' : '香农更高（信号受限）';
+  document.getElementById('ch-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　两条公式分别适用：
+        <div class="sn-formula">奈氏（无噪声）：<b>C = 2W · log₂(N)</b></div>
+        <div class="sn-formula">香农（有噪声）：<b>C = W · log₂(1 + S/N)</b></div>
+        <div class="sn-foot">口诀：<span class="hi-emerald">奈氏看级数</span>（N = 信号离散级数），<span class="hi-azure">香农看噪声</span>（S/N = 信噪比）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">已知条件</span>
+        <div class="sn-formula">W = <span class="sn-v">${fmt(W)}</span> Hz　|　N = <span class="sn-v">${N}</span> 级　|　S/N = <span class="sn-v">${fmt(snDb, 1)}</span> dB → 线性 <span class="sn-v">${fmt(snLin)}</span>（10^${fmt(snDb, 1)}/10 = 10^${fmt(snDb/10, 2)}）</div>
+        <div class="sn-foot">⚠ dB → 线性换算公式：<code>线性值 = 10^(dB / 10)</code>。例：30 dB → 10³ = 1000 倍</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">奈氏代入</span>
+        <div class="sn-formula">log₂(N) = log₂(${N}) = <span class="sn-v">${fmt(log2N, 3)}</span></div>
+        <div class="sn-formula">C<sub>奈</sub> = 2 × ${fmt(W)} × ${fmt(log2N, 3)} = <span class="hi">${fmt(nyq)}</span> bps</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">香农代入</span>
+        <div class="sn-formula">log₂(1 + S/N) = log₂(1 + ${fmt(snLin)}) = log₂(${fmt(1 + snLin)}) = <span class="sn-v">${fmt(log2SN, 3)}</span></div>
+        <div class="sn-formula">C<sub>香</sub> = ${fmt(W)} × ${fmt(log2SN, 3)} = <span class="hi">${fmt(sha)}</span> bps</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">工程结论</span>
+        <div class="sn-formula">取 min(奈氏, 香农) = ${fmt(Math.min(nyq, sha))} bps　→　<span class="hi-emerald">${snCls}</span></div>
+        <div class="sn-foot">工程上实际可用带宽 = 两者中较小值（短板效应）。香农是噪声环境下的理论上限，永远不可突破；奈氏是无噪声理想值</div>
+      </div>
+    </div>
+  `;
+
   // 画曲线：随 S/N 变化，香农容量变化
   const svg = document.getElementById('ch-svg');
   const Wsvg = 480, H = 200;
@@ -14820,6 +15346,49 @@ function drawPERT() {
     <span class="key">σ²</span> <span class="val">${fmt(sigma2, 3)}</span><br>
     <span class="key">Z = (T − E) / σ</span> <span class="val" style="color:${Z >= 0 ? 'var(--emerald)' : 'var(--crimson)'}">${fmt(Z, 2)}</span> &nbsp;|&nbsp;
     <span class="key">完工概率</span> <span class="val">${verdict}</span>`;
+
+  // ===== 计算过程面板 =====
+  document.getElementById('pt-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　三点估算（β 分布）
+        <div class="sn-formula">E = (O + 4M + P) / 6　|　σ = (P − O) / 6　|　σ² = ((P − O) / 6)²</div>
+        <div class="sn-formula">完工概率：Z = (T − E) / σ → 查标准正态表 Φ(Z)</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">已知三点</span>　乐观 O = <span class="sn-v">${O}</span>　|　最可能 M = <span class="sn-v">${M}</span>　|　悲观 P = <span class="sn-v">${P}</span>　|　截止 T = <span class="sn-v">${T}</span>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">计算期望工期 E</span>
+        <div class="sn-formula">E = (${O} + 4×${M} + ${P}) / 6 = (${O} + ${4*M} + ${P}) / 6 = ${(O + 4*M + P)} / 6 = <span class="hi">${fmt(E, 2)} 天</span></div>
+        <div class="sn-foot">意义：β 分布以 M 为中心，M 权重最大（×4），O 与 P 各 ×1</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">计算标准差 σ 与方差 σ²</span>
+        <div class="sn-formula">σ = (P − O) / 6 = (${P} − ${O}) / 6 = ${(P - O)} / 6 = <span class="hi">${fmt(sigma, 3)}</span></div>
+        <div class="sn-formula">σ² = <span class="hi">${fmt(sigma2, 3)}</span></div>
+        <div class="sn-foot">正态区间 E±σ 概率 ≈ 68%，E±2σ ≈ 95%，E±3σ ≈ 99.7%</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">求 Z 值与完工概率</span>
+        <div class="sn-formula">Z = (T − E) / σ = (${T} − ${fmt(E, 2)}) / ${fmt(sigma, 3)} = ${fmt(T - E, 2)} / ${fmt(sigma, 3)} = <span class="hi">${fmt(Z, 2)}</span></div>
+        <div class="sn-formula">完工概率 = Φ(Z) ≈ <span class="${Z >= 0 ? 'hi-emerald' : 'hi-crimson'}">${(prob).toFixed(1)}%</span>　→　${Z >= 0 ? '按期完工概率较高' : '按期完工概率偏低'}</div>
+      </div>
+    </div>
+  `;
 }
 </script>
 
@@ -16350,6 +16919,81 @@ function drawSubnet() {
   }
   document.getElementById('sn-segs').innerHTML = segsHTML;
 
+  // ===== 计算过程（5 步标准化推导）=====
+  const clsName = cls === 8 ? 'A 类' : cls === 16 ? 'B 类' : 'C 类';
+  const clsRange = cls === 8 ? '1~126' : cls === 16 ? '128~191' : '192~223';
+  const maskBin = '1'.repeat(prefix).padEnd(32, '0');
+  const maskOctBin = [maskBin.slice(0, 8), maskBin.slice(8, 16), maskBin.slice(16, 24), maskBin.slice(24, 32)];
+  const fmtIP = n => [(n >>> 24) & 0xFF, (n >>> 16) & 0xFF, (n >>> 8) & 0xFF, n & 0xFF].join('.');
+
+  // 子网段表格行（最多展示 8 个，避免面板过长）
+  const listCount = Math.min(subnets, 8);
+  let segRows = '';
+  for (let i = 0; i < listCount; i++) {
+    const segStart = (baseNum & ((0xFFFFFFFF << hostBits) >>> 0)) + i * step;
+    const segEnd = segStart + step - 1;
+    const hostStartIP = fmtIP(segStart + 1);
+    const hostEndIP = fmtIP(segEnd - 1);
+    segRows += `
+      <div class="sn-td sn-idx">子网 ${i + 1}</div>
+      <div class="sn-td sn-net">${fmtIP(segStart)}</div>
+      <div class="sn-td sn-host">${hostStartIP} ~ ${hostEndIP}</div>
+      <div class="sn-td sn-bc">${fmtIP(segEnd)}</div>
+      <div class="sn-td">${usableHosts.toLocaleString()}</div>
+    `;
+  }
+
+  const processHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">识别 IP 类别</span>　输入网络 <span class="sn-v">${ipStr}</span>，类别 <span class="sn-h">${clsName}</span>（${clsRange}），默认网络前缀 = <span class="sn-v">/${cls}</span>
+      </div>
+    </div>
+
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">计算借位数与子网数</span>　新前缀 <span class="sn-v">/${prefix}</span>，默认前缀 <span class="sn-v">/${cls}</span>
+        <div class="sn-formula">借位 = 新前缀 − 默认前缀 = ${prefix} − ${cls} = <span class="hi">${borrowed} 位</span>　⟹　子网数 = 2<sup>${borrowed}</sup> = <span class="hi">${subnets.toLocaleString()}</span> 个</div>
+      </div>
+    </div>
+
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">计算每子网主机数</span>　主机位 = 32 − ${prefix} = <span class="hi-azure">${hostBits} 位</span>
+        <div class="sn-formula">可用主机 = 2<sup>主机位</sup> − 2 = 2<sup>${hostBits}</sup> − 2 = <span class="hi">${totalHosts.toLocaleString()}</span> − 2 = <span class="hi-emerald">${usableHosts.toLocaleString()} 台</span></div>
+        <div class="sn-foot">每子网包含 ${totalHosts.toLocaleString()} 个地址 = 1 网络号 + ${usableHosts.toLocaleString()} 可用主机 + 1 广播地址（−2 扣除全 0 与全 1）</div>
+      </div>
+    </div>
+
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">换算子网掩码</span>　/${prefix} → 前 ${prefix} 位全 1，后 ${hostBits} 位全 0
+        <div class="sn-formula">${maskOctBin[0]}<span class="sn-dim">.</span>${maskOctBin[1]}<span class="sn-dim">.</span>${maskOctBin[2]}<span class="sn-dim">.</span>${maskOctBin[3]}　⟹　<span class="hi">${maskParts[0]}.${maskParts[1]}.${maskParts[2]}.${maskParts[3]}</span></div>
+      </div>
+    </div>
+
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">列出子网段</span>　每段 2<sup>${hostBits}</sup> = ${totalHosts.toLocaleString()} 个地址
+        <div class="sn-table">
+          <div class="sn-th">序号</div>
+          <div class="sn-th">网络地址</div>
+          <div class="sn-th">可用主机范围</div>
+          <div class="sn-th">广播地址</div>
+          <div class="sn-th">可用数</div>
+          ${segRows}
+        </div>
+        ${subnets > 8 ? `<div class="sn-foot">… 共 ${subnets.toLocaleString()} 个子网，此处仅展示前 ${listCount} 个；剩余按相同步长递增</div>` : ''}
+      </div>
+    </div>
+  `;
+  document.getElementById('sn-process').innerHTML = processHTML;
+
   // 摘要
   document.getElementById('sn-summary').innerHTML = `
     <span class="key">子网前缀</span> <span class="val">/${prefix}</span> &nbsp;|&nbsp;
@@ -16396,6 +17040,63 @@ function ipRender(parts, N) {
     <div style="font-size:0.78rem;color:var(--ivory-3);margin-top:6px">
       = ${parts[0]}×${weights[0]} + ${parts[1]}×${weights[1]} + ${parts[2]}×${weights[2]} + ${parts[3]}×1
     </div>`;
+
+  // ===== 计算过程面板 =====
+  // 判断是 IP→int 还是 int→IP：检查 ip-int 是否被直接修改
+  const intInputVal = +document.getElementById('ip-int').value || 0;
+  const isFromInt = intInputVal === N && parts.join('.') !== document.getElementById('ip-input').value;
+
+  // 二进制 32 位切分
+  const bin32 = N.toString(2).padStart(32, '0');
+  const octsBin = [bin32.slice(0, 8), bin32.slice(8, 16), bin32.slice(16, 24), bin32.slice(24, 32)];
+  const partialSums = [
+    parts[0] * weights[0],
+    parts[0] * weights[0] + parts[1] * weights[1],
+    parts[0] * weights[0] + parts[1] * weights[1] + parts[2] * weights[2],
+    N
+  ];
+
+  document.getElementById('ip-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　IP 与 32 位整数互转
+        <div class="sn-formula">IP → 整数：N = a·2²⁴ + b·2¹⁶ + c·2⁸ + d</div>
+        <div class="sn-formula">整数 → IP：a = N >> 24 & 0xFF；b = N >> 16 & 0xFF；c = N >> 8 & 0xFF；d = N & 0xFF</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">输入拆分</span>　IP = <span class="sn-v">${parts[0]}.${parts[1]}.${parts[2]}.${parts[3]}</span>　|　权重 = <span class="sn-v">2²⁴, 2¹⁶, 2⁸, 1</span> = <span class="sn-v">${weights[0].toLocaleString()}, ${weights[1].toLocaleString()}, ${weights[2]}, 1</span>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">逐段相乘</span>　各段 × 对应权重
+        <div class="sn-formula">${parts[0]} × ${weights[0].toLocaleString()} = <span class="hi">${(parts[0] * weights[0]).toLocaleString()}</span></div>
+        <div class="sn-formula">${parts[1]} × ${weights[1].toLocaleString()} = <span class="hi">${(parts[1] * weights[1]).toLocaleString()}</span></div>
+        <div class="sn-formula">${parts[2]} × ${weights[2]} = <span class="hi">${(parts[2] * weights[2]).toLocaleString()}</span></div>
+        <div class="sn-formula">${parts[3]} × 1 = <span class="hi">${parts[3]}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">累加求和</span>
+        <div class="sn-formula">N = ${(parts[0] * weights[0]).toLocaleString()} + ${(parts[1] * weights[1]).toLocaleString()} + ${(parts[2] * weights[2]).toLocaleString()} + ${parts[3]} = <span class="hi-emerald">${N.toLocaleString()}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">32 位二进制表示</span>　按 8 位切 4 段
+        <div class="sn-formula">${octsBin[0]} · ${octsBin[1]} · ${octsBin[2]} · ${octsBin[3]} → ${parts.join('.')}</div>
+        <div class="sn-foot">权重记忆：2²⁴ ≈ 1677 万、2¹⁶ = 65536、2⁸ = 256</div>
+      </div>
+    </div>
+  `;
 }
 
 /* ================== 1.10 Paging ================== */
@@ -16504,6 +17205,50 @@ function calcCPM() {
       </tbody>
     </table>`;
 
+  // ===== 计算过程面板 =====
+  document.getElementById('cpm-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">网络结构</span>　起点 A → 两条并行 → C（汇点）
+        <div class="sn-formula">A = ${a} d， B = ${b} d， D = ${d} d， C = ${c} d</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">计算各路径工期</span>
+        <div class="sn-formula">路径 1：A → B → C = ${a} + ${b} + ${c} = <span class="${path1 >= path2 ? 'hi-emerald' : 'hi'}">${path1} 天</span></div>
+        <div class="sn-formula">路径 2：A → D → C = ${a} + ${d} + ${c} = <span class="${path2 >= path1 ? 'hi-emerald' : 'hi'}">${path2} 天</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">正向推算 ES / EF</span>　从 A 出发，每节点 = max(前置 EF) + 工期
+        <div class="sn-formula">ES<sub>A</sub>=0, EF<sub>A</sub>=${FA}　→　ES<sub>B</sub>=${EB}, EF<sub>B</sub>=${FB}　|　ES<sub>D</sub>=${ED}, EF<sub>D</sub>=${FD}</div>
+        <div class="sn-formula">ES<sub>C</sub>=max(${FB}, ${FD})=${EC}, EF<sub>C</sub>=${FC}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">反向推算 LF / LS</span>　从 C 出发，每节点 = min(后续 LS) − 工期
+        <div class="sn-formula">LF<sub>C</sub>=${LC}, LS<sub>C</sub>=${SC}　→　LF<sub>B</sub>=${LB}, LS<sub>B</sub>=${SB}　|　LF<sub>D</sub>=${LD}, LS<sub>D</sub>=${SD}</div>
+        <div class="sn-formula">LF<sub>A</sub>=min(${SB}, ${SD})=${LA}, LS<sub>A</sub>=${SA}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">计算 TF / 判定关键路径</span>
+        <div class="sn-formula">TF = LS − ES： A=${TF_A}, B=${TF_B}, D=${TF_D}, C=${TF_C}</div>
+        <div class="sn-formula">关键路径 = TF=0 的活动串联 = <span class="hi-emerald">${crit}</span>，总工期 = <span class="hi-emerald">${dur} 天</span></div>
+        <div class="sn-foot">${path1 > path2 ? 'A→B→C 更长，缩短 B 才能压缩总工期' : path2 > path1 ? 'A→D→C 更长，缩短 D 才能压缩总工期' : '两路径等长并相等 — 两条都是关键路径，必须同时压缩'}</div>
+      </div>
+    </div>
+  `;
+
   drawCPM(a, b, c, d, crit);
 }
 
@@ -16609,6 +17354,222 @@ function setEvmMode(mode) {
   calcEVM();
 }
 
+function randCom() {
+  document.getElementById('com-n').value = 5 + Math.floor(Math.random() * 11); // 5-15
+  document.getElementById('com-mode').value = ['full', 'hub'][Math.floor(Math.random() * 2)];
+  document.getElementById('com-p1').value = +(0.4 + Math.random() * 0.5).toFixed(2);
+  document.getElementById('com-i1').value = Math.floor(200 + Math.random() * 600);
+  document.getElementById('com-p2').value = +(1 - parseFloat(document.getElementById('com-p1').value)).toFixed(2);
+  document.getElementById('com-i2').value = -Math.floor(50 + Math.random() * 300);
+  raf('calcCom');
+}
+
+function calcCom() {
+  const n = Math.max(2, parseInt(document.getElementById('com-n').value) || 2);
+  const mode = document.getElementById('com-mode').value;
+  const P1 = parseFloat(document.getElementById('com-p1').value) || 0;
+  const I1 = parseFloat(document.getElementById('com-i1').value) || 0;
+  const P2 = parseFloat(document.getElementById('com-p2').value) || 0;
+  const I2 = parseFloat(document.getElementById('com-i2').value) || 0;
+
+  // 沟通路径
+  let CC, modeName, formula;
+  if (mode === 'full') {
+    CC = n * (n - 1) / 2;
+    modeName = '全连通';
+    formula = `n × (n − 1) / 2 = ${n} × ${n - 1} / 2`;
+  } else if (mode === 'hub') {
+    CC = n - 1;
+    modeName = '集中式';
+    formula = `n − 1 = ${n} − 1`;
+  } else {
+    CC = 2 * (n - 2) + 1;
+    modeName = '哑铃式';
+    formula = `2 × (n − 2) + 1 = 2 × ${n - 2} + 1`;
+  }
+
+  // EMV
+  const term1 = P1 * I1;
+  const term2 = P2 * I2;
+  const EMV = term1 + term2;
+  const pSum = P1 + P2;
+  const pSumCls = Math.abs(pSum - 1) < 0.01 ? 'delta-down' : 'delta-up';
+  const emvCls = EMV >= 0 ? 'delta-down' : 'delta-up';
+
+  document.getElementById('com-out').innerHTML = `
+    <div class="evm-bar">
+      <div class="evm-cell">
+        <div class="lbl">沟通路径 CC（${modeName}）</div>
+        <div class="num">${CC}</div>
+      </div>
+      <div class="evm-cell">
+        <div class="lbl">EMV 期望货币值（万）</div>
+        <div class="num ${emvCls}">${EMV >= 0 ? '+' : ''}${fmt(EMV, 2)}</div>
+      </div>
+    </div>
+    <div class="evm-meta">
+      <span class="group">分支1: <span class="k">P₁</span>=<span class="v">${fmt(P1, 2)}</span> × <span class="k">I₁</span>=<span class="v">${fmt(I1, 1)}</span> = <span class="v">${fmt(term1, 2)}</span></span>
+      <span class="sep">·</span>
+      <span class="group">分支2: <span class="k">P₂</span>=<span class="v">${fmt(P2, 2)}</span> × <span class="k">I₂</span>=<span class="v">${fmt(I2, 1)}</span> = <span class="v">${fmt(term2, 2)}</span></span>
+      <span class="sep">·</span>
+      <span class="group ${pSumCls}">概率和 ΣP = <span class="v">${fmt(pSum, 2)}</span>${Math.abs(pSum - 1) < 0.01 ? ' ✓' : ' ⚠ 偏离 1'}</span>
+    </div>`;
+
+  // ===== 计算过程面板 =====
+  document.getElementById('com-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　沟通路径公式按模式三选一：全连通 <b>n(n−1)/2</b>　|　集中式 <b>n−1</b>　|　哑铃式 <b>2(n−2)+1</b><br>
+        EMV = Σ(P<sub>i</sub> × I<sub>i</sub>) = 分支1乘积 + 分支2乘积 + ……
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">沟通路径代入</span>　模式 = <span class="sn-v">${modeName}</span>，n = <span class="sn-v">${n}</span>
+        <div class="sn-formula">${formula} = <span class="hi">${CC}</span> 条</div>
+        <div class="sn-foot">${mode === 'hub' ? '⚠ 看到"协调者/项目经理"字样，必须用 n−1，不能套全连通公式' : mode === 'full' ? '题干未设协调者，n 个人两两直达 → n(n−1)/2' : '哑铃式：两端固定为枢纽，中间成员串行沟通'}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">EMV 各分支乘积</span>
+        <div class="sn-formula">分支1：P₁ × I₁ = ${fmt(P1, 2)} × ${fmt(I1, 1)} = <span class="${term1 >= 0 ? 'hi' : 'hi-crimson'}">${fmt(term1, 2)}</span> 万</div>
+        <div class="sn-formula">分支2：P₂ × I₂ = ${fmt(P2, 2)} × ${fmt(I2, 1)} = <span class="${term2 >= 0 ? 'hi' : 'hi-crimson'}">${fmt(term2, 2)}</span> 万</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">EMV 求和</span>
+        <div class="sn-formula">EMV = ${fmt(term1, 2)} + ${fmt(term2, 2)} = <span class="${EMV >= 0 ? 'hi' : 'hi-crimson'}">${EMV >= 0 ? '+' : ''}${fmt(EMV, 2)}</span> 万</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">解读</span>
+        <div class="sn-foot">${EMV >= 0 ? `✓ 该方案 EMV 为正 ${fmt(EMV, 2)} 万 → 期望净收益为正，方案值得采纳` : `⚠ 该方案 EMV 为负 ${fmt(EMV, 2)} 万 → 期望净损失，原则上应拒绝（除非有非财务目标）`}</div>
+        <div class="sn-foot">${Math.abs(pSum - 1) >= 0.01 ? `⚠ 注意：分支概率和 ΣP = ${fmt(pSum, 2)} ≠ 1，说明还有未列出的子分支，需补全或归一化` : `分支概率和 ΣP = ${fmt(pSum, 2)} ✓ 符合全概率公式`}</div>
+      </div>
+    </div>
+  `;
+}
+
+function randCd() {
+  document.getElementById('cd-enc').value = ['manch', 'diff', '4b5b', 'nrz'][Math.floor(Math.random() * 4)];
+  document.getElementById('cd-bw').value = [10, 100, 1000][Math.floor(Math.random() * 3)];
+  document.getElementById('cd-size').value = +(0.5 + Math.random() * 9.5).toFixed(2);
+  document.getElementById('cd-segs').value = 1 + Math.floor(Math.random() * 4);
+  document.getElementById('cd-len').value = [100, 500, 1000, 5000][Math.floor(Math.random() * 4)];
+  document.getElementById('cd-speed').value = '2e8';
+  raf('calcCd');
+}
+
+function calcCd() {
+  const enc = document.getElementById('cd-enc').value;
+  const bw = parseFloat(document.getElementById('cd-bw').value) || 0;
+  const size = parseFloat(document.getElementById('cd-size').value) || 0;
+  const segs = Math.max(1, parseInt(document.getElementById('cd-segs').value) || 1);
+  const lenKm = parseFloat(document.getElementById('cd-len').value) || 0;
+  const speed = parseFloat(document.getElementById('cd-speed').value) || 2e8;
+
+  // 编码效率
+  const encMap = {
+    manch:  { name: '曼彻斯特',      eff: 0.5,  app: 'IEEE 802.3 以太网' },
+    diff:   { name: '差分曼彻斯特',  eff: 0.5,  app: '令牌环 Token Ring' },
+    '4b5b': { name: '4B/5B',         eff: 0.8,  app: 'FDDI / 100BASE-TX' },
+    '8b10b':{ name: '8B/10B',        eff: 0.8,  app: '千兆以太网 / USB 3.0' },
+    nrz:    { name: 'NRZ',           eff: 1.0,  app: '基带传输 / 串口' }
+  };
+  const E = encMap[enc];
+  const dataRate = bw * E.eff; // Mbps 实际数据速率
+
+  // 总时延
+  const bits = size * 8 * 1024 * 1024; // MB → bit
+  const tSend = bits / (dataRate * 1e6); // s
+  const tPropPerSeg = (lenKm * 1000) / speed; // s
+  const tProp = segs * tPropPerSeg;
+  const totalDelay = tSend + tProp; // 简化：忽略处理/排队
+
+  // 显示
+  const encCls = E.eff < 0.7 ? 'delta-up' : E.eff < 0.9 ? 'delta-down' : 'delta-down';
+  document.getElementById('cd-out').innerHTML = `
+    <div class="evm-bar">
+      <div class="evm-cell">
+        <div class="lbl">编码效率（${E.name}）</div>
+        <div class="num">${(E.eff * 100).toFixed(0)}%</div>
+      </div>
+      <div class="evm-cell">
+        <div class="lbl">实际数据速率</div>
+        <div class="num">${fmt(dataRate, 2)} <span style="font-size:0.8rem;color:var(--ivory-2)">Mbps</span></div>
+      </div>
+      <div class="evm-cell">
+        <div class="lbl">总时延</div>
+        <div class="num">${fmt(totalDelay, 4)} <span style="font-size:0.8rem;color:var(--ivory-2)">s</span></div>
+      </div>
+    </div>
+    <div class="evm-meta">
+      <span class="group"><span class="k">发送</span>=<span class="v">${fmt(tSend, 4)}</span>s</span>
+      <span class="sep">·</span>
+      <span class="group"><span class="k">传播</span>=<span class="v">${fmt(tProp, 4)}</span>s（${segs} 段 × ${fmt(tPropPerSeg, 5)}s/段）</span>
+      <span class="sep">·</span>
+      <span class="group"><span class="k">数据量</span>=<span class="v">${size}</span> MB = <span class="v">${fmt(bits / 1e6, 2)}</span> Mbit</span>
+      <span class="sep">·</span>
+      <span class="tag">${E.app}</span>
+    </div>`;
+
+  // ===== 计算过程面板 =====
+  const propDominant = tProp > tSend;
+  document.getElementById('cd-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　本卡涉及三块：
+        <div class="sn-formula">① 编码效率 → 实际数据速率 = 信号速率 × 效率（曼彻斯特 50%，4B/5B 80%，NRZ 100%）</div>
+        <div class="sn-formula">② 发送时延 = 数据量(bit) / 实际数据速率(bps)</div>
+        <div class="sn-formula">③ 传播时延 = 段数 × (段长 / 传播速度)；光纤 ≈ 2×10⁸ m/s</div>
+        <div class="sn-formula">总时延 ≈ 发送 + 传播（处理/排队常忽略）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">编码效率换算</span>　编码 = <span class="sn-v">${E.name}</span>，信号速率 = <span class="sn-v">${bw}</span> Mbps
+        <div class="sn-formula">实际数据速率 = ${bw} × ${(E.eff * 100).toFixed(0)}% = ${bw} × ${E.eff} = <span class="hi">${fmt(dataRate, 2)}</span> Mbps</div>
+        <div class="sn-foot">⚠ 100Mbps 以太网用曼彻斯特 → 实际数据只有 50Mbps（波特率 = 200 Mbaud）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">发送时延</span>
+        <div class="sn-formula">数据量 = ${size} MB × 8 × 1024 × 1024 = <span class="sn-v">${fmt(bits / 1e6, 2)}</span> Mbit</div>
+        <div class="sn-formula">t<sub>发</sub> = ${fmt(bits / 1e6, 2)} × 10⁶ bit / (${fmt(dataRate, 2)} × 10⁶ bps) = <span class="hi">${fmt(tSend, 4)}</span> s</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">传播时延</span>　段数 = <span class="sn-v">${segs}</span>，每段 = <span class="sn-v">${lenKm}</span> km，速度 = <span class="sn-v">${fmt(speed / 1e8, 1)}×10⁸</span> m/s
+        <div class="sn-formula">每段传播 = ${lenKm} × 10³ m / ${fmt(speed / 1e8, 1)}×10⁸ m/s = <span class="sn-v">${fmt(tPropPerSeg, 5)}</span> s</div>
+        <div class="sn-formula">t<sub>传</sub> = ${segs} 段 × ${fmt(tPropPerSeg, 5)} = <span class="hi">${fmt(tProp, 4)}</span> s</div>
+        <div class="sn-foot">⚠ 传播时延按"链路段数"累加；发送时延<b>只算一次</b>（端到端数据一次性发出）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">总时延与瓶颈</span>
+        <div class="sn-formula">总时延 = ${fmt(tSend, 4)} + ${fmt(tProp, 4)} = <span class="hi">${fmt(totalDelay, 4)}</span> s</div>
+        <div class="sn-foot">瓶颈分析：发送占 ${fmt(tSend / totalDelay * 100, 1)}%，传播占 ${fmt(tProp / totalDelay * 100, 1)}% → <span class="${propDominant ? 'hi-crimson' : 'hi'}">${propDominant ? '传播受限（长距离链路典型瓶颈）' : '发送受限（小文件 / 低带宽典型瓶颈）'}</span></div>
+      </div>
+    </div>
+  `;
+}
+
 function calcEVM() {
   const PV = parseFloat(document.getElementById('evm-pv').value) || 0;
   const EV = parseFloat(document.getElementById('evm-ev').value) || 0;
@@ -16656,6 +17617,53 @@ function calcEVM() {
       <span class="tag ${SPI < 1 ? 'bad' : 'ok'}">${SPI < 1 ? '⚠ 进度落后' : '✓ 进度正常'}</span>
       <span class="tag ${CPI < 1 ? 'bad' : 'ok'}">${CPI < 1 ? '⚠ 成本超支' : '✓ 成本正常'}</span>
     </div>`;
+
+  // ===== 计算过程面板 =====
+  const svDesc = SV > 0 ? '进度超前' : SV < 0 ? '进度落后' : '进度持平';
+  const cvDesc = CV > 0 ? '成本节约' : CV < 0 ? '成本超支' : '成本持平';
+  const spiDesc = SPI > 1 ? '超前 (>1)' : SPI < 1 ? '落后 (<1)' : '持平 (=1)';
+  const cpiDesc = CPI > 1 ? '节约 (>1)' : CPI < 1 ? '超支 (<1)' : '持平 (=1)';
+  const vacDesc = VAC > 0 ? '预期省下' : VAC < 0 ? '预期超支' : '持平';
+  document.getElementById('evm-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">已知基础值</span>　PV = <span class="sn-v">${PV}</span>　|　EV = <span class="sn-v">${EV}</span>　|　AC = <span class="sn-v">${AC}</span>　|　BAC = <span class="sn-v">${BAC}</span>　|　模式 = <span class="sn-v">${evmMode === 'typical' ? '典型差异' : '非典型差异'}</span>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">偏差 SV / CV</span>
+        <div class="sn-formula">SV = EV − PV = ${EV} − ${PV} = <span class="${SV >= 0 ? 'hi' : 'hi-crimson'}">${fmt(SV)}</span>　→　${svDesc}</div>
+        <div class="sn-formula">CV = EV − AC = ${EV} − ${AC} = <span class="${CV >= 0 ? 'hi' : 'hi-crimson'}">${fmt(CV)}</span>　→　${cvDesc}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">绩效指数 SPI / CPI</span>
+        <div class="sn-formula">SPI = EV / PV = ${EV} / ${PV} = <span class="${SPI >= 1 ? 'hi' : 'hi-crimson'}">${fmt(SPI, 3)}</span>　→　${spiDesc}</div>
+        <div class="sn-formula">CPI = EV / AC = ${EV} / ${AC} = <span class="${CPI >= 1 ? 'hi' : 'hi-crimson'}">${fmt(CPI, 3)}</span>　→　${cpiDesc}</div>
+        <div class="sn-foot">口诀：SV 看进度（−PV），CV 看成本（−AC），>0 都是好事；SPI/CPI 同理（>1 好，&lt;1 差）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">完工估算 EAC</span>　${evmMode === 'typical' ? '按当前 CPI 效率延续' : '剩余按独立估算'}
+        <div class="sn-formula">${evmMode === 'typical' ? `EAC = BAC / CPI = ${BAC} / ${fmt(CPI, 3)} = <span class="hi">${fmt(EAC, 2)}</span>` : `EAC = AC + ETC = ${AC} + ${ETCmanual} = <span class="hi">${fmt(EAC, 2)}</span>`}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">完工尚需 ETC · 完工偏差 VAC</span>
+        <div class="sn-formula">ETC = EAC − AC = ${fmt(EAC, 2)} − ${AC} = <span class="hi">${fmt(ETC, 2)}</span></div>
+        <div class="sn-formula">VAC = BAC − EAC = ${BAC} − ${fmt(EAC, 2)} = <span class="${VAC >= 0 ? 'hi-emerald' : 'hi-crimson'}">${fmt(VAC, 1)}</span>　→　${vacDesc}</div>
+      </div>
+    </div>
+  `;
 
   // S 曲线（累计值随时间）
   drawEVMCurve(PV, EV, AC, BAC, EAC);
