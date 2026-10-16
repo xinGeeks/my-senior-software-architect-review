@@ -5230,6 +5230,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div id="bm-out" class="bitmap-highlight"></div>
+        <div id="bm-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">位示图大小</span>
@@ -5362,6 +5363,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <svg id="idx-svg" viewBox="0 0 600 380" role="img" aria-label="多级索引 inode 结构图"></svg>
         <div id="idx-out" class="bitmap-highlight"></div>
+        <div id="idx-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">每块可放块号数</span>
@@ -5474,6 +5476,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div id="pg-bar" class="page-addr-bar"></div>
         <div id="pg-summary" class="calc-result" style="margin-top:10px"></div>
+        <div id="pg-process" class="subnet-process"></div>
         <div style="font-family:var(--font-display);font-size:0.72rem;letter-spacing:0.18em;color:var(--gold-3);margin-top:12px">▸ 页表（点击任一项查映射）</div>
         <div class="page-table-wrap">
           <div id="pg-table" class="page-table-grid"></div>
@@ -5607,6 +5610,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div class="sp-3bar" id="sp-bar"></div>
         <div id="sp-out" class="calc-result"></div>
+        <div id="sp-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">逻辑地址 = 段号 S + 页号 P + 页内偏移 W</span>
@@ -5717,6 +5721,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div id="pr-pointer" class="pr-pointer">改输入即自动刷新，▶ 单步逐步演示</div>
         <div class="pr-refstring" id="pr-refbar"></div>
+        <div id="pr-process" class="subnet-process"></div>
         <div class="pr-grid">
           <div class="pr-alg">
             <h4>OPT <span class="pf" id="pr-pf-opt">缺页: 0</span></h4>
@@ -5891,6 +5896,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         </div>
         <div id="bk-mat-wrap"></div>
         <div id="bk-log" class="banker-log" style="display:none"></div>
+        <div id="bk-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">核心矩阵</span>
@@ -6167,6 +6173,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
         <div id="pv-summary" class="rg-summary">选问题 → 「单步」逐行执行 P(S)/V(S) → 观察信号量与进程状态变化</div>
         <div id="pv-log" class="banker-log" style="display:block"></div>
+        <div id="pv-process" class="subnet-process"></div>
 
         <div class="formula">
           <span class="formula-label">信号量三要素</span>
@@ -6475,6 +6482,31 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2022·2023下·2024下</span></div>
       <div class="card-sub">Turnaround / Weighted Turnaround / Response Ratio</div>
 
+      <div class="calc">
+        <div class="calc-title">交互计算器 · 输入 3 个作业的到达 + 服务时间 → 自动算 FCFS / SJF / HRRN</div>
+        <div class="calc-row">
+          <div class="calc-field" style="flex:2"><label>算法</label>
+            <select id="sched2-mode">
+              <option value="FCFS">FCFS 先来先服务</option>
+              <option value="SJF" selected>SJF 最短服务优先（非抢占）</option>
+              <option value="HRRN">HRRN 最高响应比优先</option>
+            </select>
+          </div>
+          <button class="btn-rand" onclick="calcSched2()">▶ 计算</button>
+          <button class="btn-rand" onclick="randSched2()">🎲 随机</button>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>J1 到达</label><input id="sched2-a1" type="number" value="0" min="0" oninput="raf('calcSched2')"></div>
+          <div class="calc-field"><label>J1 服务</label><input id="sched2-b1" type="number" value="4" min="1" oninput="raf('calcSched2')"></div>
+          <div class="calc-field"><label>J2 到达</label><input id="sched2-a2" type="number" value="1" min="0" oninput="raf('calcSched2')"></div>
+          <div class="calc-field"><label>J2 服务</label><input id="sched2-b2" type="number" value="3" min="1" oninput="raf('calcSched2')"></div>
+          <div class="calc-field"><label>J3 到达</label><input id="sched2-a3" type="number" value="2" min="0" oninput="raf('calcSched2')"></div>
+          <div class="calc-field"><label>J3 服务</label><input id="sched2-b3" type="number" value="2" min="1" oninput="raf('calcSched2')"></div>
+        </div>
+        <div id="sched2-out" class="calc-result"></div>
+        <div id="sched2-process" class="subnet-process"></div>
+      </div>
+
       <span class="formula-label">3 大公式（必背）</span>
       <div class="formula">
         <b>周转时间</b>　T<sub>i</sub> = 完成时间 − 到达时间<br>
@@ -6609,6 +6641,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <button class="btn-rand" onclick="randMcCabe()">🎲 随机</button>
         </div>
         <div id="mc-out" class="calc-result"></div>
+        <div id="mc-process" class="subnet-process"></div>
         <div class="mc-toolbar">
           <span style="color:var(--ivory-3);font-size:0.84rem;align-self:center;margin-right:6px">示例流图：</span>
           <button class="is-active" onclick="drawMcGraph('simple')">简单 (V=2)</button>
@@ -6741,6 +6774,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <div class="tcf-grid" id="fp-tcf"></div>
 
         <div id="fp-out" class="rel-result"></div>
+        <div id="fp-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">5 类用户功能</span>
@@ -6854,6 +6888,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <svg id="co-svg" viewBox="0 0 480 320" preserveAspectRatio="none" role="img" aria-label="COCOMO 工作量曲线"></svg>
         </div>
         <div id="co-out" class="calc-result"></div>
+        <div id="co-process" class="subnet-process"></div>
         <div style="margin-top:8px;color:var(--ivory-3);font-size:0.8rem">
           💡 <b style="color:var(--emerald)">有机</b>（a=2.4,b=1.05）小型独立团队 ·
           <b style="color:var(--azure)">半分离</b>（a=3.0,b=1.12）中型 ·
@@ -8562,6 +8597,54 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
 
         <div style="margin-top:14px;color:var(--ivory-3);font-size:0.86rem">
           <b style="color:var(--gold-1)">答题套路</b>　案例题问"哪种最准确" → <b>自下而上</b>（±10%）；问"项目早期快速估算" → <b>类比/参数</b>；问"工期有不确定性" → <b>三点估算</b>。
+        </div>
+      </div>
+
+      <div class="subnet-process" style="margin:10px 0 6px">
+        <div class="sn-head">解题 5 步走 · 三点估算 PERT（O=8, M=10, P=24）</div>
+        <div class="sn-step">
+          <div class="sn-no">1</div>
+          <div class="sn-body">
+            <div class="sn-k">公式识别（PERT 三点估算）</div>
+            <div class="sn-formula">E = (O + 4M + P) / 6</div>
+            <div class="sn-formula">σ = (P − O) / 6</div>
+            <div class="sn-foot">E 为加权期望工期（β 分布近似，最可能 M 权重 4，最悲观与最乐观各 1）；σ 为标准差（基于 P − O 跨度）。</div>
+          </div>
+        </div>
+        <div class="sn-step">
+          <div class="sn-no">2</div>
+          <div class="sn-body">
+            <div class="sn-k">已知输入</div>
+            <div class="sn-v">最乐观 O = <span style="color:var(--gold-1)">8</span> 天（一切顺利）</div>
+            <div class="sn-v">最可能 M = <span style="color:var(--azure)">10</span> 天（正常情况）</div>
+            <div class="sn-v">最悲观 P = <span style="color:var(--crimson)">24</span> 天（最坏情况）</div>
+          </div>
+        </div>
+        <div class="sn-step">
+          <div class="sn-no">3</div>
+          <div class="sn-body">
+            <div class="sn-k">代入求期望 E</div>
+            <div class="sn-v">E = (8 + 4×10 + 24) / 6</div>
+            <div class="sn-v">  = (8 + 40 + 24) / 6 = 72 / 6 = <span style="color:var(--gold-1)">12 天</span></div>
+          </div>
+        </div>
+        <div class="sn-step">
+          <div class="sn-no">4</div>
+          <div class="sn-body">
+            <div class="sn-k">代入求标准差 σ</div>
+            <div class="sn-v">σ = (24 − 8) / 6 = 16 / 6 ≈ <span style="color:var(--gold-1)">2.67 天</span></div>
+            <div class="sn-foot">σ 反映不确定性幅度；跨度 16 天 → σ≈2.67 → 相对不确定度 = σ/E = 22%（中等风险）。</div>
+          </div>
+        </div>
+        <div class="sn-step">
+          <div class="sn-no">5</div>
+          <div class="sn-body">
+            <div class="sn-k">完工概率区间（正态近似）</div>
+            <div class="sn-v">±1σ [9.33, 14.67] 天 → 完工概率 <span style="color:var(--emerald)">68.26%</span></div>
+            <div class="sn-v">±2σ [6.66, 17.34] 天 → 完工概率 <span style="color:var(--emerald)">95.46%</span></div>
+            <div class="sn-v">±3σ [3.99, 20.01] 天 → 完工概率 <span style="color:var(--emerald)">99.73%</span></div>
+            <div class="sn-foot">案例 T2/T3 铁三角：COCOMO 求 PM → TDEV = 2.5×PM<sup>0.38</sup> 算工期 → 三点估算叠加各活动 E+σ 求总工期与完工概率。</div>
+          </div>
         </div>
       </div>
 
@@ -11773,6 +11856,52 @@ function calcMcCabe() {
       两公式结果应一致（${v1 === v2 ? '✓' : '⚠ 不一致，请检查'}）。
       1-10 简单 / 11-20 中等 / 21-50 复杂 / >50 不可测。
     </div>`;
+
+  // ===== 计算过程面板 =====
+  document.getElementById('mc-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　McCabe 圈复杂度 V(G) 三公式（结果取同）
+        <div class="sn-formula">① <b>V(G) = m − n + 2P</b>　（边数 − 节点数 + 2，连通图 P=1）</div>
+        <div class="sn-formula">② <b>V(G) = 判定节点数 + 1</b>　（if/while/for/&&/||/catch 等控制流分支）</div>
+        <div class="sn-formula">③ <b>V(G) = 独立路径数</b>　（区域数 / 基本路径数）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">已知输入</span>
+        <div class="sn-formula">m（边数）= <span class="sn-v">${edges}</span>　|　n（节点数）= <span class="sn-v">${nodes}</span>　|　判定节点数 = <span class="sn-v">${decisions}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">公式①计算（边 − 节点 + 2）</span>
+        <div class="sn-formula">V(G) = ${edges} − ${nodes} + 2 = <span class="hi">${v1}</span></div>
+        <div class="sn-foot">适用：流图已知边数与节点数；P=1 表示单连通分量</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">公式②计算（判定数 + 1）</span>
+        <div class="sn-formula">V(G) = ${decisions} + 1 = <span class="hi">${v2}</span></div>
+        <div class="sn-foot">适用：直接读源码计控制流分支（if/while/for/catch/&&/||）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">交叉验证与评级</span>
+        <div class="sn-formula">两公式结果：${v1 === v2 ? '<span class="hi-emerald">一致 ✓</span>' : `<span class="hi-crimson">不一致 ⚠ ${v1} ≠ ${v2}，重新检查输入</span>`}</div>
+        <div class="sn-formula">V(G) = <span class="hi">${v1}</span>　→　<span style="color:${color}">${rating}</span>　（1-10 简单 / 11-20 中等 / 21-50 复杂 / &gt;50 不可测）</div>
+        <div class="sn-foot">⚠ V(G) &gt; 10 提示需要拆分函数；测试用例数 ≥ V(G)</div>
+      </div>
+    </div>
+  `;
+}
   // 重绘示例图（保留当前选中）
   if (mcGraphType) drawMcGraph(mcGraphType);
 }
@@ -11939,6 +12068,8 @@ const TCF_WEIGHTS = [10, 7, 6, 5, 5, 4, 4, 4, 3, 3, 2, 1, 1, 1];
 
 function fpCalc() {
   const types = ['ei', 'eo', 'eq', 'ilf', 'eif'];
+  const fpNames = { ei: 'EI 外部输入', eo: 'EO 外部输出', eq: 'EQ 外部查询', ilf: 'ILF 内部逻辑文件', eif: 'EIF 外部接口文件' };
+  const detail = [];
   let ufp = 0;
   types.forEach(t => {
     const n = +document.getElementById('fp-' + t + '-n').value || 0;
@@ -11946,13 +12077,16 @@ function fpCalc() {
     const sub = n * w;
     document.getElementById('fp-' + t + '-w').textContent = sub;
     ufp += sub;
+    detail.push({ t, n, w, sub });
   });
   document.getElementById('fp-ufp').textContent = ufp;
 
   let tcf = 0;
+  const tcfBreak = [];
   TCF_WEIGHTS.forEach((w, i) => {
     const v = +document.getElementById('fp-tcf-' + i).value || 0;
     tcf += v * w;
+    tcfBreak.push({ name: TCF_FACTORS[i], score: v, weight: w, contrib: v * w });
   });
   const cAFP = 0.65 + 0.01 * tcf;
   const afp = ufp * cAFP;
@@ -11961,6 +12095,57 @@ function fpCalc() {
     `TCF = Σ(权重×评分) = <b style="color:var(--gold-2)">${tcf}</b>　|　` +
     `AFP = UFP × (0.65 + 0.01×${tcf}) = UFP × <b style="color:var(--violet)">${cAFP.toFixed(3)}</b> = <b style="color:var(--gold-1)">${afp.toFixed(1)}</b>` +
     `<br><span style="color:var(--ivory-2)">AFP 表示项目规模（功能点）。后续可按语言换算 LOC：LOC = AFP × ${'$'}{lang-rate}（如 Java≈53, C≈128）。</span>`;
+
+  let level = '低';
+  let cls = 'hi-emerald';
+  if (afp >= 1000) { level = '超大'; cls = 'hi-crimson'; }
+  else if (afp >= 300) { level = '大'; cls = 'hi-azure'; }
+  else if (afp >= 100) { level = '中'; cls = 'hi'; }
+  const panel = document.getElementById('fp-process');
+  if (panel) panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · FP 功能点计算</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">公式识别</div>
+        <div class="sn-v">两步公式：</div>
+        <div class="sn-formula">UFP = Σ(每类功能项数 × 复杂度权重)</div>
+        <div class="sn-formula">AFP = UFP × (0.65 + 0.01 × TCF)</div>
+        <div class="sn-foot">其中 TCF = Σ(14 项调节因子评分 × 各自权重)；常数 0.65 固定，<span class="hi-crimson">不是 0.65×14</span>。</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">已知输入（5 类功能项计数）</div>
+        ${detail.map(d => `<div class="sn-v">${fpNames[d.t]}：<span class="hi-azure">${d.n}</span> 项（默认权重 ${d.w}）</div>`).join('')}
+        ${tcfBreak.length ? `<div class="sn-v" style="margin-top:6px;color:var(--ivory-3)">TCF 14 项评分：${tcfBreak.map(t => `${t.name}=<span class="hi">${t.score}</span>`).join(' / ')}</div>` : ''}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">各类权重小计（项数 × 权重）</div>
+        ${detail.map(d => `<div class="sn-v">${fpNames[d.t]}：${d.n} × ${d.w} = <span class="hi-emerald">${d.sub}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">UFP 求和</div>
+        <div class="sn-v">UFP = ${detail.map(d => d.sub).join(' + ')} = <span class="hi">${ufp}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">TCF 调节 → AFP + 评级</div>
+        <div class="sn-v">TCF = Σ评分×权重 = <span class="hi-gold">${tcf}</span>（满分 14 项 ×5×权重 = 350）</div>
+        <div class="sn-v">调整系数 = 0.65 + 0.01 × ${tcf} = <span class="hi">${cAFP.toFixed(3)}</span></div>
+        <div class="sn-formula">AFP = ${ufp} × ${cAFP.toFixed(3)} = <span class="hi-crimson">${afp.toFixed(1)}</span> 功能点</div>
+        <div class="sn-foot">项目规模评级：<span class="${cls}">${level}</span>（&lt;100 小、100-299 中、300-999 大、≥1000 超大）。</div>
+      </div>
+    </div>`;
 }
 
 function fpInit() {
@@ -12610,6 +12795,50 @@ function drawBitmap() {
       <b>查询 (字号=${bClamped}, 位号=${j})</b> → 块号 = ${bClamped} × ${wb} + ${j} + 1 = <span class="block-num">${blockNo}</span> 块<br>
       <b>该块状态</b>：${bmAlloc[blockNo - 1] === 1 ? '<span style="color:var(--crimson)">已分配 (1)</span>' : '<span style="color:var(--emerald)">空闲 (0)</span>'}
     ` : `<b style="color:var(--crimson)">⚠ 字号/位号越界</b>：该位置不在有效磁盘块范围内`}`;
+
+  // ===== 计算过程面板 =====
+  const status = isInRange ? (bmAlloc[blockNo - 1] === 1 ? '已分配 (1)' : '空闲 (0)') : '越界';
+  document.getElementById('bm-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　位示图本质：磁盘上每块对应一位
+        <div class="sn-formula">总位数 = 柱面 × 盘面 × 每面扇区 = <b>磁盘块数</b></div>
+        <div class="sn-formula">占用字节 = ceil(总位数 / 8)　|　字号 b、位号 j → 块号 = b × wb + j + 1</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">总块数（=位示图位数）</span>
+        <div class="sn-formula">${cy} × ${sf} × ${se} = <span class="hi">${total.toLocaleString()}</span> 位</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">占用字节数</span>
+        <div class="sn-formula">ceil(${total.toLocaleString()} / 8) = <span class="hi">${bytes.toLocaleString()}</span> 字节</div>
+        <div class="sn-foot">若题目问"位示图需占多少字节"，直接答此；常见陷阱是忘记 +1 向上取整</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">字号范围（每字 ${wb} 位）</span>
+        <div class="sn-formula">共 ${maxWords} 个字（ceil(总位数 / wb) = ceil(${total.toLocaleString()} / ${wb})），字号范围 0 ~ ${maxWords - 1}</div>
+        <div class="sn-formula">位号范围 0 ~ ${wb - 1}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">块号转换 (b=${bClamped}, j=${j})</span>
+        <div class="sn-formula">块号 = ${bClamped} × ${wb} + ${j} + 1 = <span class="hi">${blockNo.toLocaleString()}</span> 块</div>
+        <div class="sn-foot">${isInRange ? `该块当前为 <span class="${bmAlloc[blockNo - 1] === 1 ? 'hi-crimson' : 'hi-emerald'}">${status}</span>${bmAlloc[blockNo - 1] === 1 ? ' → 不可分配给新文件' : ' → 可分配给新文件'}` : '⚠ 字号/位号越界 → 提示输入错误或减少盘容量'}</div>
+      </div>
+    </div>
+  `;
 }
 
 /* ================== FD Closure (3.3) ================== */
@@ -14021,6 +14250,7 @@ function rmDetail(name, kind) {
 window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('evm-pv')) calcEVM();
   if (document.getElementById('com-n')) calcCom();
+  if (document.getElementById('sched2-mode')) calcSched2();
   if (document.getElementById('cd-size')) calcCd();
   if (document.getElementById('cpm-a')) calcCPM();
   if (document.getElementById('cap-dau')) calcCap();
@@ -14407,6 +14637,52 @@ function drawSegPage() {
     <span class="key">单段页表大小</span> <span class="val">${formatSize(pageTblSizePerSeg)}</span> &nbsp;|&nbsp;
     <span class="key">总页表大小</span> <span class="val" style="color:var(--crimson)">${formatSize(totalPageTblSize)}</span>
     <div style="margin-top:6px;color:var(--ivory-3);font-size:0.82rem">段页式 = 段表（找段）+ 页表（找页）+ 偏移（页内位置）。地址必须拆 3 段。</div>`;
+
+  // ===== 计算过程面板 =====
+  document.getElementById('sp-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　段页式地址 = 段号 S + 段内页号 P + 页内偏移 W
+        <div class="sn-formula">总位 = 段号位 + 页号位 + 偏移位</div>
+        <div class="sn-formula">段数 = 2<sup>段号位</sup>，每段页数 = 2<sup>页号位</sup>，页大小 = 2<sup>偏移位</sup></div>
+        <div class="sn-formula">总页数 = 段数 × 每段页数</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">拆分位数</span>　S = <span class="sn-v">${sBits}</span>，P = <span class="sn-v">${pBits}</span>，W = <span class="sn-v">${wBits}</span>
+        <div class="sn-formula">总位 = ${sBits} + ${pBits} + ${wBits} = <span class="hi">${total}</span> 位</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">各段容量</span>
+        <div class="sn-formula">段数 = 2<sup>${sBits}</sup> = <span class="hi">${segs.toLocaleString()}</span> 段</div>
+        <div class="sn-formula">每段页数 = 2<sup>${pBits}</sup> = <span class="hi">${pagesPerSeg.toLocaleString()}</span> 页</div>
+        <div class="sn-formula">页大小 = 2<sup>${wBits}</sup> = <span class="hi">${pageSize.toLocaleString()}</span> B</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">页表与段表占用</span>（每项 4B）
+        <div class="sn-formula">段表 = ${segs.toLocaleString()} × 4 = <span class="hi">${formatSize(segTblSize)}</span></div>
+        <div class="sn-formula">单段页表 = ${pagesPerSeg.toLocaleString()} × 4 = <span class="hi">${formatSize(pageTblSizePerSeg)}</span></div>
+        <div class="sn-formula">总页表 = ${totalPages.toLocaleString()} × 4 = <span class="hi-emerald">${formatSize(totalPageTblSize)}</span></div>
+        <div class="sn-foot">段表驻留内存（必须常驻）；页表按段动态调入</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">地址转换三级跳</span>
+        <div class="sn-foot">① 段号查段表 → 得段基址+页表起始<br>② 段内页号查段内页表 → 得物理块号<br>③ 块号 × 页大小 + 偏移 → 物理地址</div>
+      </div>
+    </div>
+  `;
 }
 function spLoadExample() {
   document.getElementById('sp-s').value = 4;
@@ -14986,6 +15262,60 @@ function drawIndex() {
       </div>
     </div>`;
   document.getElementById('idx-out').innerHTML = html;
+
+  // ===== 计算过程面板 =====
+  const levelNames = ['', '单间接', '双间接', '三间接', '四间接'];
+  const levelCaps = [];
+  let breakdown = [];
+  if (m > 0) breakdown.push(`${m} 直接`);
+  for (let i = 1; i <= k; i++) {
+    const cap = Math.pow(n, i);
+    levelCaps.push({ name: levelNames[i], cap, exp: i });
+    breakdown.push(`${n}^${i} = ${cap.toLocaleString()}`);
+  }
+  document.getElementById('idx-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　UNIX inode 多级索引
+        <div class="sn-formula">每块块号数 n = 块大小 / 块号字节数</div>
+        <div class="sn-formula">各级容量：直接 = m；单间接 = n；双间接 = n²；三级 = n³</div>
+        <div class="sn-formula">最大文件 = (m + n + n² + … + n<sup>k</sup>) × B</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">每块块号数</span>　B = <span class="sn-v">${B}</span> B，块号 = <span class="sn-v">${ptr}</span> B
+        <div class="sn-formula">n = ${B} / ${ptr} = <span class="hi">${n}</span> 个块号/块</div>
+        <div class="sn-foot">常见值：4 KB / 4 B = 1024；8 KB / 4 B = 2048</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">各级容量计算</span>
+        ${levelCaps.map(l => `<div class="sn-formula">${l.name}：n<sup>${l.exp}</sup> = ${n}<sup>${l.exp}</sup> = <span class="hi">${l.cap.toLocaleString()}</span> 块</div>`).join('')}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">总块数（几何级数求和）</span>
+        <div class="sn-formula">N<sub>max</sub> = ${breakdown.join(' + ')}</div>
+        <div class="sn-formula">= <span class="hi">${totalWithDirect.toLocaleString()}</span> 块</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">最大文件容量</span>
+        <div class="sn-formula">S<sub>max</sub> = N<sub>max</sub> × B = ${totalWithDirect.toLocaleString()} × ${formatSize(B)}</div>
+        <div class="sn-formula">= <span class="hi-emerald">${formatSize(maxBytes)}</span></div>
+        <div class="sn-foot">⚠ 陷阱：双间接 ≠ 2×n = 2n，而是 n²；inode 本身占 1~2 块，<b>不计入</b>文件数据容量</div>
+      </div>
+    </div>
+  `;
 }
 window.drawIndex = drawIndex;
 
@@ -15218,6 +15548,59 @@ function drawCOCOMO() {
     <span style="color:var(--ivory-3);font-size:0.82rem">同期对比：有机 ${CO_PARAMS.organic.a * Math.pow(kloc, CO_PARAMS.organic.b).toFixed(1)} ·
     半分离 ${CO_PARAMS.semi.a * Math.pow(kloc, CO_PARAMS.semi.b).toFixed(1)} ·
     嵌入式 ${CO_PARAMS.embed.a * Math.pow(kloc, CO_PARAMS.embed.b).toFixed(1)} PM</span>`;
+
+  const pmO = CO_PARAMS.organic.a * Math.pow(kloc, CO_PARAMS.organic.b);
+  const pmS = CO_PARAMS.semi.a * Math.pow(kloc, CO_PARAMS.semi.b);
+  const pmE = CO_PARAMS.embed.a * Math.pow(kloc, CO_PARAMS.embed.b);
+  const tdev = 2.5 * Math.pow(pm, 0.38);
+  const nRec = pm / tdev;
+  const panel = document.getElementById('co-process');
+  if (panel) panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · COCOMO 工作量估算</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">公式识别（基本 COCOMO）</div>
+        <div class="sn-formula">PM = a × KLOC<sup>b</sup></div>
+        <div class="sn-v">共 5 个公式族：</div>
+        <div class="sn-v">① 基本（规模 + 模式） / ② 中期 PM = a×KLOC<sup>b</sup>×ΠEMᵢ / ③ 详细（15 个 EMᵢ 按阶段）</div>
+        <div class="sn-v">④ COCOMO II：应用组合 / 早期设计 / 后体系结构 三种子模型</div>
+        <div class="sn-foot">模式 → 系数对照：<b style="color:var(--emerald)">有机 a=2.4 b=1.05</b> · <b style="color:var(--azure)">半分离 a=3.0 b=1.12</b> · <b style="color:var(--crimson)">嵌入 a=3.6 b=1.20</b></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">已知输入与模式选取</div>
+        <div class="sn-v">代码规模 KLOC = <span style="color:var(--gold-1)">${kloc}</span></div>
+        <div class="sn-v">所选模式：<b style="color:${cur.color}">${cur.name}</b>（a = ${cur.a}, b = ${cur.b}）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">求幂 KLOC<sup>b</sup></div>
+        <div class="sn-v">${kloc}<sup>${cur.b}</sup> = ${kloc} × ${kloc}<sup>${(cur.b % 1).toFixed(2)}</sup> ≈ ${kloc} × ${Math.pow(kloc, cur.b % 1).toFixed(3)} ≈ <span style="color:var(--gold-1)">${Math.pow(kloc, cur.b).toFixed(2)}</span></div>
+        <div class="sn-foot">三模式对照：有机 ${kloc}^1.05 ≈ ${Math.pow(kloc, 1.05).toFixed(2)} · 半分离 ${kloc}^1.12 ≈ ${Math.pow(kloc, 1.12).toFixed(2)} · 嵌入 ${kloc}^1.20 ≈ ${Math.pow(kloc, 1.20).toFixed(2)}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">乘 a 得 PM（人月）</div>
+        <div class="sn-v">PM = ${cur.a} × ${Math.pow(kloc, cur.b).toFixed(2)} = <span style="color:${cur.color}">${pm.toFixed(1)}</span> 人月</div>
+        <div class="sn-foot">三模式 PM：有机 ${pmO.toFixed(1)} · 半分离 ${pmS.toFixed(1)} · 嵌入 ${pmE.toFixed(1)}（差距随 KLOC 放大 → 规模经济性差异）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">工期与人力（案例 T2/T3 铁三角必算）</div>
+        <div class="sn-v">TDEV = 2.5 × PM<sup>0.38</sup> = 2.5 × ${pm.toFixed(1)}<sup>0.38</sup> ≈ <span style="color:var(--gold-1)">${tdev.toFixed(1)}</span> 月</div>
+        <div class="sn-v">推荐平均人力 N = PM / TDEV = ${pm.toFixed(1)} / ${tdev.toFixed(1)} ≈ <span style="color:var(--gold-1)">${nRec.toFixed(1)}</span> 人</div>
+        <div class="sn-foot">三者关系：PM × 人月工作量 = N × TDEV × 月 → 同时给出 PM + TDEV + N 才能完整表达项目规模。</div>
+      </div>
+    </div>`;
 }
 
 /* ================== 4.2 PERT ================== */
@@ -15460,6 +15843,58 @@ function prRender() {
       ptr.innerHTML = `<b style="color:var(--emerald)">演示完毕</b> · 三算法缺页总数: OPT=${prState.pf[0]} / FIFO=${prState.pf[1]} / LRU=${prState.pf[2]}`;
     }
   }
+
+  // ===== 计算过程面板 =====
+  const total = prState.refStr.length;
+  const n = prState.n;
+  const refShort = prState.refStr.join(',');
+  const refDisp = refShort.length > 40 ? refShort.slice(0, 38) + '…' : refShort;
+  document.getElementById('pr-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　缺页率 = 缺页次数 / 访问总次数
+        <div class="sn-formula">访问总次数 = 引用串长度 = <span class="sn-v">${total}</span></div>
+        <div class="sn-formula">缺页率 = OPT <span class="hi">${prState.pf[0]}/${total} = ${(prState.pf[0] / total * 100).toFixed(1)}%</span>　|　FIFO <span class="hi">${prState.pf[1]}/${total} = ${(prState.pf[1] / total * 100).toFixed(1)}%</span>　|　LRU <span class="hi">${prState.pf[2]}/${total} = ${(prState.pf[2] / total * 100).toFixed(1)}%</span></div>
+        <div class="sn-foot">三种算法置换策略不同：<span class="hi-emerald">OPT</span> = 未来最久不用（理论最优）；<span class="hi-azure">FIFO</span> = 队首置换；<span class="hi-crimson">LRU</span> = 过去最久未用</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">已知输入</span>
+        <div class="sn-formula">引用串 = ${refDisp}</div>
+        <div class="sn-formula">页框数 = <span class="sn-v">${n}</span>　|　访问总次数 = <span class="sn-v">${total}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">逐项访问判定</span>
+        <div class="sn-formula">对每个引用页 P：</div>
+        <div class="sn-formula">① 若 P 已在页框 → <b style="color:var(--emerald)">命中</b>（缺页计数不变）</div>
+        <div class="sn-formula">② 若 P 不在页框且有空位 → 装入空位（<b>缺页 +1</b>）</div>
+        <div class="sn-formula">③ 若 P 不在且已满 → 按算法选淘汰页（<b>缺页 +1</b>）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">三算法结果对比</span>
+        <div class="sn-formula">OPT 缺页 = <span class="hi">${prState.pf[0]}</span>　（理论下限）</div>
+        <div class="sn-formula">FIFO 缺页 = <span class="hi">${prState.pf[1]}</span>　（最易实现）</div>
+        <div class="sn-formula">LRU 缺页 = <span class="hi">${prState.pf[2]}</span>　（接近 OPT）</div>
+        <div class="sn-foot">实战口诀：OPT ≤ LRU ≤ FIFO，但 FIFO 可能出现 Belady 异常（页框 ↑ 缺页 ↑）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">算法选择</span>
+        <div class="sn-foot">⚠ Belady 异常只在 FIFO 中出现；OPT 不可实现（需预知未来）；LRU 硬件实现成本高，软件栈近似用 LFU 或老化寄存器</div>
+      </div>
+    </div>
+  `;
 }
 
 function prStep() {
@@ -15703,6 +16138,55 @@ function bkRun() {
       ${log.map(s => `<div class="step ok">▶ 第 ${s.step+1} 步：找到 P${s.pid}（Need ≤ Work=[${s.work.join(',')}]），执行后 Work = [${work.map((v,j) => s.work[j] + alloc[s.pid][j]).join(',')}]</div>`).join('')}
       <div class="step dead" style="margin-top:6px;font-weight:600">✗ 不存在安全序列 → 系统<strong>不安全</strong>，当前状态可能死锁</div>`;
   }
+
+  // ===== 计算过程面板 =====
+  const needLines = [];
+  for (let i = 0; i < n; i++) {
+    needLines.push(`P${i}: [${need[i].join(',')}]`);
+  }
+  const seqStr = seq.map(i => 'P' + i).join(' → ');
+  document.getElementById('bk-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　银行家算法核心：Need ≤ Work 检查
+        <div class="sn-formula">Need[i] = Max[i] − Allocation[i]（每个进程每类资源）</div>
+        <div class="sn-formula">安全性算法：找 Need ≤ Work 的进程 → 归还 Allocation → Work += Allocation</div>
+        <div class="sn-foot">若所有进程都能跑完 → 安全序列存在；否则 → 不安全</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">计算 Need 矩阵</span>
+        <div class="sn-formula">${needLines.join('　|　')}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">初始 Work 向量</span>
+        <div class="sn-formula">Work = Available = [${avail.join(',')}]</div>
+        <div class="sn-foot">Work 是动态变化的工作向量（每轮迭代 += Allocation）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">迭代搜索</span>
+        <div class="sn-formula">遍历所有未完成进程，找 Need ≤ Work 者</div>
+        ${log.map(s => `<div class="sn-formula">第 ${s.step + 1} 步：P${s.pid}（Need ≤ Work=[${s.work.join(',')}]），归还 Allocation 后 Work = [${s.work.map((v, j) => v + alloc[s.pid][j]).join(',')}]</div>`).join('')}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">结论</span>
+        <div class="sn-formula">${safety ? `存在：<${seqStr}>` : '不存在安全序列'}</div>
+        <div class="sn-foot">${safety ? `<span class="hi-emerald">✓ 系统处于安全状态</span>，当前请求可分配；资源请求仍需先做 Request ≤ Need 与 Request ≤ Available 检查` : `<span class="hi-crimson">✗ 系统不安全</span>，需阻塞请求或回滚分配；可通过撤销进程 / 抢占资源恢复`}</div>
+      </div>
+    </div>
+  `;
 }
 
 /* ================== 1.14 Resource Allocation Graph ================== */
@@ -16658,6 +17142,50 @@ function pvRenderSummary(mode) {
   if (mode === 'init') {
     sum.className = 'rg-summary';
     sum.innerHTML = `<span class="rg-pill warn">就绪</span>${pvState.procs.length} 进程 / ${pvState.sems.length} 信号量 · 「单步」逐行执行 P(S)/V(S) → 观察信号量与进程状态变化`;
+    // 初始化时也填充过程面板（用初值）
+    const semInit = pvState.sems.map(s => `${s.id}=${s.initVal}`).join(' ');
+    const problemNameMap = { mutex: '互斥', pc: '生产者-消费者', rw: '读者-写者', dp: '哲学家就餐' };
+    const problemName = problemNameMap[pvState.problemKey] || pvState.problemKey;
+    const procInit = pvState.procs.map(p => `${p.id}:${p.state}`).join(' ');
+    document.getElementById('pv-process').innerHTML = `
+      <div class="sn-step">
+        <div class="sn-no">步骤 1</div>
+        <div class="sn-body">
+          <span class="sn-k">公式识别</span>　信号量三要素
+          <div class="sn-formula"><b>P(S)</b>：申请资源，S = S − 1；若 S &lt; 0 则阻塞</div>
+          <div class="sn-formula"><b>V(S)</b>：释放资源，S = S + 1；若 S ≤ 0 则唤醒等待者</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 2</div>
+        <div class="sn-body">
+          <span class="sn-k">信号量初值</span>　问题 = <span class="sn-v">${problemName}</span>
+          <div class="sn-formula">初始：{${semInit}}</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 3</div>
+        <div class="sn-body">
+          <span class="sn-k">就绪状态</span>
+          <div class="sn-formula">${pvState.procs.length} 进程 / ${pvState.sems.length} 信号量</div>
+          <div class="sn-formula">进程：[${procInit}]</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 4</div>
+        <div class="sn-body">
+          <span class="sn-k">下一步操作</span>
+          <div class="sn-foot">点击「单步」逐行执行 P/V，观察信号量与进程状态变化</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">步骤 5</div>
+        <div class="sn-body">
+          <span class="sn-k">死锁 / 完成判定</span>
+          <div class="sn-foot">⚠ 哲学家就餐经典死锁：5 人各持左筷等右筷。3 种解决方案：① 最多 4 人；② 奇偶号反向拿筷；③ AND 信号量一次性申请两筷</div>
+        </div>
+      </div>
+    `;
     return;
   }
   if (mode === 'done') {
@@ -16681,6 +17209,54 @@ function pvRenderSummary(mode) {
   const procStr = pvState.procs.map(p => `${p.id}:${p.state}`).join(' ');
   sum.className = 'rg-summary';
   sum.innerHTML = `<span class="rg-pill warn">步骤 ${pvState.stepIdx}/${pvState.steps.length}</span>信号量 {${semStr}} · 进程 [${procStr}]`;
+
+  // ===== 计算过程面板 =====
+  const semInit = pvState.sems.map(s => `${s.id}=${s.initVal}`).join(' ');
+  const semCurr = pvState.sems.map(s => `${s.id}=${s.val}`).join(' ');
+  const problemNameMap = { mutex: '互斥', pc: '生产者-消费者', rw: '读者-写者', dp: '哲学家就餐' };
+  const problemName = problemNameMap[pvState.problemKey] || pvState.problemKey;
+  document.getElementById('pv-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　信号量三要素
+        <div class="sn-formula"><b>P(S)</b>：申请资源，S = S − 1；若 S &lt; 0 则阻塞</div>
+        <div class="sn-formula"><b>V(S)</b>：释放资源，S = S + 1；若 S ≤ 0 则唤醒等待者</div>
+        <div class="sn-foot">互斥用 mutex（初值 1）；同步用 empty=N（空位）/ full=0（已占用）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">信号量初值</span>　问题 = <span class="sn-v">${problemName}</span>
+        <div class="sn-formula">初始：{${semInit}}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">步进跟踪</span>　进度 <span class="sn-v">${pvState.stepIdx}/${pvState.steps.length}</span>
+        <div class="sn-formula">每条 P/V 操作按代码顺序逐行执行</div>
+        <div class="sn-formula">P 操作：S − 1；若 S &lt; 0 则当前进程进入等待队列</div>
+        <div class="sn-formula">V 操作：S + 1；若 S ≤ 0 则唤醒等待队列首个进程</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">当前状态快照</span>
+        <div class="sn-formula">信号量：{${semCurr}}</div>
+        <div class="sn-formula">进程：[${procStr}]</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">死锁 / 完成判定</span>
+        <div class="sn-foot">⚠ 哲学家就餐经典死锁：5 人各持左筷等右筷。3 种解决方案：① 最多 4 人；② 奇偶号反向拿筷；③ AND 信号量一次性申请两筷</div>
+      </div>
+    </div>
+  `;
 }
 
 function escapeHtml(s) {
@@ -17134,6 +17710,52 @@ function drawPaging() {
     <span class="key">偏移</span> <span class="val">${offset}</span> →
     <span class="key">物理地址</span> <span class="val" style="color:var(--crimson)">${physAddr.toLocaleString()}</span>（块 ${pBlock}）`;
 
+  // ===== 计算过程面板 =====
+  document.getElementById('pg-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　页式存储地址 = 页号 P + 页内偏移 W
+        <div class="sn-formula">页号位数 = 逻辑地址总位 − 页大小位</div>
+        <div class="sn-formula">页数 = 2<sup>页号位数</sup>，页大小 = 2<sup>页大小位</sup></div>
+        <div class="sn-formula">P = 逻辑地址 ÷ 页大小（取整），W = 逻辑地址 mod 页大小</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">拆分位数</span>　总位 = <span class="sn-v">${aBits}</span>，页大小 = 2<sup><span class="sn-v">${offBits}</span></sup>
+        <div class="sn-formula">页号位数 = ${aBits} − ${offBits} = <span class="hi">${pBits}</span> 位</div>
+        <div class="sn-formula">页大小 = 2<sup>${offBits}</sup> = <span class="hi">${pageSize.toLocaleString()}</span> 字节</div>
+        <div class="sn-formula">总页数 = 2<sup>${pBits}</sup> = <span class="hi">${numPages.toLocaleString()}</span> 页</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">页表大小</span>（每项 4B，含页号 + 物理块号 + 控制位）
+        <div class="sn-formula">${numPages.toLocaleString()} × 4 = <span class="hi">${tableSize}</span></div>
+        <div class="sn-foot">页表占用内存不可忽视，多级页表 / 反置页表可缓解</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">拆分逻辑地址</span>　逻辑地址 = <span class="sn-v">${addr.toLocaleString()}</span>
+        <div class="sn-formula">P = ${addr.toLocaleString()} ÷ ${pageSize.toLocaleString()}（取整） = <span class="hi">${pNo}</span></div>
+        <div class="sn-formula">W = ${addr.toLocaleString()} mod ${pageSize.toLocaleString()} = <span class="hi">${offset.toLocaleString()}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">物理地址转换</span>
+        <div class="sn-formula">物理块号 = 查页表(P=${pNo}) = <span class="hi">${pBlock}</span></div>
+        <div class="sn-formula">物理地址 = ${pBlock} × ${pageSize.toLocaleString()} + ${offset.toLocaleString()} = <span class="hi-emerald">${physAddr.toLocaleString()}</span></div>
+      </div>
+    </div>
+  `;
+
   // 页表网格
   const showN = Math.min(numPages, 256);
   let cells = '';
@@ -17346,6 +17968,138 @@ function randEVM() {
   document.getElementById('evm-ac').value = AC;
   document.getElementById('evm-bac').value = BAC;
   raf('calcEVM');
+}
+
+function randSched2() {
+  document.getElementById('sched2-a1').value = 0;
+  document.getElementById('sched2-a2').value = 1 + Math.floor(Math.random() * 3);
+  document.getElementById('sched2-a3').value = 2 + Math.floor(Math.random() * 4);
+  document.getElementById('sched2-b1').value = 2 + Math.floor(Math.random() * 5);
+  document.getElementById('sched2-b2').value = 1 + Math.floor(Math.random() * 5);
+  document.getElementById('sched2-b3').value = 1 + Math.floor(Math.random() * 4);
+  raf('calcSched2');
+}
+
+function calcSched2() {
+  const mode = document.getElementById('sched2-mode').value;
+  const jobs = [
+    { id: 'J1', a: parseInt(document.getElementById('sched2-a1').value) || 0, b: parseInt(document.getElementById('sched2-b1').value) || 1 },
+    { id: 'J2', a: parseInt(document.getElementById('sched2-a2').value) || 0, b: parseInt(document.getElementById('sched2-b2').value) || 1 },
+    { id: 'J3', a: parseInt(document.getElementById('sched2-a3').value) || 0, b: parseInt(document.getElementById('sched2-b3').value) || 1 }
+  ];
+  // 复制后排序
+  const order = [...jobs];
+  if (mode === 'FCFS') {
+    order.sort((x, y) => x.a - y.a);
+  } else if (mode === 'SJF') {
+    order.sort((x, y) => x.b - y.b);
+  }
+  // HRRN: 模拟非抢占调度：每次从已到达未完成中挑响应比最大者
+  // 简化: 单次决策 — 按当前时刻选最大响应比
+  let time = 0;
+  const done = [];
+  if (mode === 'HRRN') {
+    const rem = jobs.slice();
+    while (rem.length > 0) {
+      // 已到达
+      const ready = rem.filter(j => j.a <= time);
+      if (ready.length === 0) {
+        time = Math.min(...rem.map(j => j.a));
+        continue;
+      }
+      // 响应比 = 1 + 等待/服务
+      ready.forEach(j => { j.wait = time - j.a; j.ratio = 1 + j.wait / j.b; });
+      ready.sort((x, y) => y.ratio - x.ratio);
+      const pick = ready[0];
+      pick.start = time;
+      pick.finish = time + pick.b;
+      pick.turnaround = pick.finish - pick.a;
+      pick.weighted = pick.turnaround / pick.b;
+      time += pick.b;
+      rem.splice(rem.indexOf(pick), 1);
+      done.push(pick);
+    }
+  } else {
+    // FCFS / SJF: 队列一次跑完（允许时间到 0 时启动第一个；后续按到达启动）
+    const rem = jobs.slice();
+    while (rem.length > 0) {
+      const ready = rem.filter(j => j.a <= time);
+      if (ready.length === 0) {
+        time = Math.min(...rem.map(j => j.a));
+        continue;
+      }
+      let pick;
+      if (mode === 'FCFS') pick = ready.sort((x, y) => x.a - y.a)[0];
+      else pick = ready.sort((x, y) => x.b - y.b)[0];
+      pick.start = time;
+      pick.finish = time + pick.b;
+      pick.turnaround = pick.finish - pick.a;
+      pick.weighted = pick.turnaround / pick.b;
+      time += pick.b;
+      rem.splice(rem.indexOf(pick), 1);
+      done.push(pick);
+    }
+  }
+  const avgT = done.reduce((s, j) => s + j.turnaround, 0) / done.length;
+  const avgW = done.reduce((s, j) => s + j.weighted, 0) / done.length;
+
+  const out = document.getElementById('sched2-out');
+  const tCls = avgT < 6 ? 'delta-down' : 'delta-up';
+  out.innerHTML = `
+    <div class="evm-bar">
+      <div class="evm-cell"><div class="lbl">执行顺序</div><div class="num" style="font-size:0.95rem">${done.map(d => d.id).join(' → ')}</div></div>
+      <div class="evm-cell"><div class="lbl">平均周转 T̄</div><div class="num ${tCls}">${fmt(avgT, 2)}</div></div>
+      <div class="evm-cell"><div class="lbl">平均带权 W̄</div><div class="num">${fmt(avgW, 2)}</div></div>
+    </div>
+    <div class="evm-meta">
+      ${done.map(d => `<span class="group"><span class="k">${d.id}</span>: 完成=<span class="v">${d.finish}</span> T=<span class="v">${fmt(d.turnaround, 2)}</span> W=<span class="v">${fmt(d.weighted, 2)}</span></span> · `).join('')}
+    </div>`;
+
+  // ===== 计算过程面板 =====
+  const orderStr = done.map(d => `${d.id} (${d.start}→${d.finish})`).join(' → ');
+  const lines = done.map(d => `<div class="sn-formula">${d.id}: 完成 = ${d.finish} − 到达 = ${d.a} → T = ${fmt(d.turnaround, 2)}　·　W = ${fmt(d.turnaround, 2)} / ${d.b} = ${fmt(d.weighted, 2)}</div>`).join('');
+  document.getElementById('sched2-process').innerHTML = `
+    <div class="sn-step">
+      <div class="sn-no">步骤 1</div>
+      <div class="sn-body">
+        <span class="sn-k">公式识别</span>　调度三大指标
+        <div class="sn-formula"><b>周转时间</b> T<sub>i</sub> = 完成 − 到达</div>
+        <div class="sn-formula"><b>带权周转</b> W<sub>i</sub> = T<sub>i</sub> / 服务 = (完成 − 到达) / 服务</div>
+        <div class="sn-formula"><b>响应比</b> R<sub>p</sub> = (等待 + 服务) / 服务 = 1 + 等待/服务（HRRN 用）</div>
+        <div class="sn-formula">平均 T̄ = ΣT/n　·　平均 W̄ = ΣW/n</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 2</div>
+      <div class="sn-body">
+        <span class="sn-k">已知输入</span>　算法 = <span class="sn-v">${mode}</span>
+        <div class="sn-formula">${jobs.map(j => `${j.id}: 到达=${j.a}, 服务=${j.b}`).join('　|　')}</div>
+        <div class="sn-foot">${mode === 'FCFS' ? '按到达时间排队列，先来先服务' : mode === 'SJF' ? '按服务时间升序选最短（需预知服务时间）' : '每次调度前重算 R<sub>p</sub>，选最大者'}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 3</div>
+      <div class="sn-body">
+        <span class="sn-k">执行顺序</span>
+        <div class="sn-formula">${orderStr}</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 4</div>
+      <div class="sn-body">
+        <span class="sn-k">逐项 T / W 计算</span>
+        ${lines}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">步骤 5</div>
+      <div class="sn-body">
+        <span class="sn-k">求平均</span>
+        <div class="sn-formula">T̄ = ${fmt(avgT, 2)}　·　W̄ = ${fmt(avgW, 2)}</div>
+        <div class="sn-foot">⚠ SJF 平均周转最优（理论可证），但<span style="color:var(--crimson)">可能饥饿长作业</span>；HRRN 是 FCFS + SJF 的折中（响应比兼顾）</div>
+      </div>
+    </div>
+  `;
 }
 function setEvmMode(mode) {
   evmMode = mode;
