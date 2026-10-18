@@ -1,0 +1,15 @@
+# 验证截图(浏览器手工/agent 自动生成的回归样本)
+screenshots/
+
+# 系统杂项
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器临时
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.iml
