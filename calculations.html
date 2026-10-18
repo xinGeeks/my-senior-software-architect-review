@@ -6365,6 +6365,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           <div id="sched-result"></div>
         </div>
         <div id="sched-bars" class="sched-util-bars"></div>
+        <div id="sched-process" class="subnet-process"></div>
       </div>
 
       <div class="sched-timeline-wrap">
@@ -7905,6 +7906,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <button class="pr-play-btn" onclick="computeBTree()">📐 计算阶数与高度</button>
         <button class="pr-reset-btn" onclick="nkLoadExample()">载入真题</button>
         <div class="tf-result" id="nk-out"></div>
+        <div id="nk-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">关系代数 8 大运算</span>
@@ -8162,6 +8164,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
         <button class="pr-play-btn" onclick="computeFloat()">📐 重算时差</button>
         <button class="pr-reset-btn" onclick="tfLoadExample()">载入真题</button>
         <div class="tf-result" id="tf-out"></div>
+        <div id="tf-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">4 个时间参数</span>
@@ -9916,6 +9919,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
           </div>
         </div>
         <div id="cap-out" class="calc-result"></div>
+        <div id="cap-process" class="subnet-process"></div>
       </div>
 
       <span class="formula-label">流量估算三步法</span>
@@ -11901,7 +11905,6 @@ function calcMcCabe() {
       </div>
     </div>
   `;
-}
   // 重绘示例图（保留当前选中）
   if (mcGraphType) drawMcGraph(mcGraphType);
 }
@@ -15266,12 +15269,12 @@ function drawIndex() {
   // ===== 计算过程面板 =====
   const levelNames = ['', '单间接', '双间接', '三间接', '四间接'];
   const levelCaps = [];
-  let breakdown = [];
-  if (m > 0) breakdown.push(`${m} 直接`);
+  const idxBreak = [];
+  if (m > 0) idxBreak.push(`${m} 直接`);
   for (let i = 1; i <= k; i++) {
     const cap = Math.pow(n, i);
     levelCaps.push({ name: levelNames[i], cap, exp: i });
-    breakdown.push(`${n}^${i} = ${cap.toLocaleString()}`);
+    idxBreak.push(`${n}^${i} = ${cap.toLocaleString()}`);
   }
   document.getElementById('idx-process').innerHTML = `
     <div class="sn-step">
@@ -15302,7 +15305,7 @@ function drawIndex() {
       <div class="sn-no">步骤 4</div>
       <div class="sn-body">
         <span class="sn-k">总块数（几何级数求和）</span>
-        <div class="sn-formula">N<sub>max</sub> = ${breakdown.join(' + ')}</div>
+        <div class="sn-formula">N<sub>max</sub> = ${idxBreak.join(' + ')}</div>
         <div class="sn-formula">= <span class="hi">${totalWithDirect.toLocaleString()}</span> 块</div>
       </div>
     </div>
@@ -18611,6 +18614,58 @@ function calcCap() {
     </div>
     <div class="cap-tip">💡 ${capMode === 'read' ? '读场景可加 CDN 进一步减压' : capMode === 'write' ? '写场景需考虑主从复制和 DB 瓶颈' : '秒杀需消息队列削峰 + 限流'}</div>`;
 
+  // ===== 计算过程面板 =====
+  const panel = document.getElementById('cap-process');
+  if (panel) panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · 性能/容量漏斗估算</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">公式识别（漏斗三段）</div>
+        <div class="sn-formula">日 PV = DAU × 每人每天访问次数</div>
+        <div class="sn-formula">平均 QPS = PV ÷ 86400（一天 86400 秒）</div>
+        <div class="sn-formula">峰值 QPS = 平均 QPS × 峰值倍数</div>
+        <div class="sn-formula">机器数 = ⌈峰值 QPS ÷ 单机 QPS⌉ × 模式系数</div>
+        <div class="sn-foot">峰值倍数经验：电商 5-10、社交 3-5、秒杀/双11 10-20；86400 必须用<b>全天秒数</b>，<span class="hi-crimson">不是</span>按工作时间缩窄。</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">已知输入</div>
+        <div class="sn-v">DAU = <span class="hi-azure">${dau}</span> 万 = ${dauReal.toLocaleString()} 人</div>
+        <div class="sn-v">每人每天访问 = <span class="hi-azure">${freq}</span> 次</div>
+        <div class="sn-v">峰值倍数 = <span class="hi-azure">${peak}</span>　|　单机 QPS = <span class="hi-azure">${single}</span></div>
+        <div class="sn-v">业务模式：<b style="color:${modeColor}">${modeLabel}</b>（×${modeCoef}）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">日 PV 与平均 QPS</div>
+        <div class="sn-formula">PV = ${dauReal.toLocaleString()} × ${freq} = <span class="hi">${PV.toLocaleString()}</span> 次/天</div>
+        <div class="sn-formula">平均 QPS = ${PV.toLocaleString()} ÷ 86400 = <span class="hi">${fmt(avgQPS, 2)}</span> 次/秒</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">峰值 QPS</div>
+        <div class="sn-formula">峰值 QPS = ${fmt(avgQPS, 2)} × ${peak} = <span class="hi-crimson">${fmt(peakQPS, 1)}</span> 次/秒</div>
+        <div class="sn-foot">设计容量时按峰值兜底，平均 QPS 只用来估算存储/带宽。</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">机器数 + 单机带宽/存储</div>
+        <div class="sn-formula">机器数 = ⌈${fmt(peakQPS, 1)} × ${modeCoef} ÷ ${single}⌉ = <span class="hi-emerald">${machines}</span> 台</div>
+        <div class="sn-formula">单机带宽 = ${size} KB × ${single} QPS × 8 ÷ 1024 ÷ 1024 = <span class="hi">${bandwidth} Gbps</span></div>
+        <div class="sn-formula">日存储 = ${PV.toLocaleString()} × ${size} KB ÷ 1024 ÷ 1024 ÷ 1024 = <span class="hi">${storage} GB</span></div>
+        <div class="sn-foot">⚠ <b>写场景</b>需额外考虑 DB 主从（写 QPS 受单库上限约束）；<b>秒杀</b>需消息队列削峰后再压业务服务器。</div>
+      </div>
+    </div>`;
+
   drawCapStress(peak);
 }
 
@@ -18746,6 +18801,61 @@ function calcSched() {
   renderSchedResult(tasks, U, rmsBound, edfBound, n);
   renderSchedBars(U, rmsBound, edfBound);
   drawSchedTimeline(tasks);
+
+  // ===== 计算过程面板 =====
+  const panel = document.getElementById('sched-process');
+  if (panel) {
+    const rmsOK = U <= rmsBound;
+    const edfOK = U <= edfBound;
+    panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · RMS/EDF 可调度性判定</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">公式识别</div>
+        <div class="sn-formula">单任务利用率 uᵢ = Cᵢ / Tᵢ（Cᵢ=执行时间, Tᵢ=周期）</div>
+        <div class="sn-formula">总利用率 U = Σuᵢ</div>
+        <div class="sn-formula">RMS 可调度上界 = n(2<sup>1/n</sup> − 1)（Liu & Layland 1973）</div>
+        <div class="sn-formula">EDF 可调度上界 = 1（单核最优）</div>
+        <div class="sn-foot">⚠ U ≤ bound 是<b>充分条件</b>——不满足<span class="hi-crimson">不等于</span>不可调度（相位相关）；U > 1 ⇒ 任何单核算法都不可调度。</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">已知输入（任务集 {τᵢ(Cᵢ, Tᵢ)}）</div>
+        ${tasks.length === 0
+          ? '<div class="sn-v" style="color:var(--ivory-3)">暂无任务，添加后自动计算。</div>'
+          : tasks.map((t, i) => `<div class="sn-v">τ${i + 1}：C<sub>${i + 1}</sub>=<span class="hi-azure">${t.C}</span>, T<sub>${i + 1}</sub>=<span class="hi-azure">${t.T}</span></div>`).join('')}
+        <div class="sn-v" style="margin-top:6px">任务数 n = <span class="hi">${n}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">单任务利用率 uᵢ</div>
+        ${tasks.length === 0
+          ? '<div class="sn-foot">—</div>'
+          : tasks.map((t, i) => `<div class="sn-formula">u<sub>${i + 1}</sub> = ${t.C} ÷ ${t.T} = <span class="hi">${t.u.toFixed(4)}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">总利用率 U = Σuᵢ</div>
+        <div class="sn-formula">U = ${tasks.map((t, i) => `${t.u.toFixed(4)}`).join(' + ') || '0'} = <span class="hi-crimson">${U.toFixed(4)}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">对照算法上界</div>
+        <div class="sn-formula">RMS 界 = ${n}(2<sup>1/${n}</sup> − 1) = <span class="hi-azure">${rmsBound.toFixed(4)}</span>　·　<span class="${rmsOK ? 'hi-emerald' : 'hi-crimson'}">${rmsOK ? '✓ U ≤ bound 充分条件满足' : '✗ U > bound 充分条件不满足（不一定不可调度）'}</span></div>
+        <div class="sn-formula">EDF 界 = <span class="hi-azure">${edfBound.toFixed(4)}</span>　·　<span class="${edfOK ? 'hi-emerald' : 'hi-crimson'}">${edfOK ? '✓ U ≤ 1 可调度' : '✗ U > 1 不可调度（任何单核算法均不可调度）'}</span></div>
+        <div class="sn-foot">口诀：<b>"RMS 充分 / EDF 充要"</b>。U > 1 ⇒ 单核无解，需多核分载。</div>
+      </div>
+    </div>`;
+  }
 }
 
 function renderSchedResult(tasks, U, rmsBound, edfBound, n) {
@@ -19023,6 +19133,66 @@ function computeFloat() {
       关键任务数 = ${criticalIds.length}/${order.length}
     </div>`;
   document.getElementById('tf-out').innerHTML = html;
+
+  // ===== 计算过程面板 =====
+  const panel = document.getElementById('tf-process');
+  if (panel) {
+    const taskRows = order.map(id => {
+      const t = tasks[id];
+      const idx = order.indexOf(id);
+      return `<div class="sn-v">${id}：工期 ${t.dur}，前置 [${t.deps.join(', ') || '无'}]</div>`;
+    }).join('');
+    const esRows = order.map(id => `<div class="sn-formula">${id}：ES=${tasks[id].ES}, EF=${tasks[id].EF}</div>`).join('');
+    const lsRows = order.map(id => `<div class="sn-formula">${id}：LS=${tasks[id].LS}, LF=${tasks[id].LF}</div>`).join('');
+    const ffRows = order.map(id => `<div class="sn-formula">${id}：FF=${tasks[id].FF}, TF=${tasks[id].TF}${tasks[id].TF === 0 ? ' <span class="hi-crimson">★关键</span>' : ''}</div>`).join('');
+    panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · CPM 时差计算</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">公式识别（4 个时间参数）</div>
+        <div class="sn-formula">ES = Earliest Start = 前置 EF 的最大值（无前置 = 0）</div>
+        <div class="sn-formula">EF = ES + 工期</div>
+        <div class="sn-formula">LF = Latest Finish = 后置 LS 的最小值（无后置 = 总工期）</div>
+        <div class="sn-formula">LS = LF − 工期</div>
+        <div class="sn-formula">TF = LS − ES（总时差）；FF = min(后置 ES) − EF（自由时差）</div>
+        <div class="sn-foot">⚠ <b>正向推 ES/EF，逆向推 LF/LS</b>；TF=0 的活动串联 = 关键路径。</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">已知输入（任务定义）</div>
+        ${taskRows || '<div class="sn-v">暂无任务</div>'}
+        <div class="sn-v" style="margin-top:6px">任务数 = <span class="hi">${order.length}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">正向推算 ES / EF</div>
+        <div class="sn-foot">从起点出发，每节点 = max(前置 EF) + 工期</div>
+        ${esRows}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">逆向推算 LF / LS</div>
+        <div class="sn-foot">从终点出发，每节点 = min(后置 LS) − 工期；终点 LF = 项目总工期 = ${projectEnd}</div>
+        ${lsRows}
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">时差 FF / TF + 关键路径</div>
+        ${ffRows}
+        <div class="sn-formula" style="margin-top:6px">总工期 = <span class="hi-emerald">${projectEnd}</span>　·　关键路径 = <span class="hi-emerald">${criticalIds.join(' → ')}</span></div>
+        <div class="sn-foot">TF>0 表示该任务可推迟 TF 天而不影响总工期；FF 表示不影响任何后置最早开始的余量。</div>
+      </div>
+    </div>`;
+  }
 }
 
 function tfLoadExample() {
@@ -19070,6 +19240,58 @@ function computeBTree() {
       ${N.toLocaleString()} 条记录在 ${h} 层 B+ 树中，每次查找最多 <b style="color:var(--gold-1)">${h - 1}</b> 次磁盘 I/O（根常驻内存）
     </div>`;
   document.getElementById('nk-out').innerHTML = html;
+
+  // ===== 计算过程面板 =====
+  const panel = document.getElementById('nk-process');
+  if (panel) {
+    panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · B+ 树阶数与高度</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">公式识别</div>
+        <div class="sn-formula">阶数 m ≈ ⌊页大小 / (键大小 + 指针大小)⌋（粗估，忽略页头）</div>
+        <div class="sn-formula">高度 h = ⌈log<sub>m</sub>(N)⌉（满足 m<sup>h−1</sup> ≥ N 的最小 h）</div>
+        <div class="sn-formula">叶子记录数 = ⌊页大小 / 键大小⌋</div>
+        <div class="sn-formula">最大记录数 = m<sup>h−1</sup> × (页/键)</div>
+        <div class="sn-foot">⚠ <b>m 阶 B+ 树非根节点最少 ⌈m/2⌉、最多 m 个键</b>；根最少 2 个孩子。这是估算公式，<span class="hi-crimson">不是</span>精确存储公式。</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">已知输入</div>
+        <div class="sn-v">记录数 N = <span class="hi-azure">${N.toLocaleString()}</span></div>
+        <div class="sn-v">页大小 = <span class="hi-azure">${page}</span> B　·　键 = <span class="hi-azure">${key}</span> B　·　指针 = <span class="hi-azure">${ptr}</span> B</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">阶数 m</div>
+        <div class="sn-formula">每键槽占用 = ${key} + ${ptr} = ${key + ptr} B</div>
+        <div class="sn-formula">m = ⌊${page} / ${key + ptr}⌋ = <span class="hi">${m}</span> 阶</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">高度 h（迭代求最小满足 m<sup>h−1</sup> ≥ N）</div>
+        ${levelCaps.map((cap, i) => `<div class="sn-formula">第 ${i} 层可容纳节点：${cap.toLocaleString()}${i === 0 ? '（根，≥1）' : i < h ? `（m<sup>${i}</sup>）` : '（未到）'}</div>`).join('')}
+        <div class="sn-formula" style="margin-top:6px">∴ h = <span class="hi-crimson">${h}</span> 层</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">叶子容量 + 查找 I/O</div>
+        <div class="sn-formula">叶子每节点记录数 = ⌊${page} / ${key}⌋ = <span class="hi">${leafCap}</span></div>
+        <div class="sn-formula">理论最大记录 = ${m}<sup>${h - 1}</sup> × ${leafCap} = <span class="hi-emerald">${maxRecords.toLocaleString()}</span> 条</div>
+        <div class="sn-formula">每次查找磁盘 I/O 次数 = h − 1 = <span class="hi-emerald">${h - 1}</span>（根常驻内存，从第 2 层开始读盘）</div>
+        <div class="sn-foot">${N.toLocaleString()} 条记录 vs 容量 ${maxRecords.toLocaleString()} 条：${N <= maxRecords ? '<span class="hi-emerald">能装下</span>' : '<span class="hi-crimson">容量不足，需增加高度或页大小</span>'}。</div>
+      </div>
+    </div>`;
+  }
 }
 
 function nkLoadExample() {
