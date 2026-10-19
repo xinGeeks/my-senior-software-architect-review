@@ -4151,7 +4151,7 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
     <input id="sidebar-search" placeholder="搜索知识点 · 例：CPM / EVM / 子网 / 按 / 聚焦" autocomplete="off">
   </div>
   <div class="stats-mini">
-    <span><b>37</b>卡片</span>
+    <span><b>41</b>卡片</span>
     <span><b>17</b>真题</span>
   </div>
   <button class="theme-toggle" id="theme-toggle" title="切换深/浅主题 (T)" onclick="toggleTheme()">☾</button>
@@ -4173,8 +4173,12 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
     <div class="sidebar-items" id="items-sec3"></div>
   </div>
   <div class="sidebar-section" data-section="sec4">
-    <div class="sidebar-section-title">📊 项目管理 <span class="sidebar-section-count">5</span></div>
+    <div class="sidebar-section-title">📊 项目管理 <span class="sidebar-section-count">2</span></div>
     <div class="sidebar-items" id="items-sec4"></div>
+  </div>
+  <div class="sidebar-section" data-section="sec-progress">
+    <div class="sidebar-section-title">📅 进度管理 <span class="sidebar-section-count">4</span></div>
+    <div class="sidebar-items" id="items-sec-progress"></div>
   </div>
   <div class="sidebar-section" data-section="sec5">
     <div class="sidebar-section-title">🏛️ 架构评估 <span class="sidebar-section-count">5</span></div>
@@ -8898,6 +8902,550 @@ tr:hover td { background: rgba(212, 165, 116, 0.04); }
       </div>
 
     </article>
+
+
+<article class="card-detail tier-3" data-id="c41" data-section="sec-progress">
+
+  <span class="tier-label">⭐⭐⭐ 中频</span>
+  <div class="card-title">4.6 进度压缩 · 赶工 vs 快速跟进</div>
+  <div class="exam-flag"><span class="freq">×4</span><span>真题考过</span><span class="years">2020·2022·2024上·2024下</span></div>
+  <div class="card-sub">Crashing & Fast-tracking</div>
+
+  <div class="calc">
+    <div class="calc-title">交互计算器 · 输入工期压缩量 + 成本斜率 → 算赶工总成本与对比快速跟进风险</div>
+    <div class="calc-row">
+      <div class="calc-field"><label>原工期 (天)</label><input id="crash-d0" type="number" value="20" min="1" oninput="raf('calcCrashing')"></div>
+      <div class="calc-field"><label>目标工期 (天)</label><input id="crash-d1" type="number" value="15" min="1" oninput="raf('calcCrashing')"></div>
+      <div class="calc-field"><label>成本斜率 (元/天)</label><input id="crash-cost" type="number" value="2000" min="0" oninput="raf('calcCrashing')"></div>
+      <div class="calc-field"><label>快速跟进返工损失 (元)</label><input id="crash-risk" type="number" value="8000" min="0" oninput="raf('calcCrashing')"></div>
+      <button class="btn-rand" onclick="randCrashing()">🎲 随机</button>
+    </div>
+    <div id="crash-out" class="calc-result"></div>
+    <div id="crash-process" class="subnet-process"></div>
+  </div>
+
+  <span class="formula-label">两种压缩策略对比（必背）</span>
+  <div class="formula" style="padding:0">
+    <table style="width:100%;border-collapse:collapse;font-size:.86rem;font-family:var(--font-cn)">
+      <thead>
+        <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+          <th style="text-align:left;padding:6px 8px;width:18%">维度</th>
+          <th style="text-align:left;padding:6px 8px;width:40%">赶工 Crashing</th>
+          <th style="text-align:left;padding:6px 8px">快速跟进 Fast-tracking</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">手段</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">增加资源（加人/加班/工具）</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">并行原本串行的活动</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">影响</td>
+          <td style="padding:5px 8px;color:var(--emerald)">成本 ↑</td>
+          <td style="padding:5px 8px;color:var(--crimson)">返工风险 ↑ · 质量风险↑</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">风险类型</td>
+          <td style="padding:5px 8px;color:var(--ivory-2)"><b>可量化</b>成本（成本斜率）</td>
+          <td style="padding:5px 8px;color:var(--ivory-2)"><b>不可量化</b>返工风险</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <span class="formula-label">赶工成本计算（典型题）</span>
+  <div class="formula">赶工总成本 = (原工期 − 目标工期) × 成本斜率</div>
+  <div class="formula">成本斜率 Cost Slope = 单位时间压缩额外成本（元/天）</div>
+  <div class="formula">最佳压缩顺序：按成本斜率<b style="color:var(--gold-1)">升序</b>压缩关键路径活动</div>
+
+  <div class="tip">
+    <b>答题口诀</b>:「<b style="color:var(--gold-1)">赶工加成本</b>，<b style="color:var(--crimson)">并行加风险</b>」<br>
+    ① 只能压缩<b>关键路径</b>上的活动（压非关键无效）<br>
+    ② 多关键路径需<b>同步压缩</b>，否则新路径变关键<br>
+    ③ 成本斜率升序压缩 = 总成本最低
+  </div>
+
+  <div class="example">
+    <div class="example-label">▸ 典型题</div>
+    关键路径工期 20 天，目标压缩到 15 天，单位时间赶工成本 2000 元/天。<br>
+    赶工总成本 = (20 − 15) × 2000 = <b>10,000 元</b><br>
+    若改用快速跟进：返工损失 8000 元 → 仍<b>优于赶工</b>（省 2000 元，但承担返工概率）
+  </div>
+
+  <div class="trap">
+    <b>陷阱</b>:① 压缩非关键路径无效；② 压缩后若出现新的关键路径未同步压缩，仍会拖期；③ 资源约束下单纯赶工可能导致「<b>资源冲突</b>」（见 4.7）。
+  </div>
+
+  <div class="exam-qa">
+    <div class="exam-qa-head">历年真题</div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2024下</span>
+        <span class="exam-qa-pts">综合·单选</span>
+        <span class="exam-qa-tag">赶工 vs 快速跟进</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于项目进度压缩方法的描述，正确的是（　）</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>赶工（Crashing）：增加资源 → <b style="color:var(--gold-1)">成本上升</b>，风险不变</li>
+          <li>快速跟进（Fast-tracking）：并行活动 → <b style="color:var(--gold-1)">返工风险上升</b>，成本不变</li>
+          <li>题干问"哪个会<b>增加项目成本</b>" → 选<b>赶工</b>；问"哪个会<b>增加返工风险</b>" → 选<b>快速跟进</b></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2022</span>
+        <span class="exam-qa-pts">案例 T4</span>
+        <span class="exam-qa-tag">压缩成本计算</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>关键路径工期 22 天，活动 X（斜率 1500 元/天，最多压 4 天）、活动 Y（斜率 1000 元/天，最多压 3 天）。若要压缩 5 天，至少需要增加多少成本？</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>压缩 5 天 → 按斜率升序压：先压 Y（1000/天）压 3 天，再压 X（1500/天）压 2 天</li>
+          <li>总成本 = 3 × 1000 + 2 × 1500 = <b style="color:var(--gold-1)">6,000 元</b></li>
+          <li>陷阱：若 X 斜率 ≤ Y，应优先压 X；但本题 Y 更便宜，先压 Y</li>
+          <li>规律：<b style="color:var(--gold-1)">成本斜率升序压缩</b> → 总成本最小</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-foot">来源：综合知识 + 案例 T4 · 进度压缩是 PMP 与软考双重高频</div>
+  </div>
+
+</article>
+
+
+<article class="card-detail tier-2" data-id="c42" data-section="sec-progress">
+
+  <span class="tier-label">⭐⭐ 中频</span>
+  <div class="card-title">4.7 资源优化 · 平衡 vs 平滑</div>
+  <div class="exam-flag"><span class="freq">×2</span><span>真题考过</span><span class="years">2021·2023下</span></div>
+  <div class="card-sub">Resource Leveling & Resource Smoothing</div>
+
+  <div class="calc">
+    <div class="calc-title">交互计算器 · 输入每日资源用量 → 算峰值/均值/差异系数 CV</div>
+    <div class="calc-row">
+      <div class="calc-field" style="flex:2">
+        <label>每日资源需求（人/天，逗号分隔；例：3,5,8,2,4）</label>
+        <input id="rl-input" type="text" value="3,5,8,2,4,7,6,9,5,3" oninput="raf('calcResource')">
+      </div>
+      <div class="calc-field"><label>资源上限 (人)</label><input id="rl-cap" type="number" value="6" min="1" oninput="raf('calcResource')"></div>
+      <button class="btn-rand" onclick="randResource()">🎲 随机</button>
+    </div>
+    <div id="rl-out" class="calc-result"></div>
+    <svg id="rl-svg" viewBox="0 0 600 220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="资源直方图"></svg>
+    <div id="rl-process" class="subnet-process"></div>
+  </div>
+
+  <span class="formula-label">两种资源优化策略对比（必背）</span>
+  <div class="formula" style="padding:0">
+    <table style="width:100%;border-collapse:collapse;font-size:.86rem;font-family:var(--font-cn)">
+      <thead>
+        <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+          <th style="text-align:left;padding:6px 8px;width:20%">维度</th>
+          <th style="text-align:left;padding:6px 8px;width:40%">资源平衡 Resource Leveling</th>
+          <th style="text-align:left;padding:6px 8px">资源平滑 Resource Smoothing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">目标</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">使资源需求 ≤ 资源上限</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">使资源利用均匀（不出现尖峰）</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">关键路径</td>
+          <td style="padding:5px 8px;color:var(--crimson)"><b>可能改变</b></td>
+          <td style="padding:5px 8px;color:var(--emerald)"><b>不变</b>（只在 FF/TF 内调整）</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">总工期</td>
+          <td style="padding:5px 8px;color:var(--crimson)"><b>可能延长</b></td>
+          <td style="padding:5px 8px;color:var(--emerald)"><b>不变</b></td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">适用场景</td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">资源稀缺、跨团队共享</td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">资源充足但希望降低人力成本波动</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <span class="formula-label">衡量指标</span>
+  <div class="formula">峰值 Peak = max(每日资源量)</div>
+  <div class="formula">均值 Avg = Σ每日资源量 / 总天数</div>
+  <div class="formula">差异系数 CV = 标准差 σ / 均值 μ  （越小越平滑）</div>
+
+  <div class="tip">
+    <b>记忆口诀</b>:「<b style="color:var(--gold-1)">平衡延工期、平滑不延期</b>」<br>
+    ① 平衡 = <b>突破资源上限</b>时的应急手段（可牺牲工期）<br>
+    ② 平滑 = <b>工期不变</b>前提下的优化（仅动用时差）<br>
+    ③ 平衡后会改变关键路径，平滑后关键路径<b>不变</b>
+  </div>
+
+  <div class="example">
+    <div class="example-label">▸ 典型题</div>
+    5 天工作量：每日资源 3/5/8/2/4（上限 6 人）。第 3 天超限 → 应采用<b>资源平衡</b>延后部分活动<br>
+    若改为资源平滑：只能调整非关键活动（TF &gt; 0），关键路径活动不可推迟 → 峰值仍可能超限<br>
+    <b>口诀</b>: 平衡 → "资源不够就拖工期"；平滑 → "在富余时间内均匀使用"
+  </div>
+
+  <div class="trap">
+    <b>陷阱</b>:① 平衡/平滑<b>不改变工作范围</b>，只是调整<b>开始/结束时间</b>；② 资源平衡后关键路径可能改变，需重算 CPM；③ 资源平滑动用 FF/TF，但<b>不能</b>让 FF/TF &gt; 0 的关键路径任务也推迟（关键任务 FF = TF = 0）。
+  </div>
+
+  <div class="exam-qa">
+    <div class="exam-qa-head">历年真题</div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2023下</span>
+        <span class="exam-qa-pts">综合·单选</span>
+        <span class="exam-qa-tag">平衡 vs 平滑</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于资源平衡和资源平滑的描述，正确的是（　）</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>资源平衡：关键路径<b style="color:var(--crimson)">可能改变</b>，总工期<b style="color:var(--crimson)">可能延长</b></li>
+          <li>资源平滑：仅在 FF/TF 内调整，关键路径<b style="color:var(--emerald)">不变</b>，总工期<b style="color:var(--emerald)">不变</b></li>
+          <li>题干常设陷阱：混淆"平衡不延期 / 平滑延期" → 实际<b style="color:var(--gold-1)">反了</b></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2021</span>
+        <span class="exam-qa-pts">案例 T3</span>
+        <span class="exam-qa-tag">资源冲突</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目有 4 名开发人员，被 3 个并行任务同时占用，应采用哪种资源优化策略？</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>人少任务多 → 资源稀缺 → <b style="color:var(--gold-1)">资源平衡</b>（调整任务时间错开资源高峰）</li>
+          <li>代价：总工期延长、关键路径可能改变</li>
+          <li>反之：若人够多只是忙闲不均 → 用资源平滑</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-foot">来源：综合知识 + 案例 T3 · 资源优化是软考 PMP 双重考点</div>
+  </div>
+
+</article>
+
+
+<article class="card-detail tier-3" data-id="c43" data-section="sec-progress">
+
+  <span class="tier-label">⭐⭐⭐ 中频</span>
+  <div class="card-title">4.8 完工预测 · EAC 多场景 + TCPI</div>
+  <div class="exam-flag"><span class="freq">×5</span><span>真题考过</span><span class="years">2020·2021·2023上·2024上·2024下</span></div>
+  <div class="card-sub">EAC Variants & To-Complete Performance Index</div>
+
+  <div class="calc">
+    <div class="calc-title">交互计算器 · 输入 PV/EV/AC/BAC/ETC → 同时算 4 种 EAC + TCPI</div>
+    <div class="calc-row">
+      <div class="calc-field"><label>PV 计划值</label><input id="em-pv" type="number" value="100" min="0" oninput="raf('calcEACMulti')"></div>
+      <div class="calc-field"><label>EV 挣值</label><input id="em-ev" type="number" value="90" min="0" oninput="raf('calcEACMulti')"></div>
+      <div class="calc-field"><label>AC 实际成本</label><input id="em-ac" type="number" value="120" min="0" oninput="raf('calcEACMulti')"></div>
+      <div class="calc-field"><label>BAC 完工预算</label><input id="em-bac" type="number" value="200" min="0" oninput="raf('calcEACMulti')"></div>
+      <div class="calc-field"><label>ETC 重估 (元)</label><input id="em-etc" type="number" value="130" min="0" oninput="raf('calcEACMulti')"></div>
+      <button class="btn-rand" onclick="randEACMulti()">🎲 随机</button>
+    </div>
+    <div id="em-out" class="calc-result"></div>
+    <div id="em-process" class="subnet-process"></div>
+  </div>
+
+  <span class="formula-label">4 种 EAC 公式（必背）</span>
+  <div class="formula" style="padding:0">
+    <table style="width:100%;border-collapse:collapse;font-size:.86rem;font-family:var(--font-cn)">
+      <thead>
+        <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+          <th style="text-align:left;padding:6px 8px;width:18%">情景</th>
+          <th style="text-align:left;padding:6px 8px;width:36%">公式</th>
+          <th style="text-align:left;padding:6px 8px">适用条件</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">① 典型差异</td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)"><b>EAC = BAC / CPI</b></td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">历史绩效代表未来（<b style="color:var(--gold-1)">默认场景</b>）</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">② 非典型差异</td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)"><b>EAC = AC + (BAC − EV)</b></td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">异常已发生，剩余按原预算</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">③ 管理层重估</td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)"><b>EAC = AC + ETC</b></td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">题目给出 ETC 数值</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">④ 综合绩效</td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)"><b>EAC = AC + (BAC − EV)/(CPI × SPI)</b></td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">进度+成本双因子影响</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <span class="formula-label">TCPI · 完工尚需绩效指数</span>
+  <div class="formula">TCPI = (BAC − EV) / (BAC − AC)</div>
+  <div class="formula">分母 BAC − AC = 剩余预算；分子 BAC − EV = 剩余工作（按预算衡量）</div>
+  <div class="formula">TCPI &lt; 1 → 剩余工作比原计划<b style="color:var(--emerald)">省力</b></div>
+  <div class="formula">TCPI = 1 → 剩余工作需<b style="color:var(--gold-1)">保持当前效率</b></div>
+  <div class="formula">TCPI &gt; 1 → 剩余工作需<b style="color:var(--crimson)">更高效率</b>才能按 BAC 完成</div>
+
+  <div class="tip">
+    <b>答题口诀</b>:「<b style="color:var(--gold-1)">典型看 CPI，非典型看剩余，管理层看 ETC</b>」<br>
+    ① 题目未说明 → 默认<b style="color:var(--gold-1)">典型差异</b>（EAC = BAC / CPI）<br>
+    ② 出现"已发生偏差不具代表性" → <b>非典型差异</b><br>
+    ③ 出现"项目组重估剩余成本" → 选<b>管理层重估</b>（用 ETC）<br>
+    ④ TCPI 必与 BAC 比较：<b>BCWR / BAC</b> 形式（剩余工作 / 剩余预算）
+  </div>
+
+  <div class="example">
+    <div class="example-label">▸ 典型题</div>
+    PV=100, EV=90, AC=120, BAC=200, ETC 重估 130。<br>
+    CPI = 90/120 = 0.75；SPI = 90/100 = 0.9<br>
+    ① 典型: EAC = 200 / 0.75 = <b>266.67</b><br>
+    ② 非典型: EAC = 120 + (200−90) = <b>230</b><br>
+    ③ 管理层: EAC = 120 + 130 = <b>250</b><br>
+    ④ 综合: EAC = 120 + (200−90)/(0.75×0.9) = 120 + 163.0 = <b>283.0</b><br>
+    TCPI = (200−90)/(200−120) = 110/80 = <b>1.375</b>（&gt;1 → 剩余工作需更高效率）
+  </div>
+
+  <div class="trap">
+    <b>陷阱</b>:① 默认场景用典型差异，<b>不要</b>看到 AC &gt; EV 就用非典型；② TCPI 分母 BAC−AC 接近 0 时 → TCPI 趋向无穷，需关注"无法按 BAC 完成"；③ 综合绩效公式中 SPI=0 时该公式失效。
+  </div>
+
+  <div class="exam-qa">
+    <div class="exam-qa-head">历年真题</div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2024上</span>
+        <span class="exam-qa-pts">案例 T4</span>
+        <span class="exam-qa-tag">EAC 公式选择</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目已完成 40% 工作量，BAC=500万，AC=260万，EV=200万。题目声明"已完成偏差为非典型"，则 EAC = ?</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>题目明确说"非典型" → 用公式② <b style="color:var(--gold-1)">EAC = AC + (BAC − EV)</b></li>
+          <li>EAC = 260 + (500 − 200) = <b style="color:var(--gold-1)">560 万</b></li>
+          <li>陷阱：若默认用 EAC = BAC / CPI = 500 / 0.77 ≈ 649 万 → 偏大</li>
+          <li>关键：读题！题干场景词决定公式</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2023上</span>
+        <span class="exam-qa-pts">综合·单选</span>
+        <span class="exam-qa-tag">TCPI 含义</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>项目 BAC=100万，EV=40万，AC=50万。TCPI = ?，含义是（　）</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>TCPI = (100−40)/(100−50) = 60/50 = <b style="color:var(--gold-1)">1.2</b></li>
+          <li>TCPI &gt; 1 → 剩余工作必须以<b style="color:var(--crimson)">高于当前效率</b>完成</li>
+          <li>ETC = 60万；当前 CPI = 0.8 → 需 CPI ≥ 1.2 才能按 BAC 完成</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2021</span>
+        <span class="exam-qa-pts">案例 T3</span>
+        <span class="exam-qa-tag">EAC 综合绩效</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>某项目 PV=60, EV=50, AC=70, BAC=200。用综合绩效公式求 EAC。</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>CPI = 50/70 ≈ 0.714；SPI = 50/60 ≈ 0.833</li>
+          <li>综合 EAC = AC + (BAC−EV)/(CPI×SPI) = 70 + (200−50)/(0.714×0.833)</li>
+          <li>= 70 + 150/0.595 ≈ 70 + 252.1 = <b style="color:var(--gold-1)">322.1 万</b></li>
+          <li>对比典型: 200/0.714 ≈ 280 万 → 综合更悲观（同时计入进度落后）</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-foot">来源：综合 + 案例 T3/T4 · EAC 多场景是挣值管理的"最后一公里"</div>
+  </div>
+
+</article>
+
+
+<article class="card-detail tier-2" data-id="c44" data-section="sec-progress">
+
+  <span class="tier-label">⭐⭐ 中频</span>
+  <div class="card-title">4.9 PDM 单代号网络图 · 4 种依赖</div>
+  <div class="exam-flag"><span class="freq">×3</span><span>真题考过</span><span class="years">2020·2023上·2025上</span></div>
+  <div class="card-sub">Precedence Diagramming Method</div>
+
+  <div class="calc">
+    <div class="calc-title">交互计算器 · 输入任务+依赖类型+Lag → 算 ES/EF/LS/LF/FF/TF + 关键路径</div>
+    <div class="calc-row">
+      <div class="calc-field" style="flex:1">
+        <label>任务定义（分号/换行分隔；`ID:工期[,FS|SS|FF|SF,前置1[+lag],前置2[+lag]]`）</label>
+        <textarea id="pdm-input" rows="3" style="width:100%;background:var(--ink-1);color:var(--ivory-0);border:1px solid var(--ink-3);border-radius:4px;padding:6px 8px;font-family:var(--font-mono);font-size:.86rem;resize:vertical" oninput="raf('calcPDM')">A:3
+B:4,FS,A+2
+C:2,SS,A+1
+D:5,FF,B
+E:3,FS,C,D+1</textarea>
+      </div>
+      <button class="btn-rand" onclick="randPDM()">🎲 随机</button>
+    </div>
+    <div id="pdm-out" class="calc-result"></div>
+    <div id="pdm-process" class="subnet-process"></div>
+  </div>
+
+  <span class="formula-label">4 种依赖关系（必背）</span>
+  <div class="formula" style="padding:0">
+    <table style="width:100%;border-collapse:collapse;font-size:.86rem;font-family:var(--font-cn)">
+      <thead>
+        <tr style="border-bottom:1px solid var(--ink-4);color:var(--gold-1)">
+          <th style="text-align:left;padding:6px 8px;width:12%">类型</th>
+          <th style="text-align:left;padding:6px 8px;width:14%">含义</th>
+          <th style="text-align:left;padding:6px 8px;width:42%">ES 公式</th>
+          <th style="text-align:left;padding:6px 8px">图示</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--gold-1);font-weight:700">FS</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">完成→开始<br><span style="font-size:.74rem;color:var(--ivory-3)">Finish-to-Start</span></td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)">ES<sub>B</sub> = EF<sub>A</sub> + Lag</td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">A 完成后 B 才能开始（<b style="color:var(--emerald)">最常见</b>）</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--azure);font-weight:700">SS</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">开始→开始<br><span style="font-size:.74rem;color:var(--ivory-3)">Start-to-Start</span></td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)">ES<sub>B</sub> = ES<sub>A</sub> + Lag</td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">A 开始时 B 可以开始（并行启动）</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--ink-3)">
+          <td style="padding:5px 8px;color:var(--emerald);font-weight:700">FF</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">完成→完成<br><span style="font-size:.74rem;color:var(--ivory-3)">Finish-to-Finish</span></td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)">ES<sub>B</sub> = EF<sub>A</sub> + Lag − dur<sub>B</sub></td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">A 完成时 B 才能完成（同步收尾）</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 8px;color:var(--crimson);font-weight:700">SF</td>
+          <td style="padding:5px 8px;color:var(--ivory-1)">开始→完成<br><span style="font-size:.74rem;color:var(--ivory-3)">Start-to-Finish</span></td>
+          <td style="padding:5px 8px;color:var(--ivory-1);font-family:var(--font-mono)">ES<sub>B</sub> = ES<sub>A</sub> + Lag − dur<sub>B</sub></td>
+          <td style="padding:5px 8px;color:var(--ivory-2)">A 开始时 B 才能完成（<b style="color:var(--crimson)">罕见</b>）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <span class="formula-label">Lag vs Lead</span>
+  <div class="formula">Lag = 延后时间（正数）　例：FS+2 = A 完成后再等 2 天 B 才能开始</div>
+  <div class="formula">Lead = 提前时间（负数 Lag）　例：FS-1 = A 完成前 1 天 B 就可开始（重叠）</div>
+
+  <div class="tip">
+    <b>答题口诀</b>:「<b style="color:var(--emerald)">FS 最常见 · SS 启动并行 · FF 同步收尾 · SF 几乎不用</b>」<br>
+    ① 默认依赖是 <b>FS+0</b>（不写类型时按 FS 处理）<br>
+    ② SS/FF 多用于<b>并行/同步</b>场景（如"边开发边测试"= SS）<br>
+    ③ Lag 写在依赖后：A→B FS+2 = A 完成 2 天后 B 开始<br>
+    ④ 多前置取 <b>各约束的最大值</b>：ES<sub>B</sub> = max(各前置算出的 ES)
+  </div>
+
+  <div class="example">
+    <div class="example-label">▸ 典型题（混合依赖）</div>
+    A(3) → B(4) FS+2 → D(5) FF<br>
+    A(3) → C(2) SS+1 → E(3) FS (依赖 C, D+1)<br>
+    <b>正向推算</b>：<br>
+    A: ES=0, EF=3<br>
+    B: ES = EF(A)+2 = 3+2 = 5, EF=9<br>
+    C: ES = ES(A)+1 = 0+1 = 1, EF=3<br>
+    D: ES = EF(B)+0 − dur(D) = 9−5 = 4, EF=9<br>
+    E: ES = max(EF(C)+0, EF(D)+1) = max(3, 10) = <b>10</b>, EF=13<br>
+    总工期 = 13
+  </div>
+
+  <div class="trap">
+    <b>陷阱</b>:① <b>FF 公式要减自身工期</b>（ES<sub>B</sub> = EF<sub>A</sub> − dur<sub>B</sub> + Lag），勿与 FS 混；② 多前置时取<b>各约束的 max</b>，不是 min；③ <b>SF 依赖</b>几乎不出现，若题中出现先转 SF 为 SS+FF 等价后再算；④ Lag 与 Lead 都是<b>天数偏移</b>，单位别混。
+  </div>
+
+  <div class="exam-qa">
+    <div class="exam-qa-head">历年真题</div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2025上</span>
+        <span class="exam-qa-pts">综合·单选</span>
+        <span class="exam-qa-tag">PDM 依赖类型</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>PDM 中，<b>活动 A 开始后第 2 天活动 B 才能开始</b>，这种依赖称为（　）</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>关键词："A 开始后第 2 天 B 才能开始" → <b style="color:var(--gold-1)">SS+2</b>（Start-to-Start with Lag 2）</li>
+          <li>SS 表示两者启动同步，Lag 表示 B 滞后 2 天</li>
+          <li>陷阱：误答 FS（SS vs FS 区别在控制点是 ES 还是 EF）</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2023上</span>
+        <span class="exam-qa-pts">案例 T4</span>
+        <span class="exam-qa-tag">PDM + Lag 计算</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>活动 A 工期 4 天，活动 B 在 A 完成 2 天后才能开始（B 工期 6 天）。求 B 的最早开始 ES 和最早完成 EF。</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>A 工期 4 → EF(A) = 0 + 4 = 4</li>
+          <li>FS+2 依赖 → ES(B) = EF(A) + 2 = 4 + 2 = <b style="color:var(--gold-1)">6</b></li>
+          <li>EF(B) = ES(B) + dur(B) = 6 + 6 = <b style="color:var(--gold-1)">12</b></li>
+          <li>陷阱：忘加 Lag = 2 → 错答 ES=4；忘加工期 → 错答 EF=6</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-item">
+      <div class="exam-qa-meta">
+        <span class="exam-qa-year">2020</span>
+        <span class="exam-qa-pts">综合·单选</span>
+        <span class="exam-qa-tag">4 种依赖</span>
+      </div>
+      <div class="exam-qa-q"><span class="exam-qa-lbl">题干</span>下列关于 PDM 4 种依赖关系的描述，错误的是（　）</div>
+      <div class="exam-qa-a">
+        <span class="exam-qa-lbl">答案要点</span>
+        <ol>
+          <li>FS：前者完成后后者才能开始（<b style="color:var(--gold-1)">最常见</b>）</li>
+          <li>SS：前者开始后后者才能开始（<b style="color:var(--gold-1)">并行启动</b>）</li>
+          <li>FF：前者完成后后者才能完成（<b style="color:var(--gold-1)">同步收尾</b>）</li>
+          <li>SF：前者开始后后者才能完成（<b style="color:var(--crimson)">罕见</b>，几乎不用）</li>
+          <li>常见错误选项：把 SF 与 FF 混淆；忘 Lag 只用 FS 处理</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="exam-qa-foot">来源：综合 + 案例 T4 · PDM 是 PMBOK 第 6 版的图形标准，软考 PMP 双重考点</div>
+  </div>
+
+</article>
 
 
 <article class="card-detail tier-n" data-id="c26" data-section="sec5">
@@ -19309,6 +19857,599 @@ function initBTree() {
 }
 initBTree();
 initFloat();
+
+/* ================== 进度管理 · 4.6 进度压缩 ================== */
+function calcCrashing() {
+  const d0 = +document.getElementById('crash-d0').value || 0;
+  const d1 = +document.getElementById('crash-d1').value || 0;
+  const cost = +document.getElementById('crash-cost').value || 0;
+  const risk = +document.getElementById('crash-risk').value || 0;
+
+  if (d1 >= d0) {
+    document.getElementById('crash-out').innerHTML =
+      '<div style="color:var(--ivory-3)">目标工期 ≥ 原工期 · 无需压缩</div>';
+    document.getElementById('crash-process').innerHTML = '';
+    return;
+  }
+
+  const days = d0 - d1;
+  const crashCost = days * cost;
+  let better, betterColor;
+  if (crashCost < risk) { better = '赶工更优'; betterColor = 'var(--gold-1)'; }
+  else if (crashCost > risk) { better = '快速跟进更优'; betterColor = 'var(--azure)'; }
+  else { better = '成本持平'; betterColor = 'var(--ivory-2)'; }
+
+  const out = document.getElementById('crash-out');
+  out.innerHTML = `
+    <div class="evm-bar">
+      <div class="evm-cell"><div class="lbl">压缩天数</div><div class="num">${days} 天</div></div>
+      <div class="evm-cell"><div class="lbl">赶工成本</div><div class="num" style="color:var(--crimson)">${crashCost.toLocaleString()} 元</div></div>
+      <div class="evm-cell"><div class="lbl">快速跟进风险</div><div class="num" style="color:var(--gold-1)">${risk.toLocaleString()} 元</div></div>
+      <div class="evm-cell"><div class="lbl">优选策略</div><div class="num" style="color:${betterColor};font-size:.9rem">${better}</div></div>
+    </div>
+    <div class="evm-meta">
+      节省 = <b>${Math.abs(crashCost - risk).toLocaleString()}</b> 元 · 压缩比 = <b>${(days/d0*100).toFixed(0)}%</b> · 多关键路径需同步压缩
+    </div>`;
+
+  const panel = document.getElementById('crash-process');
+  if (panel) {
+    panel.innerHTML = `
+      <div class="sn-head">解题 3 步走 · 进度压缩成本</div>
+      <div class="sn-step">
+        <div class="sn-no">1</div>
+        <div class="sn-body">
+          <div class="sn-k">识别压缩任务</div>
+          <div class="sn-v">压缩对象 = <span class="hi-azure">关键路径</span>上的活动（非关键压缩无效）</div>
+          <div class="sn-v">压缩天数 = 原工期 − 目标工期 = <span class="hi">${d0} − ${d1} = ${days}</span> 天</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">2</div>
+        <div class="sn-body">
+          <div class="sn-k">两种策略成本</div>
+          <div class="sn-formula">赶工（Crashing）：<span class="hi-crimson">${days} 天 × ${cost} 元/天 = ${crashCost.toLocaleString()} 元</span></div>
+          <div class="sn-formula">快速跟进（Fast-tracking）：<span class="hi-azure">${risk.toLocaleString()}</span> 元（一次性返工损失）</div>
+          <div class="sn-foot">⚠ 多关键路径需<b>同步压缩</b>；按成本斜率升序压缩 → 总成本最低</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">3</div>
+        <div class="sn-body">
+          <div class="sn-k">决策</div>
+          <div class="sn-v">${better} · 节省 ${Math.abs(crashCost - risk).toLocaleString()} 元</div>
+          <div class="sn-v">赶工风险<b style="color:var(--emerald)">可量化</b>（= 单位时间成本 × 天数）</div>
+          <div class="sn-v">快速跟进风险<b style="color:var(--crimson)">不可量化</b>（含返工/质量/范围蔓延）</div>
+        </div>
+      </div>`;
+  }
+}
+
+function randCrashing() {
+  document.getElementById('crash-d0').value = 15 + Math.floor(Math.random() * 16);
+  document.getElementById('crash-d1').value = 5 + Math.floor(Math.random() * 6);
+  document.getElementById('crash-cost').value = 1000 + Math.floor(Math.random() * 9) * 500;
+  document.getElementById('crash-risk').value = 3000 + Math.floor(Math.random() * 8) * 1000;
+  calcCrashing();
+}
+
+/* ================== 进度管理 · 4.7 资源优化 ================== */
+function calcResource() {
+  const raw = document.getElementById('rl-input').value.trim();
+  const cap = +document.getElementById('rl-cap').value || 1;
+  const days = raw.split(/[,，\s]+/).map(s => +s.trim()).filter(n => !isNaN(n) && n >= 0);
+
+  if (days.length === 0) {
+    document.getElementById('rl-out').innerHTML =
+      '<div style="color:var(--crimson)">请输入有效数据（逗号分隔）</div>';
+    return;
+  }
+
+  const sum = days.reduce((a, b) => a + b, 0);
+  const avg = sum / days.length;
+  const peak = Math.max(...days);
+  const variance = days.reduce((s, v) => s + (v - avg) ** 2, 0) / days.length;
+  const std = Math.sqrt(variance);
+  const cv = avg > 0 ? std / avg : 0;
+  const exceedDays = days.filter(v => v > cap);
+
+  // Render SVG histogram
+  const svg = document.getElementById('rl-svg');
+  if (svg) {
+    const maxVal = Math.max(peak, cap) * 1.15;
+    const totalW = 540, baseX = 30, baseY = 180;
+    const barW = Math.max(8, (totalW - days.length * 4) / days.length);
+    const heightUnit = 150 / maxVal;
+
+    let bars = '';
+    days.forEach((v, i) => {
+      const h = v * heightUnit;
+      const x = baseX + i * (barW + 4);
+      const y = baseY - h;
+      let color;
+      if (v > cap) color = '#c8553d';
+      else if (v > avg * 1.2) color = '#b8673f';
+      else if (v < avg * 0.8) color = '#5d8a6f';
+      else color = '#4a6fa5';
+      bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${color}" opacity="0.85" rx="2"/>`;
+      bars += `<text x="${x + barW/2}" y="${y - 4}" font-size="10" fill="#faf6e8" text-anchor="middle" font-family="JetBrains Mono">${v}</text>`;
+    });
+
+    const capY = baseY - cap * heightUnit;
+    const capLine = `<line x1="${baseX}" x2="${baseX + totalW}" y1="${capY}" y2="${capY}" stroke="#c8553d" stroke-width="1.5" stroke-dasharray="4,3"/>
+                     <text x="${baseX + totalW - 4}" y="${capY - 4}" font-size="11" fill="#c8553d" text-anchor="end" font-family="JetBrains Mono">上限 ${cap}</text>`;
+    const avgY = baseY - avg * heightUnit;
+    const avgLine = `<line x1="${baseX}" x2="${baseX + totalW}" y1="${avgY}" y2="${avgY}" stroke="#e8c384" stroke-width="1" stroke-dasharray="2,3" opacity="0.7"/>
+                     <text x="${baseX + 4}" y="${avgY - 4}" font-size="11" fill="#e8c384" font-family="JetBrains Mono">均值 ${avg.toFixed(1)}</text>`;
+
+    svg.innerHTML = bars + capLine + avgLine +
+      `<line x1="${baseX}" x2="${baseX + totalW}" y1="${baseY}" y2="${baseY}" stroke="#2a3056" stroke-width="1"/>` +
+      days.map((_, i) => `<text x="${baseX + i * (barW + 4) + barW/2}" y="${baseY + 16}" font-size="10" fill="#8e8a7a" text-anchor="middle" font-family="JetBrains Mono">D${i+1}</text>`).join('');
+  }
+
+  const out = document.getElementById('rl-out');
+  let verdict;
+  if (exceedDays.length > 0) {
+    verdict = `<span style="color:var(--crimson);font-weight:700">需资源平衡</span>（超限 ${exceedDays.length} 天，可延长工期）`;
+  } else if (cv > 0.4) {
+    verdict = `<span style="color:var(--gold-1);font-weight:700">建议资源平滑</span>（CV=${cv.toFixed(2)} 波动大，但可保持工期）`;
+  } else {
+    verdict = `<span style="color:var(--emerald);font-weight:700">当前均匀</span>（CV=${cv.toFixed(2)}）`;
+  }
+
+  out.innerHTML = `
+    <div class="evm-bar">
+      <div class="evm-cell"><div class="lbl">峰值 Peak</div><div class="num">${peak}</div></div>
+      <div class="evm-cell"><div class="lbl">均值 Avg</div><div class="num">${avg.toFixed(1)}</div></div>
+      <div class="evm-cell"><div class="lbl">标准差 σ</div><div class="num">${std.toFixed(2)}</div></div>
+      <div class="evm-cell"><div class="lbl">差异系数 CV</div><div class="num">${cv.toFixed(3)}</div></div>
+    </div>
+    <div class="evm-meta">
+      超限天数 = <b style="color:${exceedDays.length > 0 ? 'var(--crimson)' : 'var(--emerald)'}">${exceedDays.length}</b> 天 · 总工作量 = <b>${sum}</b> · 判定: ${verdict}
+    </div>`;
+
+  const panel = document.getElementById('rl-process');
+  if (panel) {
+    panel.innerHTML = `
+      <div class="sn-head">解题 4 步走 · 资源优化判断</div>
+      <div class="sn-step">
+        <div class="sn-no">1</div>
+        <div class="sn-body">
+          <div class="sn-k">基础统计</div>
+          <div class="sn-v">资源峰值 = <span class="hi-crimson">${peak}</span>　·　均值 = <span class="hi">${avg.toFixed(1)}</span>　·　标准差 σ = <span class="hi">${std.toFixed(2)}</span></div>
+          <div class="sn-foot">直方图：红色 = 超限，橙色 = 高于均值 20%，绿色 = 低于均值 20%，蓝色 = 正常</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">2</div>
+        <div class="sn-body">
+          <div class="sn-k">超限判定</div>
+          <div class="sn-v">资源上限 = <span class="hi-azure">${cap}</span></div>
+          <div class="sn-formula">超限天数 = <span class="${exceedDays.length > 0 ? 'hi-crimson' : 'hi-emerald'}">${exceedDays.length}</span></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">3</div>
+        <div class="sn-body">
+          <div class="sn-k">均匀性</div>
+          <div class="sn-formula">CV = σ / μ = ${std.toFixed(2)} / ${avg.toFixed(1)} = <span class="hi">${cv.toFixed(3)}</span></div>
+          <div class="sn-foot">${cv < 0.3 ? 'CV &lt; 0.3 → 资源使用较均匀，无需优化' : cv < 0.5 ? 'CV 0.3~0.5 → 中等波动' : 'CV &gt; 0.5 → 波动大，需平滑'}</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">4</div>
+        <div class="sn-body">
+          <div class="sn-k">策略选择</div>
+          <div class="sn-v">${exceedDays.length > 0 ?
+            '超限 → <b style="color:var(--crimson)">资源平衡</b>（可能延长工期、改变关键路径）' :
+            (cv > 0.4 ? 'CV 较大 → <b style="color:var(--gold-1)">资源平滑</b>（在 FF/TF 内调整，关键路径不变）' :
+             '<b style="color:var(--emerald)">当前已较均匀，无需优化</b>')}</div>
+        </div>
+      </div>`;
+  }
+}
+
+function randResource() {
+  const n = 6 + Math.floor(Math.random() * 5);
+  const arr = [];
+  for (let i = 0; i < n; i++) arr.push(1 + Math.floor(Math.random() * 9));
+  document.getElementById('rl-input').value = arr.join(',');
+  document.getElementById('rl-cap').value = 4 + Math.floor(Math.random() * 5);
+  calcResource();
+}
+
+/* ================== 进度管理 · 4.8 EAC 多场景 + TCPI ================== */
+function calcEACMulti() {
+  const PV = +document.getElementById('em-pv').value || 0;
+  const EV = +document.getElementById('em-ev').value || 0;
+  const AC = +document.getElementById('em-ac').value || 0;
+  const BAC = +document.getElementById('em-bac').value || 0;
+  const ETC = +document.getElementById('em-etc').value || 0;
+
+  if (BAC === 0) {
+    document.getElementById('em-out').innerHTML =
+      '<div style="color:var(--crimson)">请输入 BAC</div>';
+    return;
+  }
+
+  const CPI = AC > 0 ? EV / AC : 0;
+  const SPI = PV > 0 ? EV / PV : 0;
+  const eac1 = CPI > 0 ? BAC / CPI : 0;
+  const eac2 = AC + (BAC - EV);
+  const eac3 = AC + ETC;
+  const eac4 = (CPI > 0 && SPI > 0) ? AC + (BAC - EV) / (CPI * SPI) : 0;
+
+  const remainingBudget = BAC - AC;
+  const remainingWork = BAC - EV;
+  const TCPI = remainingBudget > 0 ? remainingWork / remainingBudget : Infinity;
+
+  let tcpiColor, tcpiVerdict;
+  if (TCPI === Infinity) {
+    tcpiColor = 'var(--crimson)';
+    tcpiVerdict = 'BAC − AC ≤ 0 · 已无预算 · BAC 不可达';
+  } else if (TCPI < 1) {
+    tcpiColor = 'var(--emerald)';
+    tcpiVerdict = '剩余工作比原计划<b>省力</b>';
+  } else if (Math.abs(TCPI - 1) < 0.001) {
+    tcpiColor = 'var(--gold-1)';
+    tcpiVerdict = '剩余工作需<b>保持当前效率</b>';
+  } else {
+    tcpiColor = 'var(--crimson)';
+    tcpiVerdict = '剩余工作需<b>更高效率</b>（&gt;1 偏紧）';
+  }
+
+  const out = document.getElementById('em-out');
+  out.innerHTML = `
+    <div class="evm-bar">
+      <div class="evm-cell"><div class="lbl">CPI</div><div class="num" style="color:${CPI < 1 ? 'var(--crimson)' : 'var(--emerald)'}">${CPI.toFixed(3)}</div></div>
+      <div class="evm-cell"><div class="lbl">SPI</div><div class="num" style="color:${SPI < 1 ? 'var(--crimson)' : 'var(--emerald)'}">${SPI.toFixed(3)}</div></div>
+      <div class="evm-cell"><div class="lbl">TCPI</div><div class="num" style="color:${tcpiColor}">${TCPI === Infinity ? '∞' : TCPI.toFixed(3)}</div></div>
+      <div class="evm-cell"><div class="lbl">TCPI 判定</div><div class="num" style="font-size:.78rem;color:${tcpiColor}">${tcpiVerdict.replace(/<[^>]+>/g, '')}</div></div>
+    </div>
+    <div style="margin-top:10px;font-size:.86rem">
+      <div class="formula" style="padding:8px 12px;margin:4px 0">① <b style="color:var(--gold-1)">典型差异</b>　EAC = BAC / CPI = ${BAC} / ${CPI.toFixed(3)} = <b style="color:var(--gold-1)">${eac1.toFixed(2)}</b></div>
+      <div class="formula" style="padding:8px 12px;margin:4px 0">② <b style="color:var(--azure)">非典型差异</b>　EAC = AC + (BAC−EV) = ${AC} + ${BAC-EV} = <b style="color:var(--gold-1)">${eac2.toFixed(2)}</b></div>
+      <div class="formula" style="padding:8px 12px;margin:4px 0">③ <b style="color:var(--emerald)">管理层重估</b>　EAC = AC + ETC = ${AC} + ${ETC} = <b style="color:var(--gold-1)">${eac3.toFixed(2)}</b></div>
+      <div class="formula" style="padding:8px 12px;margin:4px 0">④ <b style="color:var(--crimson)">综合绩效</b>　EAC = AC + (BAC−EV)/(CPI×SPI) = ${AC} + ${(BAC-EV)}/(${(CPI*SPI).toFixed(3)}) = <b style="color:var(--gold-1)">${eac4.toFixed(2)}</b></div>
+    </div>
+    <div class="evm-meta">
+      典型 vs 综合 差异 = ${Math.abs(eac1 - eac4).toFixed(2)} （综合更严，计入了 SPI 影响）
+    </div>`;
+
+  const panel = document.getElementById('em-process');
+  if (panel) {
+    panel.innerHTML = `
+      <div class="sn-head">解题 4 步走 · EAC 多场景 + TCPI</div>
+      <div class="sn-step">
+        <div class="sn-no">1</div>
+        <div class="sn-body">
+          <div class="sn-k">基础指数</div>
+          <div class="sn-formula">CPI = EV / AC = ${EV} / ${AC} = <span class="${CPI < 1 ? 'hi-crimson' : 'hi-emerald'}">${CPI.toFixed(3)}</span></div>
+          <div class="sn-formula">SPI = EV / PV = ${EV} / ${PV} = <span class="${SPI < 1 ? 'hi-crimson' : 'hi-emerald'}">${SPI.toFixed(3)}</span></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">2</div>
+        <div class="sn-body">
+          <div class="sn-k">4 种 EAC</div>
+          <div class="sn-formula">① 典型: EAC = BAC/CPI = ${BAC} / ${CPI.toFixed(3)} = <span class="hi">${eac1.toFixed(2)}</span></div>
+          <div class="sn-formula">② 非典型: EAC = AC + (BAC−EV) = ${AC} + ${BAC-EV} = <span class="hi">${eac2.toFixed(2)}</span></div>
+          <div class="sn-formula">③ 重估: EAC = AC + ETC = ${AC} + ${ETC} = <span class="hi">${eac3.toFixed(2)}</span></div>
+          <div class="sn-formula">④ 综合: EAC = AC + (BAC−EV)/(CPI×SPI) = ${AC} + ${(BAC-EV)}/(${(CPI*SPI).toFixed(3)}) = <span class="hi">${eac4.toFixed(2)}</span></div>
+          <div class="sn-foot">⚠ 默认场景用<b>典型</b>；题干明确"非典型"或"管理层重估"时改用对应公式</div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">3</div>
+        <div class="sn-body">
+          <div class="sn-k">TCPI</div>
+          <div class="sn-formula">剩余预算 = BAC − AC = ${BAC} − ${AC} = <span class="hi">${BAC-AC}</span></div>
+          <div class="sn-formula">剩余工作 = BAC − EV = ${BAC} − ${EV} = <span class="hi">${BAC-EV}</span></div>
+          <div class="sn-formula">TCPI = ${BAC-EV} / ${BAC-AC} = <span style="color:${tcpiColor}">${TCPI === Infinity ? '∞' : TCPI.toFixed(3)}</span></div>
+        </div>
+      </div>
+      <div class="sn-step">
+        <div class="sn-no">4</div>
+        <div class="sn-body">
+          <div class="sn-k">判定</div>
+          <div class="sn-v">${tcpiVerdict}</div>
+          <div class="sn-foot">⚠ TCPI &gt; 1.1 通常难以达成；BAC − AC ≤ 0 时 BAC 已不可达，需申请追加预算</div>
+        </div>
+      </div>`;
+  }
+}
+
+function randEACMulti() {
+  const BAC = 100 + Math.floor(Math.random() * 9) * 50;
+  const pct = 0.3 + Math.random() * 0.4;
+  const PV = Math.round(BAC * pct);
+  const EV = Math.round(PV * (0.6 + Math.random() * 0.6));
+  const AC = Math.round(EV * (0.7 + Math.random() * 0.7));
+  const ETC = Math.round(BAC * 0.4 + Math.random() * BAC * 0.3);
+  document.getElementById('em-pv').value = PV;
+  document.getElementById('em-ev').value = EV;
+  document.getElementById('em-ac').value = AC;
+  document.getElementById('em-bac').value = BAC;
+  document.getElementById('em-etc').value = ETC;
+  calcEACMulti();
+}
+
+/* ================== 进度管理 · 4.9 PDM 单代号网络图 ================== */
+function parsePDMInput(raw) {
+  const tasks = {};
+  const lines = raw.split(/[;\n]/).map(s => s.trim()).filter(Boolean);
+  for (const t of lines) {
+    const [id, rest] = t.split(':').map(s => s.trim());
+    if (!id || !rest) continue;
+    const parts = rest.split(',').map(s => s.trim()).filter(Boolean);
+    const dur = +parts[0] || 0;
+    let depType = 'FS';
+    const deps = [];
+    for (let i = 1; i < parts.length; i++) {
+      const p = parts[i];
+      if (['FS','SS','FF','SF'].includes(p)) {
+        depType = p;
+      } else {
+        const m = p.match(/^([A-Za-z0-9_]+)([+\-]\d+)?$/);
+        if (m) deps.push({ id: m[1], lag: m[2] ? +m[2] : 0 });
+      }
+    }
+    tasks[id] = { dur, depType, deps, ES: 0, EF: 0, LF: 0, LS: 0, FF: 0, TF: 0 };
+  }
+  return tasks;
+}
+
+function topoSortPDM(tasks) {
+  const visited = new Set();
+  const order = [];
+  const dfs = (id) => {
+    if (visited.has(id)) return;
+    visited.add(id);
+    for (const d of (tasks[id]?.deps || [])) {
+      if (tasks[d.id]) dfs(d.id);
+    }
+    order.push(id);
+  };
+  for (const id in tasks) dfs(id);
+  return order;
+}
+
+function calcPDM() {
+  const raw = document.getElementById('pdm-input').value.trim();
+  if (!raw) {
+    document.getElementById('pdm-out').innerHTML = '<div style="color:var(--crimson)">请输入 PDM 网络定义</div>';
+    document.getElementById('pdm-process').innerHTML = '';
+    return;
+  }
+
+  const tasks = parsePDMInput(raw);
+  if (Object.keys(tasks).length === 0) {
+    document.getElementById('pdm-out').innerHTML = '<div style="color:var(--crimson)">解析失败 · 请检查格式 (ID:工期[,类型,前置1,前置2])</div>';
+    return;
+  }
+
+  const order = topoSortPDM(tasks);
+
+  // 正向推算 ES/EF
+  for (const id of order) {
+    const t = tasks[id];
+    if (t.deps.length === 0) {
+      t.ES = 0;
+    } else {
+      let maxStart = -Infinity;
+      for (const dep of t.deps) {
+        const p = tasks[dep.id];
+        if (!p) continue;
+        let startTime;
+        switch (t.depType) {
+          case 'FS': startTime = p.EF + dep.lag; break;
+          case 'SS': startTime = p.ES + dep.lag; break;
+          case 'FF': startTime = p.EF + dep.lag - t.dur; break;
+          case 'SF': startTime = p.ES + dep.lag - t.dur; break;
+        }
+        maxStart = Math.max(maxStart, startTime);
+      }
+      t.ES = maxStart < 0 ? 0 : maxStart;
+    }
+    t.EF = t.ES + t.dur;
+  }
+
+  const projectEnd = Math.max(...Object.values(tasks).map(t => t.EF));
+
+  // 构建 successor 列表（带依赖类型和 lag）
+  const successors = {};
+  for (const id in tasks) successors[id] = [];
+  for (const id in tasks) {
+    for (const dep of tasks[id].deps) {
+      if (successors[dep.id]) {
+        successors[dep.id].push({ id, depType: tasks[id].depType, lag: dep.lag });
+      }
+    }
+  }
+
+  // 逆向推算 LF/LS
+  // A→B 的逆向约束：
+  //   FS+lag: A.LF = B.LS - lag
+  //   SS+lag: A.LS = B.LS - lag → A.LF = A.LS + dur
+  //   FF+lag: A.LF = B.LF - lag
+  //   SF+lag: A.LS = B.LF - lag → A.LF = A.LS + dur
+  for (const id of [...order].reverse()) {
+    const t = tasks[id];
+    if (successors[id].length === 0) {
+      t.LF = projectEnd;
+    } else {
+      let minEnd = Infinity;
+      for (const succ of successors[id]) {
+        const s = tasks[succ.id];
+        let constraint;
+        switch (succ.depType) {
+          case 'FS': constraint = s.LS - succ.lag; break;
+          case 'SS': constraint = s.LS - succ.lag + t.dur; break;
+          case 'FF': constraint = s.LF - succ.lag; break;
+          case 'SF': constraint = s.LF - succ.lag + t.dur; break;
+        }
+        minEnd = Math.min(minEnd, constraint);
+      }
+      t.LF = minEnd;
+    }
+    t.LS = t.LF - t.dur;
+  }
+
+  // 时差
+  for (const id of order) {
+    const t = tasks[id];
+    t.TF = t.LS - t.ES;
+    if (successors[id].length === 0) {
+      t.FF = projectEnd - t.EF;
+    } else {
+      let minFree = Infinity;
+      for (const succ of successors[id]) {
+        const s = tasks[succ.id];
+        let free;
+        switch (succ.depType) {
+          case 'FS':
+            free = s.ES - succ.lag - t.EF;
+            break;
+          case 'SS':
+            free = s.ES - succ.lag - t.ES;
+            break;
+          case 'FF':
+            free = s.EF - succ.lag - t.EF;
+            break;
+          case 'SF':
+            free = s.EF - succ.lag - t.ES;
+            break;
+        }
+        minFree = Math.min(minFree, free);
+      }
+      t.FF = minFree;
+    }
+  }
+
+  const criticalIds = order.filter(id => tasks[id].TF === 0);
+  let html = `<table style="font-size:0.82rem">
+    <thead><tr>
+      <th>任务</th><th>工期</th><th>类型</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>FF</th><th>TF</th><th>关键?</th>
+    </tr></thead><tbody>`;
+  for (const id of order) {
+    const t = tasks[id];
+    const isCrit = t.TF === 0;
+    const bg = isCrit ? 'background:rgba(232,195,132,0.18);color:var(--gold-1);font-weight:600' : '';
+    html += `<tr style="${bg}">
+      <td>${id}</td><td>${t.dur}</td><td style="font-size:.74rem;color:var(--azure)">${t.deps.length ? t.depType : '—'}</td>
+      <td>${t.ES}</td><td>${t.EF}</td>
+      <td>${t.LS}</td><td>${t.LF}</td>
+      <td>${t.FF}</td><td>${t.TF}</td>
+      <td>${isCrit ? '★' : '—'}</td>
+    </tr>`;
+  }
+  html += `</tbody></table>
+    <div style="margin-top:8px;font-size:0.86rem;color:var(--ivory-2)">
+      总工期 = <b style="color:var(--gold-1)">${projectEnd}</b> ·
+      关键路径 = <b style="color:var(--gold-1)">${criticalIds.join(' → ')}</b> ·
+      关键任务数 = ${criticalIds.length}/${order.length}
+    </div>`;
+  document.getElementById('pdm-out').innerHTML = html;
+
+  // ===== 计算过程面板 =====
+  const panel = document.getElementById('pdm-process');
+  if (panel) {
+    const taskRows = order.map(id => {
+      const t = tasks[id];
+      const depStr = t.deps.length === 0 ? '（起点）' :
+        t.deps.map(d => `${d.id}(${d.lag > 0 ? '+' : ''}${d.lag})`).join(' + ');
+      return `<div class="sn-v">${id}：工期 ${t.dur}，依赖 [${depStr}] · ${t.depType}</div>`;
+    }).join('');
+
+    const esRows = order.map(id => {
+      const t = tasks[id];
+      const formulas = t.deps.map(d => {
+        const p = tasks[d.id];
+        if (!p) return '';
+        switch (t.depType) {
+          case 'FS': return `${p.EF}${d.lag !== 0 ? (d.lag > 0 ? '+'+d.lag : d.lag) : ''}=${p.EF + d.lag}`;
+          case 'SS': return `${p.ES}${d.lag !== 0 ? (d.lag > 0 ? '+'+d.lag : d.lag) : ''}=${p.ES + d.lag}`;
+          case 'FF': return `(${p.EF}${d.lag !== 0 ? (d.lag > 0 ? '+'+d.lag : d.lag) : ''})−${t.dur}=${p.EF + d.lag - t.dur}`;
+          case 'SF': return `(${p.ES}${d.lag !== 0 ? (d.lag > 0 ? '+'+d.lag : d.lag) : ''})−${t.dur}=${p.ES + d.lag - t.dur}`;
+        }
+        return '';
+      }).filter(Boolean);
+      return `<div class="sn-formula">${id} (${t.depType})：${formulas.length ? 'max(' + formulas.join(', ') + ') = ' : ''}<span class="hi">${t.ES}</span> → EF=${t.EF}</div>`;
+    }).join('');
+
+    const lsRows = order.map(id => {
+      const t = tasks[id];
+      return `<div class="sn-formula">${id}：LS=${t.LS}, LF=${t.LF}（FF=${t.FF}, TF=${t.TF}${t.TF === 0 ? ' <span class="hi-crimson">★关键</span>' : ''}）</div>`;
+    }).join('');
+
+    panel.innerHTML = `
+    <div class="sn-head">解题 5 步走 · PDM 单代号网络图</div>
+    <div class="sn-step">
+      <div class="sn-no">1</div>
+      <div class="sn-body">
+        <div class="sn-k">任务定义</div>
+        ${taskRows}
+        <div class="sn-foot">⚠ 依赖类型 FS / SS / FF / SF；可选 Lags（正数=延后，负数=提前）</div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">2</div>
+      <div class="sn-body">
+        <div class="sn-k">正向推算 ES/EF（按拓扑序）</div>
+        ${esRows}
+        <div class="sn-foot">公式：FS→ES=EF<sub>前</sub>+Lag；SS→ES=ES<sub>前</sub>+Lag；FF→ES=EF<sub>前</sub>+Lag−dur<sub>自</sub>；SF→ES=ES<sub>前</sub>+Lag−dur<sub>自</sub></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">3</div>
+      <div class="sn-body">
+        <div class="sn-k">项目总工期</div>
+        <div class="sn-formula">总工期 = max(所有 EF) = <span class="hi-emerald">${projectEnd}</span></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">4</div>
+      <div class="sn-body">
+        <div class="sn-k">逆向推算 LF/LS（按反拓扑序）</div>
+        ${lsRows}
+        <div class="sn-foot">逆向约束：FS→LF=LS<sub>后</sub>−Lag；FF→LF=LF<sub>后</sub>−Lag；SS→LF=LS<sub>后</sub>−Lag+dur<sub>自</sub>；SF→LF=LF<sub>后</sub>−Lag+dur<sub>自</sub></div>
+      </div>
+    </div>
+    <div class="sn-step">
+      <div class="sn-no">5</div>
+      <div class="sn-body">
+        <div class="sn-k">关键路径</div>
+        <div class="sn-v">关键任务（TF=0）：<span class="hi-crimson">${criticalIds.join(' → ')}</span></div>
+        <div class="sn-foot">⚠ 多前置任务时 ES/LF 取各前置约束的 max/min；FF 依赖易遗漏自身工期扣除</div>
+      </div>
+    </div>`;
+  }
+}
+
+function randPDM() {
+  const types = ['FS', 'SS', 'FF'];
+  const a = 3 + Math.floor(Math.random() * 4);
+  const b = 2 + Math.floor(Math.random() * 4);
+  const c = 2 + Math.floor(Math.random() * 3);
+  const d = 3 + Math.floor(Math.random() * 4);
+  const e = 2 + Math.floor(Math.random() * 3);
+  const lag = Math.floor(Math.random() * 3);
+  const lag2 = Math.floor(Math.random() * 3);
+  const text = `A:${a}
+B:${b},${types[Math.floor(Math.random()*3)]},A${lag ? '+'+lag : ''}
+C:${c},SS,A${lag2 ? '+'+lag2 : ''}
+D:${d},FF,B
+E:${e},FS,C,D+1`;
+  document.getElementById('pdm-input').value = text;
+  calcPDM();
+}
+
+function initProgress() {
+  if (document.getElementById('crash-d0')) calcCrashing();
+  if (document.getElementById('rl-input')) calcResource();
+  if (document.getElementById('em-pv')) calcEACMulti();
+  if (document.getElementById('pdm-input')) calcPDM();
+}
+initProgress();
 </script>
 </body>
 </html>
