@@ -390,17 +390,17 @@ mark.kw {
 <script>
 /* ============== Data ============== */
 const EXTRA = {
-  '6-1': { title:'6.1 必答题常见问法与答题框架', chap:6, body:`
+  '6-1': { title:'5.1 必答题常见问法与答题框架', chap:5, body:`
 <p><strong>质量属性识别：</strong>先区分"功能性 vs 质量属性"，再按六大属性对号入座，用题干原词支撑判断。</p>
 <p><strong>质量属性场景六要素：</strong>刺激源、刺激、环境、制品、响应、响应度量。</p>
 <p><strong>效用树：</strong>质量属性 → 场景，按"重要性＋实现难度"打分排序。</p>
 <p><strong>架构评估：</strong>ATAM 步骤与输出（敏感点、权衡点、风险点、非风险点）。</p>
 <p><strong>架构风格识别：</strong>说出风格名称＋理由（结构特征＋适用场景）。</p>` },
-  '6-2': { title:'6.2 选答题常见问法与答题框架', chap:6, body:`
+  '6-2': { title:'5.2 选答题常见问法与答题框架', chap:5, body:`
 <p><strong>方案设计（缓存／高可用／分片／事务）：</strong>需求 → 选型 → 架构图／链路 → 关键机制 → 优缺点 → 监控运维。</p>
 <p><strong>对比分析（一致性哈希 vs 取模、SOA vs 微服务、Lambda vs Kappa、RAG vs 微调）：</strong>定义 → 对比维度（一致性、性能、复杂度、适用场景）→ 逐维度对比 → 结论。</p>
 <p><strong>问题诊断（慢 SQL、缓存失效、故障）：</strong>现象 → 定位（日志／监控／EXPLAIN）→ 根因 → 解决方案 → 验证。</p>` },
-  '6-3': { title:'6.3 高频考点与近年真题分布', chap:6, body:`
+  '6-3': { title:'5.3 高频考点与近年真题分布', chap:5, body:`
 <table><thead><tr><th>考点</th><th>出现情况</th><th>题型定位</th></tr></thead><tbody>
 <tr><td>质量属性（场景、效用树、ATAM）</td><td>2009—2025 几乎每年必考</td><td>第 1 题必答</td></tr>
 <tr><td>架构风格与架构评估</td><td>高频</td><td>必答／选答</td></tr>
@@ -412,12 +412,12 @@ const EXTRA = {
 <tr><td>信息安全（信息摘要/加密）</td><td>2025 下（AES-256 安全设计）</td><td>选答</td></tr>
 <tr><td>UML／DFD／设计原则</td><td>历年穿插</td><td>必答／选答</td></tr>
 </tbody></table>` },
-  '6-4': { title:'6.4 备考优先级建议', chap:6, body:`
+  '6-4': { title:'5.4 备考优先级建议', chap:5, body:`
 <p><strong>第一梯队（必答拿分）：</strong>质量属性、架构风格、架构评估（ATAM）——背熟概念与术语。</p>
 <p><strong>第二梯队（选答主力）：</strong>Redis 缓存、微服务与分布式、数据库（分片／高可用）、大数据架构——每个专题准备一套"方案设计＋对比"答题框架。</p>
 <p><strong>第三梯队（新技术加分）：</strong>云原生、AI 大模型／RAG、向量数据库、NewSQL——掌握概念、流程与选型理由。</p>
 <p><strong>放弃项：</strong>嵌入式、通信系统等陌生方向（除非有从业背景），把时间留给有把握的题。</p>` },
-  '6-5': { title:'6.5 8 大题型速查 · 关键词库', chap:6, body:`
+  '6-5': { title:'5.5 8 大题型速查 · 关键词库', chap:5, body:`
 <table><thead><tr><th>#</th><th>题型（标准名）</th><th>关键词</th></tr></thead><tbody>
 <tr><td>1</td><td>架构评估</td><td>ATAM / SAAM / CBAM / 效用树 / 敏感点 / 权衡点</td></tr>
 <tr><td>2</td><td>数据库设计</td><td>E-R 图 / 范式 / SQL / 读写分离</td></tr>
@@ -428,8 +428,8 @@ const EXTRA = {
 <tr><td>7</td><td>安全架构</td><td>认证授权 / 加密 / STRIDE / 等保</td></tr>
 <tr><td>8</td><td>嵌入式组件</td><td>RMS / EDF / 实时调度 / 看门狗</td></tr>
 </tbody></table>
-<p>用法：拿到题干先用关键词定位题型（命中哪一行就套哪一套框架作答），再从 6-1／6-2 找对应的答题模板。</p>` },
-  '6-6': { title:'6.6 4 大应试招数速查', chap:6, body:`
+<p>用法：拿到题干先用关键词定位题型（命中哪一行就套哪一套框架作答），再从 5-1／5-2 找对应的答题模板。</p>` },
+  '6-6': { title:'5.6 4 大应试招数速查', chap:5, body:`
 <table><thead><tr><th>#</th><th>招</th><th>触发场景</th><th>用在哪类题型</th></tr></thead><tbody>
 <tr><td>1</td><td><strong>题干是答案仓库</strong></td><td>不知道写啥</td><td>所有题型（基础）</td></tr>
 <tr><td>2</td><td><strong>编号 + 表格作答</strong></td><td>写得啰嗦没分</td><td>对比题、列举题（架构风格／微服务）</td></tr>
@@ -1393,10 +1393,12 @@ function renderSidebar() {
       const isExtra = !id.startsWith('c');
       const data = isExtra ? EXTRA[id] : TOPICS[id];
       const isMastered = mastered[id];
+      const chapNum = isExtra ? chap.id : data.chap;
+      const lastSeg = id.split('-').pop();
       html += `<div class="sidebar-item${isMastered ? ' mastered' : ''}" data-id="${id}" onclick="showCard('${id}')">
         <span class="check" onclick="event.stopPropagation();toggleMaster('${id}')">${isMastered ? '✓' : ''}</span>
         <span class="item-title">${data.title}</span>
-        <span class="item-id">${id.replace('c','').replace(/-/,'·')}</span>
+        <span class="item-id">${chapNum}·${lastSeg}</span>
       </div>`;
     });
     html += `</div></div>`;
@@ -1418,8 +1420,10 @@ function renderCard(id) {
   if (!data) return;
 
   let html = `<article class="card is-active" data-id="${id}">`;
+  const chapId = isExtra ? (CHAPTERS.find(c => c.items.includes(id))?.id) : data.chap;
+  const lastSeg = id.split('-').pop();
   html += `<div class="card-head">
-    <span class="id-tag">#${id}</span>
+    <span class="id-tag">#${chapId}-${lastSeg}</span>
     <div style="flex:1">
       <h2>${data.title}</h2>`;
   if (!isExtra) {
